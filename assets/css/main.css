@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Noe Display';
+  src: url('/fonts/Noe-Display-Regular-Italic.woff2') format('woff2');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gramatika';
+  src: url('/fonts/Gramatika-Regular.woff2') format('woff2'), url('/fonts/Gramatika-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Gramatika';
+  src: url('/fonts/Gramatika-Bold.woff2') format('woff2'), url('/fonts/Gramatika-Bold.woff') format('woff');
+  font-weight: bold;
+}
+
+
+.markdown {
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: var(--font-bold);
+    line-height: 1.2;
+    margin-block: 1em;
+  }
+
+  h1 {
+    font-size: var(--text-4xl);
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+  }
+
+  a {
+    color: var(--color-gold-500);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  hr {
+    border: 1px solid var(--color-stone-200);
+    margin-block: var(--h-12);
+  }
+
+  p+p {
+    margin-top: var(--m-3);
+  }
+  p+ul {
+    margin-top: var(--m-3);
+  }
+
+  ul {
+    list-style: disc;
+    padding-left: var(--p-5)
+  }
+
+  ol {
+    list-style: decimal;
+    padding-left: var(--p-5)
+  }
+
+  @media (max-width: 767px) {
+    h1 {
+      font-size: var(--text-3xl);
+    }
+
+    h2 {
+      font-size: var(--text-2xl);
+    }
+
+    h3 {
+      font-size: var(--text-1xl);
+    }
+
+    h4 {
+      font-size: var(--text-lg);
+    }
+
+  }
+}
+
+.text-shadow {
+  text-shadow: 0 5px 15px var(--tw-shadow-color, black);
+}
