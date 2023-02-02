@@ -8,7 +8,14 @@
       :actions="false"
       #default="{ value }"
     >
-      <h2 class="text-xl font-medium mb-12">
+      <!-- :config="{
+        classes: {
+          inner: '!shadow-none',
+          input: '!bg-neutral-100 placeholder-neutral-500 !rounded-lg',
+          help: 'text-sm !text-neutral-500 !leading-0 !mt-3',
+        },
+      }" -->
+      <h2 class="text-xl font-medium mb-8">
         Gib hier deine Flugdaten ein und sichere dir bis zu 450€* Entschädigung.
       </h2>
       <div class="double">
@@ -21,16 +28,23 @@
             matches: 'Please include at least one symbol',
           }"
           placeholder="AG1234"
+          maxlength="6"
+          input-class="uppercase"
         />
         <FormKit
           type="date"
           name="flightDate"
           label="Flugdatum"
           validation="required|confirm"
+          input-class="uppercase"
         />
       </div>
 
-      <FormKit type="submit" label="Jetzt Entschädigung berechnen!" />
+      <FormKit
+        type="submit"
+        label="Jetzt Entschädigung berechnen!"
+        help="* die Entschädigungssumme hängt von Verspätungsdauer und Flugdistanz ab."
+      />
     </FormKit>
   </div>
 </template>
@@ -55,3 +69,10 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.double {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+</style>

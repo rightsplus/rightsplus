@@ -12,19 +12,19 @@ export default defineNuxtConfig({
 	modules: [
 		'@nuxtjs/strapi',
 		'@nuxtjs/i18n',
-		'@formkit/nuxt'
+		'@formkit/nuxt',
 	],
 	nitro: {
 		compressPublicAssets: true,
 	},
 	formkit: {
-		configFile: '~/config/formkit.config.ts',
+		configFile: '~/formkit.config.ts',
 	},
 	strapi: {
 		url: process.env.API_BASE || 'http://localhost:1337',
 	},
 	css: [
-		'~/assets/css/main.css',
+		'~/assets/css/main.scss',
 		'~/assets/css/transitions.css',
 		'@fortawesome/fontawesome-svg-core/styles.css'
 	],

@@ -31,7 +31,8 @@ import {
   faLeaf,
   faSpa,
   faChessKnight,
-  faCheck
+  faCheck,
+  faArrowDown
 } from '@fortawesome/free-solid-svg-icons'
 import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -39,6 +40,7 @@ library.add(
   faCheck,
   faEnvelope,
   faBriefcase,
+  faArrowDown,
   faTree,
   faWind,
   faCompass,

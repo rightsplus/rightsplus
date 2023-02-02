@@ -29,16 +29,9 @@ module.exports = {
     "./layouts/**/*.vue",
     "./pages/**/*.vue",
     "./plugins/**/*.{js,ts}",
+    "./formkit.config.{js,ts}",
     "./nuxt.config.{js,ts}",
     "./app.vue",
-  ],
-  safelist: [
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `col-span-${e}`),
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `lg:col-span-${e}`),
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `col-start-${e}`),
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `lg:col-start-${e}`),
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `row-start-${e}`),
-    ...['1', '2', '3', '4', '5', '6'].map((e) => `order-${e}`),
   ],
   tailwindcss: {
     viewer: true,
@@ -59,12 +52,10 @@ module.exports = {
         '15xl': '240px',
         '16xl': '256px',
       },
-      gridTemplateRows: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].reduce((acc, curr) => {
-        return { ...acc, [curr]: `repeat(${curr}, minmax(0, 1fr))` }
-      }, {}),
     },
   },
   plugins: [
+    require('@formkit/tailwindcss'),
     require('@tailwindcss/line-clamp'),
     require("tailwindcss-hyphens"),
     require('tailwind-css-variables')({

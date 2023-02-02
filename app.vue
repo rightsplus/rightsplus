@@ -17,7 +17,7 @@
 <script lang="ts">
 import Header from "~/components/species/Header.vue";
 import Footer from "~/components/species/Footer.vue";
-import "@formkit/themes/genesis";
+// import "@formkit/themes/genesis";
 
 export default defineComponent({
   async setup() {
