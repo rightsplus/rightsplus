@@ -7,12 +7,19 @@
       v-for="airport in filteredAirports"
       :key="airport.value"
       class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-neutral-100"
+      @mousedown="clickHandler(airport)"
     >
-    <FontAwesomeIcon icon="plane" class="text-gray-500" />
+      <FontAwesomeIcon icon="plane" class="text-gray-500" />
       <div class="flex flex-col gap-1">
-        <!-- @click="form.departure = `${airport.name} (${airport.iata})`" -->
-        <span>{{ airport.name }} (<span class="font-bold">{{ airport.iata }}</span>)</span>
-        <span class="text-sm leading-none text-neutral-500">{{ [airport.city, countries.getName(airport.countryCode, $i18n.locale)].filter(Boolean).join(', ') }}</span>
+        <span
+          >{{ airport.name }} (<span class="font-bold">{{ airport.iata }}</span
+          >)</span
+        >
+        <span class="text-sm leading-none text-neutral-500">{{
+          [airport.city, countries.getName(airport.countryCode, $i18n.locale)]
+            .filter(Boolean)
+            .join(", ")
+        }}</span>
       </div>
     </li>
   </ul>
@@ -30,8 +37,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 export default defineComponent({
   components: {
     FormKit,
-    FontAwesomeIcon
-},
+    FontAwesomeIcon,
+  },
   props: {
     airports: {
       type: Object as () => TrieSearch<Airport>,
@@ -46,15 +53,19 @@ export default defineComponent({
       default: 5,
     },
   },
-	data() {
-		return {
-			countries
-		}
-	},
+  data() {
+    return {
+      countries,
+    };
+  },
   computed: {
     filteredAirports() {
-			// console.log(countryCodes)
       return this.airports.search(this.query).slice(0, this.limit);
+    },
+  },
+  methods: {
+    clickHandler(airport: Airport) {
+      this.$emit("input", airport);
     },
   },
 });

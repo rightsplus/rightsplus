@@ -1,68 +1,21 @@
 <template>
-  <FormKit
-    type="form"
-    :form-class="submitted ? 'hide' : 'show'"
-    submit-label="Jetzt Entschädigung berechnen!"
-    :actions="false"
-    v-model="value"
-  >
-    <h2 class="text-xl font-medium mb-8">
-      Gib hier deine Flugdaten ein und sichere dir bis zu 450€* Entschädigung.
+    <h2 class="text-xl font-medium mb-8 tracking-tight">
+      Gib hier deine Flugdaten ein und sichere dir bis zu <strong>450€</strong> Entschädigung.
     </h2>
-    <div class="triple gap-3">
-      <div class="">
-        <FormKit
-          type="text"
-          name="departure"
-          label="Abflughafen"
-          validation="required|matches:/[a-zA-Z0-9]/"
-          placeholder="LHR"
-          autocomplete="off"
-          @focus="focused.departure = true"
-          @blur="focused.departure = false"
-        />
-        <ListAirport
-          v-if="focused.departure"
-          class="w-2/3 -mt-2"
-          :airports="airports"
-          :query="modelValue.departure"
-        />
-      </div>
-      <div class="">
-        <FormKit
-          type="text"
-          name="arrival"
-          label="Ankunftshafen"
-          validation="required|matches:/[a-zA-Z0-9]/"
-          placeholder="FRA"
-          autocomplete="off"
-          @focus="focused.arrival = true"
-          @blur="focused.arrival = false"
-        />
-        <ListAirport
-          v-if="focused.arrival"
-          class="w-2/3"
-          :airports="airports"
-          :query="modelValue.arrival"
-        />
-      </div>
-      <!-- <FormKit
-          type="text"
-          name="flightNumber"
-          label="Flugnummer"
-          validation="required|length:5|matches:/[a-zA-Z0-9]/"
-          placeholder="AG124"
-          maxlength="5"
-          input-class="uppercase"
-          value="LH695"
-        /> -->
-      <FormKit
-        type="date"
-        name="flightDate"
-        label="Flugdatum"
-        validation="required|date"
-        input-class="uppercase"
-        value="2023-01-31"
+    <div class="double gap-4">
+      <AirportInput
+        name="departure"
+        label="Startflughafen"
+        placeholder="z.B. Berlin oder BER"
+        prefix-icon="plane-departure"
+        v-model="modelValue.airport.departure"
+      />
+      <AirportInput 
+        name="arrival"
+        label="Zielflughafen"
+        placeholder="z.B. Tel Aviv oder TLV"
+        prefix-icon="plane-arrival"
+        v-model="modelValue.airport.arrival"
       />
     </div>
 
@@ -70,9 +23,7 @@
       type="submit"
       @click.prevent="submitHandler"
       label="Jetzt Entschädigung berechnen!"
-      help="* die Entschädigungssumme hängt von Verspätungsdauer und Flugdistanz ab."
     />
-  </FormKit>
 </template>
 
 <script lang="ts">
@@ -80,38 +31,48 @@ import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
 import TrieSearch from "trie-search";
 import ListAirport from "./ListAirport.vue";
+import AirportInput from "./AirportInput.vue";
 import { Airport } from "@/types";
 import { countries } from '@/config/countries'
+import { form } from "@formkit/inputs";
+
 
 export default defineComponent({
   components: {
     FormKit,
     ListAirport,
+    AirportInput,
   },
   props: {
     modelValue: {
       type: Object,
-      default: () => ({
-        departure: "SFO",
-        arrival: "DFW",
-        flightDate: "2019-12-12",
-      }),
+      required: true,
     },
   },
   data() {
     return {
       submitted: false,
       limit: 10,
-      value: this.modelValue,
+      value: null,
+      form: {
+        departure: "",
+        arrival: "",
+      },
       focused: {
         departure: false,
         arrival: false,
       },
-      airports: new TrieSearch(["iata", "name", "city", "country"], { min: 2 }),
+      airports: new TrieSearch(["iata", "name", "city", "country", "full"], { min: 2 }),
     };
   },
 
   mounted() {
+    if (this.modelValue?.airport?.departure) {
+      this.form.departure = this.modelValue.airport.departure.full;
+    }
+    if (this.modelValue?.airport?.arrival) {
+      this.form.arrival = this.modelValue.airport.arrival.full;
+    }
     fetch(
       "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
     )
@@ -119,33 +80,48 @@ export default defineComponent({
       .then((data: Record<string, Airport>) => {
         const raw = Object.values(data).reduce(
           (acc: Airport[], { name, iata, city, country }: Airport) => {
-            return iata ? [...acc, { name, iata, city, countryCode: country, country: countries.getName(country || "", this.$i18n.locale) }] : acc;
+            return iata ? [...acc, { full: `${name} (${iata})`, name, iata, city, countryCode: country, country: countries.getName(country || "", this.$i18n.locale) }] : acc;
           },
           []
         );
         this.airports.addAll(raw);
       })
       .catch((error) => {
-        console.log(error);
+        this.airports.add({
+          name: "Error with Server Request",
+          iata: "ERR",
+          city: "Error",
+          country: "Error",
+        });
       });
   },
-  watch: {
-    value: {
-      handler(val) {
-        this.$emit("update:modelValue", val);
-      },
-      deep: true
-    },
-  },
+  // watch: {
+  //   form: {
+  //     handler(val) {
+  //       this.$emit("update:modelValue", val);
+  //     },
+  //     deep: true
+  //   },
+  // },
   computed: {
     departures() {
-      return this.airports.search(this.modelValue.departure);
+      return this.airports.search(this.modelValue.airport.departure);
     },
     arrivals() {
-      return this.airports.search(this.modelValue.arrival);
+      return this.airports.search(this.modelValue.airport.arrival);
     },
   },
   methods: {
+    log(e) {
+      console.log(e);
+    },
+    handleInput(name: 'arrival' | 'departure', airport: Airport) {
+      this.modelValue.airport[name] = airport;
+      this.form[name] = airport.full;
+    },
+    handleFocus(name: 'arrival' | 'departure', value: boolean) {
+      this.focused[name] = value;
+    },
     submitHandler() {
       fetch("api/aviationstack.json")
         .then((data) => data.json())

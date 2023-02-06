@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Gramatika';
-  src: url('/fonts/Gramatika-Regular.woff2') format('woff2'), url('/fonts/Gramatika-Regular.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Gramatika';
-  src: url('/fonts/Gramatika-Bold.woff2') format('woff2'), url('/fonts/Gramatika-Bold.woff') format('woff');
-  font-weight: bold;
-}
 
 
 .markdown {
@@ -49,7 +39,7 @@
   }
 
   hr {
-    border: 1px solid var(--color-stone-200);
+    border: 1px solid var(--color-gray-200);
     margin-block: var(--h-12);
   }
 

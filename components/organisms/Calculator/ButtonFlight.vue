@@ -16,9 +16,10 @@
       />
     </div>
     <div class="flex flex-col items-start">
-      <span class="text-lg font-bold">{{ time }}</span>
+      <span class="text-lg font-bold flex items-center gap-3">{{ time(flight.departure.scheduled) }}<FontAwesomeIcon icon="plane" class="text-sm text-gray-400" />{{ time(flight.arrival.scheduled) }}</span>
       <span class="text-base">{{ flight.airline.name }}</span>
     </div>
+    <span class="ml-auto text-gray-400 text-base font-medium">{{ iata }}</span>
   </button>
 </template>
 
@@ -49,8 +50,13 @@ export default defineComponent({
     isSelected() {
       return this.selected?.flight?.iata === this.flight.flight.iata;
     },
-    time() {
-      return new Date(this.flight.departure.scheduled).toLocaleTimeString(this.$i18n.locale, {
+    iata() {
+      return this.flight.flight.iata.match(/[a-zA-Z]+|[0-9]+/g)?.join(' ');
+    }
+  },
+  methods: {
+    time(time: string) {
+      return new Date(time).toLocaleTimeString(this.$i18n.locale, {
           hour: "2-digit",
           minute: "2-digit",
         })

@@ -17,8 +17,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import { Flight } from "@/types";
-import Index from "./Index.vue";
+import { Airport, Flight, ReimbursementForm } from "@/types";
+import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
 import SelectFlight from "./SelectFlight.vue";
 import SelectReason from "./SelectReason.vue";
@@ -28,7 +28,7 @@ import Reset from "./Reset.vue";
 export default defineComponent({
   components: {
     FormKit,
-    Index,
+    FlightByAirport,
     ConnectingFlights,
     SelectFlight,
     SelectReason,
@@ -40,21 +40,34 @@ export default defineComponent({
       step: 0,
       containerHeight: 100,
       form: {
-        departure: "SFO",
-        arrival: "DFW",
-        flightDate: "2019-12-12",
-        connectingFlights: [] as any[] | boolean,
-        selectedFlight: null as Flight | null,
-        reason: null as string | null,
-        actualArrivalTime: "2019-12-12T12:00" as string | null,
-      },
+        airport: {
+          departure: null,
+          arrival: null,
+          layover: null,
+        },
+        date: {
+          departure: "2019-12-12",
+        },
+        selectedFlight: null,
+        reason: null,
+        actualArrivalTime: "2019-12-12T12:00",
+      } as ReimbursementForm,
     };
   },
   computed: {
     activeComponent() {
+      const components = [
+        FlightByAirport,
+        ConnectingFlights,
+        SelectFlight,
+        SelectReason,
+        Results,
+        Reset,
+      ]
+      return components[this.step]
       switch (this.step) {
         case 0:
-          return Index;
+          return FlightByAirport;
         case 1:
           return ConnectingFlights;
         case 2:
@@ -77,10 +90,21 @@ export default defineComponent({
     step() {
       setTimeout(this.setHeight, 0);
     },
+    $state: {
+      handler({reimbursement}) {
+        if (reimbursement) this.form = reimbursement;
+      },
+      immediate: true,
+    },
+    form: {
+      handler(val) {
+        this.$state.reimbursement = val;
+      },
+      deep: true,
+    }
   },
   methods: {
     setHeight() {
-      console.log((this.$refs.container as HTMLElement)?.children);
         const childrenHeight = Math.min(
         window.innerHeight - 120,
         Math.max(

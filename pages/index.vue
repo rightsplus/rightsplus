@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <img src="airport-light.jpg" class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block" />
+    <img src="/airport-light.jpg" class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block" />
     <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
         <div class="flex flex-col gap-5">
@@ -13,6 +13,7 @@
           >
         </div>
         <ReimbursementCalculator />
+        <pre class="text-sm text-gray-500">{{ $state.reimbursement }}</pre>
         <ScrollDown class="mt-auto"/>
       </div>
     </div>

@@ -1,4 +1,18 @@
+export interface ReimbursementForm {
+  airport: {
+    departure: Airport | null,
+    arrival: Airport | null,
+    layover: Airport[] | false | null,
+  },
+  date: {
+    departure: string,
+  },
+  selectedFlight: Flight | null,
+  reason: string | null,
+  actualArrivalTime: string | null,
+},
 export interface Airport {
+  full: string;
   iata: string;
   name: string;
   city: string;

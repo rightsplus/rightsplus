@@ -2,6 +2,7 @@
   <div class="flex flex-col gap-5">
     <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Flug auswählen</h1>
+  <div class="flex flex-col gap-3">
     <ButtonFlight
       v-for="flight in $state.flights"
       :key="flight.toString()"
@@ -9,6 +10,7 @@
       @click="handleSelect(flight)"
       :selected="modelValue?.selectedFlight"
     />
+  </div>
     <FormKit
       type="button"
       @click="$emit('submit')"

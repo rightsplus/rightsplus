@@ -44,6 +44,6 @@ export default defineNuxtConfig({
 				key: process.env.APP_KEY,
 				appId: process.env.APP_ID
 			}
-		}
-	},
+		},
+	}
 })

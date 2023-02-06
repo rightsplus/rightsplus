@@ -2,23 +2,26 @@
   <div class="flex flex-col gap-5">
     <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
-    <FormKit
-      type="select"
-      label="Gib den tatächlichen Flugstatus an"
-      placeholder="Flugstatus wählen"
-      name="reason"
-      v-model="modelValue.reason"
-      :options="options"
-    />
-    <FormKit
-      v-if="modelValue.reason === 'delayed'"
-      type="datetime-local"
-      v-model="modelValue.actualArrivalTime"
-      label="Tatsächliche Ankunftszeit"
-      help="Relevant ist hier, wann die Türen offiziell geöffnet wurden."
-      validation="required"
-      validation-visibility="live"
-    />
+    <div class="flex gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full">
+      <FormKit
+        type="select"
+        label="Gib den tatächlichen Flugstatus an"
+        placeholder="Flugstatus wählen"
+        name="reason"
+        v-model="modelValue.reason"
+        :options="options"
+        select-icon="angle-down"
+      />
+      <FormKit
+        v-if="modelValue.reason === 'delayed'"
+        type="datetime-local"
+        v-model="modelValue.actualArrivalTime"
+        label="Tatsächliche Ankunftszeit"
+        help="Relevant ist hier, wann die Türen offiziell geöffnet wurden."
+        validation="required"
+        validation-visibility="live"
+      />
+    </div>
     <FormKit
       type="button"
       @click="$emit('submit')"
