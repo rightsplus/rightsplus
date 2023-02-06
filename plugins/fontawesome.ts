@@ -32,7 +32,12 @@ import {
   faSpa,
   faChessKnight,
   faCheck,
-  faArrowDown
+  faArrowDown,
+  faPlane,
+  faPlaneDeparture,
+  faPlaneArrival,
+  faPlus,
+  faPlusCircle
 } from '@fortawesome/free-solid-svg-icons'
 import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -43,6 +48,11 @@ library.add(
   faArrowDown,
   faTree,
   faWind,
+  faPlus,
+  faPlusCircle,
+  faPlaneArrival,
+  faPlaneDeparture,
+  faPlane,
   faCompass,
   faSuitcaseMedical,
   faUserGear,

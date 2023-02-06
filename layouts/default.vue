@@ -1,5 +1,5 @@
 <template>
-  <main class="relative">
+  <main class="relative w-full z-40">
     <h1 v-if="$slots.title" class="font-bold text-left text-4xl sm:text-6xl mb-10">
       <slot name="title" />
     </h1>

@@ -16,16 +16,17 @@
       class="absolute cursor-pointer right-5 top-5 z-50 md:hidden"
     />
     <nav
-      class="flex items-center justify-center px-10 text-xl h-24 bg-gradient-to-b max-w-7xl mx-auto"
+      class="flex items-center justify-center px-10 text-base sm:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto"
     >
       <transition-group
         name="list"
         tag="ul"
-        class="w-full flex flex-col md:flex-row items-center gap-x-8 lg:gap-x-8 gap-y-[4vh]"
+        class="w-full flex flex-col md:flex-row items-center gap-x-2 lg:gap-x-5 gap-y-[4vh]"
         :style="{
           '--total': routes.length,
           '--line-width': `${lineWidth}px`,
           '--line-offset-x': `${lineOffsetX}px`,
+          '--line-opacity': `${lineOpacity}`,
         }"
       >
         <li
@@ -38,11 +39,12 @@
             'mx-3': true,
             'mr-auto': item.icon,
           }"
-          :ref="!item.icon ? item.path : ''"
+          :ref="!item.icon && item.type !== 'button' ? item.path : ''"
+          :data-parallax-hover="!item.icon && item.type !== 'button'"
         >
           <NuxtLink
             :to="item.path"
-            class="duration-500 flex gap-3 items-center py-2"
+            class="duration-500 flex gap-3 items-center py-3 leading-none"
             :exactActiveClass="
               headerColor === 'light'
                 ? 'text-white'
@@ -55,11 +57,17 @@
               'hover:text-neutral-100': headerColor === 'light',
               'hover:text-neutral-600': headerColor === 'default',
               'hover:text-neutral-900': !headerColor || headerColor === 'dark',
+              'text-white bg-gray-700 px-5 rounded-full hover:text-white hover:bg-gray-800':
+                item.type === 'button',
             }"
             @click="menuOpen = false"
           >
             <Icon v-if="item.icon" :icon="item.icon" class="" />
-            <span v-if="item.title" :class="{'text-neutral-800 font-bold': item.icon}">{{ item.title }}</span>
+            <span
+              v-if="item.title"
+              :class="{ 'text-neutral-800 font-bold': item.icon }"
+              >{{ item.title }}</span
+            >
           </NuxtLink>
         </li>
       </transition-group>
@@ -86,6 +94,7 @@ export default defineComponent({
       }, 300);
     });
     window.addEventListener("resize", () => this.setLine(false));
+    // this.initParallaxHover()
   },
   unmounted() {
     window.removeEventListener("resize", () => this.setLine(false));
@@ -115,14 +124,69 @@ export default defineComponent({
           path: "/faq",
           title: "FAQ",
         },
+        {
+          name: "reimbursement-calculator",
+          path: "/reimbursement-calculator",
+          title: "Jetzt Entschädigung berechnen",
+          type: "button",
+        },
       ],
       menuOpen: false,
       lineWidth: 0,
       lineOffsetX: 0,
+      lineOpacity: 1,
       loaded: false,
     };
   },
   methods: {
+    initParallaxHover() {
+
+      document.querySelectorAll("[data-parallax-hover=true]").forEach((element) => {
+      let rect: DOMRect | null = null
+      element.addEventListener(
+        'mouseenter',
+        (e) => {
+          rect = e.currentTarget?.getBoundingClientRect() as DOMRect
+          this.setLine(e)
+        },
+        { passive: true }
+      )
+
+      element.addEventListener(
+        "mousemove",
+        (e) => {
+          const { currentTarget, x, y } = e;
+          if (!currentTarget || !x || !y) return;
+          if (!rect) rect = currentTarget?.getBoundingClientRect() as DOMRect
+          const halfHeight = rect.height / 2;
+          const topOffset = (y - rect.top - halfHeight) / halfHeight;
+          const halfWidth = rect.width / 2;
+          const leftOffset = (x - rect.left - halfWidth) / halfWidth;
+          this.setTransformStyles(currentTarget?.parentElement, leftOffset, topOffset, 3);
+        },
+        { passive: true }
+      );
+      element.addEventListener(
+        'mouseleave',
+        ({ currentTarget }) => {
+          this.setTransformStyles(currentTarget?.parentElement, 0, 0);
+          this.setLine(false)
+        },
+        { passive: true }
+      )
+    });
+    },
+    setStyles(el: HTMLElement, styles: Record<string, string>) {
+      Object.keys(styles).forEach((key) => {
+        el.style.setProperty(key, styles[key])
+      })
+    },
+    setTransformStyles(el: HTMLElement, leftOffset: number, topOffset: number, coefficient = 1) {
+      this.setStyles(el, {
+        '--x': `${leftOffset * coefficient}px`,
+        '--y': `${topOffset * coefficient}px`,
+      })
+    },
     offset(i: number, array: number[]) {
       return Math.abs(i - Math.ceil((array.length - 1) / 2));
     },
@@ -131,11 +195,12 @@ export default defineComponent({
         ? (e.target as HTMLElement)
         : this.$refs[this.$route.path]?.[0];
       if (!target) {
-        this.lineWidth = 0;
+        this.lineOpacity = 0;
         return;
       }
       const rect = target.getBoundingClientRect();
       this.lineWidth = rect.width;
+      this.lineOpacity = 1;
       this.lineOffsetX = target.offsetLeft + rect.width / 2;
     },
   },
@@ -154,26 +219,30 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .loaded nav:deep(ul):after {
-  opacity: 0.75;
+  opacity: var(--line-opacity, 1);
 }
-
+[data-parallax-hover=true] a:hover,
+[data-parallax-hover=true] .router-link-active {
+  color: var(--color-primary-600);
+  transition: 0ms;
+}
 @media (min-width: 768px) {
   header {
     nav:deep(ul) {
       position: relative;
       &:after {
-        background-color: currentColor;
+        background-color: white;
         content: "";
         position: absolute;
-        bottom: 0;
-        left: var(--line-offset-x, 0);
-        width: var(--line-width, 0);
-        transform: translateX(-50%);
-        height: 2px;
-        z-index: 1;
-        transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-        transition-property: width, left, opacity;
+        bottom: 0.625em;
         opacity: 0;
+        left: var(--line-offset-x, 0);
+        width: calc(var(--line-width, 0) + 2em);
+        transform: translateX(-50%);
+        height: calc(100% - 1.25em);
+        z-index: -1;
+        transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        transition-property: transform, width, left, opacity;
         border-radius: 10px;
       }
     }

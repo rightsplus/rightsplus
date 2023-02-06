@@ -4,24 +4,20 @@
     :to="to"
     :title="title"
     :disabled="disabled"
-    class="button items-center justify-center"
+    class="button flex items-center justify-center gap-2"
+    :bind="$attrs"
   >
-
-    <span class="flex items-center justify-center gap-2">
-      <slot></slot>
-    </span>
+      <slot />
   </NuxtLink>
   <button
     v-else
     :title="title"
     :disabled="disabled"
-    class="button items-center justify-center"
     :aria-label="title"
+    class="button flex items-center justify-center gap-2"
+    :bind="$attrs"
   >
-
-    <span class="flex items-center justify-center gap-2">
-      <slot></slot>
-    </span>
+      <slot/>
   </button>
 </template>
 <script lang="ts">
@@ -56,10 +52,10 @@ export default defineComponent({
       fill: currentColor !important;
     }
     .move-right > :deep(svg) {
-      transform: translateX(0.25em)
+      transform: translateX(0.25em);
     }
     .move-left > :deep(svg) {
-      transform: translateX(-0.25em)
+      transform: translateX(-0.25em);
     }
   }
 }
@@ -74,10 +70,10 @@ $colors: primary, secondary, info, beige, success, warning, alert;
   --size: var(--h-12);
   --padding: var(--p-2) var(--p-5);
   --bg-opacity: 1;
-  --border-radius: var(--rounded-full);
+  --border-radius: var(--rounded-lg);
   --color: white;
-  --background: var(--color-primary-400);
-  --hover: var(--color-primary-500);
+  --background: var(--color-primary-500);
+  --hover: var(--color-primary-600);
   height: var(--size);
   border-radius: var(--border-radius);
   position: relative;
@@ -89,9 +85,7 @@ $colors: primary, secondary, info, beige, success, warning, alert;
   z-index: 1;
   white-space: nowrap;
   background-color: var(--background);
-  span {
-    color: var(--color);
-  }
+  color: var(--color);
   &:hover {
     background-color: var(--hover);
   }

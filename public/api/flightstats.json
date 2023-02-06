@@ -1,0 +1,325 @@
+{
+  "request": {
+    "endpoint": "ByFlightById",
+    "flightId": {
+      "requested": "822637409",
+      "interpreted": 822637409
+    },
+    "url": "https://api.flightstats.com/flex/flightstatus/historical/rest/v3/json/flight/status/822637409"
+  },
+  "flightStatuses": [
+    {
+      "flightId": 822637409,
+      "carrierFsCode": "AA",
+      "operatingCarrierFsCode": "AA",
+      "primaryCarrierFsCode": "AA",
+      "flightNumber": "100",
+      "departureAirportFsCode": "CLT",
+      "arrivalAirportFsCode": "JFK",
+      "departureDate": {
+        "dateUtc": "2016-12-18T18:00:00.000Z",
+        "dateLocal": "2016-12-18T13:00:00.000"
+      },
+      "arrivalDate": {
+        "dateUtc": "2016-12-18T19:58:00.000Z",
+        "dateLocal": "2016-12-18T14:58:00.000"
+      },
+      "status": "L",
+      "schedule": {
+        "flightType": "J",
+        "serviceClasses": "FY",
+        "restrictions": "",
+        "uplines": [
+          {
+            "fsCode": "IAH",
+            "flightId": 822658961
+          }
+        ],
+        "downlines": [
+          {
+            "fsCode": "LHR",
+            "flightId": 822662528
+          }
+        ]
+      },
+      "operationalTimes": {
+        "publishedDeparture": {
+          "dateUtc": "2016-12-18T18:00:00.000Z",
+          "dateLocal": "2016-12-18T13:00:00.000"
+        },
+        "scheduledGateDeparture": {
+          "dateUtc": "2016-12-18T18:00:00.000Z",
+          "dateLocal": "2016-12-18T13:00:00.000"
+        },
+        "estimatedGateDeparture": {
+          "dateUtc": "2016-12-18T22:14:00.000Z",
+          "dateLocal": "2016-12-18T17:14:00.000"
+        },
+        "actualGateDeparture": {
+          "dateUtc": "2016-12-18T22:14:00.000Z",
+          "dateLocal": "2016-12-18T17:14:00.000"
+        },
+        "flightPlanPlannedDeparture": {
+          "dateUtc": "2016-12-18T18:22:00.000Z",
+          "dateLocal": "2016-12-18T13:22:00.000"
+        },
+        "scheduledRunwayDeparture": {
+          "dateUtc": "2016-12-18T18:22:00.000Z",
+          "dateLocal": "2016-12-18T13:22:00.000"
+        },
+        "estimatedRunwayDeparture": {
+          "dateUtc": "2016-12-18T22:27:00.000Z",
+          "dateLocal": "2016-12-18T17:27:00.000"
+        },
+        "actualRunwayDeparture": {
+          "dateUtc": "2016-12-18T22:27:00.000Z",
+          "dateLocal": "2016-12-18T17:27:00.000"
+        },
+        "publishedArrival": {
+          "dateUtc": "2016-12-18T19:58:00.000Z",
+          "dateLocal": "2016-12-18T14:58:00.000"
+        },
+        "flightPlanPlannedArrival": {
+          "dateUtc": "2016-12-18T19:47:00.000Z",
+          "dateLocal": "2016-12-18T14:47:00.000"
+        },
+        "scheduledGateArrival": {
+          "dateUtc": "2016-12-18T19:58:00.000Z",
+          "dateLocal": "2016-12-18T14:58:00.000"
+        },
+        "estimatedGateArrival": {
+          "dateUtc": "2016-12-18T23:47:00.000Z",
+          "dateLocal": "2016-12-18T18:47:00.000"
+        },
+        "actualGateArrival": {
+          "dateUtc": "2016-12-18T23:47:00.000Z",
+          "dateLocal": "2016-12-18T18:47:00.000"
+        },
+        "scheduledRunwayArrival": {
+          "dateUtc": "2016-12-18T19:47:00.000Z",
+          "dateLocal": "2016-12-18T14:47:00.000"
+        },
+        "estimatedRunwayArrival": {
+          "dateUtc": "2016-12-18T23:41:00.000Z",
+          "dateLocal": "2016-12-18T18:41:00.000"
+        },
+        "actualRunwayArrival": {
+          "dateUtc": "2016-12-18T23:41:00.000Z",
+          "dateLocal": "2016-12-18T18:41:00.000"
+        }
+      },
+      "codeshares": [
+        {
+          "fsCode": "AB",
+          "flightNumber": "523",
+          "relationship": "L"
+        },
+        {
+          "fsCode": "AY",
+          "flightNumber": "4077",
+          "relationship": "L"
+        },
+        {
+          "fsCode": "IB",
+          "flightNumber": "9028",
+          "relationship": "L"
+        },
+        {
+          "fsCode": "LA",
+          "flightNumber": "9008",
+          "relationship": "L"
+        }
+      ],
+      "delays": {
+        "departureGateDelayMinutes": 254,
+        "departureRunwayDelayMinutes": 245,
+        "arrivalGateDelayMinutes": 229,
+        "arrivalRunwayDelayMinutes": 234
+      },
+      "flightDurations": {
+        "scheduledBlockMinutes": 118,
+        "blockMinutes": 93,
+        "scheduledAirMinutes": 85,
+        "airMinutes": 74,
+        "scheduledTaxiOutMinutes": 22,
+        "taxiOutMinutes": 13,
+        "scheduledTaxiInMinutes": 11,
+        "taxiInMinutes": 6
+      },
+      "airportResources": {
+        "departureGate": "B16",
+        "arrivalTerminal": "8",
+        "arrivalGate": "37",
+        "baggage": "7"
+      },
+      "flightEquipment": {
+        "scheduledEquipmentIataCode": "73H",
+        "actualEquipmentIataCode": "738",
+        "tailNumber": "N982NN"
+      },
+      "irregularOperations": []
+    }
+  ],
+  "appendix": {
+    "airlines": [
+      {
+        "fs": "AB",
+        "iata": "AB",
+        "icao": "BER",
+        "name": "Air Berlin",
+        "phoneNumber": "+49 030 3434 3434",
+        "active": true,
+        "category": "I"
+      },
+      {
+        "fs": "IB",
+        "iata": "IB",
+        "icao": "IBE",
+        "name": "Iberia",
+        "phoneNumber": "1800 772 4642",
+        "active": true,
+        "category": "I"
+      },
+      {
+        "fs": "LA",
+        "iata": "LA",
+        "icao": "LAN",
+        "name": "LATAM Airlines",
+        "phoneNumber": "1 (305) 670 9999",
+        "active": true,
+        "category": "I"
+      },
+      {
+        "fs": "AY",
+        "iata": "AY",
+        "icao": "FIN",
+        "name": "Finnair",
+        "phoneNumber": "+ 358 600 140 140",
+        "active": true,
+        "category": "I"
+      },
+      {
+        "fs": "AA",
+        "iata": "AA",
+        "icao": "AAL",
+        "name": "American Airlines",
+        "phoneNumber": "08457-567-567",
+        "active": true,
+        "category": "I"
+      }
+    ],
+    "airports": [
+      {
+        "fs": "CLT",
+        "iata": "CLT",
+        "icao": "KCLT",
+        "faa": "CLT",
+        "name": "Charlotte Douglas International Airport",
+        "street1": "5501 Josh Birmingham Parkway",
+        "city": "Charlotte",
+        "cityCode": "CLT",
+        "stateCode": "NC",
+        "postalCode": "28204",
+        "countryCode": "US",
+        "countryName": "United States",
+        "regionName": "North America",
+        "timeZoneRegionName": "America/New_York",
+        "weatherZone": "NCZ071",
+        "localTime": "2016-12-20T17:55:45.717",
+        "utcOffsetHours": -5,
+        "latitude": 35.219167,
+        "longitude": -80.935833,
+        "elevationFeet": 748,
+        "classification": 1,
+        "active": true
+      },
+      {
+        "fs": "LHR",
+        "iata": "LHR",
+        "icao": "EGLL",
+        "name": "London Heathrow Airport",
+        "city": "London",
+        "cityCode": "LON",
+        "stateCode": "EN",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "regionName": "Europe",
+        "timeZoneRegionName": "Europe/London",
+        "localTime": "2016-12-20T22:55:45.717",
+        "utcOffsetHours": 0,
+        "latitude": 51.469603,
+        "longitude": -0.453566,
+        "elevationFeet": 80,
+        "classification": 1,
+        "active": true
+      },
+      {
+        "fs": "JFK",
+        "iata": "JFK",
+        "icao": "KJFK",
+        "faa": "JFK",
+        "name": "John F. Kennedy International Airport",
+        "street1": "JFK Airport",
+        "city": "New York",
+        "cityCode": "NYC",
+        "stateCode": "NY",
+        "postalCode": "11430",
+        "countryCode": "US",
+        "countryName": "United States",
+        "regionName": "North America",
+        "timeZoneRegionName": "America/New_York",
+        "weatherZone": "NYZ178",
+        "localTime": "2016-12-20T17:55:45.717",
+        "utcOffsetHours": -5,
+        "latitude": 40.642335,
+        "longitude": -73.78817,
+        "elevationFeet": 13,
+        "classification": 1,
+        "active": true
+      },
+      {
+        "fs": "IAH",
+        "iata": "IAH",
+        "icao": "KIAH",
+        "faa": "IAH",
+        "name": "George Bush Intercontinental Airport",
+        "street1": "16930 JFK Boulevard",
+        "street2": "",
+        "city": "Houston",
+        "cityCode": "HOU",
+        "stateCode": "TX",
+        "postalCode": "77032",
+        "countryCode": "US",
+        "countryName": "United States",
+        "regionName": "North America",
+        "timeZoneRegionName": "America/Chicago",
+        "weatherZone": "TXZ213",
+        "localTime": "2016-12-20T16:55:45.717",
+        "utcOffsetHours": -6,
+        "latitude": 29.983333,
+        "longitude": -95.34,
+        "elevationFeet": 97,
+        "classification": 1,
+        "active": true
+      }
+    ],
+    "equipments": [
+      {
+        "iata": "73H",
+        "name": "Boeing 737-800 (winglets) Passenger/BBJ2",
+        "turboProp": false,
+        "jet": true,
+        "widebody": false,
+        "regional": false
+      },
+      {
+        "iata": "738",
+        "name": "Boeing 737-800 Passenger",
+        "turboProp": false,
+        "jet": true,
+        "widebody": false,
+        "regional": false
+      }
+    ]
+  }
+}

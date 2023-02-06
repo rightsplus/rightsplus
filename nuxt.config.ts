@@ -4,9 +4,9 @@ import postcss from './config/postcss'
 export default defineNuxtConfig({
 	app: {
 		pageTransition: { name: 'page', mode: 'out-in' },
-		title: "Heidi Vogler – Reittherapie, Traumabearbeitung, Waldbaden",
+		title: "RightsPlus",
 		meta: [
-			{ name: 'description', content: 'Hier wirst du deinen Weg finden und kannst im Wald oder mit den Pferden einen Prozess der Heilung zu beginnen.' }
+			{ name: 'description', content: '' }
 		],
 	},
 	modules: [
@@ -37,6 +37,12 @@ export default defineNuxtConfig({
 			},
 			email: {
 				to: process.env.ADDRESS_TO
+			},
+			flight: {
+				aviationstack: process.env.AVIATIONSTACK_KEY,
+				flighlabs: process.env.FLIGHTLABS_KEY,
+				key: process.env.APP_KEY,
+				appId: process.env.APP_ID
 			}
 		}
 	},

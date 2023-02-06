@@ -3,12 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Noe Display';
-  src: url('/fonts/Noe-Display-Regular-Italic.woff2') format('woff2');
-  font-style: italic;
-}
-
-@font-face {
   font-family: 'Gramatika';
   src: url('/fonts/Gramatika-Regular.woff2') format('woff2'), url('/fonts/Gramatika-Regular.woff') format('woff');
 }
@@ -21,7 +15,6 @@
 
 
 .markdown {
-
   h1,
   h2,
   h3,

@@ -21,6 +21,7 @@ const colors = {
   black: defaultColors.black,
   gray,
   white: defaultColors.white,
+  transparent: defaultColors.transparent,
 }
 
 module.exports = {

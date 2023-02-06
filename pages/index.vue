@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <img src="airport-light.jpg" class="absolute inset-0 h-full w-full object-cover object-right -z-1" />
+    <img src="airport-light.jpg" class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block" />
     <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
         <div class="flex flex-col gap-5">
@@ -27,7 +27,7 @@ import Button from "~/components/molecules/Button.vue";
 import Arrow from "~/components/molecules/Arrow.vue";
 import Event from "~/components/cells/Event.vue";
 import ContentCollection from "~~/components/species/ContentCollection.vue";
-import ReimbursementCalculator from "~/components/organisms/ReimbursementCalculator.vue";
+import ReimbursementCalculator from "~~/components/organisms/Calculator/ReimbursementCalculator.vue";
 import ScrollDown from "~/components/cells/ScrollDown.vue";
 
 export default defineComponent({
@@ -70,20 +70,9 @@ export default defineComponent({
       page: null,
     };
   },
-  mounted() {
-    this.$strapi.find("home").then(({ data }) => {
-      this.page = data;
-      this.$state.headerColor = "default";
-    });
-  },
-  computed: {
-    offers() {
-      return this.page?.attributes?.offers?.data.slice(0, 3);
-    },
-  },
   methods: {
     scrollToHash(hash: string) {
-      document.querySelector(hash).scrollIntoView({
+      document.querySelector(hash)?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });

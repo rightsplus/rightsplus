@@ -1,0 +1,79 @@
+<template>
+  <div class="flex flex-col gap-5">
+    <ButtonBack @click.prevent="$emit('back')" />
+    <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
+    <FormKit
+      type="select"
+      label="Gib den tatächlichen Flugstatus an"
+      placeholder="Flugstatus wählen"
+      name="reason"
+      v-model="modelValue.reason"
+      :options="options"
+    />
+    <FormKit
+      v-if="modelValue.reason === 'delayed'"
+      type="datetime-local"
+      v-model="modelValue.actualArrivalTime"
+      label="Tatsächliche Ankunftszeit"
+      help="Relevant ist hier, wann die Türen offiziell geöffnet wurden."
+      validation="required"
+      validation-visibility="live"
+    />
+    <FormKit
+      type="button"
+      @click="$emit('submit')"
+      label="Weiter"
+      class="mt-5"
+      :disabled="!modelValue?.reason"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import Button from "@/components/molecules/Button.vue";
+import ButtonBack from "@/components/molecules/ButtonBack.vue";
+import { Flight } from "@/types";
+
+export default defineComponent({
+  components: {
+    Button,
+    ButtonBack,
+  },
+  props: {
+    modelValue: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      value: null,
+      options: [
+        { value: "onTime", label: "Pünktlich" },
+        { value: "delayed", label: "Verspätet" },
+        { value: "cancelled", label: "Gestrichen / Umgebucht" },
+        { value: "boardingDenied", label: "Boarding untersagt" },
+        { value: "reRouted", label: "Umgeleitet" },
+        { value: "returned", label: "Umgekehrt" },
+      ],
+    };
+  },
+  methods: {
+    submitHandler() {
+      this.$emit("submit");
+      return;
+    },
+  },
+});
+</script>
+<style scoped>
+.double {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+</style>
