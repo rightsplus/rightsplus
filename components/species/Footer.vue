@@ -25,7 +25,6 @@
           <hr v-else class="border-none h-4" />
         </li>
       </ul>
-      <SocialLinks class="col-start-7 sm:col-start-10" />
     </nav>
     <span class="flex justify-center w-full pt-24 text-sm text-center">{{
       `Copyright © 2015-${new Date().getFullYear()} Rights Plus Gbr. All rights reserved.`
@@ -35,14 +34,12 @@
 
 <script lang="ts">
 import Button from "~/components/molecules/Button.vue";
-import SocialLinks from "~/components/species/SocialLinks.vue";
 import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
 export default defineComponent({
   components: {
     Button,
     Icon,
-    SocialLinks,
   },
   mounted() {
     this.routes = [

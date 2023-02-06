@@ -20,7 +20,6 @@
   </section>
 </template>
 <script lang="ts">
-import SocialLinks from "~/components/species/SocialLinks.vue";
 import Button from "~/components/molecules/Button.vue";
 import Arrow from "~/components/molecules/Arrow.vue";
 import ReimbursementCalculator from "~~/components/organisms/Calculator/ReimbursementCalculator.vue";
@@ -28,7 +27,6 @@ import ScrollDown from "~/components/cells/ScrollDown.vue";
 
 export default defineComponent({
   components: {
-    SocialLinks,
     Button,
     Arrow,
     Event,
