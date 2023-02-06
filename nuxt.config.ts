@@ -20,9 +20,6 @@ export default defineNuxtConfig({
 	formkit: {
 		configFile: '~/formkit.config.ts',
 	},
-	strapi: {
-		url: process.env.API_BASE || 'http://localhost:1337',
-	},
 	css: [
 		'~/assets/css/main.scss',
 		'~/assets/css/transitions.css',
