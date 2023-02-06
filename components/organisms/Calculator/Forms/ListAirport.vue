@@ -40,10 +40,6 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   props: {
-    airports: {
-      type: Object as () => TrieSearch<Airport>,
-      required: true,
-    },
     query: {
       type: String,
       required: true,
@@ -60,13 +56,62 @@ export default defineComponent({
   },
   computed: {
     filteredAirports() {
-      return this.airports.search(this.query).slice(0, this.limit);
+      if (typeof this.$state.airports?.search !== 'function') return [];
+      return this.$state.airports?.search(this.query).slice(0, this.limit);
     },
+  },
+  mounted() {
+    this.init();
   },
   methods: {
     clickHandler(airport: Airport) {
       this.$emit("input", airport);
     },
+
+    init() {
+      if (this.$state.airports.size) return;
+      this.$state.airports = new TrieSearch(
+        ["iata", "name", "city", "country", "full"],
+        { min: 2 }
+      );
+      fetch(
+        "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
+      )
+        .then((response) => response.json())
+        .then((data: Record<string, Airport>) => {
+          const raw = Object.values(data).reduce(
+            (acc: Airport[], { name, iata, city, country }: Airport) => {
+              return iata
+                ? [
+                    ...acc,
+                    {
+                      full: `${name} (${iata})`,
+                      name,
+                      iata,
+                      city,
+                      countryCode: country,
+                      country: countries.getName(
+                        country || "",
+                        this.$i18n.locale
+                      ),
+                    },
+                  ]
+                : acc;
+            },
+            []
+          );
+          console.log(raw);
+          this.$state.airports.addAll(raw);
+        })
+        .catch((error) => {
+          this.$state.airports.add({
+            name: "Error with Server Request",
+            iata: "ERR",
+            city: "Error",
+            country: "Error",
+          });
+        });
+      }
   },
 });
 </script>

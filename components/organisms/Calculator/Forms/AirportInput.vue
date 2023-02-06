@@ -16,9 +16,8 @@
       @suffix-icon-click="$emit('suffix-icon-click')"
     />
     <ListAirport
-      v-show="focused"
+      v-if="focused"
       class="w-1/2 -mt-2"
-      :airports="airports"
       :query="query"
       @input="handleInput"
     />
@@ -28,10 +27,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import TrieSearch from "trie-search";
 import ListAirport from "./ListAirport.vue";
 import { Airport } from "@/types";
-import { countries } from "@/config/countries";
 
 export default defineComponent({
   components: {
@@ -68,9 +65,6 @@ export default defineComponent({
     return {
       query: "",
       focused: false,
-      airports: new TrieSearch(["iata", "name", "city", "country", "full"], {
-        min: 2,
-      }),
     };
   },
   watch: {
@@ -87,44 +81,6 @@ export default defineComponent({
       this.query = airport.full;
       this.$emit("update:modelValue", airport);
     },
-  },
-  mounted() {
-    fetch(
-      "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
-    )
-      .then((response) => response.json())
-      .then((data: Record<string, Airport>) => {
-        const raw = Object.values(data).reduce(
-          (acc: Airport[], { name, iata, city, country }: Airport) => {
-            return iata
-              ? [
-                  ...acc,
-                  {
-                    full: `${name} (${iata})`,
-                    name,
-                    iata,
-                    city,
-                    countryCode: country,
-                    country: countries.getName(
-                      country || "",
-                      this.$i18n.locale
-                    ),
-                  },
-                ]
-              : acc;
-          },
-          []
-        );
-        this.airports.addAll(raw);
-      })
-      .catch((error) => {
-        this.airports.add({
-          name: "Error with Server Request",
-          iata: "ERR",
-          city: "Error",
-          country: "Error",
-        });
-      });
   },
 });
 </script>
