@@ -32,10 +32,6 @@ import { FormKit } from "@formkit/vue";
 import TrieSearch from "trie-search";
 import ListAirport from "./ListAirport.vue";
 import AirportInput from "./AirportInput.vue";
-import { Airport } from "@/types";
-import { countries } from '@/config/countries'
-import { form } from "@formkit/inputs";
-
 
 export default defineComponent({
   components: {
@@ -65,63 +61,7 @@ export default defineComponent({
       airports: new TrieSearch(["iata", "name", "city", "country", "full"], { min: 2 }),
     };
   },
-
-  mounted() {
-    if (this.modelValue?.airport?.departure) {
-      this.form.departure = this.modelValue.airport.departure.full;
-    }
-    if (this.modelValue?.airport?.arrival) {
-      this.form.arrival = this.modelValue.airport.arrival.full;
-    }
-    fetch(
-      "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
-    )
-      .then((response) => response.json())
-      .then((data: Record<string, Airport>) => {
-        const raw = Object.values(data).reduce(
-          (acc: Airport[], { name, iata, city, country }: Airport) => {
-            return iata ? [...acc, { full: `${name} (${iata})`, name, iata, city, countryCode: country, country: countries.getName(country || "", this.$i18n.locale) }] : acc;
-          },
-          []
-        );
-        this.airports.addAll(raw);
-      })
-      .catch((error) => {
-        this.airports.add({
-          name: "Error with Server Request",
-          iata: "ERR",
-          city: "Error",
-          country: "Error",
-        });
-      });
-  },
-  // watch: {
-  //   form: {
-  //     handler(val) {
-  //       this.$emit("update:modelValue", val);
-  //     },
-  //     deep: true
-  //   },
-  // },
-  computed: {
-    departures() {
-      return this.airports.search(this.modelValue.airport.departure);
-    },
-    arrivals() {
-      return this.airports.search(this.modelValue.airport.arrival);
-    },
-  },
   methods: {
-    log(e) {
-      console.log(e);
-    },
-    handleInput(name: 'arrival' | 'departure', airport: Airport) {
-      this.modelValue.airport[name] = airport;
-      this.form[name] = airport.full;
-    },
-    handleFocus(name: 'arrival' | 'departure', value: boolean) {
-      this.focused[name] = value;
-    },
     submitHandler() {
       fetch("api/aviationstack.json")
         .then((data) => data.json())

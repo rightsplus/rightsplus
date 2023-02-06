@@ -31,9 +31,6 @@ export default defineNuxtConfig({
 	postcss,
 	runtimeConfig: {
 		public: {
-			mapbox: {
-				token: process.env.MAPBOX_TOKEN,
-			},
 			email: {
 				to: process.env.ADDRESS_TO
 			},
