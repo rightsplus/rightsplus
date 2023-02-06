@@ -13,6 +13,9 @@ export default defineNuxtConfig({
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
 	],
+	buildModules: [
+		'@nuxtjs/pwa',
+	],
 	nitro: {
 		compressPublicAssets: true,
 	},
