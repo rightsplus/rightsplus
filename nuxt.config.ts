@@ -10,7 +10,6 @@ export default defineNuxtConfig({
 		],
 	},
 	modules: [
-		'@nuxtjs/strapi',
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
 	],

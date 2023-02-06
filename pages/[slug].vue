@@ -17,11 +17,9 @@
 
 <script lang="ts">
 import Button from "~/components/molecules/Button.vue";
-import Offer from "~/components/organisms/Offer.vue";
 export default defineComponent({
   components: {
     Button,
-    Offer,
   },
   setup() {
     definePageMeta({
@@ -34,17 +32,10 @@ export default defineComponent({
   },
   data() {
     return {
-      offers: null,
       featured: [],
     };
   },
   async mounted() {
-    // this.$strapi.find("home").then(({data}) => {
-    //   this.featured = data?.attributes?.offers?.data.slice(0, 3).map(({id}) => id)
-    // })
-    this.offers = (
-      await this.$strapi.find("offers", { populate: ["content", "hero"] })
-    ).data;
     this.$state.headerColor = "dark";
   },
   unmounted() {

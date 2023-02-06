@@ -12,12 +12,10 @@
 
 <script lang="ts">
 import Button from "@/components/molecules/Button.vue";
-import Offer from "@/components/organisms/Offer.vue";
 import ReimbursementCalculator from "@/components/organisms/Calculator/ReimbursementCalculator.vue";
 export default defineComponent({
   components: {
     Button,
-    Offer,
     ReimbursementCalculator
 },
   setup() {
@@ -31,7 +29,6 @@ export default defineComponent({
   },
   data() {
     return {
-      offers: null,
       featured: [],
     };
   },
