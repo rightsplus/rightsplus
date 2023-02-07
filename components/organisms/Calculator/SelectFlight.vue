@@ -15,7 +15,6 @@
       type="button"
       @click="$emit('submit')"
       label="Weiter"
-      class="mt-5"
       :disabled="!modelValue?.selectedFlight"
     />
   </div>

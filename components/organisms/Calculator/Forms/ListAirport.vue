@@ -5,21 +5,20 @@
   >
     <li
       v-for="airport in filteredAirports"
-      :key="airport.value"
+      :key="airport.iata"
       class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-neutral-100"
       @mousedown="clickHandler(airport)"
     >
       <FontAwesomeIcon icon="plane" class="text-gray-500" />
       <div class="flex flex-col gap-1">
         <span
-          >{{ airport.name }} (<span class="font-bold">{{ airport.iata }}</span
-          >)</span
-        >
-        <span class="text-sm leading-none text-neutral-500">{{
-          [airport.city, countries.getName(airport.countryCode, $i18n.locale)]
-            .filter(Boolean)
-            .join(", ")
-        }}</span>
+          class="algolia-result"
+          v-html="airport._highlightResult.full.value"
+        />
+        <span class="algolia-result text-sm leading-none text-neutral-500"
+        v-html="[airport._highlightResult.city.value,
+        countries.getName(airport.countryCode, $i18n.locale)] .filter(Boolean)
+        .join(', ')" />
       </div>
     </li>
   </ul>
@@ -35,6 +34,13 @@ import { Airport } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({
+  setup() {
+    const { result, search } = useAlgoliaSearch("AIRPORTS");
+    return {
+      result,
+      search,
+    };
+  },
   components: {
     FormKit,
     FontAwesomeIcon,
@@ -52,76 +58,26 @@ export default defineComponent({
   data() {
     return {
       countries,
+      filteredAirports: [] as Airport[],
     };
   },
-  computed: {
-    filteredAirports() {
-      if (typeof this.$state.airports?.search !== 'function') return [];
-      return this.$state.airports?.search(this.query).slice(0, this.limit);
+  watch: {
+    query() {
+      this.search({ query: this.query, hitsPerPage: 5 }).then(({ hits }) => {
+        this.filteredAirports = hits as Airport[];
+      });
     },
-  },
-  mounted() {
-    this.init();
   },
   methods: {
     clickHandler(airport: Airport) {
       this.$emit("input", airport);
     },
-
-    init() {
-      if (this.$state.airports.size) return;
-      this.$state.airports = new TrieSearch(
-        ["iata", "name", "city", "country", "full"],
-        { min: 2 }
-      );
-      fetch(
-        "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
-      )
-        .then((response) => response.json())
-        .then((data: Record<string, Airport>) => {
-          const raw = Object.values(data).reduce(
-            (acc: Airport[], { name, iata, city, country }: Airport) => {
-              return iata
-                ? [
-                    ...acc,
-                    {
-                      full: `${name} (${iata})`,
-                      name,
-                      iata,
-                      city,
-                      countryCode: country,
-                      country: countries.getName(
-                        country || "",
-                        this.$i18n.locale
-                      ),
-                    },
-                  ]
-                : acc;
-            },
-            []
-          );
-          console.log(raw);
-          this.$state.airports.addAll(raw);
-        })
-        .catch((error) => {
-          this.$state.airports.add({
-            name: "Error with Server Request",
-            iata: "ERR",
-            city: "Error",
-            country: "Error",
-          });
-        });
-      }
   },
 });
 </script>
 <style scoped>
-.double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+.algolia-result::v-deep(em) {
+  font-style: normal;
+  font-weight: bold;
 }
 </style>

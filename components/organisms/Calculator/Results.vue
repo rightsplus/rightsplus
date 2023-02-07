@@ -2,12 +2,11 @@
   <div class="flex flex-col gap-5">
     <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
-    <Button
+    <FormKit
+      type="button"
       @click="$emit('submit')"
-      class="mt-5"
-      :disabled="!value"
-      >Weiter</Button
-    >
+      label="Weiter"
+    />
   </div>
 </template>
 

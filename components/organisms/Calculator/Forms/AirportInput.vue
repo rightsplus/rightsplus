@@ -11,7 +11,7 @@
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
       @focus="focused = true"
-      @blur="focused = false"
+      @blur="blur"
       @prefix-icon-click="$emit('prefix-icon-click')"
       @suffix-icon-click="$emit('suffix-icon-click')"
     />
@@ -77,6 +77,10 @@ export default defineComponent({
     },
   },
   methods: {
+    blur() {
+      this.focused = false;
+      if (!this.modelValue?.full) this.query = "";
+    },
     handleInput(airport: Airport) {
       this.query = airport.full;
       this.$emit("update:modelValue", airport);

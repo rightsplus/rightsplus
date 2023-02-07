@@ -18,6 +18,7 @@ export default defineNuxtConfig({
 		}
 	},
 	modules: [
+		'@nuxtjs/algolia',
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
 	],
