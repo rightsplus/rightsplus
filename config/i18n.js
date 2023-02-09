@@ -9,8 +9,6 @@ const format = () => ({
   currency: { style: 'currency', currency: 'EUR' },
 })
 
-console.log(['de', 'en'].reduce((a, v) => ({ ...a, [v]: format()}), {}))
-
 // adds the same formatting to each locale
 export default {
   langDir: 'locales/',

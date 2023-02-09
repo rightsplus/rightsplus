@@ -12,10 +12,12 @@
       }"
     >
       <div class="flex items-center leading-none text-left gap-3">
-        <div v-if="step.completed || step.active">
-          <ClientOnly><FontAwesomeIcon icon="check-circle" /></ClientOnly>
-        </div>
-        <span v-else class="text-lg font-black">{{ index + 1 }}</span>
+        <!-- <ClientOnly> -->
+          <div v-if="step.completed || step.active">
+            <FontAwesomeIcon icon="check-circle" />
+          </div>
+          <span v-else class="text-lg font-black">{{ index + 1 }}</span>
+        <!-- </ClientOnly> -->
         <span v-html="step.label" class="leading-none text-sm" />
       </div>
     </li>
