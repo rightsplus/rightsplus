@@ -10,19 +10,33 @@ export interface ReimbursementForm {
   selectedFlight: Flight | null,
   reason: string | null,
   actualArrivalTime: string | null,
-},
+}
+interface AlgoliaResult {
+  value: string;
+  matchLevel: string;
+  matchedWords: string[];
+}
 export interface Airport {
-  full: string;
   iata: string;
-  name: string;
+  full: string;
   city: string;
+  name: string;
+  country: string;
+  lat: number;
+  lon: number;
   state?: string;
   icao?: string;
-  country?: string;
   elevation?: number;
-  lat?: number;
-  lon?: number;
   tz?: string;
+  countryName?: Record<string, string>;
+  _highlightResult?: {
+    iata: AlgoliaResult;
+    full: AlgoliaResult;
+    city: AlgoliaResult;
+    name: AlgoliaResult;
+    country: AlgoliaResult;
+    countryName?: Record<string, AlgoliaResult>;
+  }
 }
 
 interface FlightAirport {

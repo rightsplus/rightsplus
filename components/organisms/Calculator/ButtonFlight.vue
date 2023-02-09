@@ -1,18 +1,18 @@
 <template>
   <button
-    class="flex gap-5 items-center rounded-lg p-3 px-5"
+    class="flex gap-5 items-center rounded-lg py-3 px-5"
     :class="{
       'bg-gray-700 text-white': isSelected,
       'bg-neutral-100 hover:bg-neutral-200 text-gray-800': !isSelected,
     }"
   >
     <div
-      class="w-10 h-10 flex justify-center items-center bg-white rounded-full"
+      class="w-14 h-14 flex justify-center items-center bg-white rounded-full -ml-2"
     >
       <img
         :alt="flight.airline.name"
-        :src="`${baseUrl}/${flight.airline.iata}_1x.png`"
-        class="w-7"
+        :src="logo"
+        class="w-10"
       />
     </div>
     <div class="flex flex-col items-start">
@@ -41,18 +41,18 @@ export default defineComponent({
       default: () => ({} as Flight),
     },
   },
-  data() {
-    return {
-      baseUrl: "https://serkowebtest.blob.core.windows.net/airline-logos",
-    };
-  },
   computed: {
     isSelected() {
       return this.selected?.flight?.iata === this.flight.flight.iata;
     },
     iata() {
       return this.flight.flight.iata.match(/[a-zA-Z]+|[0-9]+/g)?.join(' ');
-    }
+    },
+    logo() {
+      // return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/LY.png?crop=false&width=100&height=100`
+      return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${this.flight.airline.iata}.png?crop=false&width=100&height=100`
+      // return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
+    },
   },
   methods: {
     time(time: string) {

@@ -10,7 +10,9 @@ import {
   faPlaneDeparture,
   faPlaneArrival,
   faPlus,
-  faPlusCircle
+  faPlusCircle,
+  faCircleCheck,
+  faRoute
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
   faCheck,
@@ -23,6 +25,8 @@ library.add(
   faArrowLeft,
   faArrowRight,
   faStar,
+  faCircleCheck,
+  faRoute
 )
 
 config.autoAddCss = false

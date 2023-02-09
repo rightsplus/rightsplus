@@ -4,6 +4,7 @@
     :style="`--height: ${containerHeight}px`"
     ref="container"
   >
+    <Stepper class="mb-5" :steps="steps" v-if="step > 0" />
     <component
       :is="activeComponent"
       v-model="form"
@@ -24,6 +25,7 @@ import SelectFlight from "./SelectFlight.vue";
 import SelectReason from "./SelectReason.vue";
 import Results from "./Results.vue";
 import Reset from "./Reset.vue";
+import Stepper from "@/components/cells/Stepper.vue";
 
 export default defineComponent({
   components: {
@@ -34,6 +36,7 @@ export default defineComponent({
     SelectReason,
     Results,
     Reset,
+    Stepper
   },
   data() {
     return {
@@ -55,6 +58,20 @@ export default defineComponent({
     };
   },
   computed: {
+    steps() {
+      return [
+        {
+          label: "Flight Info",
+          active: this.step <= 1,
+          completed: this.step <= 2,
+        },
+        {
+          label: "Personal Info",
+          active: this.step > 1,
+          completed: this.step > 2,
+        },
+      ];
+    },
     activeComponent() {
       const components = [
         FlightByAirport,

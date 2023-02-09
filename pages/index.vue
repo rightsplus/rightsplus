@@ -13,7 +13,6 @@
           >
         </div>
         <ReimbursementCalculator />
-        <pre class="text-sm text-gray-500">{{ $state.reimbursement }}</pre>
         <ScrollDown class="mt-auto"/>
       </div>
     </div>

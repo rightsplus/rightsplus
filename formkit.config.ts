@@ -17,7 +17,7 @@ const config: DefaultConfigOptions = {
     classes: generateClasses({
       global: {
         form: '[&>.formkit-outer]:last:mb-0',
-        fieldset: 'max-w-md border border-neutral-400 rounded-lg px-2 pb-1',
+        fieldset: 'max-w-2xl border border-neutral-400 rounded-lg px-2 pb-1',
         help: 'text-xs text-neutral-500 leading-tight',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
         input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium',
@@ -47,7 +47,7 @@ const config: DefaultConfigOptions = {
       'family:dropdown': {
         dropdownWrapper: 'my-2 w-full drop-shadow-lg rounded-lg [&::-webkit-scrollbar]:hidden',
         emptyMessageInner: 'flex items-center justify-center text-sm p-2 text-center w-full text-neutral-500 [&>span]:mr-3 [&>span]:ml-0',
-        inner: 'max-w-md relative flex ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 rounded-lg mb-1 formkit-disabled:focus-within:ring-neutral-200 formkit-disabled:focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
+        inner: 'max-w-2xl relative flex ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 rounded-lg mb-1 formkit-disabled:focus-within:ring-neutral-200 formkit-disabled:focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
         input: 'w-full px-4 py-3',
         listbox: 'bg-white drop-shadow-lg rounded-lg overflow-hidden',
         listboxButton: 'flex w-12 self-stretch justify-center mx-auto',
@@ -62,7 +62,7 @@ const config: DefaultConfigOptions = {
         selectIcon: 'flex box-content w-4 px-2 self-stretch grow-0 shrink-0',
       },
       'family:text': {
-        inner: 'flex items-center max-w-md ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg mb-1',
+        inner: 'flex items-center max-w-2xl ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg mb-1',
         input: 'w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400',
       },
       'datetime-local': {
@@ -82,7 +82,7 @@ const config: DefaultConfigOptions = {
         fileName: 'break-all grow text-ellipsis',
         fileRemove: 'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em]',
         fileRemoveIcon: 'block text-base w-3 relative z-[2]',
-        inner: 'relative max-w-md cursor-pointer formkit-multiple:[&>button]:absolute',
+        inner: 'relative max-w-2xl cursor-pointer formkit-multiple:[&>button]:absolute',
         input: 'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
         noFiles: 'flex w-full items-center px-4 py-3 text-neutral-400',
         noFilesIcon: 'w-4 mr-2'
@@ -92,19 +92,19 @@ const config: DefaultConfigOptions = {
         decoratorIcon: 'w-5 p-[5px]'
       },
       range: {
-        inner: '$reset flex items-center max-w-md',
+        inner: '$reset flex items-center max-w-2xl',
         input: '$reset w-full mb-1 h-2 p-0 rounded-full',
         prefixIcon: '$reset w-4 mr-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto',
         suffixIcon: '$reset w-4 ml-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto'
       },
       select: {
-        inner: 'flex relative max-w-md items-center rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
+        inner: 'flex relative max-w-2xl items-center rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
         input: 'w-full pl-3 pr-8 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 formkit-multiple:p-0 data-[placeholder="true"]:text-neutral-400 formkit-multiple:data-[placeholder="true"]:text-inherit',
         selectIcon: 'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none',
         option: 'formkit-multiple:p-3 formkit-multiple:text-sm text-neutral-700'
       },
       textarea: {
-        inner: 'flex max-w-md rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
+        inner: 'flex max-w-2xl rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
         input: 'block w-full h-32 px-3 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
       },
       

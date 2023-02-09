@@ -2,11 +2,8 @@
   <div class="flex flex-col gap-5">
     <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
-    <FormKit
-      type="button"
-      @click="$emit('submit')"
-      label="Weiter"
-    />
+    <FlightResult :flight="$state.reimbursement?.selectedFlight" />
+    <FormKit type="button" @click="$emit('submit')" label="Weiter" />
   </div>
 </template>
 
@@ -14,12 +11,16 @@
 import { defineComponent } from "vue";
 import Button from "@/components/molecules/Button.vue";
 import ButtonBack from "@/components/molecules/ButtonBack.vue";
+import { getAirportDistance } from "@/utils";
 import { Flight } from "@/types";
+import { isEuMember } from "is-eu-member";
+import FlightResult from "./FlightResult.vue";
 
 export default defineComponent({
   components: {
     Button,
     ButtonBack,
+    FlightResult
   },
   props: {
     modelValue: {
@@ -41,6 +42,8 @@ export default defineComponent({
     };
   },
   methods: {
+    isEuMember,
+    getAirportDistance,
     submitHandler() {
       this.$emit("submit");
       return;

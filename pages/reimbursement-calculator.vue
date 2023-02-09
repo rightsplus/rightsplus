@@ -5,7 +5,9 @@
         <div class="flex flex-col gap-5">
           <ReimbursementCalculator />
         </div>
+      <pre class="text-sm text-gray-500">{{ $state.reimbursement }}</pre>
       </div>
+
     </div>
   </section>
 </template>

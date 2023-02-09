@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-5">
-    <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Hattest du Anschlussflüge?</h1>
 
     <div class="grid grid-cols-2 gap-3">
@@ -25,19 +24,20 @@
         subLabel="Zwischenstopps hinzufügen"
       />
     </div>
-    <div v-if="modelValue.airport?.layover !== false">
+    <div v-if="modelValue.airport?.layover?.length" class="relative">
       <div v-for="(layover, i) in modelValue.airport.layover">
         <AirportInput
           :label="`${i + 1}. Zwischenstopp hinzufügen`"
           placeholder="z.B. Frankfurt oder FRA"
           name="layover"
-          prefix-icon="plane"
+          prefix-icon="plane-arrival"
           v-model="modelValue.airport.layover[i]"
           :suffix-icon="i > 0 ? 'times' : undefined"
           @suffix-icon-click="modelValue.airport.layover.splice(i, 1)"
         />
       </div>
       <button
+        v-if="modelValue.airport.layover?.filter((e) => e?.iata).length"
         class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center mt-5"
         @click="modelValue.airport.layover.push({})"
       >
@@ -45,12 +45,15 @@
         <span class="leading-none">Weitere Zwischenstopps hinzufügen</span>
       </button>
     </div>
-    <FormKit
-      type="button"
-      @click="$emit('submit')"
-      label="Weiter"
-      outer-class="!mb-0"
-    />
+    <div class="flex items-center justify-end gap-3">
+      <ButtonBack @click.prevent="$emit('back')" class="!mr-0" />
+      <FormKit
+        type="button"
+        @click="$emit('submit')"
+        label="Weiter"
+        outer-class="!mb-0"
+      />
+    </div>
   </div>
 </template>
 
