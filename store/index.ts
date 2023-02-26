@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
-import { Flight, ReimbursementForm } from '@/types'
+import { Flight, ClaimsForm } from '@/types'
 
-const reimbursement = process.client && localStorage.getItem('reimbursement') && JSON.parse(localStorage.getItem('reimbursement') as string) || {
+const claims = process.client && localStorage.getItem('claims') && JSON.parse(localStorage.getItem('claims') as string) || {
   airport: {
     departure: null,
     arrival: null,
@@ -13,17 +13,17 @@ const reimbursement = process.client && localStorage.getItem('reimbursement') &&
   selectedFlight: null,
   reason: null,
   actualArrivalTime: "2019-12-12T12:00",
-} as ReimbursementForm
+} as ClaimsForm
 
 export const state = reactive({
-  reimbursement,
+  claims,
   flights: [] as Flight[],
   headerColor: null,
   log: (message: string) => console.log(message),
 })
 
 watch(state, () => {
-  process.client && localStorage.setItem('reimbursement', JSON.stringify(state.reimbursement))
+  process.client && localStorage.setItem('claims', JSON.stringify(state.claims))
 })
 
 declare module '@vue/runtime-core' {
@@ -31,7 +31,7 @@ declare module '@vue/runtime-core' {
     $state: {
       headerColor: string,
       flights: typeof state.flights,
-      reimbursement: ReimbursementForm | null,
+      claims: ClaimsForm | null,
       log: (message: string) => void,
     };
   }

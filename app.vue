@@ -4,10 +4,10 @@
       <Title>RightsPlus</Title>
     </Head>
     <Body class="antialiased text-gray-800 bg-neutral-200 text-lg">
-      <div class="flex flex-col h-screen">
+      <div class="flex flex-col">
         <Header class="w-full z-50" />
         <NuxtLayout>
-          <NuxtPage class="" />
+          <NuxtPage :key="$route.fullPath" />
         </NuxtLayout>
         <Footer class="w-full mt-auto" />
       </div>

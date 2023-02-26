@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-5">
     <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
-    <FlightResult :flight="$state.reimbursement?.selectedFlight" />
+    <FlightResult :flight="$state.claims?.selectedFlight" />
     <FormKit type="button" @click="$emit('submit')" label="Weiter" />
   </div>
 </template>

@@ -84,7 +84,7 @@ export default defineComponent({
   },
   computed: {
     allAirports() {
-      const airport = this.$state.reimbursement?.airport;
+      const airport = this.$state.claims?.airport;
       const all = [
         airport?.departure,
         airport?.arrival,
@@ -102,7 +102,7 @@ export default defineComponent({
       );
     },
     isEuMember() {
-      const airport = this.$state.reimbursement?.airport;
+      const airport = this.$state.claims?.airport;
       return (
         isEuMember(airport?.departure?.country || "") ||
         isEuMember(airport?.arrival?.country || "")

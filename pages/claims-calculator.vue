@@ -3,9 +3,9 @@
     <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full max-w-[720px] mx-auto">
         <div class="flex flex-col gap-5">
-          <ReimbursementCalculator />
+          <ClaimsCalculator />
         </div>
-      <pre class="text-sm text-gray-500">{{ $state.reimbursement }}</pre>
+      <pre class="text-sm text-gray-500">{{ $state.claims }}</pre>
       </div>
 
     </div>
@@ -14,11 +14,11 @@
 
 <script lang="ts">
 import Button from "@/components/molecules/Button.vue";
-import ReimbursementCalculator from "@/components/organisms/Calculator/ReimbursementCalculator.vue";
+import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator.vue";
 export default defineComponent({
   components: {
     Button,
-    ReimbursementCalculator
+    ClaimsCalculator
 },
   setup() {
     definePageMeta({

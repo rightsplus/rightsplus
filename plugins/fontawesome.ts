@@ -12,8 +12,16 @@ import {
   faPlus,
   faPlusCircle,
   faCircleCheck,
-  faRoute
+  faRoute,
+  faFilePen,
+  faMoneyBill1Wave,
+  faPlaneCircleXmark,
+  faClock,
+  faGlobeEurope,
+  faCalendar,
+  faMeteor
 } from '@fortawesome/free-solid-svg-icons'
+import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
   faCheck,
   faArrowDown,
@@ -26,7 +34,16 @@ library.add(
   faArrowRight,
   faStar,
   faCircleCheck,
-  faRoute
+  faRoute,
+  faFilePen,
+  faMoneyBill1Wave,
+  faPlaneCircleXmark,
+  faClock,
+  faGlobeEurope,
+  faCalendar,
+  faMeteor,
+  faGoogle,
+  faApple
 )
 
 config.autoAddCss = false

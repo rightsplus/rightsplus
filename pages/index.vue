@@ -1,6 +1,11 @@
 <template>
+  <div>
   <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <img src="/airport-light-comp.jpg" alt="Airport" class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block" />
+    <img
+      src="/airport-light-comp.jpg"
+      alt="Airport"
+      class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
+    />
     <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
         <div class="flex flex-col gap-5">
@@ -12,25 +17,46 @@
             EU-Recht durch.</span
           >
         </div>
-        <ReimbursementCalculator />
-        <ScrollDown class="mt-auto"/>
+        <ClaimsCalculator />
+        <ScrollDown class="mt-auto" />
       </div>
     </div>
   </section>
+  <ProcessSummary />
+  <YourRights />
+  <CTASection />
+  <Reasons />
+  <Stats />
+  <FeeCalculator />
+  <Reviews />
+  </div>
 </template>
 <script lang="ts">
-import Button from "~/components/molecules/Button.vue";
-import Arrow from "~/components/molecules/Arrow.vue";
-import ReimbursementCalculator from "~~/components/organisms/Calculator/ReimbursementCalculator.vue";
-import ScrollDown from "~/components/cells/ScrollDown.vue";
-
+import Button from "@/components/molecules/Button.vue";
+import Arrow from "@/components/molecules/Arrow.vue";
+import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator.vue";
+import ScrollDown from "@/components/cells/ScrollDown.vue";
+import ProcessSummary from "@/components/organisms/Sections/ProcessSummary.vue";
+import YourRights from "@/components/organisms/Sections/YourRights.vue";
+import CTASection from "@/components/organisms/Sections/CTASection.vue";
+import Reasons from "@/components/organisms/Sections/Reasons.vue";
+import Stats from "@/components/organisms/Sections/Stats.vue";
+import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
+import Reviews from "@/components/organisms/Sections/Reviews.vue";
 export default defineComponent({
+  setup() {},
   components: {
     Button,
     Arrow,
-    Event,
-    ReimbursementCalculator,
-    ScrollDown
+    ClaimsCalculator,
+    ScrollDown,
+    ProcessSummary,
+    YourRights,
+    CTASection,
+    Reasons,
+    Stats,
+    FeeCalculator,
+    Reviews,
   },
   data() {
     return {

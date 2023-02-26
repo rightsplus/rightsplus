@@ -1,4 +1,4 @@
-export interface ReimbursementForm {
+export interface ClaimsForm {
   airport: {
     departure: Airport | null,
     arrival: Airport | null,
@@ -61,21 +61,21 @@ export interface Flight {
   airline: {
     name: string;
     iata: string;
-    icao: string;
+    icao?: string;
   };
   flight: {
     number: string;
     iata: string;
-    icao: string;
-    codeshared: string | null;
+    icao?: string;
+    codeshared?: string | null;
   };
-  aircraft: {
+  aircraft?: {
     registration: string;
     iata: string;
     icao: string;
     icao24: string;
   };
-  live: {
+  live?: {
     updated: string;
     latitude: number;
     longitude: number;
@@ -85,4 +85,19 @@ export interface Flight {
     speed_vertical: number;
     is_ground: boolean;
   };
+}
+
+
+export interface Review {
+  author_name: string;
+  author_url: string;
+  language: string;
+  original_language: string;
+  profile_photo_url: string;
+  rating: number;
+  relative_time_description: string;
+  text: string;
+  time: number;
+  translated: boolean;
+
 }

@@ -1,11 +1,8 @@
 <template>
   <header
-    class="z-50 overflow-hidden absolute w-screen"
+    class="z-50 overflow-hidden absolute w-screen text-neutral"
     :class="{
       open: menuOpen,
-      'text-white': headerColor === 'light' || menuOpen,
-      'text-neutral-300': headerColor === 'default' && !menuOpen,
-      'text-neutral-700': (!headerColor || headerColor === 'dark') && !menuOpen,
       loaded,
     }"
     style="backdropfilter: blur(var(--header-blur, 0px))"
@@ -21,53 +18,48 @@
       <transition-group
         name="list"
         tag="ul"
-        class="w-full flex flex-col md:flex-row items-center gap-x-2 lg:gap-x-5 gap-y-[4vh]"
+        class="w-full flex flex-col md:flex-row items-center gap-x-6 gap-y-[4vh] relative"
         :style="{
-          '--total': routes.length,
           '--line-width': `${lineWidth}px`,
           '--line-offset-x': `${lineOffsetX}px`,
           '--line-opacity': `${lineOpacity}`,
         }"
       >
+        <li class="order-0 md:order-1 mr-auto">
+          <NuxtLink
+            to="/"
+            class="duration-500 flex gap-3 items-center py-3 leading-none cursor-pointer"
+            exactActiveClass="text-neutral-600"
+            title="RightsPlus"
+          >
+            <Icon :icon="Logo" />
+            <span class="text-neutral-800 font-bold">RightsPlus</span>
+          </NuxtLink>
+        </li>
         <li
-          v-for="(item, i) in routes"
+          v-for="(item, i) in links"
           :key="item.name"
-          :style="{ '--i': offset(i, routes), '--k': i }"
-          :class="{
-            'order-0 md:order-1': item.icon,
-            'order-1': !item.icon,
-            'mx-3': true,
-            'mr-auto': item.icon,
-          }"
+          class="order-1"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
           :data-parallax-hover="!item.icon && item.type !== 'button'"
         >
           <NuxtLink
             :to="item.path"
-            class="duration-500 flex gap-3 items-center py-3 leading-none"
-            :exactActiveClass="
-              headerColor === 'light'
-                ? 'text-white'
-                : headerColor === 'default' || menuOpen
-                ? 'text-neutral-400'
-                : 'text-neutral-600'
-            "
+            class="duration-500 flex gap-3 items-center py-3 leading-none cursor-pointer"
+            exactActiveClass="text-neutral-600"
             :title="item.title || item.name"
             :class="{
-              'hover:text-neutral-100': headerColor === 'light',
-              'hover:text-neutral-600': headerColor === 'default',
-              'hover:text-neutral-900': !headerColor || headerColor === 'dark',
               'text-white bg-gray-700 px-5 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
             }"
-            @click="menuOpen = false"
+            @click="
+              (e) => {
+                item.onClick?.();
+                menuOpen = false;
+              }
+            "
           >
-            <Icon v-if="item.icon" :icon="item.icon" class="" />
-            <span
-              v-if="item.title"
-              :class="{ 'text-neutral-800 font-bold': item.icon }"
-              >{{ item.title }}</span
-            >
+            <span v-if="item.title">{{ item.title }}</span>
           </NuxtLink>
         </li>
       </transition-group>
@@ -80,7 +72,21 @@ import Button from "~/components/molecules/Button.vue";
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
+interface Route {
+  name: string;
+  path: string;
+  icon?: string;
+  title?: string;
+  class?: string;
+  type?: string;
+  onClick?: () => void;
+}
 export default defineComponent({
+  setup() {
+    const user = useSupabaseUser();
+    const client = useSupabaseClient();
+    return { user, client };
+  },
   components: {
     Button,
     BurgerIcon,
@@ -93,22 +99,41 @@ export default defineComponent({
         this.loaded = true;
       }, 300);
     });
-    window.addEventListener("resize", () => this.setLine(false));
+    window.addEventListener("resize", () => setTimeout(this.setLine, 300, false));
     // this.initParallaxHover()
   },
   unmounted() {
-    window.removeEventListener("resize", () => this.setLine(false));
+    window.removeEventListener("resize", () => setTimeout(this.setLine, 300, false));
   },
   data() {
     return {
       Logo,
-      routes: [
-        {
-          name: "home",
-          path: "/",
-          icon: `${Logo}`,
-          title: "RightsPlus",
+      menuOpen: false,
+      lineWidth: 0,
+      lineOffsetX: 0,
+      lineOpacity: 1,
+      loaded: false,
+    };
+  },
+  computed: {
+    links(): Route[] {
+      const logout = {
+        name: "status",
+        onClick: () => {
+          this.client.auth.signOut();
+          navigateTo("/");
         },
+        title: "Ausloggen",
+        type: "button",
+      } as Route;
+      const status = {
+        name: "status",
+        path: "/status",
+        title: "Forderungsstatus ansehen",
+        type: "button",
+      } as Route;
+
+      const routes = [
         {
           name: "rechte",
           path: "/deine-rechte",
@@ -124,68 +149,73 @@ export default defineComponent({
           path: "/faq",
           title: "FAQ",
         },
-        {
-          name: "reimbursement-calculator",
-          path: "/reimbursement-calculator",
-          title: "Jetzt Entschädigung berechnen",
-          type: "button",
-        },
-      ],
-      menuOpen: false,
-      lineWidth: 0,
-      lineOffsetX: 0,
-      lineOpacity: 1,
-      loaded: false,
-    };
+        this.user && this.$router.currentRoute.value.path === "/status"
+          ? logout
+          : status,
+      ] as Route[];
+      return routes;
+    },
   },
   methods: {
     initParallaxHover() {
+      document
+        .querySelectorAll("[data-parallax-hover=true]")
+        .forEach((element) => {
+          let rect: DOMRect | null = null;
+          element.addEventListener(
+            "mouseenter",
+            (e) => {
+              rect = e.currentTarget?.getBoundingClientRect() as DOMRect;
+              this.setLine(e);
+            },
+            { passive: true }
+          );
 
-      document.querySelectorAll("[data-parallax-hover=true]").forEach((element) => {
-      let rect: DOMRect | null = null
-      element.addEventListener(
-        'mouseenter',
-        (e) => {
-          rect = e.currentTarget?.getBoundingClientRect() as DOMRect
-          this.setLine(e)
-        },
-        { passive: true }
-      )
-
-      element.addEventListener(
-        "mousemove",
-        (e) => {
-          const { currentTarget, x, y } = e;
-          if (!currentTarget || !x || !y) return;
-          if (!rect) rect = currentTarget?.getBoundingClientRect() as DOMRect
-          const halfHeight = rect.height / 2;
-          const topOffset = (y - rect.top - halfHeight) / halfHeight;
-          const halfWidth = rect.width / 2;
-          const leftOffset = (x - rect.left - halfWidth) / halfWidth;
-          this.setTransformStyles(currentTarget?.parentElement, leftOffset, topOffset, 3);
-        },
-        { passive: true }
-      );
-      element.addEventListener(
-        'mouseleave',
-        ({ currentTarget }) => {
-          this.setTransformStyles(currentTarget?.parentElement, 0, 0);
-          this.setLine(false)
-        },
-        { passive: true }
-      )
-    });
+          element.addEventListener(
+            "mousemove",
+            (e) => {
+              const { currentTarget, x, y } = e;
+              if (!currentTarget || !x || !y) return;
+              if (!rect)
+                rect = currentTarget?.getBoundingClientRect() as DOMRect;
+              const halfHeight = rect.height / 2;
+              const topOffset = (y - rect.top - halfHeight) / halfHeight;
+              const halfWidth = rect.width / 2;
+              const leftOffset = (x - rect.left - halfWidth) / halfWidth;
+              this.setTransformStyles(
+                currentTarget?.parentElement,
+                leftOffset,
+                topOffset,
+                3
+              );
+            },
+            { passive: true }
+          );
+          element.addEventListener(
+            "mouseleave",
+            ({ currentTarget }) => {
+              this.setTransformStyles(currentTarget?.parentElement, 0, 0);
+              this.setLine(false);
+            },
+            { passive: true }
+          );
+        });
     },
     setStyles(el: HTMLElement, styles: Record<string, string>) {
       Object.keys(styles).forEach((key) => {
-        el.style.setProperty(key, styles[key])
-      })
+        el.style.setProperty(key, styles[key]);
+      });
     },
-    setTransformStyles(el: HTMLElement, leftOffset: number, topOffset: number, coefficient = 1) {
+    setTransformStyles(
+      el: HTMLElement,
+      leftOffset: number,
+      topOffset: number,
+      coefficient = 1
+    ) {
       this.setStyles(el, {
-        '--x': `${leftOffset * coefficient}px`,
-        '--y': `${topOffset * coefficient}px`,
-      })
+        "--x": `${leftOffset * coefficient}px`,
+        "--y": `${topOffset * coefficient}px`,
+      });
     },
     offset(i: number, array: number[]) {
       return Math.abs(i - Math.ceil((array.length - 1) / 2));
@@ -209,11 +239,6 @@ export default defineComponent({
       this.setLine(false);
     },
   },
-  computed: {
-    headerColor() {
-      return this.$state.headerColor;
-    },
-  },
 });
 </script>
 
@@ -221,8 +246,8 @@ export default defineComponent({
 .loaded nav:deep(ul):after {
   opacity: var(--line-opacity, 1);
 }
-[data-parallax-hover=true] a:hover,
-[data-parallax-hover=true] .router-link-active {
+[data-parallax-hover="true"] a:hover,
+[data-parallax-hover="true"] .router-link-active {
   color: var(--color-primary-600);
   transition: 0ms;
 }
@@ -232,7 +257,7 @@ export default defineComponent({
       position: relative;
       &:after {
         background-color: white;
-        content: "";
+        /* content: ""; */
         position: absolute;
         bottom: 0.625em;
         opacity: 0;

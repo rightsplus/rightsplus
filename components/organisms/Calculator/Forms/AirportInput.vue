@@ -1,6 +1,5 @@
 <template>
-  <div class="relative"
-      ref="container">
+  <div class="relative" ref="container">
     <FormKit
       type="text"
       :validation="validation"

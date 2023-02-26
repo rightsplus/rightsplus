@@ -21,6 +21,7 @@ export default defineNuxtConfig({
 		'@nuxtjs/algolia',
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
+		'@nuxtjs/supabase'
 	],
 	buildModules: [
 		'@nuxtjs/pwa',

@@ -7,7 +7,8 @@
     <Stepper class="mb-5" :steps="steps" v-if="step > 0" />
     <component
       :is="activeComponent"
-      v-model="form"
+      v-if="$state.claims"
+      v-model="$state.claims"
       @submit="step++"
       @back="step--"
       @reset="step = 0"
@@ -18,7 +19,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import { Airport, Flight, ReimbursementForm } from "@/types";
+import { Airport, Flight, ClaimsForm } from "@/types";
 import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
 import SelectFlight from "./SelectFlight.vue";
@@ -42,19 +43,6 @@ export default defineComponent({
     return {
       step: 0,
       containerHeight: 100,
-      form: {
-        airport: {
-          departure: null,
-          arrival: null,
-          layover: null,
-        },
-        date: {
-          departure: "2019-12-12",
-        },
-        selectedFlight: null,
-        reason: null,
-        actualArrivalTime: "2019-12-12T12:00",
-      } as ReimbursementForm,
     };
   },
   computed: {
@@ -107,18 +95,6 @@ export default defineComponent({
     step() {
       setTimeout(this.setHeight, 0);
     },
-    $state: {
-      handler({reimbursement}) {
-        if (reimbursement) this.form = reimbursement;
-      },
-      immediate: true,
-    },
-    form: {
-      handler(val) {
-        this.$state.reimbursement = val;
-      },
-      deep: true,
-    }
   },
   methods: {
     setHeight() {

@@ -14,9 +14,9 @@ const gray = {
 const colors = {
   primary: defaultColors.orange,
   neutral: defaultColors.neutral,
-  blue: defaultColors.blue,
+  blue: defaultColors.sky,
   green: defaultColors.emerald,
-  yellow: defaultColors.amber,
+  yellow: defaultColors.yellow,
   red: defaultColors.red,
   black: defaultColors.black,
   gray,
@@ -44,6 +44,9 @@ module.exports = {
     },
     colors,
     extend: {
+      boxShadow: {
+        autofill: `inset 0 0 0 2em ${colors.blue['100']}`,
+      },
       fontSize: {
         '10xl': '160px',
         '11xl': '176px',
