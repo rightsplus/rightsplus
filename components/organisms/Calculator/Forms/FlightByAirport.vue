@@ -1,8 +1,8 @@
 <template>
-  <h2 class="text-base font-medium mb-8 tracking-tight">
+  <h3 class="text-base font-medium mb-8 tracking-tight">
     Gib hier deine Flugdaten ein und sichere dir bis zu
     <strong>450€</strong> Entschädigung.
-  </h2>
+  </h3>
   <!-- {{ modelValue }} -->
   <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
   <div class="double gap-4">

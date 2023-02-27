@@ -1,9 +1,14 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-6xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative">
-      <span v-for="char, i in titleASCII" :key="i" class="dashed">
-        {{ transform(char) }}
-      </span>
+      <ClientOnly>
+        <template #fallback>
+          {{title[0]}}
+        </template>
+        <span v-for="char, i in titleASCII" :key="i" class="dashed">
+          {{ transform(char) }}
+        </span>
+      </ClientOnly>
     </h1>
     <span class="text-2xl font-medium text-gray-500"
       >{{ subtitle }}</span

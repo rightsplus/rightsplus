@@ -5,9 +5,9 @@
     :actions="false"
     v-model="value"
   >
-    <h2 class="text-xl font-medium mb-8">
+    <h3 class="text-xl font-medium mb-8">
       Gib hier deinen ersten geplanten Flug ein.
-    </h2>
+    </h3>
     <div class="double gap-3">
       <FormKit
         type="text"

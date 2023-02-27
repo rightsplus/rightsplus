@@ -3,9 +3,9 @@
     <div class="grid gap-12 max-w-7xl mx-auto px-12 h-full relative z-1">
       <div class="flex justify-around gap-12 leading-0 h-full">
         <div v-for="(stat, i) in stats" class="flex flex-col gap-2 items-center">
-          <h2 class="text-7xl font-bold">
+          <span class="text-7xl font-bold">
             {{ stat.title }}
-          </h2>
+          </span>
           <p class="text-lg text-gray-300 font-medium">
             {{ stat.description }}
           </p>

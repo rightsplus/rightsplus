@@ -43,13 +43,15 @@ interface MapsResponseData {
     url: string;
   };
 }
-useFetch<MapsResponseData>(request).then(({ data }) => {
-  $state.reviews = {
-    entries: data.value?.result?.reviews,
-    url: data.value?.result?.url,
-  };
-});
-const shuffle = (reviews: Review[]) => reviews.sort(() => Math.random() - 0.5).slice(0, 4);
+const shuffle = (reviews: Review[]) => reviews?.sort(() => Math.random() - 0.5).slice(0, 4);
+if (!$state.reviews.entries.length) {
+  useFetch<MapsResponseData>(request).then(({ data }) => {
+    $state.reviews = {
+      entries: data.value?.result?.reviews,
+      url: data.value?.result?.url,
+    };
+  });
+}
 </script>
 <style scoped>
 </style>

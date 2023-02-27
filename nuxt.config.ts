@@ -41,9 +41,6 @@ export default defineNuxtConfig({
 	postcss,
 	runtimeConfig: {
 		public: {
-			email: {
-				to: process.env.ADDRESS_TO
-			},
 			google: {
 				key: process.env.GOOGLE_KEY,
 				placeId: process.env.GOOGLE_PLACE_ID
