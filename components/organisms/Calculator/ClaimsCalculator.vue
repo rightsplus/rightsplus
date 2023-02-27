@@ -1,25 +1,27 @@
 <template>
-  <div
-    class="container bg-white rounded-3xl p-5 sm:p-12"
-    :style="`--height: ${containerHeight}px`"
-    ref="container"
-  >
-    <Stepper class="mb-5" :steps="steps" v-if="step > 0" />
-    <component
-      :is="activeComponent"
-      v-if="$state.claims"
-      v-model="$state.claims"
-      @submit="step++"
-      @back="step--"
-      @reset="step = 0"
-    ></component>
+  <div>
+    <Stepper class="mb-5" :steps="steps" :step="$state.claims.step" />
+    <div
+      class="container bg-white rounded-3xl p-5 sm:p-12"
+      :style="`--height: ${containerHeight}px`"
+      ref="container"
+    >
+      <component
+        :is="activeComponent"
+        v-if="$state.claims"
+        v-model="$state.claims"
+        @submit="$state.claims.step++"
+        @back="$state.claims.step--"
+        @reset="$state.claims.step = 0"
+      ></component>
+      <!-- <pre class="text-sm">{{ $state.claims }}</pre> -->
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import { Airport, Flight, ClaimsForm } from "@/types";
 import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
 import SelectFlight from "./SelectFlight.vue";
@@ -37,26 +39,28 @@ export default defineComponent({
     SelectReason,
     Results,
     Reset,
-    Stepper
+    Stepper,
   },
   data() {
     return {
-      step: 0,
       containerHeight: 100,
     };
   },
   computed: {
     steps() {
+      const step = this.$state.claims?.step || 0
       return [
         {
           label: "Flight Info",
-          active: this.step <= 1,
-          completed: this.step <= 2,
+          active: 0,
+        },
+        {
+          label: "Flight Disruption",
+          active: 3,
         },
         {
           label: "Personal Info",
-          active: this.step > 1,
-          completed: this.step > 2,
+          active: 6,
         },
       ];
     },
@@ -68,9 +72,9 @@ export default defineComponent({
         SelectReason,
         Results,
         Reset,
-      ]
-      return components[this.step]
-      switch (this.step) {
+      ];
+      return components[this.$state.claims.step];
+      switch (this.$state.claims.step) {
         case 0:
           return FlightByAirport;
         case 1:
@@ -89,6 +93,9 @@ export default defineComponent({
   mounted() {
     this.$nextTick(() => {
       this.setHeight();
+      if (!this.$state.claims?.step) {
+        this.$state.claims.step = 0;
+      }
     });
   },
   watch: {
@@ -98,11 +105,12 @@ export default defineComponent({
   },
   methods: {
     setHeight() {
-        const childrenHeight = Math.min(
+      const childrenHeight = Math.min(
         window.innerHeight - 120,
         Math.max(
           100,
-          ((this.$refs.container as HTMLElement)?.children[0]?.offsetHeight || 0) + 80
+          ((this.$refs.container as HTMLElement)?.children[0]?.offsetHeight ||
+            0) + 80
         )
       );
       this.containerHeight = (

@@ -1,40 +1,39 @@
 <template>
   <div>
-  <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <img
-      src="/airport-light-comp.jpg"
-      alt="Airport"
-      class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
-    />
-    <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
-      <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
-        <div class="flex flex-col gap-5">
-          <h1 class="text-6xl font-extrabold">
-            Flug verspätet oder annuliert?
-          </h1>
-          <span class="text-3xl font-medium text-gray-500"
-            >Mit RightsPlus setzen wir deine Ansprüche auf Entschädigung gemäß
-            EU-Recht durch.</span
-          >
+    <section class="min-h-screen pt-36 pb-8 bg-neutral-200">
+      <img
+        src="/airport-light-comp.jpg"
+        alt="Airport"
+        class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
+      />
+      <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
+        <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
+          <Dashboard />
+          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="$state.claims">
+            <FlightByAirport
+              v-model="$state.claims"
+              @submit="$state.claims.step++"
+            />
+          </div>
+          <ScrollDown class="mt-auto" />
         </div>
-        <ClaimsCalculator />
-        <ScrollDown class="mt-auto" />
       </div>
-    </div>
-  </section>
-  <ProcessSummary />
-  <YourRights />
-  <CTASection />
-  <Reasons />
-  <Stats />
-  <FeeCalculator />
-  <Reviews />
+    </section>
+    <ProcessSummary />
+    <YourRights />
+    <CTASection />
+    <Reasons />
+    <Stats />
+    <FeeCalculator />
+    <Reviews />
   </div>
 </template>
 <script lang="ts">
+import Dashboard from "@/components/species/Dashboard.vue";
 import Button from "@/components/molecules/Button.vue";
 import Arrow from "@/components/molecules/Arrow.vue";
 import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator.vue";
+import FlightByAirport from "@/components/organisms/Calculator/Forms/FlightByAirport.vue";
 import ScrollDown from "@/components/cells/ScrollDown.vue";
 import ProcessSummary from "@/components/organisms/Sections/ProcessSummary.vue";
 import YourRights from "@/components/organisms/Sections/YourRights.vue";
@@ -46,8 +45,10 @@ import Reviews from "@/components/organisms/Sections/Reviews.vue";
 export default defineComponent({
   setup() {},
   components: {
+    Dashboard,
     Button,
     Arrow,
+    FlightByAirport,
     ClaimsCalculator,
     ScrollDown,
     ProcessSummary,

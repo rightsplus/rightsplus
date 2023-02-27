@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-5">
-    <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
     <div class="flex gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full">
       <FormKit
@@ -22,25 +21,18 @@
         validation-visibility="live"
       />
     </div>
-    <FormKit
-      type="button"
-      @click="$emit('submit')"
-      label="Weiter"
-      :disabled="!modelValue?.reason"
-    />
+    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')"
+     />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Button from "@/components/molecules/Button.vue";
-import ButtonBack from "@/components/molecules/ButtonBack.vue";
-import { Flight } from "@/types";
+import NavigationButtons from "./NavigationButtons.vue";
 
 export default defineComponent({
   components: {
-    Button,
-    ButtonBack,
+    NavigationButtons
   },
   props: {
     modelValue: {

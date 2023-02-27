@@ -1,35 +1,37 @@
 <template>
-    <h2 class="text-xl font-medium mb-8 tracking-tight">
-      Gib hier deine Flugdaten ein und sichere dir bis zu <strong>450€</strong> Entschädigung.
-    </h2>
-    <div class="double gap-4">
-      <AirportInput
-        name="departure"
-        label="Startflughafen"
-        placeholder="z.B. Berlin oder BER"
-        prefix-icon="plane-departure"
-        v-model="modelValue.airport.departure"
-      />
-      <AirportInput 
-        name="arrival"
-        label="Zielflughafen"
-        placeholder="z.B. Tel Aviv oder TLV"
-        prefix-icon="plane-arrival"
-        v-model="modelValue.airport.arrival"
-      />
-    </div>
-
-    <FormKit
-      type="submit"
-      @click.prevent="submitHandler"
-      label="Jetzt Entschädigung berechnen!"
+  <h2 class="text-base font-medium mb-8 tracking-tight">
+    Gib hier deine Flugdaten ein und sichere dir bis zu
+    <strong>450€</strong> Entschädigung.
+  </h2>
+  <!-- {{ modelValue }} -->
+  <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
+  <div class="double gap-4">
+    <AirportInput
+      name="departure"
+      label="Startflughafen"
+      placeholder="z.B. Berlin oder BER"
+      prefix-icon="plane-departure"
+      v-model="modelValue.airport.departure"
     />
+    <AirportInput
+      name="arrival"
+      label="Zielflughafen"
+      placeholder="z.B. Tel Aviv oder TLV"
+      prefix-icon="plane-arrival"
+      v-model="modelValue.airport.arrival"
+    />
+  </div>
+
+  <FormKit
+    type="submit"
+    @click.prevent="start"
+    label="Jetzt Entschädigung berechnen!"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import TrieSearch from "trie-search";
 import ListAirport from "./ListAirport.vue";
 import AirportInput from "./AirportInput.vue";
 
@@ -58,41 +60,12 @@ export default defineComponent({
         departure: false,
         arrival: false,
       },
-      airports: new TrieSearch(["iata", "name", "city", "country", "full"], { min: 2 }),
     };
   },
   methods: {
-    submitHandler() {
-      fetch("api/aviationstack.json")
-        .then((data) => data.json())
-        .then(({ data }) => {
-          this.$state.flights = data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.$emit('submit')
-      return;
-      // const cors = "https://cors-anywhere.herokuapp.com/";
-      // const aviationstack = useRuntimeConfig().public.flight.aviationstack;
-      // const date = modelValue.flightDate.split("-");
-
-      // const request = `https://cors-anywhere.herokuapp.com/https://api.flightstats.com/flex/flightstatus/historical/rest/v3/json/route/status/${modelValue.departure}/${modelValue.arrival}/arr/${date[0]}/${date[1]}/${date[2]}?appId=${appId}&appKey=${token}&utc=false&maxFlights=1`;
-      // const request = `${cors}https://app.goflightlabs.com/historical/${modelValue.flightDate}?access_key=${flighlabs}&code=${modelValue.departure}&type=departure`
-
-      const request = `${cors}http://api.aviationstack.com/v1/flights/?access_key=${aviationstack}`;
-      fetch(request)
-        .then((data) => {
-          console.log(data);
-          return data.json();
-        })
-        .then((data) => {
-          console.log(data);
-          // console.log(data.filter(({ arrival }) => arrival.iataCode?.toUpperCase() === modelValue.arrival.toUpperCase()));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    start() {
+      this.$router.push("/claims-calculator");
+      this.$state.claims.step = 1;
     },
   },
 });

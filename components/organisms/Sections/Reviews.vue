@@ -12,14 +12,14 @@
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
           <ReviewCard
-            v-for="review in reviews"
+            v-for="review in shuffle($state.reviews.entries)"
             :key="review.author_name"
             :review="review"
-            :link="url"
+            :link="$state.reviews.url"
           />
         </div>
         <NuxtLink
-          :to="url"
+          :to="$state.reviews.url"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
           ><span>Weitere Bewertungen ansehen</span>
           <FontAwesomeIcon icon="arrow-right" class="text-sm"
@@ -30,16 +30,27 @@
 </template>
 
 <script lang="ts" setup>
-import ReviewCard from "~~/components/cells/ReviewCard.vue";
-import { Review } from "~~/types";
+import ReviewCard from "@/components/cells/ReviewCard.vue";
+import { Review } from "@/types";
+// import { ref } from "vue";
+const { $state } = useNuxtApp();
 const { locale } = useI18n();
-console.log(locale);
-const { data } = await useFetch(
-  `https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyAhbCubM-Apr24puOqU51KNVn8KROGbGGk&place_id=ChIJZ3HoNBoXvUcRNoGMYt-J0dY&fields=review&language=${locale.value}`
-);
-console.log(data.value);
-const url = data.value?.result?.url;
-const reviews = data.value?.result?.reviews.slice(0, 4) as Review[];
+const { key, placeId } = useRuntimeConfig().public.google;
+const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review&language=${locale.value}`;
+
+interface MapsResponseData {
+  result: {
+    reviews: Review[];
+    url: string;
+  };
+}
+useFetch<MapsResponseData>(request).then(({ data }) => {
+  $state.reviews = {
+    entries: data.value?.result?.reviews,
+    url: data.value?.result?.url,
+  };
+});
+const shuffle = (reviews: Review[]) => reviews.sort(() => Math.random() - 0.5).slice(0, 4);
 </script>
 <style scoped>
 .double {

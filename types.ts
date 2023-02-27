@@ -10,6 +10,7 @@ export interface ClaimsForm {
   selectedFlight: Flight | null,
   reason: string | null,
   actualArrivalTime: string | null,
+  step: number,
 }
 interface AlgoliaResult {
   value: string;
@@ -41,11 +42,11 @@ export interface Airport {
 
 interface FlightAirport {
   airport: string;
-  timezone: string;
+  timezone?: string;
   iata: string;
-  icao: string;
-  terminal: string | number;
-  gate: string;
+  icao?: string;
+  terminal?: string | number;
+  gate?: string;
   delay: number;
   scheduled: string;
   estimated: string;
@@ -99,5 +100,4 @@ export interface Review {
   text: string;
   time: number;
   translated: boolean;
-
 }

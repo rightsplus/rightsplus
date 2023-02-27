@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-5">
-    <ButtonBack @click.prevent="$emit('back')" />
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
     <FlightResult :flight="$state.claims?.selectedFlight" />
-    <FormKit type="button" @click="$emit('submit')" label="Weiter" />
+    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
+    <pre>{{ $state.claims }}</pre>
   </div>
 </template>
 
@@ -15,12 +15,14 @@ import { getAirportDistance } from "@/utils";
 import { Flight } from "@/types";
 import { isEuMember } from "is-eu-member";
 import FlightResult from "./FlightResult.vue";
+import NavigationButtons from "./NavigationButtons.vue";
 
 export default defineComponent({
   components: {
     Button,
     ButtonBack,
-    FlightResult
+    FlightResult,
+    NavigationButtons
   },
   props: {
     modelValue: {

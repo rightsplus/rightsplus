@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 		'@nuxtjs/algolia',
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
-		'@nuxtjs/supabase'
+		'@nuxtjs/supabase',
 	],
 	buildModules: [
 		'@nuxtjs/pwa',
@@ -43,6 +43,10 @@ export default defineNuxtConfig({
 		public: {
 			email: {
 				to: process.env.ADDRESS_TO
+			},
+			google: {
+				key: process.env.GOOGLE_KEY,
+				placeId: process.env.GOOGLE_PLACE_ID
 			},
 			flight: {
 				aviationstack: process.env.AVIATIONSTACK_KEY,

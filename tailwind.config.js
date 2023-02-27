@@ -39,8 +39,8 @@ module.exports = {
   },
   theme: {
     fontFamily: {
-      sans: ['Inter', 'Gramatika', 'sans-serif'],
-      display: ['Noe Display', 'serif'],
+      sans: ['Inter', 'sans-serif'],
+      mono: ['JetBrains Mono', 'monospace'],
     },
     colors,
     extend: {

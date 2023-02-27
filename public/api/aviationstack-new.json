@@ -1,0 +1,430 @@
+{
+	"pagination": {
+		"limit": 100,
+		"offset": 0,
+		"count": 15,
+		"total": 15
+	},
+	"data": [
+		{
+			"flight_date": "2022-12-12",
+			"departure": {
+				"airport": "San Francisco International",
+				"iata": "SFO",
+				"delay": 133,
+				"scheduled": "2022-12-12T04:20:00+00:00",
+				"estimated": "2022-12-12T04:20:00+00:00",
+				"actual": "2022-12-12T06:20:13+00:00",
+				"estimated_runway": "2022-12-12T04:20:13+00:00",
+				"actual_runway": "2022-12-12T06:20:13+00:00"
+			},
+			"arrival": {
+				"airport": "Dallas/Fort Worth International",
+				"iata": "DFW",
+				"delay": 129,
+				"scheduled": "2022-12-12T06:20:00+00:00",
+				"estimated": "2022-12-12T06:20:00+00:00",
+				"actual": "2022-12-12T08:20:09+00:00",
+				"estimated_runway": "2022-12-12T06:20:00+00:00",
+				"actual_runway": "2022-12-12T08:20:23+00:00"
+			},
+			"airline": {
+				"name": "American Airlines",
+				"iata": "AA"
+			},
+			"flight": {
+				"iata": "AA1004"
+			}
+		},
+		{
+			"flight_date": "2022-12-13",
+			"departure": {
+				"airport": "Los Angeles International",
+				"iata": "LAX",
+				"delay": 20,
+				"scheduled": "2022-12-13T08:45:00+00:00",
+				"estimated": "2022-12-13T08:45:00+00:00",
+				"actual": "2022-12-13T09:05:00+00:00",
+				"estimated_runway": "2022-12-13T08:55:00+00:00",
+				"actual_runway": "2022-12-13T09:15:00+00:00"
+			},
+			"arrival": {
+				"airport": "London Heathrow Airport",
+				"iata": "LHR",
+				"delay": 0,
+				"scheduled": "2022-12-14T06:15:00+00:00",
+				"estimated": "2022-12-14T06:15:00+00:00",
+				"actual": "2022-12-14T06:15:00+00:00",
+				"estimated_runway": "2022-12-14T06:15:00+00:00",
+				"actual_runway": "2022-12-14T06:15:00+00:00"
+			},
+			"airline": {
+				"name": "British Airways",
+				"iata": "BA"
+			},
+			"flight": {
+				"iata": "BA268"
+			}
+		},
+		{
+			"flight_date": "2022-12-13",
+			"departure": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"delay": 0,
+				"scheduled": "2022-12-13T10:00:00+00:00",
+				"estimated": "2022-12-13T10:00:00+00:00",
+				"actual": "2022-12-13T10:00:00+00:00",
+				"estimated_runway": "2022-12-13T10:00:00+00:00",
+				"actual_runway": "2022-12-13T10:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Dubai International Airport",
+				"iata": "DXB",
+				"delay": 45,
+				"scheduled": "2022-12-14T04:30:00+00:00",
+				"estimated": "2022-12-14T04:30:00+00:00",
+				"actual": "2022-12-14T05:15:00+00:00",
+				"estimated_runway": "2022-12-14T05:15:00+00:00",
+				"actual_runway": "2022-12-14T05:15:00+00:00"
+			},
+			"airline": {
+				"name": "Emirates",
+				"iata": "EK"
+			},
+			"flight": {
+				"iata": "EK201"
+			}
+		},
+		{
+			"flight_date": "2022-12-12",
+			"departure": {
+				"airport": "Los Angeles International",
+				"iata": "LAX",
+				"delay": 25,
+				"scheduled": "2022-12-12T12:00:00+00:00",
+				"estimated": "2022-12-12T12:25:00+00:00",
+				"actual": "2022-12-12T12:25:00+00:00",
+				"estimated_runway": "2022-12-12T12:25:00+00:00",
+				"actual_runway": "2022-12-12T12:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow Airport",
+				"iata": "LHR",
+				"delay": 0,
+				"scheduled": "2022-12-13T07:30:00+00:00",
+				"estimated": "2022-12-13T07:30:00+00:00",
+				"actual": "2022-12-13T07:30:00+00:00",
+				"estimated_runway": "2022-12-13T07:30:00+00:00",
+				"actual_runway": "2022-12-13T07:30:00+00:00"
+			},
+			"airline": {
+				"name": "British Airways",
+				"iata": "BA"
+			},
+			"flight": {
+				"iata": "BA279"
+			}
+		},
+		{
+			"flight_date": "2022-12-15",
+			"departure": {
+				"airport": "Dubai International Airport",
+				"iata": "DXB",
+				"delay": 0,
+				"scheduled": "2022-12-15T10:45:00+00:00",
+				"estimated": "2022-12-15T10:45:00+00:00",
+				"actual": "2022-12-15T10:45:00+00:00",
+				"estimated_runway": "2022-12-15T10:45:00+00:00",
+				"actual_runway": "2022-12-15T10:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "John F. Kennedy International Airport",
+				"iata": "JFK",
+				"delay": 15,
+				"scheduled": "2022-12-15T16:00:00+00:00",
+				"estimated": "2022-12-15T16:15:00+00:00",
+				"actual": "2022-12-15T16:15:00+00:00",
+				"estimated_runway": "2022-12-15T16:15:00+00:00",
+				"actual_runway": "2022-12-15T16:15:00+00:00"
+			},
+			"airline": {
+				"name": "Emirates",
+				"iata": "EK"
+			},
+			"flight": {
+				"iata": "EK201"
+			}
+		},
+		{
+			"flight_date": "2022-03-14",
+			"departure": {
+				"airport": "John F. Kennedy International Airport",
+				"iata": "JFK",
+				"delay": 0,
+				"scheduled": "2022-03-14T08:15:00+00:00",
+				"estimated": "2022-03-14T08:15:00+00:00",
+				"actual": "2022-03-14T08:15:00+00:00",
+				"estimated_runway": "2022-03-14T08:15:00+00:00",
+				"actual_runway": "2022-03-14T08:15:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow Airport",
+				"iata": "LHR",
+				"delay": 0,
+				"scheduled": "2022-03-14T20:00:00+00:00",
+				"estimated": "2022-03-14T20:00:00+00:00",
+				"actual": "2022-03-14T20:00:00+00:00",
+				"estimated_runway": "2022-03-14T20:00:00+00:00",
+				"actual_runway": "2022-03-14T20:00:00+00:00"
+			},
+			"airline": {
+				"name": "British Airways",
+				"iata": "BA"
+			},
+			"flight": {
+				"iata": "BA102"
+			}
+		},
+		{
+			"flight_date": "2022-05-22",
+			"departure": {
+				"airport": "Los Angeles International Airport",
+				"iata": "LAX",
+				"delay": 0,
+				"scheduled": "2022-05-22T12:45:00+00:00",
+				"estimated": "2022-05-22T12:45:00+00:00",
+				"actual": "2022-05-22T12:45:00+00:00",
+				"estimated_runway": "2022-05-22T12:45:00+00:00",
+				"actual_runway": "2022-05-22T12:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Narita International Airport",
+				"iata": "NRT",
+				"delay": 0,
+				"scheduled": "2022-05-23T16:30:00+00:00",
+				"estimated": "2022-05-23T16:30:00+00:00",
+				"actual": "2022-05-23T16:30:00+00:00",
+				"estimated_runway": "2022-05-23T16:30:00+00:00",
+				"actual_runway": "2022-05-23T16:30:00+00:00"
+			},
+			"airline": {
+				"name": "Japan Airlines",
+				"iata": "JL"
+			},
+			"flight": {
+				"iata": "JL001"
+			}
+		},
+		{
+			"flight_date": "2023-03-01",
+			"departure": {
+				"airport": "London Heathrow Airport",
+				"iata": "LHR",
+				"delay": 0,
+				"scheduled": "2023-03-01T08:30:00+00:00",
+				"estimated": "2023-03-01T08:30:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"arrival": {
+				"airport": "Paris Charles de Gaulle Airport",
+				"iata": "CDG",
+				"delay": 0,
+				"scheduled": "2023-03-01T11:00:00+00:00",
+				"estimated": "2023-03-01T11:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"airline": {
+				"name": "Air France",
+				"iata": "AF"
+			},
+			"flight": {
+				"iata": "AF1234"
+			}
+		},
+		{
+			"flight_date": "2023-03-01",
+			"departure": {
+				"airport": "Amsterdam Schiphol Airport",
+				"iata": "AMS",
+				"delay": 0,
+				"scheduled": "2023-03-01T12:00:00+00:00",
+				"estimated": "2023-03-01T12:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"arrival": {
+				"airport": "Barcelona–El Prat Airport",
+				"iata": "BCN",
+				"delay": 0,
+				"scheduled": "2023-03-01T14:00:00+00:00",
+				"estimated": "2023-03-01T14:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"airline": {
+				"name": "KLM Royal Dutch Airlines",
+				"iata": "KL"
+			},
+			"flight": {
+				"iata": "KL5678"
+			}
+		},
+		{
+			"flight_date": "2023-03-02",
+			"departure": {
+				"airport": "Frankfurt Airport",
+				"iata": "FRA",
+				"delay": 0,
+				"scheduled": "2023-03-02T10:30:00+00:00",
+				"estimated": "2023-03-02T10:30:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"arrival": {
+				"airport": "Madrid Barajas Airport",
+				"iata": "MAD",
+				"delay": 0,
+				"scheduled": "2023-03-02T13:00:00+00:00",
+				"estimated": "2023-03-02T13:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"iata": "LH1234"
+			}
+		},
+		{
+			"flight_date": "2023-03-03",
+			"departure": {
+				"airport": "Amsterdam Schiphol Airport",
+				"iata": "AMS",
+				"delay": 0,
+				"scheduled": "2023-03-03T12:00:00+00:00",
+				"estimated": "2023-03-03T12:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"arrival": {
+				"airport": "Barcelona–El Prat Airport",
+				"iata": "BCN",
+				"delay": 0,
+				"scheduled": "2023-03-03T14:00:00+00:00",
+				"estimated": "2023-03-03T14:00:00+00:00",
+				"actual": null,
+				"estimated_runway": null,
+				"actual_runway": null
+			},
+			"airline": {
+				"name": "KLM Royal Dutch Airlines",
+				"iata": "KL"
+			},
+			"flight": {
+				"iata": "KL5678"
+			}
+		},
+		{
+			"flight_date": "2023-03-01",
+			"departure": {
+				"airport": "London Heathrow Airport",
+				"iata": "LHR",
+				"delay": 40,
+				"scheduled": "2023-03-01T08:00:00+00:00",
+				"estimated": "2023-03-01T08:40:00+00:00",
+				"actual": "2023-03-01T09:15:00+00:00",
+				"estimated_runway": "2023-03-01T08:40:00+00:00",
+				"actual_runway": "2023-03-01T09:15:25+00:00"
+			},
+			"arrival": {
+				"airport": "Charles de Gaulle Airport",
+				"iata": "CDG",
+				"delay": 35,
+				"scheduled": "2023-03-01T10:30:00+00:00",
+				"estimated": "2023-03-01T10:30:00+00:00",
+				"actual": "2023-03-01T11:05:00+00:00",
+				"estimated_runway": "2023-03-01T10:30:00+00:00",
+				"actual_runway": "2023-03-01T11:05:17+00:00"
+			},
+			"airline": {
+				"name": "British Airways",
+				"iata": "BA"
+			},
+			"flight": {
+				"iata": "BA1234"
+			}
+		},
+		{
+			"flight_date": "2023-03-01",
+			"departure": {
+				"airport": "Paris Orly Airport",
+				"iata": "ORY",
+				"delay": 20,
+				"scheduled": "2023-03-01T12:45:00+00:00",
+				"estimated": "2023-03-01T13:05:00+00:00",
+				"actual": "2023-03-01T13:25:00+00:00",
+				"estimated_runway": "2023-03-01T13:05:00+00:00",
+				"actual_runway": "2023-03-01T13:25:32+00:00"
+			},
+			"arrival": {
+				"airport": "Munich Airport",
+				"iata": "MUC",
+				"delay": 30,
+				"scheduled": "2023-03-01T15:30:00+00:00",
+				"estimated": "2023-03-01T15:30:00+00:00",
+				"actual": "2023-03-01T16:00:00+00:00",
+				"estimated_runway": "2023-03-01T15:30:00+00:00",
+				"actual_runway": "2023-03-01T16:00:11+00:00"
+			},
+			"airline": {
+				"name": "Air France",
+				"iata": "AF"
+			},
+			"flight": {
+				"iata": "AF5678"
+			}
+		},
+		{
+			"flight_date": "2023-03-05",
+			"departure": {
+				"airport": "Cologne Bonn Airport",
+				"iata": "CGN",
+				"delay": 30,
+				"scheduled": "2023-03-05T10:15:00+01:00",
+				"estimated": "2023-03-05T10:45:00+01:00",
+				"actual": "2023-03-05T10:45:00+01:00",
+				"estimated_runway": "2023-03-05T10:55:00+01:00",
+				"actual_runway": "2023-03-05T10:55:00+01:00"
+			},
+			"arrival": {
+				"airport": "Tel Aviv Ben Gurion Airport",
+				"iata": "TLV",
+				"delay": 15,
+				"scheduled": "2023-03-05T15:25:00+02:00",
+				"estimated": "2023-03-05T15:40:00+02:00",
+				"actual": "2023-03-05T15:40:00+02:00",
+				"estimated_runway": "2023-03-05T15:50:00+02:00",
+				"actual_runway": "2023-03-05T15:50:00+02:00"
+			},
+			"airline": {
+				"name": "El Al Israel Airlines",
+				"iata": "LY"
+			},
+			"flight": {
+				"iata": "LY361"
+			}
+		}
+	]
+}

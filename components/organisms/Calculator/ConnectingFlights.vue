@@ -45,15 +45,7 @@
         <span class="leading-none">Weitere Zwischenstopps hinzufügen</span>
       </button>
     </div>
-    <div class="flex items-center justify-end gap-3">
-      <ButtonBack @click.prevent="$emit('back')" class="!mr-0" />
-      <FormKit
-        type="button"
-        @click="$emit('submit')"
-        label="Weiter"
-        outer-class="!mb-0"
-      />
-    </div>
+    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
   </div>
 </template>
 
@@ -66,6 +58,7 @@ import Button from "@/components/molecules/Button.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirportInput from "./Forms/AirportInput.vue";
 import ButtonLarge from "./ButtonLarge.vue";
+import NavigationButtons from "./NavigationButtons.vue";
 
 export default defineComponent({
   components: {
@@ -75,6 +68,7 @@ export default defineComponent({
     FontAwesomeIcon,
     AirportInput,
     ButtonLarge,
+    NavigationButtons
   },
   props: {
     modelValue: {

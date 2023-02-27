@@ -31,9 +31,9 @@
             </div>
           </li>
         </ol>
-        <div class="flex gap-5 items-center text-gray-600">
+        <div class="flex gap-5 items-center text-gray-500">
           <ClientOnly><FontAwesomeIcon icon="meteor" /></ClientOnly>
-          <span class="flex flex-col gap-1 leading-none"
+          <span class="flex flex-col gap-1 leading-none font-medium"
             >Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher
             Umstände</span
           >
