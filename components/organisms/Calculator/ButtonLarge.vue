@@ -7,7 +7,7 @@
         !selected,
     }"
   >
-    <FontAwesomeIcon :icon="icon" class="text-base" v-if="icon" />
+    <span><FontAwesomeIcon :icon="icon" class="text-base" v-if="icon" /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
       <span class="text-lg font-bold leading-none" v-if="label">{{
         label

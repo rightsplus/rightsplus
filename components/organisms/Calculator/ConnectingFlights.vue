@@ -41,7 +41,7 @@
         class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center mt-5"
         @click="modelValue.airport.layover.push({})"
       >
-        <FontAwesomeIcon icon="plus" />
+        <span><FontAwesomeIcon icon="plus" /></span>
         <span class="leading-none">Weitere Zwischenstopps hinzufügen</span>
       </button>
     </div>

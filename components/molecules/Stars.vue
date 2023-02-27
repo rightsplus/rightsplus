@@ -1,14 +1,27 @@
 <template>
-	<div class="flex gap-1 text-gold-400"><FontAwesomeIcon v-for="star in n" :icon="['fas', 'star']" /></div>
+  <div>
+    <span
+      ><FontAwesomeIcon
+        icon="star"
+        class="text-base"
+        v-for="n in stars"
+        :class="n > rating ? 'text-gray-200' : 'text-yellow-500'"
+    /></span>
+    <span class="sr-only">{{ rating }} Sterne Bewertung</span>
+  </div>
 </template>
 
 <script lang="ts">
 export default defineComponent({
-	props: {
-		n: {
-			type: Number,
-			default: 5,
-		},
-	}
-})
+  props: {
+    rating: {
+      type: Number,
+      required: true,
+    },
+    stars: {
+      type: Number,
+      default: 5,
+    },
+  },
+});
 </script>

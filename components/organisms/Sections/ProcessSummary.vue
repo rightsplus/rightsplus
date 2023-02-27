@@ -19,9 +19,7 @@
       <div class="bg-white p-12 rounded-2xl">
         <ol class="flex flex-col gap-8">
           <li v-for="item in process" :key="item.title" class="flex gap-5 items-center" :class="item.color">
-            <ClientOnly
-              ><FontAwesomeIcon :icon="item.icon"
-            /></ClientOnly>
+            <span><FontAwesomeIcon :icon="item.icon" /></span>
             <div class="flex flex-col gap-1 leading-none">
               <span class="text-base leading-none text-gray-500">{{ item.description }}</span>
               <span class="font-bold text-gray-800">{{ item.title }}</span>

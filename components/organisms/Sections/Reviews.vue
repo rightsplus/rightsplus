@@ -22,8 +22,8 @@
           :to="$state.reviews.url"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
           ><span>Weitere Bewertungen ansehen</span>
-          <FontAwesomeIcon icon="arrow-right" class="text-sm"
-        /></NuxtLink>
+          <span><FontAwesomeIcon icon="arrow-right" class="text-sm"
+        /></span></NuxtLink>
       </div>
     </div>
   </section>
@@ -32,7 +32,6 @@
 <script lang="ts" setup>
 import ReviewCard from "@/components/cells/ReviewCard.vue";
 import { Review } from "@/types";
-// import { ref } from "vue";
 const { $state } = useNuxtApp();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
@@ -53,12 +52,4 @@ useFetch<MapsResponseData>(request).then(({ data }) => {
 const shuffle = (reviews: Review[]) => reviews.sort(() => Math.random() - 0.5).slice(0, 4);
 </script>
 <style scoped>
-.double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
 </style>

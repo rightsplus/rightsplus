@@ -2,7 +2,8 @@
   <button
     class="text-base text-gray-500 hover:underline underline-offset-2 flex gap-2 items-center mr-auto"
   >
-    <FontAwesomeIcon icon="arrow-left" class="text-sm" /><span>Zurück</span>
+    <span><FontAwesomeIcon icon="arrow-left" class="text-sm" /></span
+    ><span>Zurück</span>
   </button>
 </template>
 

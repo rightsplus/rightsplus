@@ -8,9 +8,7 @@
         :flight="flight.departure"
         :allAirports="allAirports"
       />
-      <div class="text-center text-primary-500">
-        <FontAwesomeIcon icon="plane" />
-      </div>
+        <span class="text-center text-primary-500"><FontAwesomeIcon icon="plane" /></span>
       <FlightResultAirport
         label="Ankunft"
         :flight="flight.arrival"
@@ -21,7 +19,7 @@
     <!-- <pre class="text-sm">{{ flight }}</pre> -->
     <ol>
       <li class="flex gap-3 items-center text-base font-medium">
-        <FontAwesomeIcon icon="route" />
+        <span><FontAwesomeIcon icon="route" /></span>
         <span>{{ $n(distance, "km") }}</span>
       </li>
       <li v-if="!isEuMember" class="flex gap-3 items-center text-base font-medium">

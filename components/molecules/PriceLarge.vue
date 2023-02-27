@@ -22,11 +22,9 @@
       </div>
       <div class="markdown text-md flex flex-col gap-4">
         <div v-for="item in list" class="flex gap-3 leading-tight">
-          <FontAwesomeIcon
-            :icon="['fas', 'check']"
-            fixed-width
-            class="text-success-400 mt-1 shrink-0"
-          />
+          <span class="text-success-400 mt-1 shrink-0"
+            ><FontAwesomeIcon :icon="['fas', 'check']" fixed-width
+          /></span>
           <div>{{ item }}</div>
         </div>
       </div>
