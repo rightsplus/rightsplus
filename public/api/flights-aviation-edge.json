@@ -1,0 +1,37 @@
+[
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"gate": "A11A",
+			"delay": 20,
+			"scheduled_time": "2020-07-18T07:10:00.000",
+			"estimated_time": "2020-07-18T07:10:00.000",
+			"actual_time": "2020-07-18T07:30:00.000",
+			"estimated_runway": "2020-07-18T07:30:00.000",
+			"actual_runway": "2020-07-18T07:30:00.000"
+		},
+		"arrival": {
+			"iata_code": "LGW",
+			"icao_code": "EGKK",
+			"terminal": "N",
+			"scheduled_time": "2020-07-18T09:20:00.000",
+			"estimated_time": "2020-07-18T08:48:00.000",
+			"actual_time": "2020-07-18T08:48:00.000",
+			"estimated_runway": "2020-07-18T08:48:00.000",
+			"actual_runway": "2020-07-18T08:48:00.000"
+		},
+		"airline": {
+			"name": "Turkish Airlines",
+			"iata_code": "TK",
+			"icao_code": "THY"
+		},
+		"flight": {
+			"number": "1981",
+			"iata_number": "TK1981",
+			"icao_number": "THY1981"
+		}
+	}
+]

@@ -19,7 +19,9 @@ import {
   faClock,
   faGlobeEurope,
   faCalendar,
-  faMeteor
+  faMeteor,
+  faUserGroup,
+  faSignsPost
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -43,7 +45,9 @@ library.add(
   faCalendar,
   faMeteor,
   faGoogle,
-  faApple
+  faApple,
+  faUserGroup,
+  faSignsPost
 )
 
 config.autoAddCss = false

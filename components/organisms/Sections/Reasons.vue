@@ -37,20 +37,17 @@ export default defineComponent({
       page: null,
       sections: [
         {
-          icon: "plane-circle-xmark",
           title: "Fachliche Expertise",
           description: `Sie profitieren von unserer fachlichen Expertise und Erfahrung auf diesem Gebiet. Wir bieten Ihnen einen kompetenten Service an und legen dabei großen Wert auf effiziente und transparente Arbeit.
 Unsere Erfolgsquote liegt bei 98 % bei den von uns geltend gemachten Ansprüchen. Zur effektiven und erfolgreichen Durchsetzung der Ansprüche arbeiten wir eng mit einer auf das Reiserecht spezialisierten Rechtsanwaltskanzlei zusammen.`,
         },
         {
-          icon: "clock",
           color: "text-green-600",
           title: "Gesamte Abwicklung",
           description: `Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.
 Durch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die häufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko.`,
         },
         {
-          icon: "globe-europe",
           color: "text-green-600",
           title: "Kein Kosten- & Prozessrisiko",
           description: `Du trägst keinerlei Kosten- bzw. Prozessrisiko. Es bestehen keine versteckten Kosten oder Risiken.

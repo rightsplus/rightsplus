@@ -10,10 +10,10 @@
         <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
           <Dashboard />
           <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="$state.claims">
-            <FlightByAirport
+            <ClientOnly><FlightByAirport
               v-model="$state.claims"
               @submit="$state.claims.step++"
-            />
+            /></ClientOnly>
           </div>
           <ScrollDown class="mt-auto" />
         </div>
@@ -23,7 +23,7 @@
     <YourRights />
     <CTASection />
     <Reasons />
-    <Stats />
+    <Stats class="bg-gray-700 text-white" />
     <FeeCalculator />
     <Reviews />
   </div>

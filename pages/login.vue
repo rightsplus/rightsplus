@@ -68,21 +68,18 @@ export default defineComponent({
         const { error } = await this.client.auth.signInWithOAuth({
           provider,
         });
-        console.log("login", error);
         return;
       }
       const { data, error } = await this.client.auth.signInWithPassword({
         email: this.form.email,
         password: this.form.password,
       });
-      console.log("login", data);
     },
     async signup() {
       const { data, error } = await this.client.auth.signUp({
         email: this.form.email,
         password: this.form.password,
       });
-      console.log("signup", data.user);
     },
   },
   watch: {

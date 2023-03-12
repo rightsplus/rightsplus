@@ -176,10 +176,31 @@
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: 0.2s cubic-bezier(0.77, 0, 0.175, 1);
+  transition-property: opacity, scale;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  scale: 0.99;
+}
+
+
+.new-list-move, /* apply transition to moving elements */
+.new-list-enter-active,
+.new-list-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.new-list-enter-from,
+.new-list-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.new-list-leave-active {
+  position: absolute;
 }

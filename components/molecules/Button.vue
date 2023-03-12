@@ -4,7 +4,7 @@
     :to="to"
     :title="title"
     :disabled="disabled"
-    class="button flex items-center justify-center gap-2"
+    class="button flex items-center justify-center gap-2 leading-none"
     :bind="$attrs"
   >
       <slot />
@@ -14,7 +14,7 @@
     :title="title"
     :disabled="disabled"
     :aria-label="title"
-    class="button flex items-center justify-center gap-2"
+    class="button flex items-center justify-center gap-2 leading-none"
     :bind="$attrs"
   >
       <slot/>

@@ -22,8 +22,9 @@
           :to="$state.reviews.url"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
           ><span>Weitere Bewertungen ansehen</span>
-          <span><FontAwesomeIcon icon="arrow-right" class="text-sm"
-        /></span></NuxtLink>
+          <ClientOnly
+            ><FontAwesomeIcon icon="arrow-right" class="text-sm" /></ClientOnly
+        ></NuxtLink>
       </div>
     </div>
   </section>
@@ -43,9 +44,12 @@ interface MapsResponseData {
     url: string;
   };
 }
-const shuffle = (reviews: Review[]) => reviews?.sort(() => Math.random() - 0.5).slice(0, 4);
-if (!$state.reviews.entries.length) {
+const shuffle = (reviews: Review[]) =>
+  reviews?.sort(() => Math.random() - 0.5).slice(0, 4);
+
+if (!$state.reviews?.entries?.length) {
   useFetch<MapsResponseData>(request).then(({ data }) => {
+    console.log(data)
     $state.reviews = {
       entries: data.value?.result?.reviews,
       url: data.value?.result?.url,
@@ -53,5 +57,4 @@ if (!$state.reviews.entries.length) {
   });
 }
 </script>
-<style scoped>
-</style>
+<style scoped></style>

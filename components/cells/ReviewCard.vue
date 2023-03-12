@@ -17,9 +17,9 @@
       class="flex items-center gap-x-3 gap-y-1 text-sm leading-none flex-wrap"
     >
       <span class="font-bold">{{ review.author_name.split(" ")[0] }}</span>
-      <span
+      <ClientOnly
         ><FontAwesomeIcon icon="check-circle" class="text-green-500"
-      /></span>
+      /></ClientOnly>
       <span>RightsPlus Kund:in</span>
     </div>
   </NuxtLink>

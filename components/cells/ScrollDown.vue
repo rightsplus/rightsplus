@@ -7,7 +7,7 @@
       <span
         class="bg-white/50 rounded-full w-6 h-6 inline-flex items-center justify-center left-0 text-sm"
       >
-        <span><FontAwesomeIcon icon="arrow-down" fixed-width /></span> </span
+        <ClientOnly><FontAwesomeIcon icon="arrow-down" fixed-width /></ClientOnly> </span
       ><span>Nach unten scrollen</span>
     </button>
   </div>

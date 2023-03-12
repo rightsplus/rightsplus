@@ -1,28 +1,36 @@
 <template>
-  <div class="flex flex-col gap-5 bg-neutral-100 rounded-xl p-4 px-5">
+  <div class="flex flex-col gap-5 bg-neutral-100 rounded-xl p-4 px-5" v-bind="$attrs">
     <div
       class="grid grid-cols-[1fr_auto_1fr] items-center w-full text-sm font-medium text-gray-500"
     >
       <FlightResultAirport
         label="Abflug"
         :flight="flight.departure"
-        :allAirports="allAirports"
+        :allAirports="$state.airports"
       />
-        <span class="text-center text-primary-500"><FontAwesomeIcon icon="plane" /></span>
+      <span class="text-center text-primary-500"
+        ><FontAwesomeIcon icon="plane"
+      /></span>
       <FlightResultAirport
         label="Ankunft"
         :flight="flight.arrival"
-        :allAirports="allAirports"
+        :allAirports="$state.airports"
         class="items-end text-right"
       />
     </div>
-    <!-- <pre class="text-sm">{{ flight }}</pre> -->
+    <pre class="text-sm">{{ weather }}</pre>
     <ol>
-      <li class="flex gap-3 items-center text-base font-medium">
+      <li
+        class="flex gap-3 items-center text-base font-medium"
+        v-if="flight?.distance"
+      >
         <span><FontAwesomeIcon icon="route" /></span>
-        <span>{{ $n(distance, "km") }}</span>
+        <span>{{ $n(flight.distance, "km") }}</span>
       </li>
-      <li v-if="!isEuMember" class="flex gap-3 items-center text-base font-medium">
+      <li
+        v-if="!isEuMember"
+        class="flex gap-3 items-center text-base font-medium"
+      >
         Weder Abflug- noch Ankuftsflughafen liegen in der EU.
       </li>
       <li v-if="isEuMember">
@@ -56,7 +64,11 @@
             d="M521.273 119.472C525.764 105.652 545.315 105.653 549.805 119.472L557.991 144.665H584.48C599.011 144.665 605.052 163.259 593.296 171.8L571.866 187.37L580.052 212.562C584.542 226.382 568.725 237.874 556.969 229.333L535.539 213.763L514.109 229.333C502.353 237.874 486.536 226.382 491.027 212.562L499.212 187.37L477.782 171.8C466.026 163.259 472.068 144.665 486.599 144.665H513.088L521.273 119.472Z"
           />
         </svg>
-        <p>Bei Ansprüchen, die unter das EU-Fluggastrecht (EG 261) fallen, müssen die Fluggesellschaften nur bei Verspätungen von mehr als 3 Stunden eine Entschädigung zahlen.</p>
+        <p>
+          Bei Ansprüchen, die unter das EU-Fluggastrecht (EG 261) fallen, müssen
+          die Fluggesellschaften nur bei Verspätungen von mehr als 3 Stunden
+          eine Entschädigung zahlen.
+        </p>
       </li>
     </ol>
   </div>
@@ -64,7 +76,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { getAirportDistance } from "@/utils";
+import {
+  getAirportDistance,
+  getWeather,
+  isUnsafeToTakeoffOrLand,
+} from "@/utils";
 import { Airport, Flight } from "@/types";
 import { isEuMember } from "is-eu-member";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -80,23 +96,66 @@ export default defineComponent({
       required: true,
     },
   },
+  mounted() {
+    const lat = 52.520008;
+    const lon = 13.404954;
+    const start = "2021-01-01";
+    const end = "2021-01-01";
+  },
+  data() {
+    return {
+      warning: [] as string[],
+      weather: [] as Record<string, number | string>[],
+    };
+  },
+  watch: {
+    airports: {
+      handler(value) {
+        this.warning = [];
+        this.weather = [];
+        const times = this.$state.claims?.selectedFlight?.departure;
+        const departure = new Date(
+          times?.actual_runway || times?.estimated || times?.scheduled || 0
+        );
+        Object.values(value).forEach((airport: Airport) => {
+          getWeather(airport, departure.toISOString().slice(0, 10)).then(
+            (weather) => {
+              const hour = departure.getHours();
+              for (let i = hour; i < hour + 1; i++) {
+                const isUnsafe = isUnsafeToTakeoffOrLand(weather, i + 1);
+                if (isUnsafe) this.warning.push(isUnsafe);
+                this.weather.push({
+                  time: new Date(weather.time[i]).toLocaleTimeString(
+                    this.$i18n.locale,
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  ),
+                  temperature: weather.temperature_2m[i],
+                  gusts: weather.windgusts_10m[i],
+                  wind: weather.windspeed_100m[i],
+                  rain: weather.precipitation[i],
+                  snow: weather.snowfall[i],
+                  clouds: weather.cloudcover[i],
+                });
+              }
+            }
+          );
+        });
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   computed: {
-    allAirports() {
-      const airport = this.$state.claims?.airport;
-      const all = [
-        airport?.departure,
-        airport?.arrival,
-        ...(airport?.layover || []),
-      ];
-      return all.reduce((acc, cur) => {
-        if (cur) acc[cur.iata] = cur;
-        return acc;
-      }, {} as Record<string, Airport>);
+    airports() {
+      return this.$state.airports;
     },
     distance() {
       return getAirportDistance(
-        this.allAirports[this.flight.departure.iata],
-        this.allAirports[this.flight.arrival.iata]
+        this.$state.airports[this.flight.departure.iata],
+        this.$state.airports[this.flight.arrival.iata]
       );
     },
     isEuMember() {

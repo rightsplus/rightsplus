@@ -1,12 +1,12 @@
 <template>
   <div>
-    <span
+    <ClientOnly
       ><FontAwesomeIcon
         icon="star"
         class="text-base"
         v-for="n in stars"
         :class="n > rating ? 'text-gray-200' : 'text-yellow-500'"
-    /></span>
+    /></ClientOnly>
     <span class="sr-only">{{ rating }} Sterne Bewertung</span>
   </div>
 </template>

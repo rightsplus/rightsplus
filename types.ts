@@ -7,10 +7,15 @@ export interface ClaimsForm {
   date: {
     departure: string,
   },
-  selectedFlight: Flight | null,
+  routes: Record<string, Route>,
   reason: string | null,
   actualArrivalTime: string | null,
   step: number,
+  client: {
+    email: string,
+    firstName: string,
+    agreedToTerms: boolean,
+  }
 }
 interface AlgoliaResult {
   value: string;
@@ -30,6 +35,7 @@ export interface Airport {
   elevation?: number;
   tz?: string;
   countryName?: Record<string, string>;
+  objectID?: string;
   _highlightResult?: {
     iata: AlgoliaResult;
     full: AlgoliaResult;
@@ -86,8 +92,15 @@ export interface Flight {
     speed_vertical: number;
     is_ground: boolean;
   };
+  distance?: number;
 }
 
+export interface Route extends Record<'departure' | 'arrival', {
+  airport: Airport;
+}> {
+  flight?: Flight;
+  date: string;
+}
 
 export interface Review {
   author_name: string;

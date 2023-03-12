@@ -10,8 +10,15 @@
         :selected="modelValue?.selectedFlight"
       />
     </div>
-    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')"
-      :nextDisabled="!$state.flights.map(({ flight }) => flight.iata).includes(modelValue?.selectedFlight?.flight?.iata)" />
+    <NavigationButtons
+      @previous="$emit('back')"
+      @next="$emit('submit')"
+      :nextDisabled="
+        !$state.flights
+          .map(({ flight }) => flight.iata)
+          .includes(modelValue?.selectedFlight?.flight?.iata)
+      "
+    />
   </div>
 </template>
 
@@ -30,7 +37,7 @@ export default defineComponent({
     Button,
     ButtonBack,
     ButtonFlight,
-    NavigationButtons
+    NavigationButtons,
   },
   props: {
     modelValue: {
@@ -43,7 +50,9 @@ export default defineComponent({
   },
   methods: {
     handleSelect(flight: Flight) {
-      this.modelValue.selectedFlight = flight;
+      if (this.modelValue.selectedFlight?.flight?.iata === flight.flight.iata)
+        this.modelValue.selectedFlight = undefined;
+      else this.modelValue.selectedFlight = flight;
     },
     submitHandler() {
       this.$emit("submit");
@@ -52,14 +61,27 @@ export default defineComponent({
       fetch("api/aviationstack-new.json")
         .then((data) => data.json())
         .then(({ data }) => {
-          this.$state.flights = (data as Flight[]).filter(
-            ({ flight_date, departure, arrival }) =>
-              // new Date(flight_date) === new Date(this.modelValue.departure) &&
-              departure.iata?.toUpperCase() ===
-                this.modelValue.airport.departure.iata.toUpperCase() &&
-              arrival.iata?.toUpperCase() ===
-                this.modelValue.airport.arrival.iata.toUpperCase()
-          );
+          this.$state.flights = (data as Flight[])
+            .filter(
+              ({ flight_date, departure, arrival }) =>
+                // new Date(flight_date) === new Date(this.modelValue.departure) &&
+                departure.iata?.toUpperCase() ===
+                  this.modelValue.airport.departure.iata.toUpperCase() &&
+                arrival.iata?.toUpperCase() ===
+                  this.modelValue.airport.arrival.iata.toUpperCase()
+            )
+            .map((flight) => {
+              // console.log(this.$state.)
+              return {
+                ...flight,
+                distance: getAirportDistance(
+                  this.$state.airports[flight.arrival.iata],
+                  this.$state.airports[flight.departure.iata]
+                ),
+              };
+            });
+
+      console.log(this.$state.flights)
         })
         .catch((error) => {
           console.log(error);

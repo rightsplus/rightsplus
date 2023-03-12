@@ -1,8 +1,15 @@
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-5" v-if="$state.claims?.selectedFlight?.airline.iata">
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
     <FlightResult :flight="$state.claims?.selectedFlight" />
     <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
+
+    <p><b>Außergewöhlicher Umstand:</b> {{ $state.claims?.selectedFlight?.extraordinaryCircumstances }}</p>
+    <p><b>Verjährt:</b> {{ barred ? `Ja (${barred})` : "Nein" }}</p>
+    <p><b>Mindestens 3h Verspätet:</b> {{ ($state.claims?.selectedFlight?.departure.delay || 0) / 60 > 3 }}</p>
+    <p><b>Fluggesellschaft in EU:</b> {{ airlines[$state.claims?.selectedFlight?.airline.iata]?.isEuMember }} ({{airlines[$state.claims?.selectedFlight?.airline.iata]?.nameCountry}})</p>
+    <p><b>Abflug in EU:</b> {{ euLabel($state.claims?.airport.departure?.country) }}</p>
+    <p><b>Distanz:</b> {{ $n($state.claims?.selectedFlight?.distance || 0, "km") }}</p>
     <pre>{{ $state.claims }}</pre>
   </div>
 </template>
@@ -33,18 +40,38 @@ export default defineComponent({
   data() {
     return {
       value: null,
-      options: [
-        { value: "onTime", label: "Pünktlich" },
-        { value: "delayed", label: "Verspätet" },
-        { value: "cancelled", label: "Gestrichen / Umgebucht" },
-        { value: "boardingDenied", label: "Boarding untersagt" },
-        { value: "reRouted", label: "Umgeleitet" },
-        { value: "returned", label: "Umgekehrt" },
-      ],
+      airlines: {},
     };
+  },
+  mounted() {
+    fetch("api/airlines-aviation-edge.json")
+      .then((data) => data.json())
+      .then((data ) => {
+        this.airlines = data
+        this.airlines = data.reduce((acc, cur) => {
+          acc[cur.codeIataAirline] = {
+            // ...cur,
+            name: cur.nameAirline,
+            nameCountry: cur.nameCountry,
+            country: cur.codeIso2Country,
+            iata: cur.codeIataAirline,
+            isEuMember: isEuMember(cur.codeIso2Country),
+          };
+          return acc;
+        }, {})
+      })
+  },
+  computed: {
+    barred() {
+      const d = this.$state.claims?.date.departure
+      return d && new Date().getFullYear() - new Date(d).getFullYear() > 3 ? new Date(d).getFullYear() : false
+    }
   },
   methods: {
     isEuMember,
+    euLabel(country: string) {
+      return isEuMember(country) ? `Ja (${country})` : `Nein (${country})`;
+    },
     getAirportDistance,
     submitHandler() {
       this.$emit("submit");

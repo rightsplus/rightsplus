@@ -1,32 +1,34 @@
 <template>
-  <h3 class="text-base font-medium mb-8 tracking-tight">
-    Gib hier deine Flugdaten ein und sichere dir bis zu
-    <strong>450€</strong> Entschädigung.
-  </h3>
-  <!-- {{ modelValue }} -->
-  <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
-  <div class="double gap-4">
-    <AirportInput
-      name="departure"
-      label="Startflughafen"
-      placeholder="z.B. Berlin oder BER"
-      prefix-icon="plane-departure"
-      v-model="modelValue.airport.departure"
-    />
-    <AirportInput
-      name="arrival"
-      label="Zielflughafen"
-      placeholder="z.B. Tel Aviv oder TLV"
-      prefix-icon="plane-arrival"
-      v-model="modelValue.airport.arrival"
+  <div>
+    <h3 class="text-base font-medium mb-8 tracking-tight">
+      Gib hier deine Flugdaten ein und sichere dir bis zu
+      <strong>450€</strong> Entschädigung.
+    </h3>
+    <!-- {{ modelValue }} -->
+    <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
+    <div class="double gap-4">
+      <AirportInput
+        name="departure"
+        label="Startflughafen"
+        placeholder="z.B. Berlin oder BER"
+        prefix-icon="plane-departure"
+        v-model="modelValue.airport.departure"
+      />
+      <AirportInput
+        name="arrival"
+        label="Zielflughafen"
+        placeholder="z.B. Tel Aviv oder TLV"
+        prefix-icon="plane-arrival"
+        v-model="modelValue.airport.arrival"
+      />
+    </div>
+
+    <FormKit
+      type="submit"
+      @click.prevent="start"
+      label="Jetzt Entschädigung berechnen!"
     />
   </div>
-
-  <FormKit
-    type="submit"
-    @click.prevent="start"
-    label="Jetzt Entschädigung berechnen!"
-  />
 </template>
 
 <script lang="ts">

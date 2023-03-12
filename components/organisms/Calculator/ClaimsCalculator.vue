@@ -1,21 +1,32 @@
 <template>
-  <div>
-    <Stepper class="mb-5" :steps="steps" :step="$state.claims.step" />
+  <div class="grid grid-cols-4 gap-5">
+    <Stepper
+      class="mb-5"
+      :steps="steps"
+      :step="$state.claims.step"
+      @setStep="$state.claims.step = $event"
+    />
     <div
-      class="container bg-white rounded-3xl p-5 sm:p-12"
+      class="container col-span-2 bg-white rounded-3xl p-5 sm:p-12"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >
-      <component
-        :is="activeComponent"
-        v-if="$state.claims"
-        v-model="$state.claims"
-        @submit="$state.claims.step++"
-        @back="$state.claims.step--"
-        @reset="$state.claims.step = 0"
-      ></component>
-      <!-- <pre class="text-sm">{{ $state.claims }}</pre> -->
+      <ClientOnly
+        ><Transition mode="out-in" name="fade"
+          ><component
+            :is="activeComponent"
+            v-if="$state.claims"
+            v-model="$state.claims"
+            @submit="next"
+            @back="back"
+            @reset="reset"
+        /></Transition>
+      </ClientOnly>
     </div>
+    <TransitionGroup tag="div" name="new-list" class="relative flex flex-col gap-5">
+        <RouteCard v-for="[key, route], i in Object.entries($state.claims?.routes)" :key="route.departure.airport.iata"  :route="route" />
+      <!-- class="!rounded-3xl" -->
+    </TransitionGroup>
   </div>
 </template>
 
@@ -24,22 +35,30 @@ import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
 import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
+import FlightDate from "./FlightDate.vue";
 import SelectFlight from "./SelectFlight.vue";
+import PersonalInfo from "./PersonalInfo.vue";
 import SelectReason from "./SelectReason.vue";
 import Results from "./Results.vue";
 import Reset from "./Reset.vue";
 import Stepper from "@/components/cells/Stepper.vue";
+import FlightResult from "./FlightResult.vue";
+import RouteCard from "./RouteCard.vue";
 
 export default defineComponent({
   components: {
     FormKit,
     FlightByAirport,
     ConnectingFlights,
+    FlightDate,
     SelectFlight,
     SelectReason,
+    PersonalInfo,
     Results,
     Reset,
     Stepper,
+    FlightResult,
+    RouteCard,
   },
   data() {
     return {
@@ -48,42 +67,62 @@ export default defineComponent({
   },
   computed: {
     steps() {
-      const step = this.$state.claims?.step || 0
+      const step = this.$state.claims?.step || 0;
       return [
         {
-          label: "Flight Info",
+          label: "Start and Destination",
           active: 0,
         },
         {
-          label: "Flight Disruption",
+          label: "Connecting Flights",
+          active: 1,
+        },
+        {
+          label: "Flight Dates",
+          active: 2,
+        },
+        {
+          label: "Flights",
           active: 3,
         },
         {
-          label: "Personal Info",
-          active: 6,
+          label: "Reason for Disruption",
+          active: 4,
         },
+        {
+          label: "Results",
+          active: 5,
+        },
+
+        // {
+        //   label: "Flight Info",
+        //   active: 0,
+        // },
+        // {
+        //   label: "Flight Disruption",
+        //   active: 4,
+        // },
+        // {
+        //   label: "Personal Info",
+        //   active: 7,
+        // },
       ];
     },
     activeComponent() {
-      const components = [
-        FlightByAirport,
-        ConnectingFlights,
-        SelectFlight,
-        SelectReason,
-        Results,
-        Reset,
-      ];
-      return components[this.$state.claims.step];
-      switch (this.$state.claims.step) {
+      switch (this.$state.claims?.step || 0) {
         case 0:
           return FlightByAirport;
         case 1:
           return ConnectingFlights;
         case 2:
-          return SelectFlight;
+          return FlightDate;
         case 3:
-          return SelectReason;
+          return SelectFlight;
         case 4:
+          return SelectReason;
+        case 5:
+          return PersonalInfo;
+        case 6:
           return Results;
         default:
           return Reset;
@@ -104,6 +143,15 @@ export default defineComponent({
     },
   },
   methods: {
+    next(e?: number) {
+      this.$state.claims.step = e ?? this.$state.claims.step + 1;
+    },
+    back(e?: number) {
+      this.$state.claims.step = e ?? this.$state.claims.step - 1;
+    },
+    reset(e?: number) {
+      this.$state.claims.step = e ?? 0;
+    },
     setHeight() {
       const childrenHeight = Math.min(
         window.innerHeight - 120,

@@ -32,31 +32,6 @@ export default defineComponent({
   data() {
     return {
       page: null,
-      process: [
-        {
-          icon: "plane-circle-xmark",
-          color: "text-green-600",
-          title:
-            "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
-        },
-        {
-          icon: "clock",
-          color: "text-green-600",
-          title:
-            "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
-        },
-        {
-          icon: "globe-europe",
-          color: "text-green-600",
-          title:
-            "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
-        },
-        {
-          icon: "calendar",
-          color: "text-green-600",
-          title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
-        },
-      ],
     };
   },
   methods: {

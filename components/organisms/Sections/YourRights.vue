@@ -23,14 +23,14 @@
             :key="item.title"
             class="flex gap-5 items-center"
           >
-            <span><FontAwesomeIcon :icon="item.icon" :class="item.color" /></span>
+            <ClientOnly><FontAwesomeIcon :icon="item.icon" :class="item.color" /></ClientOnly>
             <div class="flex flex-col gap-1 leading-none">
               <span class="font-medium">{{ item.title }}</span>
             </div>
           </li>
         </ol>
         <div class="flex gap-5 items-center text-gray-500">
-          <span><FontAwesomeIcon icon="meteor" /></span>
+          <ClientOnly><FontAwesomeIcon icon="meteor" /></ClientOnly>
           <span class="flex flex-col gap-1 leading-none font-medium"
             >Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher
             Umstände</span

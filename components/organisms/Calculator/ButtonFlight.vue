@@ -42,7 +42,6 @@ export default defineComponent({
   },
   computed: {
     isSelected() {
-      console.log(this.selected?.flight?.iata, this.flight.flight.iata);
       return this.selected?.flight?.iata === this.flight.flight.iata;
     },
     iata() {

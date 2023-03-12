@@ -397,26 +397,26 @@
 			}
 		},
 		{
-			"flight_date": "2023-03-05",
+			"flight_date": "2022-03-05",
 			"departure": {
 				"airport": "Cologne Bonn Airport",
 				"iata": "CGN",
 				"delay": 30,
-				"scheduled": "2023-03-05T10:15:00+01:00",
-				"estimated": "2023-03-05T10:45:00+01:00",
-				"actual": "2023-03-05T10:45:00+01:00",
-				"estimated_runway": "2023-03-05T10:55:00+01:00",
-				"actual_runway": "2023-03-05T10:55:00+01:00"
+				"scheduled": "2022-03-05T10:15:00+01:00",
+				"estimated": "2022-03-05T10:45:00+01:00",
+				"actual": "2022-03-05T10:45:00+01:00",
+				"estimated_runway": "2022-03-05T10:55:00+01:00",
+				"actual_runway": "2022-03-05T10:55:00+01:00"
 			},
 			"arrival": {
 				"airport": "Tel Aviv Ben Gurion Airport",
 				"iata": "TLV",
 				"delay": 15,
-				"scheduled": "2023-03-05T15:25:00+02:00",
-				"estimated": "2023-03-05T15:40:00+02:00",
-				"actual": "2023-03-05T15:40:00+02:00",
-				"estimated_runway": "2023-03-05T15:50:00+02:00",
-				"actual_runway": "2023-03-05T15:50:00+02:00"
+				"scheduled": "2022-03-05T15:25:00+02:00",
+				"estimated": "2022-03-05T15:40:00+02:00",
+				"actual": "2022-03-05T15:40:00+02:00",
+				"estimated_runway": "2022-03-05T15:50:00+02:00",
+				"actual_runway": "2022-03-05T15:50:00+02:00"
 			},
 			"airline": {
 				"name": "El Al Israel Airlines",

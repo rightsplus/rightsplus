@@ -42,7 +42,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
-import TrieSearch from "trie-search";
 import { countries } from "@/config/countries";
 
 import { Airport } from "@/types";
@@ -80,6 +79,12 @@ export default defineComponent({
     query() {
       this.search({ query: this.query, hitsPerPage: 5 }).then(({ hits }) => {
         this.filteredAirports = hits as Airport[];
+        hits.forEach((hit: Airport, i: number) => {
+          const a = {...hit}
+          delete a._highlightResult
+          delete a.objectID
+          this.$state.airports[hit.iata] = a;
+        })
       });
     },
   },

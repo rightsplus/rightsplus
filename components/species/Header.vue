@@ -1,6 +1,6 @@
 <template>
   <header
-    class="z-50 overflow-hidden absolute w-screen text-neutral"
+    class="z-50 overflow-hidden absolute w-full text-neutral"
     :class="{
       open: menuOpen,
       loaded,
@@ -33,7 +33,15 @@
             title="RightsPlus"
           >
             <Icon :icon="Logo" />
-            <span class="text-neutral-800 font-bold">RightsPlus</span>
+            <span
+              class="flex gap-1"
+              :class="{
+                'text-white drop-shadow': $state.headerColor === 'white',
+                'text-neutral-800': $state.headerColor !== 'white',
+              }"
+            >
+              <span class="font-bold">RightsPlus</span><span>Flights</span>
+            </span>
           </NuxtLink>
         </li>
         <li
@@ -51,6 +59,7 @@
             :class="{
               'text-white bg-gray-700 px-5 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
+              'text-white drop-shadow': $state.headerColor === 'white',
             }"
             @click="
               (e) => {
@@ -99,11 +108,15 @@ export default defineComponent({
         this.loaded = true;
       }, 300);
     });
-    window.addEventListener("resize", () => setTimeout(this.setLine, 300, false));
+    window.addEventListener("resize", () =>
+      setTimeout(this.setLine, 300, false)
+    );
     // this.initParallaxHover()
   },
   unmounted() {
-    window.removeEventListener("resize", () => setTimeout(this.setLine, 300, false));
+    window.removeEventListener("resize", () =>
+      setTimeout(this.setLine, 300, false)
+    );
   },
   data() {
     return {
