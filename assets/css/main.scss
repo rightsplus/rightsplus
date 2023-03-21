@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .markdown {
   h1,
   h2,
@@ -42,21 +41,21 @@
     margin-block: var(--h-12);
   }
 
-  p+p {
+  p + p {
     margin-top: var(--m-3);
   }
-  p+ul {
+  p + ul {
     margin-top: var(--m-3);
   }
 
   ul {
     list-style: disc;
-    padding-left: var(--p-5)
+    padding-left: var(--p-5);
   }
 
   ol {
     list-style: decimal;
-    padding-left: var(--p-5)
+    padding-left: var(--p-5);
   }
 
   @media (max-width: 767px) {
@@ -75,10 +74,45 @@
     h4 {
       font-size: var(--text-lg);
     }
-
   }
 }
 
 .text-shadow {
   text-shadow: 0 5px 15px var(--tw-shadow-color, black);
+}
+
+[data-floating-label="true"] {
+  .formkit-input {
+    padding-top: 1.25em;
+    padding-bottom: .25em;
+  }
+  .formkit-label {
+    padding-left: 0em !important;
+    font-size: 0.875em !important;
+    font-weight: 500 !important;
+    top: 0.625em !important;
+    left: 1em !important;
+    transform: none !important;
+    transform-origin: 0;
+  }
+  input:focus ~ .formkit-label,
+  textarea:focus ~ .formkit-label,
+  .formkit-label[data-has-value="true"],
+  &[data-complete="true"] .formkit-label {
+    top: 0.125em !important;
+    padding-left: 0em !important;
+    left: 1em !important;
+    background-color: transparent !important;
+    transform: scale(0.75) !important;
+    transform-origin: 0;
+  }
+  &[data-prefix-icon="true"] {
+    .formkit-label,
+    input:focus ~ .formkit-label,
+    textarea:focus ~ .formkit-label,
+    .formkit-label[data-has-value="true"],
+    &[data-complete="true"] .formkit-label {
+      left: 2.8em !important;
+    }
+  }
 }

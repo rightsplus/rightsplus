@@ -33,6 +33,7 @@ module.exports = {
     "./formkit.config.{js,ts}",
     "./nuxt.config.{js,ts}",
     "./app.vue",
+    "./node_modules/vue-tailwind-datepicker/**/*.js"
   ],
   tailwindcss: {
     viewer: true,
@@ -62,6 +63,7 @@ module.exports = {
     require('@formkit/tailwindcss'),
     require('@tailwindcss/line-clamp'),
     require("tailwindcss-hyphens"),
+    require('@tailwindcss/forms'),
     require('tailwind-css-variables')({
       screens: false,
       lineHeight: false,

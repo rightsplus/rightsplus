@@ -9,11 +9,11 @@
       <div class="flex flex-col gap-12 leading-0 h-full md:w-1/2">
         <div class="flex flex-col gap-6">
           <h3
-            class="text-xl text-green-600 font-medium uppercase tracking-wider"
+            class="text-lg sm:text-xl text-green-600 font-medium uppercase tracking-wider"
           >
             Deine Rechte
           </h3>
-          <h2 class="text-5xl font-bold">
+          <h2 class="text-3xl sm:text-5xl font-bold">
             Wann bekomme ich eine Entschädigung?
           </h2>
         </div>

@@ -1,34 +1,43 @@
 <template>
   <ul
-    class="peer-focus:none absolute bg-white rounded-lg shadow-xl z-10 overflow-hidden p-[1px]"
+    class="peer-focus:none absolute bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-64 overflow-y-auto"
     v-if="filteredAirports.length"
-    @blur="$emit('blur')"
+    ref="list"
   >
     <li
-      v-for="airport, i in filteredAirports"
-      :tabindex="i"
+      v-for="(airport, i) in filteredAirports"
       :key="airport.iata"
       :name="airport.iata"
-      class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-neutral-100 first:rounded-t-lg last:rounded-b-lg focus-within:outline-none focus-within:ring-1 focus-within:ring-primary-500 focus-within:bg-neutral-100"
-      @mousedown="clickHandler(airport)"
-      @keydown.up.prevent="previous"
-      @keydown.down.prevent="next"
-      @keydown.enter.prevent="clickHandler(airport)"
-      @keydown.space.prevent="clickHandler(airport)"
-      @blur="blur"
+      class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600"
+      :class="{
+        'bg-primary-50': i === selected,
+      }"
+      @mousedown.prevent="clickHandler(airport)"
+      :ref="`item-${i}`"
     >
-      <FontAwesomeIcon icon="plane" class="text-gray-500" />
+      <FontAwesomeIcon
+        icon="plane"
+        class="icon"
+        :class="{
+          'text-primary-600': i === selected,
+          'text-gray-500': i !== selected,
+        }"
+      />
       <div class="flex flex-col gap-1">
         <span
           class="algolia-result"
           v-html="airport._highlightResult?.full.value"
+          :class="{
+            'text-primary-600': i === selected,
+          }"
         />
         <span
           class="algolia-result text-sm leading-none text-neutral-500"
           v-html="
             [
               airport._highlightResult?.city.value,
-              airport.countryName?.[$i18n.locale] || countries.getName(airport.country, $i18n.locale),
+              airport.countryName?.[$i18n.locale] ||
+                countries.getName(airport.country, $i18n.locale),
             ]
               .filter(Boolean)
               .join(', ')
@@ -60,13 +69,17 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   props: {
+    selected: {
+      type: Number,
+      default: 0,
+    },
     query: {
       type: String,
       required: true,
     },
     limit: {
       type: Number,
-      default: 5,
+      default: 10,
     },
   },
   data() {
@@ -76,34 +89,34 @@ export default defineComponent({
     };
   },
   watch: {
+    selected() {
+      const el = this.$refs[
+        `item-${this.selected}`
+      ] as HTMLCollectionOf<HTMLElement>;
+      if (el && this.$refs.list) {
+        el[0].scrollIntoView({ behavior: "smooth", block: "nearest" })
+      }
+    },
+    filteredAirports: {
+      handler(val) {
+        this.$emit("airports", val);
+      },
+      immediate: true,
+    },
     query() {
-      this.search({ query: this.query, hitsPerPage: 5 }).then(({ hits }) => {
+      if (this.query.length < 1) return;
+      this.search({ query: this.query, hitsPerPage: 10 }).then(({ hits }) => {
         this.filteredAirports = hits as Airport[];
         hits.forEach((hit: Airport, i: number) => {
-          const a = {...hit}
-          delete a._highlightResult
-          delete a.objectID
+          const a = { ...hit };
+          delete a._highlightResult;
+          delete a.objectID;
           this.$state.airports[hit.iata] = a;
-        })
+        });
       });
     },
   },
   methods: {
-    blur(e) {
-      if (e.relatedTarget?.nodeName !== "LI") this.$emit('blur')
-    },
-    next() {
-      const active = document.activeElement;
-      if (active?.nextElementSibling) {
-        (active.nextElementSibling as HTMLElement).focus();
-      }
-    },
-    previous() {
-      const active = document.activeElement;
-      if (active?.previousElementSibling) {
-        (active.previousElementSibling as HTMLElement).focus();
-      }
-    },
     selectAirport(airport: Airport) {
       const { iata, full, name, city, country, countryName, lat, lon } =
         airport;
@@ -120,8 +133,35 @@ export default defineComponent({
     },
     clickHandler(airport: Airport) {
       this.selectAirport(airport);
-      if (document.activeElement) {
-        (document.activeElement as HTMLElement).blur();
+    },
+    scrollParentToChild(parent, child) {
+      // Where is the parent on page
+      var parentRect = parent.getBoundingClientRect();
+      // What can you see?
+      var parentViewableArea = {
+        height: parent.clientHeight,
+        width: parent.clientWidth,
+      };
+
+      // Where is the child
+      var childRect = child.getBoundingClientRect();
+      // Is the child viewable?
+      var isViewable =
+        childRect.top >= parentRect.top &&
+        childRect.bottom <= parentRect.top + parentViewableArea.height;
+
+      // if you can't see the child try to scroll parent
+      if (!isViewable) {
+        // Should we scroll using top or bottom? Find the smaller ABS adjustment
+        const scrollTop = childRect.top - parentRect.top;
+        const scrollBot = childRect.bottom - parentRect.bottom;
+        if (Math.abs(scrollTop) < Math.abs(scrollBot)) {
+          // we're near the top of the list
+          parent.scrollTop += scrollTop;
+        } else {
+          // we're near the bottom of the list
+          parent.scrollTop += scrollBot;
+        }
       }
     },
   },

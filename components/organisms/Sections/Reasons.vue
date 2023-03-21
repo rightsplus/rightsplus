@@ -4,11 +4,11 @@
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div v-for="(section, i) in sections" class="flex flex-col gap-4">
           <span
-            class="text-2xl text-primary-600 font-bold uppercase tracking-wide"
+            class="text-xl sm:text-2xl text-primary-600 font-bold uppercase tracking-wide"
           >
             {{ String(i + 1).padStart(2, "0") }}
           </span>
-          <h2 class="text-5xl font-bold">
+          <h2 class="text-3xl sm:text-5xl font-bold">
             {{ section.title }}
           </h2>
           <p class="text-lg text-gray-600 font-medium">

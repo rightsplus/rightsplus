@@ -4,21 +4,20 @@
     v-bind="$attrs"
   >
     <span class="leading-none text-xs" v-if="route.date">{{
-      new Date(route.date).toLocaleDateString($i18n.locale, {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
+      date(route.date)
     }}</span>
     <div
       class="grid grid-cols-[1fr_auto_1fr] items-center w-full text-sm font-medium text-gray-500"
     >
       <div class="flex flex-col">
+        <span class="leading-none text-sm font-bold" v-if="route.flight">{{
+          time(route.flight.departure.scheduled)
+        }}</span>
         <span class="font-bold text-lg text-gray-700">{{
           route.departure.airport.iata
         }}</span>
         <span class="text-base leading-none">{{
-          $state.airports[route.departure.airport.iata]?.city || 
+          $state.airports[route.departure.airport.iata]?.city ||
           $state.airports[route.departure.airport.iata]?.name
         }}</span>
       </div>
@@ -27,14 +26,30 @@
       /></span>
 
       <div class="flex flex-col text-end">
-        <span class="font-bold leading-none text-lg text-gray-700">{{
+        <span class="leading-none text-sm font-bold" v-if="route.flight">{{
+          time(route.flight.departure.scheduled)
+        }}</span>
+        <span class="font-bold text-lg text-gray-700">{{
           route.arrival.airport.iata
         }}</span>
         <span class="text-base leading-none">{{
-          $state.airports[route.arrival.airport.iata]?.city || 
+          $state.airports[route.arrival.airport.iata]?.city ||
           $state.airports[route.arrival.airport.iata]?.name
         }}</span>
       </div>
+    </div>
+    <hr class="w-full border-t-2 border-neutral-200 my-2" v-if="route.flight" />
+    <div class="flex items-center gap-2" v-if="route.flight">
+      <div
+        class="w-5 h-5 flex justify-center items-center bg-white rounded-full"
+      >
+        <img
+          :alt="route.flight.airline.name"
+          :src="getAirlineLogo(route.flight.airline?.iata)"
+          class="w-4"
+        />
+      </div>
+      <span class="text-sm font-medium">{{ route.flight.airline.name }}</span>
     </div>
   </div>
 </template>
@@ -139,7 +154,11 @@ export default defineComponent({
       });
     },
     date(date: string) {
-      return new Date(date).toLocaleDateString(this.$i18n.locale);
+      return new Date(date).toLocaleDateString(this.$i18n.locale, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
     },
     duration(minutes: number) {
       const min = `${minutes % 60} min`;

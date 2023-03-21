@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
     <div
-      class="flex gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full"
+      class="flex flex-col sm:flex-row sm:gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full"
     >
       <FormKit
         type="select"

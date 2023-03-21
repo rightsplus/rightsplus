@@ -48,9 +48,7 @@ export default defineComponent({
       return this.flight.flight.iata.match(/[a-zA-Z]+|[0-9]+/g)?.join(" ");
     },
     logo() {
-      // return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/LY.png?crop=false&width=100&height=100`
-      return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${this.flight.airline.iata}.png?crop=false&width=100&height=100`;
-      // return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
+      return getAirlineLogo(this.flight.airline.iata);
     },
   },
   methods: {

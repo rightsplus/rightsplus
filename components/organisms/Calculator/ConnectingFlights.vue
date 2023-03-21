@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Hattest du Anschlussflüge?</h1>
 
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid sm:grid-cols-2 gap-3">
       <ButtonLarge
         @click.prevent="submitHandler(false)"
         :selected="!modelValue.airport.layover?.length"
@@ -24,7 +24,7 @@
         subLabel="Zwischenstopps hinzufügen"
       />
     </div>
-    <div v-if="modelValue.airport.departure && modelValue.airport?.layover && modelValue.airport.layover.length" class="relative">
+    <div v-if="modelValue.airport.departure" class="relative">
       <div class="opacity-50">
         <FormKit
           type="text"
@@ -32,9 +32,13 @@
           label="Abflug"
           prefix-icon="plane-departure"
           disabled
+          :floatingLabel="true"
+          :classes="{
+            inner: 'max-w-full'
+          }"
         />
       </div>
-      <div v-for="(layover, i) in modelValue.airport.layover">
+      <div v-for="(layover, i) in modelValue.airport.layover" v-if="modelValue.airport?.layover && modelValue.airport.layover.length">
         <AirportInput
           :label="`${i + 1}. Zwischenstopp hinzufügen`"
           placeholder="z.B. Frankfurt oder FRA"
@@ -49,10 +53,11 @@
       <button
         v-if="
           modelValue.airport.layover &&
+          modelValue.airport.layover.length &&
           modelValue.airport.layover.length < 4 &&
           !modelValue.airport.layover.filter((e) => !e.iata).length
         "
-        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-12"
+        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-8 mb-4"
         @click="modelValue.airport.layover && modelValue.airport.layover.push({})"
       >
         <span><FontAwesomeIcon icon="plus" /></span>
@@ -64,7 +69,11 @@
           :modelValue="modelValue.airport.arrival.full"
           label="Ankunft"
           prefix-icon="plane-arrival"
+          :floatingLabel="true"
           disabled
+          :classes="{
+            inner: 'max-w-full'
+          }"
         />
       </div>
     </div>

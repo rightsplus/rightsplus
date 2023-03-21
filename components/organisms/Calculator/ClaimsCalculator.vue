@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-5 gap-5">
     <Stepper
       class="mb-5"
       :steps="steps"
@@ -7,7 +7,7 @@
       @setStep="$state.claims.step = $event"
     />
     <div
-      class="container col-span-2 bg-white rounded-3xl p-5 sm:p-12"
+      class="container col-span-3 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-12"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >
@@ -23,10 +23,21 @@
         /></Transition>
       </ClientOnly>
     </div>
-    <TransitionGroup tag="div" name="new-list" class="relative flex flex-col gap-5">
-        <RouteCard v-for="[key, route], i in Object.entries($state.claims?.routes)" :key="route.departure.airport.iata"  :route="route" />
-      <!-- class="!rounded-3xl" -->
-    </TransitionGroup>
+    <div class="flex flex-col gap-3">
+    <span class="font-bold">Deine Flüge</span>
+      <TransitionGroup
+        tag="div"
+        name="new-list"
+        class="relative flex flex-col gap-5"
+      >
+        <RouteCard
+          v-if="$state.claims?.routes"
+          v-for="([key, route], i) in Object.entries($state.claims?.routes)"
+          :key="route.departure.airport?.iata"
+          :route="route"
+        />
+      </TransitionGroup>
+    </div>
   </div>
 </template>
 
@@ -90,8 +101,12 @@ export default defineComponent({
           active: 4,
         },
         {
-          label: "Results",
+          label: "Personal",
           active: 5,
+        },
+        {
+          label: "Results",
+          active: 6,
         },
 
         // {

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-5">
-    <h1 class="text-6xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative">
+    <h1 class="text-4xl sm:text-6xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative">
       <ClientOnly>
         <template #fallback>
           {{title[0]}}
@@ -10,7 +10,7 @@
         </span>
       </ClientOnly>
     </h1>
-    <span class="text-2xl font-medium text-gray-500"
+    <span class="text-xl sm:text-2xl font-medium text-gray-500"
       >{{ subtitle }}</span
     >
   </div>

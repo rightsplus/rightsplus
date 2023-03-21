@@ -1,6 +1,11 @@
 import { Airport, ClaimsForm, Route } from "types";
-import weatherCodes from "@/public/api/weather-codes.json";
+import weatherCodes from "~~/assets/weather-codes.json";
 
+export const getAirlineLogo = (iata: string) => {
+	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${iata}.png?crop=false&width=100&height=100`;
+	// return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/LY.png?crop=false&width=100&height=100`
+	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
+}
 export const getAirportDistance = (departureAirport: Airport, arrivalAirport: Airport) => {
 	if (!departureAirport || !arrivalAirport) return 0;
 	const { lat: lat1, lon: lon1 } = departureAirport;
@@ -175,18 +180,18 @@ const getAirportsRaw = async () => {
 
 
 export const reduceAirports = (claims: ClaimsForm) => {
-  const all = [
-    claims.airport?.departure,
-    ...(claims.airport?.layover || []),
-    claims.airport?.arrival,
-  ].filter(e => e?.iata);
+	const all = [
+		claims.airport?.departure,
+		...(claims.airport?.layover || []),
+		claims.airport?.arrival,
+	].filter(e => e?.iata);
 
 	console.log(all)
 
-  return all.reduce((acc, cur) => {
-    if (cur) acc[cur.iata] = cur;
-    return acc;
-  }, {} as Record<string, Airport>);
+	return all.reduce((acc, cur) => {
+		if (cur) acc[cur.iata] = cur;
+		return acc;
+	}, {} as Record<string, Airport>);
 }
 
 export const generateRoutes = (claims: ClaimsForm) => {
@@ -208,4 +213,32 @@ export const generateRoutes = (claims: ClaimsForm) => {
 	})
 
 	return routes;
+}
+
+
+export const focusNext = (select = false, active = document.activeElement as HTMLInputElement) => {
+
+	if (!active) return;
+
+	// Get all the input elements in the document
+	const inputElements = document.querySelectorAll("input, select, textarea, button, [tabindex]");
+
+	// Find the index of the currently focused input element
+	const currentIndex = Array.from(inputElements).findIndex(
+		(el) => el === active
+	);
+
+	// Find the next input element
+	let nextElement = inputElements[currentIndex + 1] as HTMLInputElement;
+	while (nextElement && nextElement.disabled) {
+		nextElement = inputElements[currentIndex + 2] as HTMLInputElement;
+	}
+
+	// Focus on the next input element
+	if (nextElement) {
+		nextElement.focus();
+		if (select) nextElement.select();
+	} else {
+		active.blur()
+	}
 }

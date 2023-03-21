@@ -2,6 +2,9 @@ import { de } from '@formkit/i18n'
 import { DefaultConfigOptions } from '@formkit/vue'
 import { generateClasses } from '@formkit/themes'
 import { createAutoAnimatePlugin } from '@formkit/addons'
+import { createFloatingLabelsPlugin } from '@formkit/addons'
+import '@formkit/addons/css/floatingLabels'
+
 const faUrl = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/svgs'
 const config: DefaultConfigOptions = {
   locales: { de },
@@ -10,7 +13,10 @@ const config: DefaultConfigOptions = {
     createAutoAnimatePlugin({
       duration: 500,
       easing: 'cubic-bezier(0.5, 0, 0, 1)',
-    })
+    }),
+    createFloatingLabelsPlugin({
+      // useAsDefault: true, // defaults to false
+    }),
   ],
   iconLoaderUrl: (iconName) => iconName.includes('fab') ? `${faUrl}/brands/${iconName.replace('fab-', '')}.svg` : `${faUrl}/solid/${iconName}.svg`,
   config: {
@@ -21,7 +27,7 @@ const config: DefaultConfigOptions = {
         help: 'text-xs text-neutral-500 leading-tight',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
         input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill autofill:ring-1 ring-blue-200',
-        label: 'text-neutral-500 font-medium text-sm',
+        label: 'text-neutral-500 font-medium text-sm leading-tight block',
         legend: 'text-neutral-500 font-medium text-sm',
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
         message: 'text-red-500 mb-1 text-xs',

@@ -14,6 +14,7 @@ export interface ClaimsForm {
   client: {
     email: string,
     firstName: string,
+    lastName: string,
     agreedToTerms: boolean,
   }
 }

@@ -11,9 +11,10 @@
           <span class="uppercase tracking-wider text-primary-500 font-bold"
             >Über uns</span
           >
+          <div class="flex flex-col gap-5 drop-shadow-xl">
           <h1 class="text-6xl font-extrabold">RightsPlus</h1>
           <span class="text-3xl font-medium">
-            {{ $route.meta.description }}
+            Erlebe eine neue Dimension an Rechte-Durchsetzung mit RightsPlus.
           </span>
           <p>
             Wir sind ein innovatives Unternehmen, das sich auf die Durchsetzung
@@ -55,6 +56,7 @@
             Kund:innen und arbeiten hart daran, weiterhin die besten Ergebnisse
             für unsere Kund:innen zu erzielen.
           </p>
+        </div>
           <div class="flex items-center gap-8 mt-24">
             <img
               src="/jo.jpg"

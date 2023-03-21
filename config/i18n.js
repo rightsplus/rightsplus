@@ -5,6 +5,8 @@ const format = () => ({
   cm: { style: 'unit', unit: 'centimeter', unitDisplay: 'narrow' },
   mm: { style: 'unit', unit: 'millimeter', unitDisplay: 'narrow' },
   deg: { style: 'unit', unit: 'degree', unitDisplay: 'narrow' },
+  celsius: { style: 'unit', unit: 'celsius', unitDisplay: 'narrow' },
+  speed: { style: 'unit', unit: 'celsius', unitDisplay: 'narrow' },
   percent: { style: 'percent', maximumFractionDigits: 2 },
   currency: { style: 'currency', currency: 'EUR' },
 })

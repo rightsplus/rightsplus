@@ -1,13 +1,13 @@
 <template>
   <button
-    class="flex text-left gap-5 items-center rounded-lg p-3 px-5"
+    class="flex text-left gap-5 items-center rounded-lg p-4 sm:p-5"
     :class="{
       'bg-gray-700 text-white': selected,
       'bg-neutral-100 hover:bg-neutral-200 text-gray-800 border border-neutral-200':
         !selected,
     }"
   >
-    <span><FontAwesomeIcon :icon="icon" class="text-base" v-if="icon" /></span>
+    <span class="leading-none"><FontAwesomeIcon :icon="icon" class="text-base" v-if="icon" /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
       <span class="text-lg font-bold leading-none" v-if="label">{{
         label

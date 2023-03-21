@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h3 class="text-base font-medium mb-8 tracking-tight">
+    <!-- <h3 class="text-base font-medium mb-8 tracking-tight">
       Gib hier deine Flugdaten ein und sichere dir bis zu
       <strong>450€</strong> Entschädigung.
-    </h3>
+    </h3> -->
     <!-- {{ modelValue }} -->
     <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
     <div class="double gap-4">
@@ -67,7 +67,8 @@ export default defineComponent({
   methods: {
     start() {
       this.$router.push("/claims-calculator");
-      this.$state.claims.step = 1;
+      this.$emit('submit')
+      // this.$state.claims.step = 1;
     },
   },
 });

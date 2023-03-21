@@ -1322,6 +1322,13 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
+"@tailwindcss/forms@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/forms/-/forms-0.5.3.tgz#e4d7989686cbcaf416c53f1523df5225332a86e7"
+  integrity sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==
+  dependencies:
+    mini-svg-data-uri "^1.2.3"
+
 "@tailwindcss/line-clamp@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.2.tgz#f353c5a8ab2c939c6267ac5b907f012e5ee130f9"
@@ -4197,6 +4204,11 @@ make-dir@^3.1.0, make-dir@~3.1.0:
   dependencies:
     semver "^6.0.0"
 
+maska@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/maska/-/maska-2.1.7.tgz#225a1124b311ccd603379cdf3d18920fbee27c54"
+  integrity sha512-WMQzwCgFN2lQf8opJwHwdik7YQ1F8IggGEPdky6qyaaKaE9fUCc8wfbx0U4SfnFiPTsE3/5PzI0Qka4xTBczrw==
+
 mdn-data@2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
@@ -4287,6 +4299,11 @@ mimic-response@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
   integrity sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==
+
+mini-svg-data-uri@^1.2.3:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/mini-svg-data-uri/-/mini-svg-data-uri-1.4.4.tgz#8ab0aabcdf8c29ad5693ca595af19dd2ead09939"
+  integrity sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==
 
 minimatch@^3.0.4, minimatch@^3.1.1:
   version "3.1.2"
@@ -6216,6 +6233,11 @@ vite-plugin-checker@^0.5.1:
     vscode-languageserver-textdocument "^1.0.1"
     vscode-uri "^3.0.2"
 
+vite-plugin-css-injected-by-js@^2.0.4:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-2.4.0.tgz#32eb77e3ea0c45fbecf1c5f1e65703cccd42ecdb"
+  integrity sha512-fQkJ5baPEasjjJLxHINLjXuPREO61VIDFUeUqleEBghOLfZZe/k/zrxG5b3kFZXu6JtdI11pnwtj3dh3CN9X4Q==
+
 "vite@^3.0.0 || ^4.0.0":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/vite/-/vite-4.1.1.tgz#3b18b81a4e85ce3df5cbdbf4c687d93ebf402e6b"
@@ -6343,6 +6365,13 @@ vue-router@^4.1.6:
   integrity sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==
   dependencies:
     "@vue/devtools-api" "^6.4.5"
+
+vue-tailwind-datepicker@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/vue-tailwind-datepicker/-/vue-tailwind-datepicker-1.3.2.tgz#39f07b72da12eb3f1d316064e9e25181cc42fc53"
+  integrity sha512-MNuwk+pUAAk00dmOe2n3Gby2R+alV9kG5jQDOl2lXfdm//5br0zOZlrUyGOcMjQRdx/ysD9A94DNXphMLcgvzA==
+  dependencies:
+    vite-plugin-css-injected-by-js "^2.0.4"
 
 vue-uuid@^3.0.0:
   version "3.0.0"

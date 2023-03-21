@@ -1,23 +1,35 @@
 <template>
   <div class="flex flex-col gap-5" v-if="$state">
     <h1 class="text-3xl font-bold">Flug auswählen</h1>
-    <div class="flex flex-col gap-3">
+    <div
+      v-if="modelValue.routes"
+      v-for="([key, route], i) in Object.entries(modelValue.routes)"
+      :key="key"
+      class="w-full flex flex-col gap-3"
+    >
+      <span class="flex items-center gap-3 font-bold"
+        >{{ route.departure.airport.iata
+        }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
+        {{ route.arrival.airport.iata }}</span
+      >
       <ButtonFlight
-        v-for="flight in $state.flights"
+        v-for="flight in $state.flights.filter(
+          (flight) =>
+            flight.departure.iata === route.departure.airport.iata &&
+            flight.arrival.iata === route.arrival.airport.iata &&
+            flight.flight_date === route.date
+        )"
         :key="flight.toString()"
         :flight="flight"
-        @click="handleSelect(flight)"
-        :selected="modelValue?.selectedFlight"
+        @click="handleSelect(flight, key)"
+        :selected="modelValue?.routes[key]?.flight"
       />
     </div>
+    <div class="flex flex-col gap-3"></div>
     <NavigationButtons
       @previous="$emit('back')"
       @next="$emit('submit')"
-      :nextDisabled="
-        !$state.flights
-          .map(({ flight }) => flight.iata)
-          .includes(modelValue?.selectedFlight?.flight?.iata)
-      "
+      :nextDisabled="!Object.values(modelValue?.routes).every((e) => e.flight)"
     />
   </div>
 </template>
@@ -28,7 +40,7 @@ import { FormKit } from "@formkit/vue";
 import Button from "@/components/molecules/Button.vue";
 import ButtonBack from "@/components/molecules/ButtonBack.vue";
 import ButtonFlight from "./ButtonFlight.vue";
-import { Flight } from "@/types";
+import { ClaimsForm, Flight } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
 
 export default defineComponent({
@@ -41,7 +53,7 @@ export default defineComponent({
   },
   props: {
     modelValue: {
-      type: Object,
+      type: Object as () => ClaimsForm,
       required: true,
     },
   },
@@ -49,10 +61,20 @@ export default defineComponent({
     this.init();
   },
   methods: {
-    handleSelect(flight: Flight) {
-      if (this.modelValue.selectedFlight?.flight?.iata === flight.flight.iata)
-        this.modelValue.selectedFlight = undefined;
-      else this.modelValue.selectedFlight = flight;
+    handleSelect(flight: Flight, key: string) {
+      // consol
+      if (
+        this.modelValue.routes[key]?.flight?.flight.iata === flight.flight.iata
+      )
+        this.modelValue.routes[key].flight = undefined;
+      else this.modelValue.routes[key].flight = flight;
+      console.log(this.modelValue.routes[key]);
+      // if (!this.modelValue.routes[i]?.flight) {
+      //   this.modelValue.routes[i] = {
+      //     ...this.modelValue.routes[i],
+      //     flight,
+      //   }
+      // }
     },
     submitHandler() {
       this.$emit("submit");
@@ -61,27 +83,15 @@ export default defineComponent({
       fetch("api/aviationstack-new.json")
         .then((data) => data.json())
         .then(({ data }) => {
-          this.$state.flights = (data as Flight[])
-            .filter(
-              ({ flight_date, departure, arrival }) =>
-                // new Date(flight_date) === new Date(this.modelValue.departure) &&
-                departure.iata?.toUpperCase() ===
-                  this.modelValue.airport.departure.iata.toUpperCase() &&
-                arrival.iata?.toUpperCase() ===
-                  this.modelValue.airport.arrival.iata.toUpperCase()
-            )
-            .map((flight) => {
-              // console.log(this.$state.)
-              return {
-                ...flight,
-                distance: getAirportDistance(
-                  this.$state.airports[flight.arrival.iata],
-                  this.$state.airports[flight.departure.iata]
-                ),
-              };
-            });
+          this.$state.flights = (data as Flight[]).map((flight) => ({
+            ...flight,
+            distance: getAirportDistance(
+              this.$state.airports[flight.arrival.iata],
+              this.$state.airports[flight.departure.iata]
+            ),
+          }));
 
-      console.log(this.$state.flights)
+          console.log(this.$state.flights);
         })
         .catch((error) => {
           console.log(error);

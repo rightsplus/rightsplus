@@ -3,6 +3,7 @@
     <h1 class="text-3xl font-bold">Flugdatum auswählen</h1>
     <!-- {{ modelValue.routes }} -->
     <div
+      v-if="modelValue.routes"
       v-for="([key, route], i) in Object.entries(modelValue.routes)"
       :key="key"
     >
@@ -11,13 +12,7 @@
         }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
         {{ airports?.[i + 1] }}</span
       >
-      <FormKit
-        type="date"
-        v-model="route.date"
-        label="Abflugdatum"
-        validation="required"
-        validation-visibility="live"
-      />
+      <DatePicker v-model="route.date" />
     </div>
 
     <NavigationButtons
@@ -37,6 +32,7 @@ import ButtonFlight from "./ButtonFlight.vue";
 import { ClaimsForm, Flight } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import DatePicker from "@/components/molecules/DatePicker.vue";
 
 export default defineComponent({
   components: {
@@ -46,6 +42,7 @@ export default defineComponent({
     ButtonFlight,
     NavigationButtons,
     FontAwesomeIcon,
+    DatePicker
   },
   props: {
     modelValue: {

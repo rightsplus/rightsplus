@@ -47,7 +47,8 @@ library.add(
   faGoogle,
   faApple,
   faUserGroup,
-  faSignsPost
+  faSignsPost,
+  faCalendar
 )
 
 config.autoAddCss = false

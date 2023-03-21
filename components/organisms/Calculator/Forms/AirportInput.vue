@@ -1,28 +1,34 @@
 <template>
-  <div class="relative" ref="container">
+  <div class="relative">
     <FormKit
+      ref="input"
       type="text"
       :validation="validation"
       autocomplete="off"
       v-model="query"
       :name="name"
-      :placeholder="placeholder"
       :label="label"
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
       @focus="inputFocused = true"
-      @blur="blur"
+      @blur="inputFocused = false"
       @prefix-icon-click="$emit('prefix-icon-click')"
       @suffix-icon-click="$emit('suffix-icon-click')"
-      @keydown.down.prevent="keydown"
+      @keydown.down.up.prevent="keydown"
+      @keydown.enter.prevent="enter"
+      :floatingLabel="true"
+      :classes="{
+        inner: inputFocused && airports.length && query.length ? 'rounded-b-none max-w-full' : 'max-w-full',
+      }"
     />
     <ListAirport
-      v-if="inputFocused || dropdownFocused"
-      ref="list"
-      class="w-full -mt-2"
+      v-if="inputFocused && query.length"
+      class="w-full -mt-[15px]"
       :query="query"
+      :limit="5"
+      :selected="selectedInList"
+      @airports="airports = $event"
       @input="handleInput"
-      @blur="blur"
     />
   </div>
 </template>
@@ -66,12 +72,16 @@ export default defineComponent({
   },
   data() {
     return {
+      selectedInList: 0,
       query: "",
       inputFocused: false,
-      dropdownFocused: false,
+      airports: [],
     };
   },
   watch: {
+    query() {
+      this.selectedInList = 0;
+    },
     modelValue: {
       handler(airport: Airport) {
         if (airport?.full) this.query = airport?.full;
@@ -79,36 +89,43 @@ export default defineComponent({
       deep: true,
       immediate: true,
     },
-    inputFocused() {
-      this.checkFocus()
-    },
-    dropdownFocused() {
-      this.checkFocus()
-    },
   },
   methods: {
-    keydown(e: KeyboardEvent) {
-      this.dropdownFocused = true;
-      this.$refs.list.$el.children[0].focus()
-    },
-    blur(e: Event) {
-      if (!e?.relatedTarget) {
-        this.inputFocused = false
-        this.dropdownFocused = false
+    enter(e: KeyboardEvent) {
+      if (this.airports.length) {
+        const { iata, full, name, city, country, countryName, lat, lon } =
+          this.airports[this.selectedInList];
+        this.handleInput({
+          iata,
+          full,
+          name,
+          city,
+          country,
+          countryName,
+          lat,
+          lon,
+        });
+      } else {
+
+      focusNext(true);
       }
     },
-    checkFocus() {
-      if (this.inputFocused || this.dropdownFocused) return true
-      this.inputFocused = false
-      if (!this.modelValue?.full) this.query = "";
-      if (this.query && this.modelValue?.full !== this.query) this.query = this.modelValue?.full;
-      if (!this.query) this.$emit("update:modelValue", {});
+    keydown(e: KeyboardEvent) {
+      if (e?.key === "ArrowDown") {
+        this.selectedInList = this.selectedInList + 1;
+        if (this.selectedInList > this.airports.length - 1)
+          this.selectedInList = 0;
+      }
+      if (e?.key === "ArrowUp") {
+        this.selectedInList = this.selectedInList - 1;
+        if (this.selectedInList < 0)
+          this.selectedInList = this.airports.length - 1;
+      }
     },
     handleInput(airport: Airport) {
       this.query = airport.full;
       this.$emit("update:modelValue", airport);
-      this.dropdownFocused = false;
-      this.inputFocused = false
+      focusNext(true);
     },
   },
 });

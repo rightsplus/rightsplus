@@ -5,20 +5,20 @@
       open: menuOpen,
       loaded,
     }"
-    style="backdropfilter: blur(var(--header-blur, 0px))"
+    @click.self="menuOpen = false"
   >
     <BurgerIcon
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
-      class="absolute cursor-pointer right-5 top-5 z-50 md:hidden"
+      class="absolute cursor-pointer right-5 top-4 sm:top-5 z-50 md:hidden"
     />
     <nav
-      class="flex items-center justify-center px-10 text-base sm:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto"
+      class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto font-bold md:font-medium"
     >
       <transition-group
         name="list"
         tag="ul"
-        class="w-full flex flex-col md:flex-row items-center gap-x-6 gap-y-[4vh] relative"
+        class="w-full flex flex-col md:flex-row gap-x-6 gap-y-[2vh] relative"
         :style="{
           '--line-width': `${lineWidth}px`,
           '--line-offset-x': `${lineOffsetX}px`,
@@ -28,28 +28,30 @@
         <li class="order-0 md:order-1 mr-auto">
           <NuxtLink
             to="/"
-            class="duration-500 flex gap-3 items-center py-3 leading-none cursor-pointer"
-            exactActiveClass="text-neutral-600"
+            class="duration-500 flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
+            @click="clickLink"
           >
             <Icon :icon="Logo" />
             <span
               class="flex gap-1"
               :class="{
-                'text-white drop-shadow': $state.headerColor === 'white',
-                'text-neutral-800': $state.headerColor !== 'white',
+                'text-white drop-shadow': $state?.headerColor === 'white',
               }"
             >
-              <span class="font-bold">RightsPlus</span><span>Flights</span>
+              <span class="font-bold">RightsPlus</span><span class="font-medium">Flights</span>
             </span>
           </NuxtLink>
         </li>
         <li
           v-for="(item, i) in links"
           :key="item.name"
-          class="order-1"
+          class="order-1 flex"
+          :class="{ 'button text-base': item.type === 'button' }"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
-          :data-parallax-hover="!item.icon && item.type !== 'button'"
+          :style="{
+            '--k': `${i}`,
+          }"
         >
           <NuxtLink
             :to="item.path"
@@ -57,16 +59,11 @@
             exactActiveClass="text-neutral-600"
             :title="item.title || item.name"
             :class="{
-              'text-white bg-gray-700 px-5 rounded-full hover:text-white hover:bg-gray-800':
+              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
-              'text-white drop-shadow': $state.headerColor === 'white',
+              'text-white drop-shadow': $state?.headerColor === 'white',
             }"
-            @click="
-              (e) => {
-                item.onClick?.();
-                menuOpen = false;
-              }
-            "
+            @click="clickLink(item)"
           >
             <span v-if="item.title">{{ item.title }}</span>
           </NuxtLink>
@@ -111,7 +108,6 @@ export default defineComponent({
     window.addEventListener("resize", () =>
       setTimeout(this.setLine, 300, false)
     );
-    // this.initParallaxHover()
   },
   unmounted() {
     window.removeEventListener("resize", () =>
@@ -142,7 +138,7 @@ export default defineComponent({
       const status = {
         name: "status",
         path: "/status",
-        title: "Forderungsstatus ansehen",
+        title: "Meine Forderungen",
         type: "button",
       } as Route;
 
@@ -170,68 +166,9 @@ export default defineComponent({
     },
   },
   methods: {
-    initParallaxHover() {
-      document
-        .querySelectorAll("[data-parallax-hover=true]")
-        .forEach((element) => {
-          let rect: DOMRect | null = null;
-          element.addEventListener(
-            "mouseenter",
-            (e) => {
-              rect = e.currentTarget?.getBoundingClientRect() as DOMRect;
-              this.setLine(e);
-            },
-            { passive: true }
-          );
-
-          element.addEventListener(
-            "mousemove",
-            (e) => {
-              const { currentTarget, x, y } = e;
-              if (!currentTarget || !x || !y) return;
-              if (!rect)
-                rect = currentTarget?.getBoundingClientRect() as DOMRect;
-              const halfHeight = rect.height / 2;
-              const topOffset = (y - rect.top - halfHeight) / halfHeight;
-              const halfWidth = rect.width / 2;
-              const leftOffset = (x - rect.left - halfWidth) / halfWidth;
-              this.setTransformStyles(
-                currentTarget?.parentElement,
-                leftOffset,
-                topOffset,
-                3
-              );
-            },
-            { passive: true }
-          );
-          element.addEventListener(
-            "mouseleave",
-            ({ currentTarget }) => {
-              this.setTransformStyles(currentTarget?.parentElement, 0, 0);
-              this.setLine(false);
-            },
-            { passive: true }
-          );
-        });
-    },
-    setStyles(el: HTMLElement, styles: Record<string, string>) {
-      Object.keys(styles).forEach((key) => {
-        el.style.setProperty(key, styles[key]);
-      });
-    },
-    setTransformStyles(
-      el: HTMLElement,
-      leftOffset: number,
-      topOffset: number,
-      coefficient = 1
-    ) {
-      this.setStyles(el, {
-        "--x": `${leftOffset * coefficient}px`,
-        "--y": `${topOffset * coefficient}px`,
-      });
-    },
-    offset(i: number, array: number[]) {
-      return Math.abs(i - Math.ceil((array.length - 1) / 2));
+    clickLink(item: Route) {
+      item.onClick?.();
+      this.menuOpen = false;
     },
     setLine(e: MouseEvent | false) {
       const target = e
@@ -248,6 +185,13 @@ export default defineComponent({
     },
   },
   watch: {
+    menuOpen(value) {
+      if (value) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    },
     $route() {
       this.setLine(false);
     },
@@ -258,11 +202,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .loaded nav:deep(ul):after {
   opacity: var(--line-opacity, 1);
-}
-[data-parallax-hover="true"] a:hover,
-[data-parallax-hover="true"] .router-link-active {
-  color: var(--color-primary-600);
-  transition: 0ms;
 }
 @media (min-width: 768px) {
   header {
@@ -279,7 +218,7 @@ export default defineComponent({
         transform: translateX(-50%);
         height: calc(100% - 1.25em);
         z-index: -1;
-        transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        transition: 500ms cubic-bezier(0.075, 0.82, 0.165, 1);
         transition-property: transform, width, left, opacity;
         border-radius: 10px;
       }
@@ -289,41 +228,67 @@ export default defineComponent({
 
 @media (max-width: 767px) {
   header {
+    height: 100vh;
+    transition-duration: 500ms;
+    pointer-events: none;
+    & > * {
+      pointer-events: all;
+    }
     nav {
-      background-color: #00000000;
-      backdrop-filter: blur(0px);
-      transition: all 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
+      background-color: #DA792D00;
+      transition-duration: 500ms;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+      transition-property: background-color, height;
       align-items: flex-start;
       padding-top: var(--p-6);
-      transition-delay: 250ms;
+      transition-delay: 100ms;
       padding-top: 20px;
+      border-end-start-radius: 30px;
+      border-end-end-radius: 30px;
+      overflow: hidden;
       ul {
+        li.order-0 {
+          margin-bottom: 20px;
+        }
         li:not(.order-0) {
+          /* color: white; */
+          margin-left: 49px;
           display: block;
           opacity: 0;
           transform: scale(0.9);
-          transition: 1000ms ease;
+          transform-origin: 0 top;
+          transition-duration: 500ms;
+          transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
           transition-property: opacity, transform;
-          transition-delay: 0;
+          transition-delay: 0ms;
+          margin-right: auto;
+        }
+        li.button {
+          transition-duration: 1000ms;
+          transition-timing-function: cubic-bezier(0, 1, 0, 1);
+          transform: scale(0.9) translateY(200px);
         }
       }
     }
     &.open {
-      color: white;
+      background-color: #00000080;
       position: fixed !important;
+      height: 100vh;
+      pointer-events: all;
       nav {
-        backdrop-filter: blur(20px);
-        background-color: #00000080;
-        height: 100vh !important;
-        padding-top: calc(25vh - 50px);
+        background-color: white;
+        height: 500px !important;
         transition-delay: 0ms;
         ul {
           li:not(.order-0) {
             transform: scale(1);
-            transition-delay: calc(var(--k) * 150ms + 150ms);
+            transition-delay: calc(var(--k) * 70ms + 300ms);
             transition-property: opacity, transform;
             opacity: 1;
-            /* height: initial; */
+          }
+          li.button {
+            margin-top: 130px;
+            transition-delay: calc(var(--k) * 70ms + 500ms);
           }
         }
       }

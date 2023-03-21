@@ -3,7 +3,7 @@
     <div class="max-w-5xl mx-auto px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-5">
-          <h1 class="text-6xl font-extrabold">Deine Rechte</h1>
+          <h1 class="text-3xl sm:text-6xl font-extrabold">Deine Rechte</h1>
           <p class="text-3xl font-medium text-gray-500">
             Nach der Fluggastrechteverordnung hast Du unter verschiedenen
             Voraussetzungen ein Recht auf Entschädigung

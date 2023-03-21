@@ -18,7 +18,7 @@
         class="items-end text-right"
       />
     </div>
-    <pre class="text-sm">{{ weather }}</pre>
+    <Weather :weather="weather[0]" />
     <ol>
       <li
         class="flex gap-3 items-center text-base font-medium"
@@ -64,7 +64,7 @@
             d="M521.273 119.472C525.764 105.652 545.315 105.653 549.805 119.472L557.991 144.665H584.48C599.011 144.665 605.052 163.259 593.296 171.8L571.866 187.37L580.052 212.562C584.542 226.382 568.725 237.874 556.969 229.333L535.539 213.763L514.109 229.333C502.353 237.874 486.536 226.382 491.027 212.562L499.212 187.37L477.782 171.8C466.026 163.259 472.068 144.665 486.599 144.665H513.088L521.273 119.472Z"
           />
         </svg>
-        <p>
+        <p class="text-xs leading-tight">
           Bei Ansprüchen, die unter das EU-Fluggastrecht (EG 261) fallen, müssen
           die Fluggesellschaften nur bei Verspätungen von mehr als 3 Stunden
           eine Entschädigung zahlen.
@@ -85,10 +85,12 @@ import { Airport, Flight } from "@/types";
 import { isEuMember } from "is-eu-member";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";
+import Weather from "@/components/molecules/Weather.vue";
 
 export default defineComponent({
   components: {
     FlightResultAirport,
+    Weather
   },
   props: {
     flight: {

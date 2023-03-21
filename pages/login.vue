@@ -6,7 +6,7 @@
       <h1 class="text-2xl font-bold">Login</h1>
       <div class="flex flex-col gap-3">
         <ProviderButton provider="google" @click="login('google')" />
-        <ProviderButton provider="apple" @click="login('apple')" />
+        <!-- <ProviderButton provider="apple" @click="login('apple')" /> -->
       </div>
       <span class="text-sm text-neutral-500">oder</span>
       <FormKit
@@ -24,14 +24,14 @@
           placeholder="Email"
           label-class="hidden"
         />
-        <FormKit
+        <!-- <FormKit
           field="password"
           type="password"
           name="password"
           label="Password"
           placeholder="Password"
           label-class="hidden"
-        />
+        /> -->
       </FormKit>
     </div>
   </div>
@@ -70,9 +70,8 @@ export default defineComponent({
         });
         return;
       }
-      const { data, error } = await this.client.auth.signInWithPassword({
-        email: this.form.email,
-        password: this.form.password,
+      const { data, error } = await this.client.auth.signInWithOtp({
+        email: this.form.email
       });
     },
     async signup() {
