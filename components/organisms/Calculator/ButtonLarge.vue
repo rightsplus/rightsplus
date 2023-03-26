@@ -7,13 +7,14 @@
         !selected,
     }"
   >
-    <span class="leading-none"><FontAwesomeIcon :icon="icon" class="text-base" v-if="icon" /></span>
+    <span class="leading-none" v-if="icon"><FontAwesomeIcon :icon="icon" class="text-base" /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
       <span class="text-lg font-bold leading-none" v-if="label">{{
         label
       }}</span>
       <span class="text-sm leading-none" v-if="subLabel">{{ subLabel }}</span>
     </div>
+    <slot />
   </button>
 </template>
 

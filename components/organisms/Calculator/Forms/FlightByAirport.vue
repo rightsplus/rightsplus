@@ -6,17 +6,17 @@
     </h3> -->
     <!-- {{ modelValue }} -->
     <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
-    <div class="double gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
       <AirportInput
         name="departure"
-        label="Startflughafen"
+        label="Abflug"
         placeholder="z.B. Berlin oder BER"
         prefix-icon="plane-departure"
         v-model="modelValue.airport.departure"
       />
       <AirportInput
         name="arrival"
-        label="Zielflughafen"
+        label="Ankunft"
         placeholder="z.B. Tel Aviv oder TLV"
         prefix-icon="plane-arrival"
         v-model="modelValue.airport.arrival"
@@ -27,6 +27,7 @@
       type="submit"
       @click.prevent="start"
       label="Jetzt Entschädigung berechnen!"
+      outer-class="!mb-0"
     />
   </div>
 </template>

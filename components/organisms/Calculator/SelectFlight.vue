@@ -1,39 +1,58 @@
 <template>
   <div class="flex flex-col gap-5" v-if="$state">
-    <h1 class="text-3xl font-bold">Flug auswählen</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold">
+      Um welchen Flug handelt es sich?
+    </h1>
     <div
-      v-if="modelValue.routes"
-      v-for="([key, route], i) in Object.entries(modelValue.routes)"
+      v-if="$state.routes"
+      v-for="([key, route], i) in Object.entries($state.routes)"
       :key="key"
       class="w-full flex flex-col gap-3"
     >
-      <span class="flex items-center gap-3 font-bold"
-        >{{ route.departure.airport.iata
-        }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
-        {{ route.arrival.airport.iata }}</span
+      <ButtonLarge
+        :selected="modelValue.route === key"
+        name="no"
+        @click="modelValue.route = key"
       >
+        <span class="flex items-center gap-3 font-bold"
+          >{{ route.departure.airport.iata
+          }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
+          {{ route.arrival.airport.iata }}</span
+        >
+      </ButtonLarge>
+    </div>
+
+    <DatePicker v-model="modelValue.date" />
+
+    <div
+      v-if="modelValue.route && $state.routes[modelValue.route]"
+      class="w-full flex flex-col gap-3"
+    >
       <ButtonFlight
         v-for="flight in $state.flights.filter(
           (flight) =>
-            flight.departure.iata === route.departure.airport.iata &&
-            flight.arrival.iata === route.arrival.airport.iata &&
-            flight.flight_date === route.date
+            flight.departure.iata ===
+              $state.routes[modelValue.route].departure.airport.iata &&
+            flight.arrival.iata ===
+              $state.routes[modelValue.route].arrival.airport.iata &&
+            (flight.flight_date === $state.routes[modelValue.route].date ||
+              flight.flight_date === $state.routes[modelValue.route].date[0])
         )"
         :key="flight.toString()"
         :flight="flight"
-        @click="handleSelect(flight, key)"
-        :selected="modelValue?.routes[key]?.flight"
       />
+      <!-- @click="handleSelect(flight, key)" -->
     </div>
     <div class="flex flex-col gap-3"></div>
     <NavigationButtons
       @previous="$emit('back')"
       @next="$emit('submit')"
-      :nextDisabled="!Object.values(modelValue?.routes).every((e) => e.flight)"
     />
+      <!-- :nextDisabled="
+        $state.routes && !Object.values($state.routes).every((e) => e.flight)
+      " -->
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
@@ -42,6 +61,8 @@ import ButtonBack from "@/components/molecules/ButtonBack.vue";
 import ButtonFlight from "./ButtonFlight.vue";
 import { ClaimsForm, Flight } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
+import ButtonLarge from "./ButtonLarge.vue";
+import DatePicker from "~~/components/molecules/DatePicker.vue";
 
 export default defineComponent({
   components: {
@@ -50,7 +71,9 @@ export default defineComponent({
     ButtonBack,
     ButtonFlight,
     NavigationButtons,
-  },
+    ButtonLarge,
+    DatePicker
+},
   props: {
     modelValue: {
       type: Object as () => ClaimsForm,
@@ -63,15 +86,13 @@ export default defineComponent({
   methods: {
     handleSelect(flight: Flight, key: string) {
       // consol
-      if (
-        this.modelValue.routes[key]?.flight?.flight.iata === flight.flight.iata
-      )
-        this.modelValue.routes[key].flight = undefined;
-      else this.modelValue.routes[key].flight = flight;
-      console.log(this.modelValue.routes[key]);
-      // if (!this.modelValue.routes[i]?.flight) {
-      //   this.modelValue.routes[i] = {
-      //     ...this.modelValue.routes[i],
+      if (this.$state.routes[key]?.flight?.flight.iata === flight.flight.iata)
+        this.$state.routes[key].flight = undefined;
+      else this.$state.routes[key].flight = flight;
+      console.log(this.$state.routes[key]);
+      // if (!this.$state.routes[i]?.flight) {
+      //   this.$state.routes[i] = {
+      //     ...this.$state.routes[i],
       //     flight,
       //   }
       // }
@@ -85,10 +106,13 @@ export default defineComponent({
         .then(({ data }) => {
           this.$state.flights = (data as Flight[]).map((flight) => ({
             ...flight,
-            distance: getAirportDistance(
-              this.$state.airports[flight.arrival.iata],
-              this.$state.airports[flight.departure.iata]
-            ),
+            ...(this.$state.airports[flight.arrival.iata] &&
+              this.$state.airports[flight.departure.iata] && {
+                distance: getAirportDistance(
+                  this.$state.airports[flight.arrival.iata],
+                  this.$state.airports[flight.departure.iata]
+                ),
+              }),
           }));
 
           console.log(this.$state.flights);

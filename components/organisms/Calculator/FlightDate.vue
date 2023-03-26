@@ -2,6 +2,7 @@
   <div class="flex flex-col gap-5" v-if="$state">
     <h1 class="text-3xl font-bold">Flugdatum auswählen</h1>
     <!-- {{ modelValue.routes }} -->
+    // verjährt oder in Zukunft rauskegeln
     <div
       v-if="modelValue.routes"
       v-for="([key, route], i) in Object.entries(modelValue.routes)"

@@ -1,29 +1,49 @@
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { Flight, ClaimsForm, Review, Airport, Route } from '@/types'
 
-const claims = process.client && localStorage.getItem('claims') && JSON.parse(localStorage.getItem('claims') as string) || {
-  airport: {
-    departure: null,
-    arrival: null,
-    layover: null,
+
+interface State {
+  headerColor?: string,
+  flights: Flight[],
+  airports: Record<string, Airport>,
+  reviews: {
+    url: string,
+    entries: Review[],
   },
-  date: {
-    departure: new Date().toISOString().slice(0, 10),
-  },
-  routes: {},
-  client: {
-    email: '',
-    firstName: '',
-    agreedToTerms: false,
-  },
-  reason: null,
-  actualArrivalTime: "2019-12-12T12:00",
-  step: 0,
-} as ClaimsForm
+  claims: ClaimsForm,
+  routes: Record<string, Route>,
+  log: typeof state.log,
+}
+
+const storedClaims = process.client && localStorage.getItem('claims') && JSON.parse(localStorage.getItem('claims') as string) as ClaimsForm
+
 
 export const state = reactive({
-  claims,
-  airports: computed(() => reduceAirports(claims)),
+  claims: storedClaims || {
+    airport: {
+      departure: null,
+      arrival: null,
+      layover: [{}],
+    },
+    route: null,
+    date: {
+      departure: new Date().toISOString().slice(0, 10),
+    },
+    client: {
+      email: '',
+      firstName: '',
+      agreedToTerms: false,
+    },
+    disruption: null,
+    reason: null,
+    reasonDetails: {
+      noBoarding: undefined,
+      delayed: undefined,
+      cancelled: undefined
+    },
+    step: 0,
+  } as ClaimsForm,
+  routes: {},
   flights: [],
   reviews: {
     url: '',
@@ -32,30 +52,22 @@ export const state = reactive({
   headerColor: null,
   log: (message: string) => console.log(message),
 })
+
+
 watch(state, () => {
   process.client && localStorage.setItem('claims', JSON.stringify(state.claims))
 })
 
+watch(() => state.claims.airport, () => {
+  state.routes = generateRoutes(state.claims);
+}, { deep: true, immediate: true });
 
-const airport = computed(() => {
-  return state.claims.airport;
-});
 
-watch(airport, () => {
-  state.claims.routes = generateRoutes(state.claims);
-}, { deep: true });
+export const airports = computed(() => reduceAirports(state.claims));
+
+
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $state: {
-      headerColor?: string,
-      flights: Flight[],
-      airports: Record<string, Airport>,
-      reviews: {
-        url: string,
-        entries: Review[],
-      },
-      claims: ClaimsForm,
-      log: typeof state.log,
-    };
+    $state: State;
   }
 }

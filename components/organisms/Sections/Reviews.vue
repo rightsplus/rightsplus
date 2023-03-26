@@ -1,7 +1,7 @@
 <template>
   <section class="py-24 bg-grey-200 relative">
-    <div class="grid gap-12 max-w-[1440px] mx-auto px-12 h-full relative z-1">
-      <div class="flex flex-col gap-12 leading-0 h-full">
+    <div class="grid gap-12 max-w-[1440px] mx-auto px-5 sm:px-12 h-full relative z-1">
+      <div class="flex flex-col gap-12 leading-0 h-full w-full">
         <div class="flex flex-col gap-5 text-center max-w-3xl mx-auto">
           <h1 class="text-5xl font-bold">RightsPlus Kund:innen berichten</h1>
           <h2 class="text-2xl font-medium text-gray-500">
@@ -10,14 +10,17 @@
             Entschädigungsansprüche durch RightsPlus.
           </h2>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          <ReviewCard
-            v-for="review in shuffle($state.reviews.entries)"
-            :key="review.author_name"
-            :review="review"
-            :link="$state.reviews.url"
-          />
-        </div>
+        <!-- <div class=""> -->
+          <div class="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <ReviewCard
+              v-for="review in shuffle($state.reviews.entries)"
+              :key="review.author_name"
+              :review="review"
+              :link="$state.reviews.url"
+              class="w-[80vw]"
+            />
+          </div>
+        <!-- </div> -->
         <NuxtLink
           :to="$state.reviews.url"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
@@ -48,13 +51,15 @@ const shuffle = (reviews: Review[]) =>
   reviews?.sort(() => Math.random() - 0.5).slice(0, 4);
 
 if (!$state.reviews?.entries?.length) {
-  useFetch<MapsResponseData>(request).then(({ data }) => {
-    console.log(data)
-    $state.reviews = {
-      entries: data.value?.result?.reviews,
-      url: data.value?.result?.url,
-    };
-  });
+  useFetch<MapsResponseData>(request)
+    .then(({ data }) => {
+      console.log(data)
+      $state.reviews = {
+        entries: data.value?.result?.reviews,
+        url: data.value?.result?.url,
+      };
+    })
+    .catch((e) => console.log(e));
 }
 </script>
 <style scoped></style>

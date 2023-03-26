@@ -15,7 +15,7 @@ const config: DefaultConfigOptions = {
       easing: 'cubic-bezier(0.5, 0, 0, 1)',
     }),
     createFloatingLabelsPlugin({
-      // useAsDefault: true, // defaults to false
+      useAsDefault: true, // defaults to false
     }),
   ],
   iconLoaderUrl: (iconName) => iconName.includes('fab') ? `${faUrl}/brands/${iconName.replace('fab-', '')}.svg` : `${faUrl}/solid/${iconName}.svg`,

@@ -1,7 +1,7 @@
 <template>
   <section class="p-8 sm:py-24 relative overflow-x-auto" v-bind="$attrs">
     <div class="grid gap-12 max-w-7xl mx-auto sm:px-12 h-full relative z-1">
-      <div class="flex justify-around gap-12 leading-0 h-full">
+      <div class="flex flex-col sm:flex-row justify-around gap-12 leading-0 h-full">
         <div v-for="(stat, i) in stats" class="flex flex-col gap-2 items-center text-center">
           <span class="text-3xl sm:text-6xl font-bold">
             {{ stat.title }}

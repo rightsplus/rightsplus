@@ -3,13 +3,14 @@
     <FormKit
       ref="input"
       type="text"
-      :validation="validation"
-      autocomplete="off"
       v-model="query"
-      :name="name"
+      autocomplete="off"
       :label="label"
+      :name="name"
+      :id="id || name"
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
+      :validation="validation"
       @focus="inputFocused = true"
       @blur="inputFocused = false"
       @prefix-icon-click="$emit('prefix-icon-click')"
@@ -18,117 +19,91 @@
       @keydown.enter.prevent="enter"
       :floatingLabel="true"
       :classes="{
-        inner: inputFocused && airports.length && query.length ? 'rounded-b-none max-w-full' : 'max-w-full',
+        inner:
+          inputFocused && airports?.length && query?.length
+            ? 'rounded-b-none max-w-full'
+            : 'max-w-full',
       }"
     />
     <ListAirport
-      v-if="inputFocused && query.length"
       class="w-full -mt-[15px]"
       :query="query"
       :limit="5"
       :selected="selectedInList"
-      @airports="airports = $event"
+      @airports="updateAirports"
       @input="handleInput"
+      :inputFocused="inputFocused"
     />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import { FormKit } from "@formkit/vue";
 import ListAirport from "./ListAirport.vue";
-import { Airport } from "@/types";
+import { Airport, ClaimsForm } from "@/types";
+const props = defineProps<{
+  modelValue: Airport;
+  name: string;
+  label: string;
+  placeholder: string;
+  id?: string;
+  validation?: string;
+  prefixIcon?: string;
+  suffixIcon?: string;
+}>();
+const emit = defineEmits(["update:modelValue", "suffix-icon-click", "prefix-icon-click"]);
+const selectedInList = ref(0);
+const query = ref("");
+const inputFocused = ref(false);
+const airports = ref([] as Airport[]);
 
-export default defineComponent({
-  components: {
-    FormKit,
-    ListAirport,
+watch(
+  () => query.value,
+  (val) => {
+    selectedInList.value = 0;
+  }
+);
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val?.full) query.value = val?.full;
   },
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-    },
-    placeholder: {
-      type: String,
-      required: true,
-    },
-    prefixIcon: {
-      type: String,
-    },
-    suffixIcon: {
-      type: String,
-    },
-    modelValue: {
-      type: Object,
-      required: true,
-    },
-    validation: {
-      type: String,
-    },
-  },
-  data() {
-    return {
-      selectedInList: 0,
-      query: "",
-      inputFocused: false,
-      airports: [],
-    };
-  },
-  watch: {
-    query() {
-      this.selectedInList = 0;
-    },
-    modelValue: {
-      handler(airport: Airport) {
-        if (airport?.full) this.query = airport?.full;
-      },
-      deep: true,
-      immediate: true,
-    },
-  },
-  methods: {
-    enter(e: KeyboardEvent) {
-      if (this.airports.length) {
-        const { iata, full, name, city, country, countryName, lat, lon } =
-          this.airports[this.selectedInList];
-        this.handleInput({
-          iata,
-          full,
-          name,
-          city,
-          country,
-          countryName,
-          lat,
-          lon,
-        });
-      } else {
+  { deep: true, immediate: true }
+);
+function updateAirports(value: Airport[]) {
+  airports.value = value;
+}
+function keydown(e: KeyboardEvent) {
+  selectedInList.value = keyIncrement(
+    e,
+    selectedInList.value,
+    airports.value?.length
+  );
+}
+function handleInput(airport: Airport) {
+  query.value = airport.full;
+  emit("update:modelValue", airport);
+  focusNext(true);
+}
+function enter() {
+  if (!airports.value?.length) {
+    focusNext(true);
+    return
+  }
 
-      focusNext(true);
-      }
-    },
-    keydown(e: KeyboardEvent) {
-      if (e?.key === "ArrowDown") {
-        this.selectedInList = this.selectedInList + 1;
-        if (this.selectedInList > this.airports.length - 1)
-          this.selectedInList = 0;
-      }
-      if (e?.key === "ArrowUp") {
-        this.selectedInList = this.selectedInList - 1;
-        if (this.selectedInList < 0)
-          this.selectedInList = this.airports.length - 1;
-      }
-    },
-    handleInput(airport: Airport) {
-      this.query = airport.full;
-      this.$emit("update:modelValue", airport);
-      focusNext(true);
-    },
-  },
-});
+  const { iata, full, name, city, country, countryName, lat, lon } =
+    airports.value[selectedInList.value];
+  handleInput({
+    iata,
+    full,
+    name,
+    city,
+    country,
+    countryName,
+    lat,
+    lon,
+  });
+}
 </script>
 
 <style>

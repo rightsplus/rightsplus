@@ -21,7 +21,19 @@ import {
   faCalendar,
   faMeteor,
   faUserGroup,
-  faSignsPost
+  faSignsPost,
+  faHeartbeat,
+  faUsers,
+  faPassport,
+  faBeer,
+  faShieldAlt,
+  faBan,
+  faWrench,
+  faGun,
+  faMapMarkedAlt,
+  faSmoking,
+  faSmokingBan,
+  faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -48,7 +60,18 @@ library.add(
   faApple,
   faUserGroup,
   faSignsPost,
-  faCalendar
+  faCalendar,
+  faPassport,
+  faUsers,
+  faHeartbeat,
+  faBeer,
+  faShieldAlt,
+  faBan,
+  faSmoking,
+  faSmokingBan,
+  faWrench,
+  faGun,
+  faMapMarkerAlt
 )
 
 config.autoAddCss = false

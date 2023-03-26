@@ -367,6 +367,66 @@
 			}
 		},
 		{
+			"flight_date": "2023-03-21",
+			"departure": {
+				"airport": "Cologne Bonn Airport",
+				"iata": "CGN",
+				"delay": 15,
+				"scheduled": "2023-03-21T12:30:00+00:00",
+				"estimated": "2023-03-21T12:45:00+00:00",
+				"actual": "2023-03-21T12:50:00+00:00",
+				"estimated_runway": "2023-03-21T12:45:00+00:00",
+				"actual_runway": "2023-03-21T12:50:30+00:00"
+			},
+			"arrival": {
+				"airport": "Ataturk International Airport",
+				"iata": "ISL",
+				"delay": 10,
+				"scheduled": "2023-03-21T16:30:00+00:00",
+				"estimated": "2023-03-21T16:40:00+00:00",
+				"actual": "2023-03-21T16:50:00+00:00",
+				"estimated_runway": "2023-03-21T16:40:00+00:00",
+				"actual_runway": "2023-03-21T16:50:20+00:00"
+			},
+			"airline": {
+				"name": "Turkish Airlines",
+				"iata": "TK"
+			},
+			"flight": {
+				"iata": "TK123"
+			}
+		},
+		{
+			"flight_date": "2023-03-21",
+			"departure": {
+				"airport": "Ataturk International Airport",
+				"iata": "ISL",
+				"delay": 5,
+				"scheduled": "2023-03-21T17:00:00+00:00",
+				"estimated": "2023-03-21T17:05:00+00:00",
+				"actual": "2023-03-21T17:10:00+00:00",
+				"estimated_runway": "2023-03-21T17:05:00+00:00",
+				"actual_runway": "2023-03-21T17:10:15+00:00"
+			},
+			"arrival": {
+				"airport": "Ben Gurion Airport",
+				"iata": "TLV",
+				"delay": 0,
+				"scheduled": "2023-03-21T20:30:00+00:00",
+				"estimated": "2023-03-21T20:30:00+00:00",
+				"actual": "2023-03-21T20:30:00+00:00",
+				"estimated_runway": "2023-03-21T20:30:00+00:00",
+				"actual_runway": "2023-03-21T20:30:00+00:00"
+			},
+			"airline": {
+				"name": "El Al",
+				"iata": "LY"
+			},
+			"flight": {
+				"iata": "LY456"
+			}
+		},
+		{
 			"flight_date": "2023-03-01",
 			"departure": {
 				"airport": "Paris Orly Airport",

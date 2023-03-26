@@ -16,7 +16,7 @@
         <span class="font-bold text-lg text-gray-700">{{
           route.departure.airport.iata
         }}</span>
-        <span class="text-base leading-none">{{
+        <span class="text-base leading-none" v-if="$state.airports">{{
           $state.airports[route.departure.airport.iata]?.city ||
           $state.airports[route.departure.airport.iata]?.name
         }}</span>
@@ -32,7 +32,7 @@
         <span class="font-bold text-lg text-gray-700">{{
           route.arrival.airport.iata
         }}</span>
-        <span class="text-base leading-none">{{
+        <span class="text-base leading-none" v-if="$state.airports">{{
           $state.airports[route.arrival.airport.iata]?.city ||
           $state.airports[route.arrival.airport.iata]?.name
         }}</span>
@@ -91,6 +91,7 @@ export default defineComponent({
   watch: {
     airports: {
       handler(value) {
+        if (!value) return
         this.warning = [];
         this.weather = [];
         const times = this.$state.claims?.selectedFlight?.departure;

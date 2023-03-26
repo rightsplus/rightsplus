@@ -6,7 +6,7 @@ export const getAirlineLogo = (iata: string) => {
 	// return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/LY.png?crop=false&width=100&height=100`
 	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
 }
-export const getAirportDistance = (departureAirport: Airport, arrivalAirport: Airport) => {
+export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: Airport) => {
 	if (!departureAirport || !arrivalAirport) return 0;
 	const { lat: lat1, lon: lon1 } = departureAirport;
 	const { lat: lat2, lon: lon2 } = arrivalAirport;
@@ -178,21 +178,19 @@ const getAirportsRaw = async () => {
 		});
 };
 
-
 export const reduceAirports = (claims: ClaimsForm) => {
-	const all = [
+	const all = ([
 		claims.airport?.departure,
 		...(claims.airport?.layover || []),
 		claims.airport?.arrival,
-	].filter(e => e?.iata);
+	]).filter(e => e && 'iata' in e) as Airport[];
 
-	console.log(all)
-
-	return all.reduce((acc, cur) => {
+	return all.reduce((acc: Record<string, Airport>, cur) => {
 		if (cur) acc[cur.iata] = cur;
 		return acc;
-	}, {} as Record<string, Airport>);
+	}, {});
 }
+
 
 export const generateRoutes = (claims: ClaimsForm) => {
 	const airports = reduceAirports(claims);
@@ -215,6 +213,20 @@ export const generateRoutes = (claims: ClaimsForm) => {
 	return routes;
 }
 
+export const keyIncrement = (e: KeyboardEvent, value: number, length: number) => {
+	let v = value
+	if (e?.key === "ArrowDown") {
+		v = v + 1;
+		if (v > length - 1)
+			v = 0;
+	}getCurrentInstance()?.refs.input?.focus()
+	if (e?.key === "ArrowUp") {
+		v = v - 1;
+		if (v < 0)
+			v = length - 1;
+	}
+	return v
+}
 
 export const focusNext = (select = false, active = document.activeElement as HTMLInputElement) => {
 
@@ -237,7 +249,7 @@ export const focusNext = (select = false, active = document.activeElement as HTM
 	// Focus on the next input element
 	if (nextElement) {
 		nextElement.focus();
-		if (select) nextElement.select();
+		if (select && typeof nextElement.select === 'function') nextElement.select();
 	} else {
 		active.blur()
 	}

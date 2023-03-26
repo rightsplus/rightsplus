@@ -5,7 +5,7 @@
     >
       <FlightResultAirport
         label="Abflug"
-        :flight="flight.departure"
+        :flight="flight?.departure"
         :allAirports="$state.airports"
       />
       <span class="text-center text-primary-500"
@@ -156,8 +156,8 @@ export default defineComponent({
     },
     distance() {
       return getAirportDistance(
-        this.$state.airports[this.flight.departure.iata],
-        this.$state.airports[this.flight.arrival.iata]
+        this.$state.airports[this.flight?.departure.iata],
+        this.$state.airports[this.flight?.arrival.iata]
       );
     },
     isEuMember() {

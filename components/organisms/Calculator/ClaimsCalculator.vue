@@ -7,7 +7,7 @@
       @setStep="$state.claims.step = $event"
     />
     <div
-      class="container col-span-3 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-12"
+      class="container sm:col-span-3 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-12"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >
@@ -24,6 +24,12 @@
       </ClientOnly>
     </div>
     <div class="flex flex-col gap-3">
+  <div
+    class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
+    v-bind="$attrs"
+  >
+  Deine Ansprüche
+    </div>
     <span class="font-bold">Deine Flüge</span>
       <TransitionGroup
         tag="div"
@@ -31,8 +37,8 @@
         class="relative flex flex-col gap-5"
       >
         <RouteCard
-          v-if="$state.claims?.routes"
-          v-for="([key, route], i) in Object.entries($state.claims?.routes)"
+          v-if="$state.routes"
+          v-for="([key, route], i) in Object.entries($state.routes)"
           :key="route.departure.airport?.iata"
           :route="route"
         />
@@ -81,32 +87,24 @@ export default defineComponent({
       const step = this.$state.claims?.step || 0;
       return [
         {
-          label: "Start and Destination",
+          label: "Flugroute",
           active: 0,
         },
         {
-          label: "Connecting Flights",
+          label: "Flüge",
           active: 1,
         },
         {
-          label: "Flight Dates",
+          label: "Reason for Disruption",
           active: 2,
         },
         {
-          label: "Flights",
+          label: "Personal",
           active: 3,
         },
         {
-          label: "Reason for Disruption",
-          active: 4,
-        },
-        {
-          label: "Personal",
-          active: 5,
-        },
-        {
           label: "Results",
-          active: 6,
+          active: 4,
         },
 
         // {
@@ -126,18 +124,14 @@ export default defineComponent({
     activeComponent() {
       switch (this.$state.claims?.step || 0) {
         case 0:
-          return FlightByAirport;
-        case 1:
           return ConnectingFlights;
-        case 2:
-          return FlightDate;
-        case 3:
+        case 1:
           return SelectFlight;
-        case 4:
+        case 2:
           return SelectReason;
-        case 5:
+        case 3:
           return PersonalInfo;
-        case 6:
+        case 4:
           return Results;
         default:
           return Reset;

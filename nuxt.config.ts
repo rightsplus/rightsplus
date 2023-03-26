@@ -6,7 +6,10 @@ export default defineNuxtConfig({
 		pageTransition: { name: 'page', mode: 'out-in' },
 		title: "RightsPlus",
 		meta: [
-			{ name: 'description', content: '' }
+			{ name: 'description', content: '' },
+			{ name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+			{ name: 'HandheldFriendly', content: 'true' }
+
 		],
 	},
 	pwa: {

@@ -15,7 +15,7 @@
     <nav
       class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto font-bold md:font-medium"
     >
-      <transition-group
+      <TransitionGroup
         name="list"
         tag="ul"
         class="w-full flex flex-col md:flex-row gap-x-6 gap-y-[2vh] relative"
@@ -25,7 +25,7 @@
           '--line-opacity': `${lineOpacity}`,
         }"
       >
-        <li class="order-0 md:order-1 mr-auto">
+        <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLink
             to="/"
             class="duration-500 flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
@@ -68,7 +68,7 @@
             <span v-if="item.title">{{ item.title }}</span>
           </NuxtLink>
         </li>
-      </transition-group>
+      </TransitionGroup>
     </nav>
   </header>
 </template>
