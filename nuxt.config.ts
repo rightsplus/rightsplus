@@ -43,8 +43,8 @@ export default defineNuxtConfig({
 	i18n,
 	postcss,
 	sourcemap: {
-		server: false,
-		client: false,
+		server: process.env.NODE_ENV === 'development',
+		client: process.env.NODE_ENV === 'development',
 	},
 	runtimeConfig: {
 		public: {
