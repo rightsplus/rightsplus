@@ -12,7 +12,7 @@
         class="col-span-6 sm:col-span-3 lg:col-span-3 flex flex-col text-xl font-medium leading-loose md:leading-normal"
         :style="{ '--total': routes.length }"
       >
-        <li v-for="(item, i) in routes" :key="item.name" :style="{ '--i': i }">
+        <!-- <li v-for="(item, i) in routes" :key="item.name" :style="{ '--i': i }">
           <NuxtLink
             :to="item.path"
             v-if="!item.spacer"
@@ -23,7 +23,7 @@
             <template v-else>{{ item.title }}</template>
           </NuxtLink>
           <hr v-else class="border-none h-4" />
-        </li>
+        </li> -->
       </ul>
     </nav>
     <span class="flex justify-center w-full pt-24 text-sm text-center">{{
