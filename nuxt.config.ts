@@ -42,6 +42,10 @@ export default defineNuxtConfig({
 	],
 	i18n,
 	postcss,
+	sourcemap: {
+		server: false,
+		client: false,
+	},
 	runtimeConfig: {
 		public: {
 			google: {
