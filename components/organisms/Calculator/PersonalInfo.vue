@@ -33,7 +33,7 @@
       <input
         :value="iban"
         v-maska
-        data-maska="@@### #### #### #### #### ##"
+        data-maska="@@## #### #### #### #### ##"
         class="bg-neutral-100 border border-neutral-200 rounded-lg p-3 w-full"
         placeholder="DE00 0000 0000 0000 0000 00"
       />
