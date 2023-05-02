@@ -13,137 +13,122 @@
       { ['--opacity']: opacity },
     ]"
   >
-    <slot></slot>
+    <div v-if="show">
+      <slot />
+    </div>
   </transition>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  name: 'TransitionExpand',
-  props: {
-    opacity: {
-      type: Number,
-      default: 0,
-    },
-    scale: {
-      type: Number,
-      default: 0.9,
-    },
-    duration: {
-      type: Number,
-      default: 500,
-    },
-    timing: {
-      type: String,
-      default: 'cubic-bezier(0.47, 0, 0.175, 1)',
-    },
-  },
-  data() {
-    return {
-      margin: null,
-      padding: null,
-    }
-  },
-  methods: {
-    afterEnter(element) {
-      // eslint-disable-next-line no-param-reassign
-      element.style.height = 'auto'
-    },
-    beforeEnter(element) {
-      this.margin = getComputedStyle(element).getPropertyValue('margin')
-      this.margin = getComputedStyle(element).getPropertyValue('padding')
+<script setup lang="ts">
+import { defineComponent } from "vue";
+interface Props {
+  opacity: number;
+  scale: number;
+  duration: number;
+  timing: string;
+  show: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+  opacity: 0,
+  scale: 0.9,
+  duration: 500,
+  timing: "cubic-bezier(0.47, 0, 0.175, 1)",
+  show: false,
+});
+const margin = ref(0);
+const padding = ref(0);
+const afterEnter = (element: HTMLElement) => {
+  element.style.height = "auto";
+};
+const beforeEnter = (element: HTMLElement) => {
+  margin.value = getComputedStyle(element).getPropertyValue("margin");
+  margin.value = getComputedStyle(element).getPropertyValue("padding");
+  element.style.margin = 0;
+  element.style.marginBottom = 0;
+  element.style.marginLeft = margin.value;
+  element.style.marginRight = margin.value;
+  element.style.padding = 0;
+  element.style.paddingBottom = 0;
+  element.style.paddingLeft = padding.value;
+  element.style.paddingRight = padding.value;
+  element.style.opacity = props.opacity;
+  element.style.transform = `scale(${props.scale})`;
+};
+const enter = (element: HTMLElement, done: () => void) => {
+  const { width } = getComputedStyle(element);
+  /* eslint-disable no-param-reassign */
+  element.style.width = width;
+  element.style.position = "absolute";
+  element.style.visibility = "hidden";
+  element.style.height = "auto";
+  /* eslint-enable */
+  const { height } = getComputedStyle(element);
+  /* eslint-disable no-param-reassign */
+  element.style.width = null;
+  element.style.position = null;
+  element.style.visibility = null;
+  element.style.height = 0;
 
-      element.style.margin = 0
-      element.style.marginBottom = 0
-      element.style.marginLeft = this.margin
-      element.style.marginRight = this.margin
+  element.style.marginTop = margin.value;
+  element.style.marginBottom = margin.value;
+  element.style.marginLeft = margin.value;
+  element.style.marginRight = margin.value;
 
-      element.style.padding = 0
-      element.style.paddingBottom = 0
-      element.style.paddingLeft = this.padding
-      element.style.paddingRight = this.padding
+  element.style.paddingTop = padding.value;
+  element.style.paddingBottom = padding.value;
+  element.style.paddingLeft = padding.value;
+  element.style.paddingRight = padding.value;
 
-      element.style.opacity = this.opacity
-      element.style.transform = `scale(${this.scale})`
-    },
-    enter(element) {
-      const { width } = getComputedStyle(element)
-      /* eslint-disable no-param-reassign */
-      element.style.width = width
-      element.style.position = 'absolute'
-      element.style.visibility = 'hidden'
-      element.style.height = 'auto'
-      /* eslint-enable */
-      const { height } = getComputedStyle(element)
-      /* eslint-disable no-param-reassign */
-      element.style.width = null
-      element.style.position = null
-      element.style.visibility = null
-      element.style.height = 0
+  element.style.opacity = 1;
+  element.style.transform = "scale(1)";
+  /* eslint-enable */
+  // Force repaint to make sure the
+  // animation is triggered correctly.
+  // eslint-disable-next-line no-unused-expressions
+  getComputedStyle(element).height;
+  requestAnimationFrame(() => {
+    // eslint-disable-next-line no-param-reassign
+    element.style.height = height;
+  });
+};
+const leave = (element: HTMLElement, done: () => void) => {
+  const { height } = getComputedStyle(element);
+  // eslint-disable-next-line no-param-reassign
+  element.style.height = height;
 
-      element.style.marginTop = this.margin
-      element.style.marginBottom = this.margin
-      element.style.marginLeft = this.margin
-      element.style.marginRight = this.margin
+  element.style.marginTop = margin.value;
+  element.style.marginBottom = margin.value;
+  element.style.marginLeft = margin.value;
+  element.style.marginRight = margin.value;
 
-      element.style.paddingTop = this.padding
-      element.style.paddingBottom = this.padding
-      element.style.paddingLeft = this.padding
-      element.style.paddingRight = this.padding
+  element.style.paddingTop = padding.value;
+  element.style.paddingBottom = padding.value;
+  element.style.paddingLeft = padding.value;
+  element.style.paddingRight = padding.value;
 
-      element.style.opacity = 1
-      element.style.transform = 'scale(1)'
-      /* eslint-enable */
-      // Force repaint to make sure the
-      // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
-      getComputedStyle(element).height
-      requestAnimationFrame(() => {
-        // eslint-disable-next-line no-param-reassign
-        element.style.height = height
-      })
-    },
-    leave(element) {
-      const { height } = getComputedStyle(element)
-      // eslint-disable-next-line no-param-reassign
-      element.style.height = height
+  element.style.opacity = props.opacity;
+  element.style.transform = `scale(${props.scale})`;
+  // Force repaint to make sure the
+  // animation is triggered correctly.
+  // eslint-disable-next-line no-unused-expressions
+  getComputedStyle(element).height;
+  requestAnimationFrame(() => {
+    // eslint-disable-next-line no-param-reassign
+    element.style.height = 0;
 
-      element.style.marginTop = this.margin
-      element.style.marginBottom = this.margin
-      element.style.marginLeft = this.margin
-      element.style.marginRight = this.margin
+    element.style.marginTop = 0;
+    element.style.marginBottom = 0;
+    element.style.marginLeft = margin.value;
+    element.style.marginRight = margin.value;
 
-      element.style.paddingTop = this.padding
-      element.style.paddingBottom = this.padding
-      element.style.paddingLeft = this.padding
-      element.style.paddingRight = this.padding
+    element.style.paddingTop = 0;
+    element.style.paddingBottom = 0;
+    element.style.paddingLeft = padding.value;
+    element.style.paddingRight = padding.value;
 
-      element.style.opacity = this.opacity
-      element.style.transform = `scale(${this.scale})`
-      // Force repaint to make sure the
-      // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
-      getComputedStyle(element).height
-      requestAnimationFrame(() => {
-        // eslint-disable-next-line no-param-reassign
-        element.style.height = 0
-
-        element.style.marginTop = 0
-        element.style.marginBottom = 0
-        element.style.marginLeft = this.margin
-        element.style.marginRight = this.margin
-
-        element.style.paddingTop = 0
-        element.style.paddingBottom = 0
-        element.style.paddingLeft = this.padding
-        element.style.paddingRight = this.padding
-
-        element.style.opacity = this.opacity
-        element.style.transform = `scale(${this.scale})`
-      })
-    },
-  },
-})
+    element.style.opacity = props.opacity;
+    element.style.transform = `scale(${props.scale})`;
+  });
+};
 </script>
 
 <style scoped>

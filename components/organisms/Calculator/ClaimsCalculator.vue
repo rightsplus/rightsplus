@@ -35,9 +35,9 @@
         tag="div"
         name="new-list"
         class="relative flex flex-col gap-5"
+        :show="$state.routes"
       >
         <RouteCard
-          v-if="$state.routes"
           v-for="([key, route], i) in Object.entries($state.routes)"
           :key="route.departure.airport?.iata"
           :route="route"
@@ -91,20 +91,20 @@ export default defineComponent({
           active: 0,
         },
         {
-          label: "Flüge",
-          active: 1,
-        },
-        {
-          label: "Reason for Disruption",
+          label: "Flug",
           active: 2,
         },
         {
-          label: "Personal",
+          label: "Reason for Disruption",
           active: 3,
         },
         {
-          label: "Results",
+          label: "Personal",
           active: 4,
+        },
+        {
+          label: "Results",
+          active: 5,
         },
 
         // {
@@ -124,14 +124,16 @@ export default defineComponent({
     activeComponent() {
       switch (this.$state.claims?.step || 0) {
         case 0:
-          return ConnectingFlights;
         case 1:
-          return SelectFlight;
+          return ConnectingFlights;
+          // return SelectRoute;
         case 2:
-          return SelectReason;
+          return SelectFlight;
         case 3:
-          return PersonalInfo;
+          return SelectReason;
         case 4:
+          return PersonalInfo;
+        case 5:
           return Results;
         default:
           return Reset;
