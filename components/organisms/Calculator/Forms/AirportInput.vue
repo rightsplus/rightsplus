@@ -1,46 +1,25 @@
 <template>
-  <div class="relative">
-    <FormKit
-      ref="input"
-      type="text"
-      v-model="query"
-      autocomplete="off"
-      :label="label"
-      :name="name"
-      :id="id || name"
-      :prefix-icon="prefixIcon"
-      :suffix-icon="suffixIcon"
-      :validation="validation"
-      @focus="inputFocused = true"
-      @blur="inputFocused = false"
-      @prefix-icon-click="$emit('prefix-icon-click')"
-      @suffix-icon-click="$emit('suffix-icon-click')"
-      @keydown.down.up.prevent="keydown"
-      @keydown.enter.prevent="enter"
-      :floatingLabel="true"
-      :classes="{
-        inner:
-          inputFocused && airports?.length && query?.length
-            ? 'rounded-b-none max-w-full'
-            : 'max-w-full',
-      }"
-    />
-    <ListAirport
-      class="w-full -mt-[15px]"
-      :query="query"
-      :limit="5"
-      :selected="selectedInList"
-      @airports="updateAirports"
-      @input="handleInput"
-      :inputFocused="inputFocused"
-    />
-  </div>
+  <DropdownSearch
+    :modelValue="modelValue?.full"
+    @update:model-value="$emit('update:model-value', airports[$event.value])"
+    :label="label"
+    :name="name"
+    :id="id || name"
+    :options="dropdownList"
+    @query="findAirports"
+    :prefix-icon="prefixIcon"
+    :suffix-icon="suffixIcon"
+    @prefix-icon-click="$emit('prefix-icon-click')"
+    @suffix-icon-click="$emit('suffix-icon-click')"
+  />
 </template>
 
 <script lang="ts" setup>
-import { FormKit } from "@formkit/vue";
-import ListAirport from "./ListAirport.vue";
-import { Airport, ClaimsForm } from "@/types";
+import { countries } from "@/config/countries";
+import { Airport } from "@/types";
+import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
+import DropdownSearch from "~~/components/molecules/DropdownSearch.vue";
+
 const props = defineProps<{
   modelValue: Airport;
   name: string;
@@ -52,57 +31,44 @@ const props = defineProps<{
   suffixIcon?: string;
 }>();
 const emit = defineEmits(["update:modelValue", "suffix-icon-click", "prefix-icon-click"]);
-const selectedInList = ref(0);
-const query = ref("");
-const inputFocused = ref(false);
-const airports = ref([] as Airport[]);
 
-watch(
-  () => query.value,
-  (val) => {
-    selectedInList.value = 0;
-  }
-);
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (val?.full) query.value = val?.full;
-  },
-  { deep: true, immediate: true }
-);
-function updateAirports(value: Airport[]) {
-  airports.value = value;
-}
-function keydown(e: KeyboardEvent) {
-  selectedInList.value = keyIncrement(
-    e,
-    selectedInList.value,
-    airports.value?.length
-  );
-}
-function handleInput(airport: Airport) {
-  query.value = airport.full;
-  emit("update:modelValue", airport);
-  focusNext(true);
-}
-function enter() {
-  if (!airports.value?.length) {
-    focusNext(true);
-    return
-  }
+onMounted(() => {
+  emit("update:modelValue", {
+    ...props.modelValue,
+    full: props.modelValue?.full || "",
+  })
+})
+watch(() => props.modelValue, (value) => {
+  console.log(value)
+}, { deep: true })
+const { search } = useAlgoliaSearch("AIRPORTS");
+const { locale } = useI18n();
+const airports = useAirports();
 
-  const { iata, full, name, city, country, countryName, lat, lon } =
-    airports.value[selectedInList.value];
-  handleInput({
-    iata,
-    full,
-    name,
-    city,
-    country,
-    countryName,
-    lat,
-    lon,
-  });
+const dropdownList = ref([] as DropdownItem[])
+
+function findAirports (query: string) {
+  if (query?.length < 1) return;
+    search({ query, hitsPerPage: 10 }).then(({ hits }) => {
+      dropdownList.value = hits.map((airport) => ({
+        value: airport.iata,
+        label: airport._highlightResult?.full.value || "Airport",
+        sublabel: [
+          airport._highlightResult?.city.value,
+          airport.countryName?.[locale.value] ||
+            countries.getName(airport.country, locale.value),
+        ]
+          .filter(Boolean)
+          .join(", "),
+        icon: "plane",
+      }));
+      hits.forEach((hit: Airport, i: number) => {
+        const a = { ...hit };
+        delete a._highlightResult;
+        delete a.objectID;
+        airports.value[hit.iata] = a;
+      });
+    });
 }
 </script>
 

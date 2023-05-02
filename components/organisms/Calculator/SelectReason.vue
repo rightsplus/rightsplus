@@ -44,8 +44,7 @@
         </button>
         <div class="top-0 left-0" v-if="showNoBordingDropdown">
           <Dropdown
-            :list="noBoarding"
-            :selected="
+            :active="
               noBoarding.findIndex(
                 (e) => e.value === $state.claims.reasonDetails?.noBoarding
               )

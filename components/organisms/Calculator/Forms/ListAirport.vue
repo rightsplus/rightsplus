@@ -1,9 +1,9 @@
 <template>
   <Dropdown
     v-if="inputFocused && query.length"
-    :selected="selected"
+    :active="selected"
     :limit="limit"
-    :list="dropdownList"
+    :options="dropdownList"
     @input="clickHandler"
   />
 </template>

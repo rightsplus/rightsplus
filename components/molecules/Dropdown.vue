@@ -1,16 +1,16 @@
 <template>
   <ul
     class="peer-focus:none absolute bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-64 overflow-y-auto w-full"
-    v-if="list?.length"
-    ref="list"
+    v-if="options?.length"
+    ref="options"
   >
     <li
-      v-for="(item, i) in list"
+      v-for="(item, i) in options"
       :key="item.value"
       :name="item.value"
       class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600"
       :class="{
-        'bg-primary-50': i === selected,
+        'bg-primary-50': i === active,
       }"
       @mousedown.prevent="$emit('input', i)"
       :ref="`item-${i}`"
@@ -21,8 +21,8 @@
         fixed-width
         class="icon"
         :class="{
-          'text-primary-600': i === selected,
-          'text-gray-500': i !== selected,
+          'text-primary-600': i === active,
+          'text-gray-500': i !== active,
         }"
       />
       <div class="flex flex-col gap-1">
@@ -30,7 +30,7 @@
           class="algolia-result"
           v-html="item.label"
           :class="{
-            'text-primary-600': i === selected,
+            'text-primary-600': i === active,
           }"
         />
         <span
@@ -53,8 +53,8 @@ export type DropdownItem = {
 };
 
 const props = defineProps<{
-  selected: number;
-  list: DropdownItem[];
+  active: number;
+  options: DropdownItem[];
 }>();
 defineEmits(["input"]);
 const instance = ref();
@@ -62,13 +62,13 @@ onMounted(() => {
   instance.value = getCurrentInstance();
 });
 watch(
-  () => props.selected,
+  () => props.active,
   () => {
     const refs = instance.value?.refs;
     const el = refs?.[
-      `item-${props.selected}`
+      `item-${props.active}`
     ] as HTMLCollectionOf<HTMLElement>;
-    if (el && refs.list) {
+    if (el && refs.options) {
       el[0].scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }

@@ -21,8 +21,12 @@ const storedClaims = process.client && localStorage.getItem('claims') && JSON.pa
 export const state = reactive({
   claims: storedClaims || {
     airport: {
-      departure: null,
-      arrival: null,
+      departure: {
+        full: ""
+      },
+      arrival: {
+        full: ""
+      },
       layover: [{}],
     },
     route: null,

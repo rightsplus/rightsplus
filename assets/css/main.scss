@@ -119,6 +119,11 @@
     --scale: 0.75;
     --top: 0;
   }
+  textarea:focus ~ .formkit-label,
+  textarea ~ .formkit-label[data-has-value="true"],
+  &[data-complete="true"] textarea ~ .formkit-label {
+    --top: -0.5em;
+  }
   &[data-suffix-icon="true"] {
     .formkit-label {
       --right: 2.8em;
