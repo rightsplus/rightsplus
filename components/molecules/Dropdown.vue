@@ -48,7 +48,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 export type DropdownItem = {
   value: string;
   label: string;
-  sublabel: string;
+  sublabel?: string;
   icon?: string;
 };
 

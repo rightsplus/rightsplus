@@ -32,10 +32,11 @@
       />
       <input
         :value="iban"
-        v-maska
+        v-maska:[options]
+        data-maska-eager
         data-maska="@@## #### #### #### #### ##"
         class="bg-neutral-100 border border-neutral-200 rounded-lg p-3 w-full"
-        placeholder="DE00 0000 0000 0000 0000 00"
+        placeholder="DE12 3456 7890 1234 5678 90"
       />
 
     </div>
@@ -48,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { vMaska } from "maska";
+import { MaskInputOptions, vMaska } from "maska";
 
 import { ClaimsForm } from "~~/types";
 import NavigationButtons from "./NavigationButtons.vue";
@@ -61,6 +62,13 @@ const { modelValue } = defineProps<{
 }>();
 
 const iban = ref()
+
+const options: MaskInputOptions = reactive({
+  tokens: {
+    '@': { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() }
+  },
+});
+
 
 if (!modelValue.client)
   modelValue.client = {

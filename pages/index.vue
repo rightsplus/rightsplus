@@ -9,10 +9,10 @@
       <div class="max-w-7xl mx-auto p-5 sm:px-12 h-full relative z-1">
         <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
           <Dashboard />
-          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="$state?.claims">
+          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="useState().claims">
             <ClientOnly><FlightByAirport
-              v-model="$state.claims"
-              @submit="$state.claims.step = ($state.claims.step || 0)"
+              v-model="useState().claims"
+              @submit="useState().claims.step = (useState().claims.step || 0)"
             /></ClientOnly>
           </div>
           <ScrollDown class="mt-auto" />
@@ -28,11 +28,8 @@
     <Reviews />
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import Dashboard from "@/components/species/Dashboard.vue";
-import Button from "@/components/molecules/Button.vue";
-import Arrow from "@/components/molecules/Arrow.vue";
-import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator.vue";
 import FlightByAirport from "@/components/organisms/Calculator/Forms/FlightByAirport.vue";
 import ScrollDown from "@/components/cells/ScrollDown.vue";
 import ProcessSummary from "@/components/organisms/Sections/ProcessSummary.vue";
@@ -42,52 +39,4 @@ import Reasons from "@/components/organisms/Sections/Reasons.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
 import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
 import Reviews from "@/components/organisms/Sections/Reviews.vue";
-export default defineComponent({
-  setup() {},
-  components: {
-    Dashboard,
-    Button,
-    Arrow,
-    FlightByAirport,
-    ClaimsCalculator,
-    ScrollDown,
-    ProcessSummary,
-    YourRights,
-    CTASection,
-    Reasons,
-    Stats,
-    FeeCalculator,
-    Reviews,
-  },
-  data() {
-    return {
-      page: null,
-    };
-  },
-  methods: {
-    scrollToHash(hash: string) {
-      document.querySelector(hash)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    },
-  },
-});
 </script>
-<style scoped>
-.green:after {
-  opacity: 0;
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: hard-light;
-  background-size: cover;
-  transition: 2s;
-}
-.show-green:after {
-  opacity: 1;
-}
-</style>

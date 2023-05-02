@@ -32,47 +32,16 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { FormKit } from "@formkit/vue";
-import ListAirport from "./ListAirport.vue";
 import AirportInput from "./AirportInput.vue";
-
-export default defineComponent({
-  components: {
-    FormKit,
-    ListAirport,
-    AirportInput,
-  },
-  props: {
-    modelValue: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      submitted: false,
-      limit: 10,
-      value: null,
-      form: {
-        departure: "",
-        arrival: "",
-      },
-      focused: {
-        departure: false,
-        arrival: false,
-      },
-    };
-  },
-  methods: {
-    start() {
-      this.$router.push("/claims-calculator");
-      this.$emit('submit')
-      // this.$state.claims.step = 1;
-    },
-  },
-});
+import { ClaimsForm } from "~~/types";
+defineProps<{modelValue: ClaimsForm}>()
+const emit = defineEmits(["submit"]);
+const start = () => {
+  useRouter().push("/claims-calculator");
+  emit('submit')
+}
 </script>
 <style scoped>
 .double {

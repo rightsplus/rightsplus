@@ -1,7 +1,7 @@
 export interface ClaimsForm {
   airport: {
-    departure: Airport | null,
-    arrival: Airport | null,
+    departure: Airport,
+    arrival: Airport,
     layover: (Airport | {})[],
   },
   route: string | null,

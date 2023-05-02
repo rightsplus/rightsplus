@@ -47,8 +47,8 @@ export const state = reactive({
     },
     step: 0,
   } as ClaimsForm,
-  routes: {},
-  flights: [],
+  routes: {} as Record<string, Route>,
+  flights: [] as Flight[],
   reviews: {
     url: '',
     entries: [],
