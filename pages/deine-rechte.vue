@@ -1,10 +1,10 @@
 <template>
-  <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <div class="max-w-5xl mx-auto px-12 h-full relative z-1">
+  <section class="min-h-screen pt-36 sm:pt-48 pb-8 bg-neutral-200">
+    <div class="max-w-5xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-5">
-          <h1 class="text-3xl sm:text-6xl font-extrabold">Deine Rechte</h1>
-          <p class="text-3xl font-medium text-gray-500">
+          <h1 class="text-4xl sm:text-6xl font-extrabold">Deine Rechte</h1>
+          <p class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto">
             Nach der Fluggastrechteverordnung hast Du unter verschiedenen
             Voraussetzungen ein Recht auf Entschädigung
           </p>

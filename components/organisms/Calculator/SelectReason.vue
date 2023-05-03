@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
     <div
-      class="flex flex-col sm:flex-row sm:gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full"
+      class="flex flex-wrap lg:flex-row gap-4"
     >
       <!-- <FormKit
         type="select"
@@ -28,42 +28,14 @@
         validation-visibility="live"
       /> -->
       <!--  // mindestens 14 Tage // Ersatzbeförderung -->
-
-      <div
-        class="relative w-full mt-4"
+      <DropdownButton
         v-if="modelValue.reason === 'noBoarding'"
-      >
-        <button
-          @click.prevent="showNoBordingDropdown = !showNoBordingDropdown"
-          :name="'c.value'"
-          class="w-full bg-neutral-100 hover:bg-neutral-200 border-neutral-200 border text-base p-3 rounded-lg"
-          :class="{
-            'rounded-b-none': showNoBordingDropdown,
-          }"
-        >
-          {{
-            noBoarding.find(
-              (e) => e.value === $state.claims.reasonDetails?.noBoarding
-            )?.label || "Bitte wählen"
-          }}
-        </button>
-        <div class="top-0 left-0" v-if="showNoBordingDropdown">
-          <Dropdown
-            :active="
-              noBoarding.findIndex(
-                (e) => e.value === $state.claims.reasonDetails?.noBoarding
-              )
-            "
-            :options="noBoarding"
-            @input="
-              (e) => {
-                ($state.claims.reasonDetails = { noBoarding: e.value }),
-                  (showNoBordingDropdown = false);
-              }
-            "
-          />
-        </div>
-      </div>
+        label="Tatsächliche Ankunftszeit"
+        name="actualArrivalTime"
+        v-model="modelValue.reasonDetails.noBoarding"
+        :options="noBoarding"
+        prefix-icon="clock"
+      />
     </div>
 
     <div
@@ -94,15 +66,6 @@
     </div>
     <FormKit
       type="textarea"
-      label="Gib den tatächlichen Flugstatus an"
-      placeholder="Flugstatus wählen"
-      name="reason"
-      v-model="modelValue.reason"
-      :options="reasons"
-      select-icon="angle-down"
-    />
-    <FormKit
-      type="select"
       label="Gib den tatächlichen Flugstatus an"
       placeholder="Flugstatus wählen"
       name="reason"

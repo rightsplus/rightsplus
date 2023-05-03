@@ -2,7 +2,7 @@
   <NuxtLink
     :to="review.author_url"
     target="_blank"
-    class="flex flex-col gap-4 bg-neutral-100 rounded-xl px-8 py-7 w-full hover:bg-white duration-300"
+    class="flex flex-col gap-4 bg-neutral-100 rounded-xl p-5 sm:px-8 sm:py-7 w-full hover:bg-white duration-300"
   >
     <div class="flex justify-between items-center leading-none">
       <Stars :rating="review.rating" />

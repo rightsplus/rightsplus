@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class=" overflow-x-hidden">
     <section class="min-h-screen pt-16 sm:pt-36 pb-8 bg-neutral-200">
       <img
         src="/airport-light-comp.jpg"

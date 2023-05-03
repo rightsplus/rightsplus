@@ -1,7 +1,7 @@
 <template>
   <section class="py-24 bg-gray-200 relative">
     <div
-      class="grid gap-12 max-w-xl mx-auto p-12 h-full relative z-1 bg-white rounded-xl"
+      class="grid gap-12 max-w-xl mx-auto p-5 sm:p-12 h-full relative z-1 bg-white sm:rounded-xl"
     >
       <div class="flex flex-col justify-around gap-4 leading-0 h-full">
         <h2 class="text-2xl font-medium">Entschädigungshöhe und Vergütung</h2>
@@ -14,12 +14,12 @@
       </div>
       <div class="flex flex-col gap-4">
       <span class="uppercase text-base tracking-wider font-medium text-gray-500">Entschädigungshöhe</span>
-      <div class="grid grid-cols-3 gap-6">
+      <div class="grid grid-cols-3 gap-4">
         <button
           v-for="option in options"
           :key="option"
           @click="compensation = option"
-          class="text-xl rounded-xl border border-1 border-gray-400 p-6 hover:bg-neutral-100 font-bold tracking-tighter"
+          class="text-xl rounded-xl border border-1 border-gray-400 p-3 sm:p-5 hover:bg-neutral-100 font-bold tracking-tighter"
           :class="{ 'border-primary-500 border-2': compensation === option }"
         >
           {{ $n(option, "currency") }}

@@ -29,16 +29,15 @@
         ><FontAwesomeIcon
           v-if="current?.icon || prefixIcon"
           :icon="current?.icon || prefixIcon"
-          :class="[
-            inputFocused && options?.length
-              ? 'text-primary-600'
-              : ''
-          ]"
+          :class="[inputFocused && options?.length ? 'text-primary-600' : '']"
           fixed-width
       /></ClientOnly>
-      <span
+
+      <div
         class="text-ellipsis overflow-hidden whitespace-nowrap translate-y-2 w-full text-left"
-        >{{ current?.label }}</span
+        ><Transition name="move-up"
+          ><div v-if="current">{{ current?.label }}</div></Transition
+        ></div
       ><ClientOnly><FontAwesomeIcon icon="angle-down" /></ClientOnly>
     </button>
     <label :for="id || name" class="formkit-label">{{ label }}</label>
@@ -57,7 +56,7 @@
 <script setup lang="ts">
 import Dropdown, { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 const props = defineProps<{
-  modelValue: DropdownItem;
+  modelValue: string;
   name: string;
   label: string;
   id?: string;
@@ -73,21 +72,19 @@ const emit = defineEmits([
   "prefix-icon-click",
 ]);
 
-const highlighted = ref(0);
+const highlighted = ref(
+  props.options.findIndex((e) => e.value === props.modelValue) || 0
+);
 const inputFocused = ref(false);
 const current = computed(() => {
   return props.options.find((e) => e.value === props.modelValue);
 });
-
-function updateInput(input: string) {
-  highlighted.value = 0;
-  emit("query", input);
-}
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
 function handleInput(input: DropdownItem) {
   const index = typeof input === "number" ? input : highlighted.value;
+  highlighted.value = index;
   emit("update:modelValue", props.options[index].value);
   focusNext(true);
 }

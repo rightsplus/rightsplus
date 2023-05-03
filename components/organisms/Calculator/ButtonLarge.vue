@@ -3,7 +3,7 @@
     class="flex text-left gap-5 items-center rounded-lg p-4 sm:p-5"
     :class="{
       'bg-gray-700 text-white': selected,
-      'bg-neutral-100 hover:bg-neutral-200 text-gray-800 border border-neutral-200':
+      'bg-neutral-100 hover:bg-neutral-50 text-gray-800 border border-neutral-200':
         !selected,
     }"
   >

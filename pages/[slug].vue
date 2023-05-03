@@ -1,12 +1,12 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-neutral-200">
-    <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
+    <div class="max-w-7xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
         <div class="flex flex-col gap-5">
-          <h1 class="text-6xl font-extrabold">
+          <h1 class="text-4xl sm:text-6xl font-extrabold">
             {{ ucFirstAll($route.params.slug) }}
           </h1>
-          <span class="text-3xl font-medium text-gray-500">
+          <span class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto">
             {{ $route.meta.description }}
           </span>
         </div>

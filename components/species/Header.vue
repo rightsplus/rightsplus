@@ -11,14 +11,16 @@
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
       class="absolute cursor-pointer right-5 top-4 sm:top-5 z-50 md:hidden"
+      :class="[$state?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
       class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto font-bold md:font-medium"
+      :class="[$state?.headerColor === 'white' ? 'dark' : '']"
     >
       <TransitionGroup
         name="list"
         tag="ul"
-        class="w-full flex flex-col md:flex-row gap-x-6 gap-y-[2vh] relative"
+        class="w-full flex flex-col md:flex-row gap-x-6 gap-y-2 landscape:gap-y-[1vh] relative"
         :style="{
           '--line-width': `${lineWidth}px`,
           '--line-offset-x': `${lineOffsetX}px`,
@@ -56,11 +58,13 @@
           <NuxtLink
             :to="item.path"
             class="duration-500 flex gap-3 items-center py-3 leading-none cursor-pointer"
-            exactActiveClass="text-neutral-600"
+            exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
-              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
+              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-900':
                 item.type === 'button',
+              'hover:text-gray-500 ':
+                item.type !== 'button',
               'text-white drop-shadow': $state?.headerColor === 'white',
             }"
             @click="clickLink(item)"
@@ -241,11 +245,12 @@ export default defineComponent({
       transition-property: background-color, height;
       align-items: flex-start;
       padding-top: var(--p-6);
-      transition-delay: 100ms;
       padding-top: 20px;
       border-end-start-radius: 30px;
       border-end-end-radius: 30px;
       overflow: hidden;
+      will-change: height;
+      transform: translate3d(0, 0, 0);
       ul {
         li.order-0 {
           margin-bottom: 20px;
@@ -264,9 +269,10 @@ export default defineComponent({
           margin-right: auto;
         }
         li.button {
-          transition-duration: 1000ms;
-          transition-timing-function: cubic-bezier(0, 1, 0, 1);
-          transform: scale(0.9) translateY(200px);
+          margin-top: 120px;
+          transition-duration: 1500ms;
+          transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+          transform: scale(0.9) translateY(150px);
         }
       }
     }
@@ -277,6 +283,9 @@ export default defineComponent({
       pointer-events: all;
       nav {
         background-color: white;
+        &.dark {
+          background-color: var(--color-gray-900);
+        }
         height: 500px !important;
         transition-delay: 0ms;
         ul {
@@ -287,8 +296,11 @@ export default defineComponent({
             opacity: 1;
           }
           li.button {
-            margin-top: 130px;
             transition-delay: calc(var(--k) * 70ms + 500ms);
+          transition-timing-function: cubic-bezier(0, 1, 0, 1);
+            @media screen and (orientation: landscape) {
+              margin-top: 10vh;
+            }
           }
         }
       }

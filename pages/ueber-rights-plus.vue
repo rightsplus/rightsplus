@@ -5,15 +5,15 @@
       alt="Airport"
       class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1"
     />
-    <div class="max-w-4xl mx-auto px-12 h-full relative z-1">
+    <div class="max-w-4xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
-        <div class="flex flex-col gap-5 mt-[40vh] mb-48">
+        <div class="flex flex-col gap-5 mt-[10vh] sm:mt-[40vh] mb-48">
           <span class="uppercase tracking-wider text-primary-500 font-bold"
             >Über uns</span
           >
           <div class="flex flex-col gap-5 drop-shadow-xl">
-          <h1 class="text-6xl font-extrabold">RightsPlus</h1>
-          <span class="text-3xl font-medium">
+          <h1 class="text-4xl sm:text-6xl font-extrabold">RightsPlus</h1>
+          <span class="text-2xl sm:text-3xl font-medium">
             Erlebe eine neue Dimension an Rechte-Durchsetzung mit RightsPlus.
           </span>
           <p>

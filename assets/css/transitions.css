@@ -112,6 +112,22 @@
   opacity: 0;
   transform: scaleY(0.5);
 }
+.move-up-move,
+.move-up-enter-active,
+.move-up-leave-active {
+  transition-duration: var(--transition-duration-500, 500ms);
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+  transition-property: opacity, transform;
+  transform-origin: 0 0;
+}
+.move-up-enter-from,
+.move-up-leave-to {
+  opacity: 0;
+  transform: translateY(1em);
+}
+.move-up-leave-to {
+  transition-duration: var(--transition-duration-250, 250ms);
+}
 
 @keyframes flip-in {
   0% {

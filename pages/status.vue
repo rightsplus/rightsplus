@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import FlightResult from "~~/components/organisms/Calculator/FlightResult.vue";
 
 const user = useSupabaseUser();
@@ -19,11 +19,8 @@ const user = useSupabaseUser();
 definePageMeta({
   middleware: ["auth"],
 });
-
-onMounted(() => {
-  watchEffect(() => {
-    if (!user.value) navigateTo("/login");
-  });
+watchEffect(() => {
+  if (!user.value) navigateTo("/login");
 });
 const { data: claims } = await useFetch("/api/claims", {
   headers: useRequestHeaders(["cookie"]),
