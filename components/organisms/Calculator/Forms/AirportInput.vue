@@ -32,15 +32,11 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["update:modelValue", "suffix-icon-click", "prefix-icon-click"]);
 
-onMounted(() => {
-  emit("update:modelValue", {
-    ...props.modelValue,
-    full: props.modelValue?.full || "",
-  })
+emit("update:modelValue", {
+  ...props.modelValue,
+  full: props.modelValue?.full || "",
 })
-watch(() => props.modelValue, (value) => {
-  console.log(value)
-}, { deep: true })
+
 const { search } = useAlgoliaSearch("AIRPORTS");
 const { locale } = useI18n();
 const airports = useAirports();

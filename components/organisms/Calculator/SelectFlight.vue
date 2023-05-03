@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col gap-5" v-if="useState()">
+  <div class="flex flex-col gap-5" v-if="useAppState()">
     <h1 class="text-2xl sm:text-3xl font-bold">
       Um welchen Flug handelt es sich?
     </h1>
     <div
-      v-if="useState().routes"
-      v-for="([key, route], i) in Object.entries(useState().routes)"
+      v-if="useAppState().routes"
+      v-for="([key, route], i) in Object.entries(useAppState().routes)"
       :key="key"
       class="w-full flex flex-col gap-3"
     >
@@ -25,11 +25,11 @@
     <DatePicker v-model="modelValue.date" />
 
     <div
-      v-if="modelValue.route && useState().routes[modelValue.route]"
+      v-if="modelValue.route && useAppState().routes[modelValue.route]"
       class="w-full flex flex-col gap-3"
     >
       <ButtonFlight
-        v-for="flight in useState().flights.filter(filterFlights)"
+        v-for="flight in useAppState().flights.filter(filterFlights)"
         :key="flight.toString()"
         :flight="flight"
       />
@@ -38,7 +38,7 @@
     <div class="flex flex-col gap-3"></div>
     <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
     <!-- :nextDisabled="
-        useState().routes && !Object.values(useState().routes).every((e) => e.flight)
+        useAppState().routes && !Object.values(useAppState().routes).every((e) => e.flight)
       " -->
   </div>
 </template>
@@ -59,17 +59,17 @@ onMounted(() => {
 const filterFlights = (flight: Flight) =>
   props.modelValue.route &&
   flight.departure.iata ===
-    useState().routes[props.modelValue.route].departure.airport.iata &&
+    useAppState().routes[props.modelValue.route].departure.airport.iata &&
   flight.arrival.iata ===
-    useState().routes[props.modelValue.route].arrival.airport.iata &&
-  (flight.flight_date === useState().routes[props.modelValue.route].date ||
-    flight.flight_date === useState().routes[props.modelValue.route].date?.[0]);
+    useAppState().routes[props.modelValue.route].arrival.airport.iata &&
+  (flight.flight_date === useAppState().routes[props.modelValue.route].date ||
+    flight.flight_date === useAppState().routes[props.modelValue.route].date?.[0]);
 
 const init = () => {
   fetch("api/aviationstack-new.json")
     .then((data) => data.json())
     .then(({ data }) => {
-      useState().flights = (data as Flight[]).map((flight) => {
+      useAppState().flights = (data as Flight[]).map((flight) => {
         return {
           ...flight,
           ...(useAirports().value[flight.arrival.iata] &&
@@ -82,7 +82,7 @@ const init = () => {
         };
       });
 
-      console.log(useState().flights);
+      console.log(useAppState().flights);
     })
     .catch((error) => {
       console.log(error);
@@ -111,13 +111,13 @@ const init = () => {
 };
 const handleSelect = (flight: Flight, key: string) => {
   // consol
-  if (useState().routes[key]?.flight?.flight.iata === flight.flight.iata)
-    useState().routes[key].flight = undefined;
-  else useState().routes[key].flight = flight;
-  console.log(useState().routes[key]);
-  // if (!this.useState().routes[i]?.flight) {
-  //   this.useState().routes[i] = {
-  //     ...this.useState().routes[i],
+  if (useAppState().routes[key]?.flight?.flight.iata === flight.flight.iata)
+    useAppState().routes[key].flight = undefined;
+  else useAppState().routes[key].flight = flight;
+  console.log(useAppState().routes[key]);
+  // if (!this.useAppState().routes[i]?.flight) {
+  //   this.useAppState().routes[i] = {
+  //     ...this.useAppState().routes[i],
   //     flight,
   //   }
   // }

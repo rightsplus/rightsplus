@@ -50,11 +50,10 @@ interface MapsResponseData {
 const shuffle = (reviews: Review[]) =>
   reviews?.sort(() => Math.random() - 0.5).slice(0, 4);
 
-if (!$state.reviews?.entries?.length) {
+if (!useAppState().reviews?.entries?.length) {
   useFetch<MapsResponseData>(request)
     .then(({ data }) => {
-      console.log(data)
-      $state.reviews = {
+      useAppState().reviews = {
         entries: data.value?.result?.reviews,
         url: data.value?.result?.url,
       };

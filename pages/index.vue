@@ -9,10 +9,10 @@
       <div class="max-w-7xl mx-auto p-5 sm:px-12 h-full relative z-1">
         <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
           <Dashboard />
-          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="useState().claims">
+          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="useAppState().claims">
             <ClientOnly><FlightByAirport
-              v-model="useState().claims"
-              @submit="useState().claims.step = (useState().claims.step || 0)"
+              v-model="useAppState().claims"
+              @submit="useAppState().claims.step = (useAppState().claims.step || 0)"
             /></ClientOnly>
           </div>
           <ScrollDown class="mt-auto" />

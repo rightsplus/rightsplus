@@ -61,7 +61,6 @@ module.exports = {
   },
   plugins: [
     require('@formkit/tailwindcss'),
-    require('@tailwindcss/line-clamp'),
     require("tailwindcss-hyphens"),
     require('@tailwindcss/forms'),
     require('tailwind-css-variables')({

@@ -1,3 +1,3 @@
 import { state, airports } from '@/store'
-export const useState = () => state
+export const useAppState = () => state
 export const useAirports = () => airports

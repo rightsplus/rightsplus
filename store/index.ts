@@ -3,16 +3,16 @@ import { Flight, ClaimsForm, Review, Airport, Route } from '@/types'
 
 
 interface State {
-  headerColor?: string,
+  headerColor?: string | null,
   flights: Flight[],
-  airports: Record<string, Airport>,
+  // airports: Record<string, Airport>,
   reviews: {
-    url: string,
-    entries: Review[],
+    url?: string,
+    entries?: Review[],
   },
   claims: ClaimsForm,
   routes: Record<string, Route>,
-  log: typeof state.log,
+  log: (message: string) => void,
 }
 
 const storedClaims = process.client && localStorage.getItem('claims') && JSON.parse(localStorage.getItem('claims') as string) as ClaimsForm
@@ -55,7 +55,7 @@ export const state = reactive({
   },
   headerColor: null,
   log: (message: string) => console.log(message),
-})
+} as State)
 
 
 watch(state, () => {
