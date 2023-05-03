@@ -6,7 +6,7 @@
       <FlightResultAirport
         label="Abflug"
         :flight="flight?.departure"
-        :allAirports="$state.airports"
+        :allAirports="useAirports()"
       />
       <span class="text-center text-primary-500"
         ><FontAwesomeIcon icon="plane"
@@ -14,7 +14,7 @@
       <FlightResultAirport
         label="Ankunft"
         :flight="flight.arrival"
-        :allAirports="$state.airports"
+        :allAirports="useAirports()"
         class="items-end text-right"
       />
     </div>
@@ -33,9 +33,9 @@
       >
         Weder Abflug- noch Ankuftsflughafen liegen in der EU.
       </li>
-      <li v-if="isEuMember">
+      <li v-if="isEuMember" class="flex gap-3 items-start">
         <svg
-          class="w-6 h-6"
+          class="w-6 h-6 shrink-0 my-0.5"
           viewBox="0 0 707 697"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -113,6 +113,7 @@ export default defineComponent({
   watch: {
     airports: {
       handler(value) {
+        if (!value) return
         this.warning = [];
         this.weather = [];
         const times = this.$state.claims?.selectedFlight?.departure;
@@ -122,6 +123,7 @@ export default defineComponent({
         Object.values(value).forEach((airport: Airport) => {
           getWeather(airport, departure.toISOString().slice(0, 10)).then(
             (weather) => {
+              if (!weather) return
               const hour = departure.getHours();
               for (let i = hour; i < hour + 1; i++) {
                 const isUnsafe = isUnsafeToTakeoffOrLand(weather, i + 1);
@@ -152,12 +154,12 @@ export default defineComponent({
   },
   computed: {
     airports() {
-      return this.$state.airports;
+      return useAirports();
     },
     distance() {
       return getAirportDistance(
-        this.$state.airports[this.flight?.departure.iata],
-        this.$state.airports[this.flight?.arrival.iata]
+        useAirports()?.[this.flight?.departure.iata],
+        useAirports()?.[this.flight?.arrival.iata]
       );
     },
     isEuMember() {

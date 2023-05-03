@@ -45,7 +45,7 @@ const config: DefaultConfigOptions = {
         wrapper: 'flex items-center mb-1',
       },
       'family:button': {
-        input: '$reset inline-flex items-center justify-center bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-12 leading-tight',
+        input: '$reset inline-flex items-center justify-center bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-14 leading-tight',
         wrapper: 'mb-1',
         prefixIcon: '$reset block w-4 -ml-2 mr-2 stretch',
         suffixIcon: '$reset block w-4 ml-2 stretch',
@@ -72,7 +72,7 @@ const config: DefaultConfigOptions = {
         input: 'w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400',
       },
       'datetime-local': {
-        input: 'h-12',
+        input: 'h-14',
       },
       
       // Specific styles apply only to a given input type

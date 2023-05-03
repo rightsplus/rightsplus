@@ -67,7 +67,7 @@ $colors: primary, secondary, info, beige, success, warning, alert;
   font-size: 1em;
 }
 .button {
-  --size: var(--h-12);
+  --size: var(--h-14);
   --padding: var(--p-2) var(--p-5);
   --bg-opacity: 1;
   --border-radius: var(--rounded-lg);
@@ -114,7 +114,7 @@ $colors: primary, secondary, info, beige, success, warning, alert;
     --padding: var(--p-1) var(--p-3);
   }
   &.lg {
-    --size: var(--h-12);
+    --size: var(--h-14);
     --padding: var(--p-4) var(--p-5);
   }
   &.xl {

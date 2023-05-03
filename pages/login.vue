@@ -1,97 +1,84 @@
 <template>
   <div class="min-h-screen pt-48 pb-8 bg-neutral-200">
     <div
-      class="flex flex-col gap-5 max-w-sm mx-auto px-12 h-full relative z-1 bg-white p-12 rounded-2xl text-center"
+      class="flex flex-col gap-5 max-w-sm mx-auto px-12 h-full relative z-1 bg-white p-12 rounded-2xl"
     >
-      <h1 class="text-2xl font-bold">Login</h1>
+      <h1 class="text-2xl font-bold text-center">Login</h1>
       <div class="flex flex-col gap-3">
         <ProviderButton provider="google" @click="login('google')" />
         <!-- <ProviderButton provider="apple" @click="login('apple')" /> -->
       </div>
-      <span class="text-sm text-neutral-500">oder</span>
+      <span class="text-sm text-neutral-500 text-center">oder</span>
       <FormKit
         type="form"
         v-model="form"
-        form-class="flex flex-col gap-3"
+        form-class="flex flex-col"
         @submit="login()"
         submit-label="Einloggen"
       >
         <FormKit
-          field="email"
-          type="email"
           name="email"
           label="Email"
-          placeholder="Email"
-          label-class="hidden"
+          type="email"
+          floatingLabel
+          required
         />
-        <!-- <FormKit
-          field="password"
-          type="password"
+        <FormKit
           name="password"
           label="Password"
-          placeholder="Password"
-          label-class="hidden"
-        /> -->
+          type="password"
+          floatingLabel
+          required
+        />
       </FormKit>
+      <button @click="resetPassword" class="text-sm underline underline-offset-2 text-gray-600 hover:text-gray-900">Passwort vergessen?</button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import ProviderButton from "@/components/molecules/ProviderButton.vue";
 import { Provider } from "@supabase/supabase-js";
 
-export default defineComponent({
-  setup() {
-    definePageMeta({
-      middleware: ["auth"],
-    });
-    const client = useSupabaseClient();
-    const user = useSupabaseUser();
-    return { client, user };
-  },
-  components: {
-    ProviderButton,
-  },
-  data() {
-    return {
-      form: {
-        email: "",
-        password: "",
-      },
-    };
-  },
-  methods: {
-    async login(provider?: Provider) {
-      if (provider) {
-        const { error } = await this.client.auth.signInWithOAuth({
-          provider,
-        });
-        return;
-      }
-      const { data, error } = await this.client.auth.signInWithOtp({
-        email: this.form.email
-      });
-    },
-    async signup() {
-      const { data, error } = await this.client.auth.signUp({
-        email: this.form.email,
-        password: this.form.password,
-      });
-    },
-  },
-  watch: {
-    user: {
-      handler(value) {
-        if (value) {
-          navigateTo("/status");
-        }
-      },
-      immediate: true,
-    },
-  },
+definePageMeta({
+  middleware: ["auth"],
 });
+const client = useSupabaseClient();
+const user = useSupabaseUser();
+
+const form = ref({
+  email: "",
+  password: "",
+})
+const login = async (provider?: Provider) => {
+  if (provider) {
+    const { error } = await client.auth.signInWithOAuth({
+      provider,
+    });
+    return;
+  }
+  if (form.value.password) {
+    const { data, error } = await client.auth.signInWithPassword({
+      email: form.value.email,
+      password: form.value.password
+    });
+  }
+  const { data, error } = await client.auth.signInWithOtp({
+    email: form.value.email
+  });
+}
+const resetPassword = async () => {
+  const { data, error } = await client.auth.resetPasswordForEmail(
+    form.value.email
+  );
+  console.log(data, error)
+}
+const signup = async () => {
+  const { data, error } = await client.auth.signUp({
+    email: form.value.email,
+    password: form.value.password,
+  });
+}
 </script>
 
 <style scoped></style>
