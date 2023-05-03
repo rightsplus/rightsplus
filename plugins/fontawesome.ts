@@ -41,6 +41,7 @@ import {
   faClipboardCheck,
   faExclamationTriangle,
   faPlaneSlash,
+  faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -87,7 +88,8 @@ library.add(
   faBell,
   faClipboardCheck,
   faExclamationTriangle,
-  faPlaneSlash
+  faPlaneSlash,
+  faTimesCircle
 )
 
 config.autoAddCss = false

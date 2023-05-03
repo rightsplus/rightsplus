@@ -30,13 +30,12 @@
         type="checkbox"
         :required="true"
       />
-      <input
-        :value="iban"
-        v-maska:[options]
-        data-maska-eager
-        data-maska="@@## #### #### #### #### ##"
-        class="bg-neutral-100 border border-neutral-200 rounded-lg p-3 w-full"
-        placeholder="DE12 3456 7890 1234 5678 90"
+      <InputIBAN
+        v-model="modelValue.client.iban"
+        label="IBAN"
+        name="iban"
+        :floatingLabel="true"
+        :required="true"
       />
 
     </div>
@@ -50,7 +49,7 @@
 
 <script lang="ts" setup>
 import { MaskInputOptions, vMaska } from "maska";
-
+import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import { ClaimsForm } from "~~/types";
 import NavigationButtons from "./NavigationButtons.vue";
 const client = useSupabaseClient();
@@ -61,20 +60,13 @@ const { modelValue } = defineProps<{
   modelValue: ClaimsForm;
 }>();
 
-const iban = ref()
-
-const options: MaskInputOptions = reactive({
-  tokens: {
-    '@': { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() }
-  },
-});
-
 
 if (!modelValue.client)
   modelValue.client = {
     firstName: "",
     lastName: "",
     email: "",
+    iban: "",
     agreedToTerms: false,
   };
 

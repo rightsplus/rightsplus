@@ -21,6 +21,7 @@ export interface ClaimsForm {
     email: string,
     firstName: string,
     lastName: string,
+    iban: string,
     agreedToTerms: boolean,
   }
 }
