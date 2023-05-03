@@ -6,6 +6,7 @@
       loaded,
     }"
     @click.self="menuOpen = false"
+    :style="`--total: ${links.length}`"
   >
     <BurgerIcon
       :active="menuOpen"
@@ -269,7 +270,7 @@ export default defineComponent({
           margin-right: auto;
         }
         li.button {
-          margin-top: 120px;
+          margin-top: 150px;
           transition-duration: 1500ms;
           transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
           transform: scale(0.9) translateY(150px);
@@ -286,7 +287,7 @@ export default defineComponent({
         &.dark {
           background-color: var(--color-gray-900);
         }
-        height: 500px !important;
+        height: calc(var(--total) * 43px + 350px) !important;
         transition-delay: 0ms;
         ul {
           li:not(.order-0) {
