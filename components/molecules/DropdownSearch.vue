@@ -26,6 +26,7 @@
             : 'max-w-full',
       }"
     />
+    <Transition name="dropdown">
     <Dropdown
       class="w-full -mt-[15px]"
       v-if="inputFocused && inputValue?.length"
@@ -33,6 +34,7 @@
       :options="options"
       @input="handleInput"
     />
+    </Transition>
   </div>
 </template>
 

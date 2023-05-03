@@ -91,7 +91,7 @@
   }
   .formkit-label {
     --top: 1.125em;
-    --left: 1em;
+    --left: 0.875em;
     --right: 0.5em;
     --scale: 1;
     pointer-events: none;
@@ -112,6 +112,10 @@
     background-color: transparent !important;
     cursor: text;
   }
+  button ~ .formkit-label {
+    --top: 0.875em;
+  }
+  button.active ~ .formkit-label,
   input:focus ~ .formkit-label,
   textarea:focus ~ .formkit-label,
   .formkit-label[data-has-value="true"],

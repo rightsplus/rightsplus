@@ -4,14 +4,19 @@
     <div
       class="flex flex-col sm:flex-row sm:gap-4 [&>.formkit-outer]:w-full [&_.formkit-inner]:max-w-full"
     >
-      <FormKit
+      <!-- <FormKit
         type="select"
-        label="Gib den tatächlichen Flugstatus an"
-        placeholder="Flugstatus wählen"
-        name="reason"
         v-model="modelValue.reason"
         :options="disruptions"
         select-icon="angle-down"
+        label="Gib den tatächlichen Flugstatus an"
+      /> -->
+      <DropdownButton
+        label="Flugstatus wählen"
+        name="reason"
+        v-model="modelValue.reason"
+        :options="disruptions"
+        prefix-icon="exclamation-triangle"
       />
       <!-- <FormKit
         v-if="modelValue.reason === 'delayed'"
@@ -109,128 +114,102 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import NavigationButtons from "./NavigationButtons.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import Dropdown from "@/components/molecules/Dropdown.vue";
+import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import Button from "@/components/molecules/Button.vue";
-export default defineComponent({
-  components: {
-    NavigationButtons,
-    ButtonLarge,
-    Dropdown,
-    Button,
+import { ClaimsForm } from "~~/types";
+
+defineProps<{
+  modelValue: ClaimsForm;
+}>();
+const emit = defineEmits(["submit", "back"]);
+const value = ref(null);
+const showNoBordingDropdown = ref(false);
+const submitHandler = () => emit("submit");
+
+const disruptions = [
+  { value: "delayed", label: "Verspätet", icon: 'clock' },
+  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: 'times' },
+  { value: "noBoarding", label: "Boarding untersagt / verpasst", icon: 'ban' },
+  { value: "other", label: "Sonstige", icon: 'question' },
+];
+const delayed = [
+  { value: "<=3", label: "Weniger als 3h" },
+  { value: "3-4", label: "3 - 4h" }, // bei +3500 km: Vergütung 50%
+  { value: ">4", label: "Mehr als 4h" },
+];
+const cancelled = [
+  { value: "<72", label: "Weniger als 72h" },
+  { value: "72-14", label: "72h - 14 Tage" },
+  { value: ">14", label: "Mehr als 14 Tage" },
+];
+const noBoarding = [
+  {
+    value: "missingOrInvalidTravelDocuments",
+    label: "Missing or Invalid Travel Documents",
+    icon: "passport",
   },
-  props: {
-    modelValue: {
-      type: Object,
-      required: true,
-    },
+  {
+    value: "lateArrival",
+    label: "Late Arrival",
+    icon: "clock",
   },
-  data() {
-    return {
-      value: null,
-      showNoBordingDropdown: false,
-      disruptions: [
-        { value: "delayed", label: "Verspätet" },
-        { value: "cancelled", label: "Gestrichen / Umgebucht" },
-        { value: "noBoarding", label: "Boarding untersagt / verpasst" },
-        { value: "other", label: "Sonstige" },
-      ],
-      delayed: [
-        { value: "<=3", label: "Weniger als 3h" },
-        { value: "3-4", label: "3 - 4h" }, // bei +3500 km: Vergütung 50%
-        { value: ">4", label: "Mehr als 4h" },
-      ],
-      cancelled: [
-        { value: "<7", label: "0 - 7 Tage" },
-        { value: "7-14", label: "8 - 14 Tage" },
-        { value: ">14", label: "Mehr als 14 Tage" },
-      ],
-      noBoarding: [
-        {
-          value: "missingOrInvalidTravelDocuments",
-          label: "Missing or Invalid Travel Documents",
-          icon: "passport",
-        },
-        {
-          value: "lateArrival",
-          label: "Late Arrival",
-          icon: "clock",
-        },
-        {
-          value: "overbooking",
-          label: "Overbooking",
-          icon: "users",
-        },
-        {
-          value: "healthIssues",
-          label: "Health Issues",
-          icon: "heartbeat",
-        },
-        {
-          value: "intoxication",
-          label: "Intoxication",
-          icon: "beer",
-        },
-        {
-          value: "securityConcerns",
-          label: "Security Concerns",
-          icon: "shield-alt",
-        },
-        {
-          value: "behaviouralIssues",
-          label: "Behavioural Issues",
-          icon: "smoking",
-        },
-        {
-          value: "technicalIssues",
-          label: "Technical Issues",
-          icon: "wrench",
-        },
-        {
-          value: "restrictedItems",
-          label: "Restricted Items",
-          icon: "gun",
-        },
-        {
-          value: "restrictedDestinations",
-          label: "Restricted Destinations",
-          icon: "map-marker-alt",
-        },
-      ],
-      reasons: [
-        { value: "dontRemember", label: "Ich kann mich nicht erinnern" },
-        { value: "technicalIssues", label: "Technische Probleme" },
-        { value: "weatherConditions", label: "Wetterbedingungen" },
-        {
-          value: "lateArrivalOfAircraft",
-          label: "Verspätete Ankunft des Flugzeugs",
-        },
-        { value: "crewIssues", label: "Crew-Probleme" },
-        { value: "airportCongestion", label: "Flughafenüberlastung" },
-        { value: "securityIssues", label: "Sicherheitsprobleme" },
-        { value: "airTrafficControl", label: "Flugverkehrskontrolle" },
-        { value: "unexpectedIssues", label: "Unerwartete Probleme" },
-      ],
-    };
+  {
+    value: "overbooking",
+    label: "Overbooking",
+    icon: "users",
   },
-  methods: {
-    submitHandler() {
-      this.$emit("submit");
-      return;
-    },
+  {
+    value: "healthIssues",
+    label: "Health Issues",
+    icon: "heartbeat",
   },
-});
+  {
+    value: "intoxication",
+    label: "Intoxication",
+    icon: "beer",
+  },
+  {
+    value: "securityConcerns",
+    label: "Security Concerns",
+    icon: "shield-alt",
+  },
+  {
+    value: "behaviouralIssues",
+    label: "Behavioural Issues",
+    icon: "smoking",
+  },
+  {
+    value: "technicalIssues",
+    label: "Technical Issues",
+    icon: "wrench",
+  },
+  {
+    value: "restrictedItems",
+    label: "Restricted Items",
+    icon: "gun",
+  },
+  {
+    value: "restrictedDestinations",
+    label: "Restricted Destinations",
+    icon: "map-marker-alt",
+  },
+]
+const reasons = [
+  { value: "dontRemember", label: "Ich kann mich nicht erinnern" },
+  { value: "technicalIssues", label: "Technische Probleme" },
+  { value: "weatherConditions", label: "Wetterbedingungen" },
+  {
+    value: "lateArrivalOfAircraft",
+    label: "Verspätete Ankunft des Flugzeugs",
+  },
+  { value: "crewIssues", label: "Crew-Probleme" },
+  { value: "airportCongestion", label: "Flughafenüberlastung" },
+  { value: "securityIssues", label: "Sicherheitsprobleme" },
+  { value: "airTrafficControl", label: "Flugverkehrskontrolle" },
+  { value: "unexpectedIssues", label: "Unerwartete Probleme" },
+]
 </script>
-<style scoped>
-.double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-</style>

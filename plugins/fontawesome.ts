@@ -33,7 +33,14 @@ import {
   faMapMarkedAlt,
   faSmoking,
   faSmokingBan,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faAngleDown,
+  faTimes,
+  faQuestion,
+  faBell,
+  faClipboardCheck,
+  faExclamationTriangle,
+  faPlaneSlash,
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -71,7 +78,16 @@ library.add(
   faSmokingBan,
   faWrench,
   faGun,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faAngleDown,
+  faClock,
+  faTimes,
+  faBan,
+  faQuestion,
+  faBell,
+  faClipboardCheck,
+  faExclamationTriangle,
+  faPlaneSlash
 )
 
 config.autoAddCss = false

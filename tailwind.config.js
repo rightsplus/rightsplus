@@ -1,4 +1,4 @@
-const defaultColors = require('tailwindcss/colors')
+const { orange, neutral, sky, emerald, yellow, red, black, white, transparent } = require('tailwindcss/colors')
 const gray = {
 	"50": "#d3e1e6",
 	"100": "#c4d2d7",
@@ -12,16 +12,16 @@ const gray = {
 	"900": "#0f1519"
 }
 const colors = {
-  primary: defaultColors.orange,
-  neutral: defaultColors.neutral,
-  blue: defaultColors.sky,
-  green: defaultColors.emerald,
-  yellow: defaultColors.yellow,
-  red: defaultColors.red,
-  black: defaultColors.black,
+  primary: orange,
+  neutral,
+  blue: sky,
+  green: emerald,
+  yellow,
+  red,
+  black,
   gray,
-  white: defaultColors.white,
-  transparent: defaultColors.transparent,
+  white,
+  transparent,
 }
 
 module.exports = {

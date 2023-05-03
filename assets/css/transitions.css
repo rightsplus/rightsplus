@@ -98,6 +98,21 @@
   /* animation: flip-out 500ms; */
 }
 
+
+.dropdown-move,
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition-duration: var(--transition-duration-100, 100ms);
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  transition-property: opacity, transform;
+  transform-origin: 0 0;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: scaleY(0.5);
+}
+
 @keyframes flip-in {
   0% {
     transform: translate(0, 0) rotate(0deg) scale(0.5);
