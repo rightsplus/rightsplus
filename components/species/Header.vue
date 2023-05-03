@@ -62,7 +62,7 @@
             exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
-              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-900':
+              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
               'hover:text-gray-500 ':
                 item.type !== 'button',
