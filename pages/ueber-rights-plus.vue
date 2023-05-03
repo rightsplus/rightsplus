@@ -3,7 +3,7 @@
     <img
       src="/empty-airport.jpg"
       alt="Airport"
-      class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1"
+      class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1 top-8 md:top-6 lg:top-0"
     />
     <div class="max-w-4xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
@@ -96,7 +96,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .image {
   /* from 0 to 5% */
   /* from 50% to 100% */
@@ -106,5 +106,13 @@ export default defineComponent({
     rgba(0, 0, 0, 1) 15% 50%,
     transparent 100%
   );
+  @media screen and (max-width: 1024px) {
+    mask: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 20% 50%,
+      transparent 100%
+    );
+  }
 }
 </style>
