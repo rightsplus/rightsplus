@@ -1,5 +1,6 @@
 import { library, config } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faEuropeanUnion } from '@/assets/icons'
 import {
   faArrowLeft,
   faArrowRight,
@@ -89,7 +90,8 @@ library.add(
   faClipboardCheck,
   faExclamationTriangle,
   faPlaneSlash,
-  faTimesCircle
+  faTimesCircle,
+  faEuropeanUnion
 )
 
 config.autoAddCss = false
