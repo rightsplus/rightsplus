@@ -46,6 +46,9 @@
             </span>
           </NuxtLink>
         </li>
+        <li class="order-1 flex items-center py-3">
+        <a>{{ $state.claims.step }}</a>
+        </li>
         <li
           v-for="(item, i) in links"
           :key="item.name"

@@ -22,7 +22,7 @@
       </ButtonLarge>
     </div>
 
-    <DatePicker v-model="modelValue.date" />
+    <DatePicker v-model="modelValue.date.departure" name="date" label="Flugdatum" />
 
     <div
       v-if="modelValue.route && useAppState().routes[modelValue.route]"

@@ -86,9 +86,7 @@ import AirportInput from "./Forms/AirportInput.vue";
 import ButtonLarge from "./ButtonLarge.vue";
 import NavigationButtons from "./NavigationButtons.vue";
 import { ClaimsForm } from "~~/types";
-import { getCurrentInstance } from "vue";
 
-const instance = getCurrentInstance();
 const { modelValue } = defineProps<{
   modelValue: ClaimsForm;
 }>();
@@ -100,8 +98,9 @@ function update(e: any, i: number) {
 }
 const showAddLayoverButton = computed(() => {
   return (
-    !modelValue.airport.layover ||
-    (modelValue.airport.layover && modelValue.airport.layover.length < 3)
+    modelValue.airport.layover.every(e => 'iata' in e) &&
+    (!modelValue.airport.layover ||
+    (modelValue.airport.layover && modelValue.airport.layover.length < 3))
   );
 });
 function addLayover() {

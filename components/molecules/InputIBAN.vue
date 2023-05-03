@@ -13,14 +13,14 @@
       :id="name"
       v-maska:[options]
       data-maska-eager
-      :data-complete="modelValue ? true : false"
+      :data-complete="Boolean(modelValue)"
       class="formkit-input appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill autofill:ring-1 ring-blue-200 w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400"
     />
     <label
       class="absolute formkit-label -mt-1"
-      :data-has-value="modelValue ? true : false"
+      :data-has-value="Boolean(modelValue)"
       >{{
-        modelValue.length >= 2 && modelValue.length !== maskByCountry(modelValue).example.length && !IBAN.isValid(modelValue)
+        modelValue?.length >= 2 && modelValue?.length !== maskByCountry(modelValue).example?.length && !IBAN.isValid(modelValue)
           ? maskByCountry(modelValue).humanMask
           : label
       }}</label
@@ -28,7 +28,7 @@
     <label
       class="formkit-suffix-icon w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 formkit-icon"
       :for="name"
-			v-if="(modelValue.length === maskByCountry(modelValue).example.length) || (modelValue.length >= 2 && countryError)"
+			v-if="(modelValue?.length === maskByCountry(modelValue).example?.length) || (modelValue?.length >= 2 && countryError)"
       ><ClientOnly
         ><FontAwesomeIcon
           :icon="IBAN.isValid(modelValue) && !countryError ? 'check-circle' : 'times-circle'"
@@ -45,6 +45,12 @@ defineProps<{
   name: string;
 	label: string
 }>();
+const options: MaskInputOptions = reactive({
+  tokens: {
+    "@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() },
+  },
+  mask: (value) => maskByCountry(value).mask,
+});
 const countryError = ref(false);
 const maskByCountry = (str: string, country = "DE") => {
 	const countryInString = str?.slice(0, 2) in IBAN.countries && str.slice(0, 2).toUpperCase()
@@ -68,10 +74,4 @@ const maskString = (str: string, numeric = "#", alpha = "@") => {
   );
 };
 
-const options: MaskInputOptions = reactive({
-  tokens: {
-    "@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() },
-  },
-  mask: (value) => maskByCountry(value).mask,
-});
 </script>

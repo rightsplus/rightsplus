@@ -2,8 +2,8 @@
   <div class="flex flex-col gap-5" v-if="$state">
     <h1 class="text-3xl font-bold">Personal</h1>
     <!-- {{ user }} -->
-    <div class="flex flex-col gap-3" v-if="modelValue.client">
-      <div class="grid grid-cols-2 gap-3">
+    <div class="flex flex-col" v-if="modelValue.client">
+      <div class="grid grid-cols-2 gap-5">
         <FormKit
           v-model="modelValue.client.firstName"
           label="Vorname"

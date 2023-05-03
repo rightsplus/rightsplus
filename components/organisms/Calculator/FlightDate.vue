@@ -13,7 +13,7 @@
         }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
         {{ airports?.[i + 1] }}</span
       >
-      <DatePicker v-model="route.date" />
+      <DatePicker v-model="route.date" name="date" label="Fligdatum" />
     </div>
 
     <NavigationButtons
