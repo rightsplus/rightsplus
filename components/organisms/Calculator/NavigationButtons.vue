@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-end gap-3">
-    <ButtonBack @click.prevent="$emit('previous')" class="!mr-0" :disabled="previousDisabled" />
+    <ButtonBack @click.prevent="$emit('previous')" :disabled="previousDisabled" />
     <FormKit
       type="button"
       @click="$emit('next')"

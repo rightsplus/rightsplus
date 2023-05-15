@@ -5,9 +5,8 @@ export interface ClaimsForm {
     layover: (Airport | {})[],
   },
   route: string | null,
-  date: {
-    departure: string,
-  },
+  flight: Flight | null,
+  flight_date: string,
   reason: string | null,
 
   disruption: string | null,
@@ -107,7 +106,7 @@ export interface Route extends Record<'departure' | 'arrival', {
   airport: Airport;
 }> {
   flight?: Flight;
-  date: string;
+  flight_date: string;
 }
 
 export interface Review {
@@ -121,4 +120,33 @@ export interface Review {
   text: string;
   time: number;
   translated: boolean;
+}
+export interface UsersTable {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  iban: string;
+  agreedToTerms: boolean;
+}
+export interface CasesTable {
+  id: string;
+  user_id: string;
+  data: string;
+}
+export interface Database {
+  public: {
+    Tables: {
+      users: {
+        Row: UsersTable // The data expected to be returned from a "select" statement.
+        Insert: {} // The data expected passed to an "insert" statement.
+        Update: {} // The data expected passed to an "update" statement.
+      }
+      cases: {
+        Row: CasesTable // The data expected to be returned from a "select" statement.
+        Insert: {} // The data expected passed to an "insert" statement.
+        Update: {} // The data expected passed to an "update" statement.
+      }
+    }
+  }
 }

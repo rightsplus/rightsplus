@@ -29,6 +29,7 @@ export const state = reactive({
       },
       layover: [{}],
     },
+    flight: null,
     route: null,
     date: {
       departure: new Date().toISOString().slice(0, 10),

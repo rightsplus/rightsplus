@@ -30,7 +30,7 @@
       <!--  // mindestens 14 Tage // Ersatzbeförderung -->
       <DropdownButton
         v-if="modelValue.reason === 'noBoarding'"
-        label="Tatsächliche Ankunftszeit"
+        label="Welchen Grund hat die  Airline angegeben?"
         name="actualArrivalTime"
         v-model="modelValue.reasonDetails.noBoarding"
         :options="noBoarding"
@@ -39,8 +39,12 @@
     </div>
 
     <div
-      class="grid sm:grid-cols-3 gap-3"
+      class="flex flex-col gap-5"
       v-if="modelValue.reason === 'delayed'"
+    >
+      <span class="text-sm">Laus unseren Informationen ist dein Flug mit <span class="font-bold">{{ $n($state.claims.flight?.arrival.delay || 0) }} min</span> Verspätung in {{ useAirports().value[$state.claims.flight?.arrival.iata].city }} gelandet.</span>
+    <div
+      class="grid sm:grid-cols-3 gap-3"
     >
       <ButtonLarge
         v-for="c in delayed"
@@ -51,9 +55,15 @@
         :label="c.label"
       />
     </div>
+    </div>
+    <div
+      class="flex flex-col gap-5"
+      v-if="modelValue.reason === 'cancelled'"
+    >
+    <!-- <pre>{{$state.claims.flight}}</pre> -->
+      <span class="text-sm">Laus unseren Informationen wurde dein Flug nicht gecancelled.</span>
     <div
       class="grid sm:grid-cols-3 gap-3"
-      v-if="modelValue.reason === 'cancelled'"
     >
       <ButtonLarge
         v-for="c in cancelled"
@@ -63,6 +73,7 @@
         :name="c.value"
         :label="c.label"
       />
+    </div>
     </div>
     <FormKit
       type="textarea"

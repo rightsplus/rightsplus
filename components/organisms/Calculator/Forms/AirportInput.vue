@@ -1,7 +1,7 @@
 <template>
   <DropdownSearch
     :modelValue="modelValue?.full"
-    @update:model-value="$emit('update:model-value', airports[$event.value])"
+    @update:modelValue="$emit('update:modelValue', airports[$event.value])"
     :label="label"
     :name="name"
     :id="id || name"

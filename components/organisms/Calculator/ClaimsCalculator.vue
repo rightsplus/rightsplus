@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-5 gap-5">
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
     <Stepper
       class="mb-5"
       :steps="steps"
@@ -7,16 +7,17 @@
       @setStep="$state.claims.step = $event"
     />
     <div
-      class="container sm:col-span-3 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-12"
+      class="container md:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >
       <ClientOnly
         ><Transition mode="out-in" name="fade"
           ><component
-            :is="activeComponent"
             v-if="$state.claims"
             v-model="$state.claims"
+            :is="activeStep?.component"
+            :title="activeStep?.title"
             @submit="next"
             @back="back"
             @reset="reset"
@@ -24,34 +25,36 @@
       </ClientOnly>
     </div>
     <div class="flex flex-col gap-3">
-  <div
-    class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
-    v-bind="$attrs"
-  >
-  Deine Ansprüche
-    </div>
-    <span class="font-bold">Deine Flüge</span>
-      <TransitionGroup
+      <Transition mode="out-in" name="fade">
+      <div
+      v-if="$state.claims.flight"
+        class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
+        v-bind="$attrs"
+      >
+        <PotentialClaims />
+      </div>
+    </Transition>
+      <!-- <span class="font-bold">Dein Flug</span> -->
+      <!-- <TransitionGroup
         tag="div"
         name="new-list"
         class="relative flex flex-col gap-5"
-        :show="$state.routes"
+        :show="$state.claims.flight"
       >
         <RouteCard
-          v-for="([key, route], i) in Object.entries($state.routes)"
-          :key="route.departure.airport?.iata"
           :route="route"
         />
-      </TransitionGroup>
+      </TransitionGroup> -->
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
 import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
+import TransitionGroup from "@/components/cells/TransitionGroup.vue";
 import FlightDate from "./FlightDate.vue";
 import SelectFlight from "./SelectFlight.vue";
 import PersonalInfo from "./PersonalInfo.vue";
@@ -61,123 +64,65 @@ import Reset from "./Reset.vue";
 import Stepper from "@/components/cells/Stepper.vue";
 import FlightResult from "./FlightResult.vue";
 import RouteCard from "./RouteCard.vue";
+import PotentialClaims from "@/components/cells/PotentialClaims.vue";
 
-export default defineComponent({
-  components: {
-    FormKit,
-    FlightByAirport,
-    ConnectingFlights,
-    FlightDate,
-    SelectFlight,
-    SelectReason,
-    PersonalInfo,
-    Results,
-    Reset,
-    Stepper,
-    FlightResult,
-    RouteCard,
+const steps = [
+  {
+    label: "Strecke",
+    title: "Wohin bist du geflogen?",
+    component: ConnectingFlights
   },
-  data() {
-    return {
-      containerHeight: 100,
-    };
+  {
+    label: "Flug",
+    title: "Welchen Flug hast du genommen?",
+    component: SelectFlight
   },
-  computed: {
-    steps() {
-      const step = this.$state.claims?.step || 0;
-      return [
-        {
-          label: "Flugroute",
-          active: 0,
-        },
-        {
-          label: "Flug",
-          active: 2,
-        },
-        {
-          label: "Reason for Disruption",
-          active: 3,
-        },
-        {
-          label: "Personal",
-          active: 4,
-        },
-        {
-          label: "Results",
-          active: 5,
-        },
+  {
+    label: "Grund",
+    title: "Was ist schief gelaufen?",
+    component: SelectReason
+  },
+  {
+    label: "Passagiere",
+    title: "Wer ist mitgeflogen?",
+    component: PersonalInfo
+  },
+  // {
+  //   label: "Results",
+  //   component: Results
+  // },
+]
+const containerHeight = ref(100);
+const activeStep = computed(() => steps[useAppState().claims?.step || 0])
 
-        // {
-        //   label: "Flight Info",
-        //   active: 0,
-        // },
-        // {
-        //   label: "Flight Disruption",
-        //   active: 4,
-        // },
-        // {
-        //   label: "Personal Info",
-        //   active: 7,
-        // },
-      ];
-    },
-    activeComponent() {
-      switch (this.$state.claims?.step || 0) {
-        case 0:
-        case 1:
-          return ConnectingFlights;
-          // return SelectRoute;
-        case 2:
-          return SelectFlight;
-        case 3:
-          return SelectReason;
-        case 4:
-          return PersonalInfo;
-        case 5:
-          return Results;
-        default:
-          return Reset;
-      }
-    },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.setHeight();
-      if (!this.$state.claims?.step) {
-        this.$state.claims.step = 0;
-      }
-    });
-  },
-  watch: {
-    step() {
-      setTimeout(this.setHeight, 0);
-    },
-  },
-  methods: {
-    next(e?: number) {
-      this.$state.claims.step = e ?? this.$state.claims.step + 1;
-    },
-    back(e?: number) {
-      this.$state.claims.step = e ?? this.$state.claims.step - 1;
-    },
-    reset(e?: number) {
-      this.$state.claims.step = e ?? 0;
-    },
-    setHeight() {
-      const childrenHeight = Math.min(
-        window.innerHeight - 120,
-        Math.max(
-          100,
-          ((this.$refs.container as HTMLElement)?.children[0]?.offsetHeight ||
-            0) + 80
-        )
-      );
-      this.containerHeight = (
-        this.$refs.container as HTMLElement
-      )?.children[0]?.offsetHeight;
-    },
-  },
-});
+const next = (e?: number) => {
+  useAppState().claims.step = e ?? useAppState().claims.step + 1;
+}
+const back = (e?: number) => {
+  useAppState().claims.step = e ?? useAppState().claims.step - 1;
+}
+const reset = (e?: number) => {
+  useAppState().claims.step = e ?? 0;
+}
+
+
+// watch(
+//   () => useAppState().claims?.step,
+//   () => setTimeout(setHeight, 0)
+// );
+// const setHeight = () => {
+//   const childrenHeight = Math.min(
+//     window.innerHeight - 120,
+//     Math.max(
+//       100,
+//       ((this.$refs.container as HTMLElement)?.children[0]?.offsetHeight ||
+//         0) + 80
+//     )
+//   );
+//   this.containerHeight = (
+//     this.$refs.container as HTMLElement
+//   )?.children[0]?.offsetHeight;
+// }
 </script>
 <style scoped>
 .container {

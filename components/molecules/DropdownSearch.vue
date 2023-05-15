@@ -70,7 +70,9 @@ function keydown(e: KeyboardEvent) {
   );
 }
 function handleInput(input: DropdownItem) {
-  emit("update:modelValue", props.options[highlighted.value]);
+  const index = typeof input === "number" ? input : highlighted.value;
+  console.log(props.options[index])
+  emit("update:modelValue", props.options[index]);
   focusNext(true);
 }
 </script>

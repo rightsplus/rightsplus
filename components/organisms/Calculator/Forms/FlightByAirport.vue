@@ -36,10 +36,11 @@
 import { FormKit } from "@formkit/vue";
 import AirportInput from "./AirportInput.vue";
 import { ClaimsForm } from "~~/types";
-defineProps<{modelValue: ClaimsForm}>()
+const props = defineProps<{ modelValue: ClaimsForm }>()
 const emit = defineEmits(["submit"]);
 const start = () => {
   useRouter().push("/claims-calculator");
+  props.modelValue.step = 0
   emit('submit')
 }
 </script>

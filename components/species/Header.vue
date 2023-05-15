@@ -45,10 +45,7 @@
               <span class="font-bold">RightsPlus</span><span class="font-medium">Flights</span>
             </span>
           </NuxtLink>
-        </li>
-        <li class="order-1 flex items-center py-3">
-        <a>{{ $state.claims.step }}</a>
-        </li>
+        </li> 
         <li
           v-for="(item, i) in links"
           :key="item.name"

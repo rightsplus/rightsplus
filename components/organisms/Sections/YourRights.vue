@@ -1,5 +1,5 @@
 <template>
-  <section class="py-24 bg-neutral-200 relative">
+  <section class="py-5 sm:py-12 md:py-24 bg-neutral-200 relative">
     <img
       src="/airport-light-comp.jpg"
       alt="Airport"

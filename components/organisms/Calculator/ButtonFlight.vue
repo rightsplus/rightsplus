@@ -5,6 +5,7 @@
       'bg-gray-700 text-white': isSelected,
       'bg-neutral-100 hover:bg-neutral-200 text-gray-800': !isSelected,
     }"
+    @click="emit('click', flight)"
   >
     <div
       class="w-14 h-14 flex justify-center items-center bg-white rounded-full -ml-2"
@@ -22,42 +23,28 @@
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import ButtonBack from "@/components/molecules/ButtonBack.vue";
+<script setup lang="ts">
 import { Flight } from "@/types";
 
-export default defineComponent({
-  components: {
-    ButtonBack,
-  },
-  props: {
-    selected: {
-      type: Object as () => Flight,
-    },
-    flight: {
-      type: Object as () => Flight,
-      default: () => ({} as Flight),
-    },
-  },
-  computed: {
-    isSelected() {
-      return this.selected?.flight?.iata === this.flight.flight.iata;
-    },
-    iata() {
-      return this.flight.flight.iata.match(/[a-zA-Z]+|[0-9]+/g)?.join(" ");
-    },
-    logo() {
-      return getAirlineLogo(this.flight.airline.iata);
-    },
-  },
-  methods: {
-    time(time: string) {
-      return new Date(time).toLocaleTimeString(this.$i18n.locale, {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    },
-  },
+const props = defineProps<{
+  selected: Flight | null;
+  flight: Flight;
+}>();
+
+const emit = defineEmits(["click"]);
+const isSelected = computed(() => {
+  return props.selected?.flight?.iata === props.flight.flight.iata;
 });
+const iata = computed(() => {
+  return props.flight.flight.iata.match(/[a-zA-Z]+|[0-9]+/g)?.join(" ");
+});
+const logo = computed(() => {
+  return getAirlineLogo(props.flight.airline.iata);
+});
+const time = (time: string) => {
+  return new Date(time).toLocaleTimeString(useI18n().locale.value, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 </script>

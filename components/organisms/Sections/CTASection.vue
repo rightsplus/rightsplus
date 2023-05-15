@@ -1,6 +1,6 @@
 <template>
   <section
-    class="py-24 bg-gradient-to-tr from-primary-700 to-primary-300 text-white relative"
+    class="py-12 md:py-36 bg-gradient-to-tr from-primary-700 to-primary-300 text-white relative"
   >
     <div
       class="grid gap-12 max-w-3xl mx-auto px-12 h-full relative z-1"

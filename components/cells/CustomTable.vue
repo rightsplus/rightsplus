@@ -34,19 +34,19 @@
             </th>
             <th
               scope="col"
-              class="px-5 h-14"
-              v-for="cell in Object.keys(data[0])"
+              class="px-2 h-14 whitespace-nowrap"
+              v-for="cell in Object.values(data.header)"
             >
               {{ cell }}
             </th>
-            <th class="px-5 h-14">
+            <th class="px-2 h-14">
             </th>
           </tr>
         </thead>
         <tbody>
           <tr
             class="bg-white even:bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-600 h-14"
-            v-for="row in data"
+            v-for="row in data.body"
           >
             <td class="w-4 p-4">
               <div class="flex items-center">
@@ -63,7 +63,7 @@
 
             <th
               scope="col"
-              class="px-6 py-3"
+              class="px-2 py-3 whitespace-nowrap"
               :class="{
                 'font-bold text-neutral-900 whitespace-nowrap dark:text-white':
                   i === 0,
@@ -74,7 +74,7 @@
             >
               {{ cell }}
             </th>
-            <td class="px-6 py-4">
+            <td class="px-2 py-4">
               <a
                 href="#"
                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
@@ -90,7 +90,10 @@
 
 <script lang="ts" setup>
 defineProps<{
-  data: any;
+  data: {
+    header: Record<string, string>;
+    body: Record<string, string>[];
+  };
 }>();
 const search = ref("");
 </script>

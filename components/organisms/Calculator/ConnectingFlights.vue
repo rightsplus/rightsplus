@@ -56,7 +56,7 @@
       </div>
       <button
         v-if="showAddLayoverButton"
-        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-14 mb-4"
+        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-8 my-7"
         @click="addLayover"
       >
         <span><FontAwesomeIcon icon="plus" /></span>

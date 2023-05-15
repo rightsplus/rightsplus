@@ -26,15 +26,15 @@ const config: DefaultConfigOptions = {
         fieldset: 'max-w-2xl border border-neutral-400 rounded-lg px-2 pb-1',
         help: 'text-xs text-neutral-500 leading-tight',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
-        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill autofill:ring-1 ring-blue-200',
+        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200',
         label: 'text-neutral-500 font-medium text-sm leading-tight block',
         legend: 'text-neutral-500 font-medium text-sm',
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
         message: 'text-red-500 mb-1 text-xs',
         messages: 'list-none p-0 mt-1 mb-0',
         outer: 'mb-4 formkit-disabled:opacity-50',
-        prefixIcon: 'w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400',
-        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400'
+        prefixIcon: 'w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-50',
+        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-50'
       },
       'family:box': {
         decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-white bg-gradient-to-b from-transparent to-neutral-200 ring-1 ring-neutral-200 peer-checked:ring-primary-500 text-transparent peer-checked:text-primary-500',
@@ -111,7 +111,7 @@ const config: DefaultConfigOptions = {
       },
       textarea: {
         inner: 'flex max-w-2xl rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
-        input: 'block w-full h-32 px-3 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
+        input: 'block w-full h-32 px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
       },
       
       // PRO input styles
@@ -160,6 +160,11 @@ const config: DefaultConfigOptions = {
         track: 'p-0.5 min-w-[3em] relative rounded-full transition-all bg-neutral-400 peer-checked:bg-primary-500 peer-checked:[&>div:last-child]:left-full peer-checked:[&>div:last-child]:-translate-x-full peer-checked:[&>div:first-child:not(:last-child)]:left-0 peer-checked:[&>div:first-child:not(:last-child)]:translate-x-0',
         valueLabel: 'font-bold text-sm',
         wrapper: 'flex flex-wrap items-center mb-1'
+      },
+      checkbox: {
+        wrapper: '[&>span]:mt-0',
+        inner: 'bg-transparent',
+        decorator: '!rounded !bg-neutral-100 peer-checked:!bg-primary-500 from-transparent !to-transparent [&>.formkit-decorator-icon]:p-0.5 [&>.formkit-decorator-icon]:opacity-0 [&>.formkit-decorator-icon]:justify-center peer-checked:[&>.formkit-decorator-icon]:opacity-100 [&>.formkit-decorator-icon>svg]:fill-white',
       }
     })
   }

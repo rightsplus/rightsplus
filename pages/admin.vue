@@ -14,39 +14,56 @@
 <script setup lang="ts">
 import CustomTable from "@/components/cells/CustomTable.vue";
 const currentUser = useSupabaseUser();
-const client = useSupabaseClient();
+import { Database } from "~~/types";
+const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("user", async () => {
   return {
-    user: (await client
-      .from("users")
-      .select("role")
-      .eq("email", currentUser.value?.email)
-      .single()).data,
-    cases: (await client.from("cases").select(`
-			*,
-			users (
-				first_name,
-				last_name
-			)
-  `)).data,
+    user: (
+      await client
+        .from("users")
+        .select("role")
+        .eq("email", currentUser.value?.email)
+        .single()
+    ).data,
+    cases: (
+      await client.from("cases").select("*, users(first_name, last_name)")
+    ).data,
   };
 });
 
 const isAdmin = computed(() => data.value?.user?.role === "admin");
-
+const date = (d: string) =>
+  new Date(d).toLocaleDateString(useI18n().locale.value);
 const tableData = computed(() => {
-  return data.value?.cases.map((item) => {
-    return {
-      first_name: item.users.first_name,
-      last_name: item.users.last_name,
-      created_at: new Date(item.created_at).toLocaleDateString(
-        useI18n().locale.value
-      ),
-      updated_at: new Date(
-        item.updated_at || item.created_at
-      ).toLocaleDateString(useI18n().locale.value),
-    };
-  });
+  return {
+    header: {
+      case_id: "Case ID",
+      flight: "Flight",
+      departure_date: "Departure Date",
+      reason: "Reason",
+      client_name: "Client Name",
+      client_email: "Client Email",
+      client_iban: "Client IBAN",
+      airport_departure: "Airport Departure",
+      airport_arrival: "Airport Arrival",
+      updated_at: "Updated At",
+    },
+    body: data.value?.cases?.map((item) => {
+      return {
+        case_id: item.id,
+        flight: item.data.flight?.flight?.iata,
+        departure_date: date(item.data.flight?.departure?.scheduled),
+        reason: item.data.reason,
+        client_name:
+          item.data.client?.firstName + " " + item.data.client?.lastName,
+        client_email: item.data.client?.email,
+        client_iban: item.data.client?.iban,
+        airport_departure: item.data.flight?.departure?.airport,
+        airport_arrival: item.data.flight?.arrival?.airport,
+        updated_at: date(item.updated_at || item.created_at),
+      };
+    }),
+  };
 });
 
 definePageMeta({

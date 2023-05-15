@@ -18,19 +18,22 @@
         <button
           v-for="option in options"
           :key="option"
-          @click="compensation = option"
+          @click="componsation = option"
           class="text-xl rounded-xl border border-1 border-gray-400 p-3 sm:p-5 hover:bg-neutral-100 font-bold tracking-tighter"
-          :class="{ 'border-primary-500 border-2': compensation === option }"
+          :class="{ 'border-primary-500 border-2': componsation === option }"
         >
-          {{ $n(option, "currency") }}
+          {{ $n(option || 0, "currency") }}
         </button>
       </div>
       </div>
       <div class="flex gap-12 justify-between">
         <div class="flex flex-col">
           <span class="text-gray-500 font-medium text-base">Du erhältst</span>
-          <span class="font-bold text-5xl tracking-tighter">{{
-            $n(compensation * 0.75, "currency")
+          <span class="font-bold text-5xl tracking-tighter tabular-nums">{{
+            $n(tweened.number, "currency", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
           }}</span>
         </div>
         <!-- <div class="flex flex-col text-right">
@@ -45,44 +48,17 @@
     </div>
   </section>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import Button from "@/components/molecules/Button.vue";
-
-export default defineComponent({
-  components: {
-    Button,
-  },
-  data() {
-    return {
-      compensation: 250,
-      options: [250, 400, 600],
-    };
-  },
-  methods: {
-    scrollToHash(hash: string) {
-      document.querySelector(hash)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    },
-  },
-});
+import gsap from 'gsap'
+const options = ref([250, 400, 600])
+const commission = 0.25
+const componsation = ref(options.value[0])
+const tweened = reactive({
+  number: componsation.value
+})
+const compensation = (value: number) => Number(value) * (1 - commission) || 0
+watch(componsation, (n) => {
+  gsap.to(tweened, { duration: 1, ease: 'expo', number: compensation(n) })
+})
 </script>
-<style scoped>
-.green:after {
-  opacity: 0;
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: hard-light;
-  background-size: cover;
-  transition: 2s;
-}
-.show-green:after {
-  opacity: 1;
-}
-</style>

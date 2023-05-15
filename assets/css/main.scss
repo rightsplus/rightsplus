@@ -86,7 +86,7 @@
     padding-top: 1.5em;
     padding-bottom: 0.5em;
     &::placeholder {
-      opacity: 0 !important;
+      opacity: 0;
     }
   }
   .formkit-label {
@@ -121,21 +121,33 @@
   .formkit-label[data-has-value="true"],
   &[data-complete="true"] .formkit-label {
     --scale: 0.75;
-    --top: 0;
+    --top: 0.25em;
   }
   textarea:focus ~ .formkit-label,
   textarea ~ .formkit-label[data-has-value="true"],
   &[data-complete="true"] textarea ~ .formkit-label {
     --top: -0.5em;
   }
-  &[data-suffix-icon="true"] {
-    .formkit-label {
-      --right: 2.8em;
-    }
+  button ~ .formkit-label[data-has-value="true"],
+  &[data-complete="true"] button ~ .formkit-label {
+    --top: 0em;
   }
   &[data-prefix-icon="true"] {
     .formkit-label {
       --left: 2.8em;
+    }
+    .formkit-input {
+      margin-left: calc(-1.8em + 1px);
+      padding-left: 2.8em;
+    }
+  }
+  &[data-suffix-icon="true"] {
+    .formkit-label {
+      --right: 2.8em;
+    }
+    .formkit-input {
+      margin-right: calc(-1.8em + 1px);
+      padding-right: 2.8em;
     }
   }
 }

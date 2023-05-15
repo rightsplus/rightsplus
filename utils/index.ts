@@ -198,13 +198,12 @@ export const generateRoutes = (claims: ClaimsForm) => {
 	Object.values(airports).forEach((airport, i, arr) => {
 		if (i === arr.length - 1) return;
 		routes[`${airport.iata}-${arr[i + 1].iata}`] = ({
+			flight_date: "",
 			departure: {
 				airport,
-				date: ""
 			},
 			arrival: {
 				airport: arr[i + 1],
-				date: ""
 			},
 			flight: undefined
 		})
