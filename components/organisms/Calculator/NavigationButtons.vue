@@ -1,7 +1,12 @@
 <template>
   <div class="flex items-center justify-end gap-3">
-    <ButtonBack @click.prevent="$emit('previous')" :disabled="previousDisabled" />
+    <ButtonBack
+      v-if="$attrs?.onPrevious"
+      @click.prevent="$emit('previous')"
+      :disabled="previousDisabled"
+    />
     <FormKit
+      v-if="$attrs?.onNext"
       type="button"
       @click="$emit('next')"
       label="Weiter"
@@ -10,25 +15,10 @@
     />
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import { FormKit } from "@formkit/vue";
+<script setup lang="ts">
 import ButtonBack from "@/components/molecules/ButtonBack.vue";
-export default defineComponent({
-	components: {
-		FormKit,
-		ButtonBack,
-	},
-  props: {
-    previousDisabled: {
-      type: Boolean,
-      default: false,
-    },
-    nextDisabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ["previous", "next"],
-});
+defineProps<{
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
+}>();
 </script>

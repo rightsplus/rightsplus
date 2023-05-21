@@ -24,6 +24,8 @@
         /></Transition>
       </ClientOnly>
     </div>
+
+		<!-- <pre>{{ useFlightStatus(useAppState().claims.flight) }}</pre> -->
     <div class="flex flex-col gap-3">
       <Transition mode="out-in" name="fade">
       <div

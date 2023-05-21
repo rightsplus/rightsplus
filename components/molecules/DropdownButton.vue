@@ -17,7 +17,7 @@
       @mousedown="inputFocused = !inputFocused"
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleInput"
-      class="flex items-center gap-3.5 w-full bg-neutral-100 hover:bg-neutral-50 ring-neutral-200 ring-1 text-base p-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 h-14 min-w-0 max-w-full"
+      class="flex items-center gap-3.5 w-full bg-neutral-100 hover:bg-neutral-50 ring-neutral-200 ring-1 text-base p-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 h-14 min-w-0 max-w-full duration-75"
       :class="[
         inputFocused && options?.length
           ? 'rounded-b-none ring-1 ring-primary-500'
@@ -43,7 +43,7 @@
     <label :for="id || name" class="formkit-label" :data-has-value="modelValue && 'true'">{{ label }}</label>
     <Transition name="dropdown">
       <Dropdown
-        class="w-full"
+        class="w-full mt-[1px] z-50"
         v-if="inputFocused"
         :active="highlighted"
         :options="options"

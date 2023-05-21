@@ -9,7 +9,6 @@
       <FlightResultAirport
         label="Abflug"
         :flight="flight?.departure"
-        :allAirports="useAirports()"
       />
       <span class="text-center text-primary-500"
         ><FontAwesomeIcon icon="plane"
@@ -17,11 +16,9 @@
       <FlightResultAirport
         label="Ankunft"
         :flight="flight.arrival"
-        :allAirports="useAirports()"
         class="items-end text-right"
       />
     </div>
-    <Weather :weather="weather[0]" />
     <ol>
       <li
         class="flex gap-3 items-center text-base font-medium"
@@ -31,12 +28,12 @@
         <span>{{ $n(flight.distance, "km") }}</span>
       </li>
       <li
-        v-if="!euMember"
+        v-if="!isEuMember"
         class="flex gap-3 items-center text-base font-medium"
       >
         Weder Abflug- noch Ankuftsflughafen liegen in der EU.
       </li>
-      <li v-if="euMember" class="flex gap-3 items-start">
+      <li v-if="isEuMember" class="flex gap-3 items-start">
         <FontAwesomeIcon icon="european-union" class="text-2xl" />
         <p class="text-xs leading-tight">
           Bei Ansprüchen, die unter das EU-Fluggastrecht (EG 261) fallen, müssen
@@ -55,12 +52,12 @@ import {
   isUnsafeToTakeoffOrLand,
 } from "@/utils";
 import { Airport, Flight } from "@/types";
-import { isEuMember } from "is-eu-member";
+import { euMember } from "is-european";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";
 import Weather from "@/components/molecules/Weather.vue";
 
-defineProps<{
+const props = defineProps<{
   flight: Flight;
 }>();
 
@@ -70,62 +67,12 @@ const start = "2021-01-01";
 const end = "2021-01-01";
 
 const warning = ref([] as string[]);
-const weather = ref([] as Record<string, number | string>[]);
-watch(
-  () => useAirports(),
-  (value) => {
-    if (!value) return;
-    warning.value = [];
-    weather.value = [];
-    const times = useAppState().claims?.flight?.departure;
-    const departure = new Date(
-      times?.actual_runway || times?.estimated || times?.scheduled || 0
-    );
-    Object.values(value).forEach((airport: Airport) => {
-      getWeather(airport, departure.toISOString().slice(0, 10)).then(
-        (weatherResponse) => {
-          if (!weatherResponse) return;
-          const hour = departure.getHours();
-          for (let i = hour; i < hour + 1; i++) {
-            const isUnsafe = isUnsafeToTakeoffOrLand(weatherResponse, i + 1);
-            if (isUnsafe) warning.value.push(isUnsafe);
-            weather.value.push({
-              time: new Date(weatherResponse.time[i]).toLocaleTimeString(
-                useI18n().locale.value,
-                {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }
-              ),
-              temperature: weatherResponse.temperature_2m[i],
-              gusts: weatherResponse.windgusts_10m[i],
-              wind: weatherResponse.windspeed_100m[i],
-              rain: weatherResponse.precipitation[i],
-              snow: weatherResponse.snowfall[i],
-              clouds: weatherResponse.cloudcover[i],
-            });
-          }
-        }
-      );
-    });
-  },
-  {
-    immediate: true,
-    deep: true,
-  }
-);
 
-// distance() {
-//   return getAirportDistance(
-//     useAirports()?.[this.flight?.departure.iata],
-//     useAirports()?.[this.flight?.arrival.iata]
-//   );
-// },
-const euMember = computed(() => {
+const isEuMember = computed(() => {
   const airport = useAppState().claims?.airport;
   return (
-    isEuMember(airport?.departure?.country || "") ||
-    isEuMember(airport?.arrival?.country || "")
+    euMember(airport?.departure?.country || "") ||
+    euMember(airport?.arrival?.country || "")
   );
 });
 const time = (date: string) => {

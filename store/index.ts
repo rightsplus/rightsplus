@@ -1,5 +1,5 @@
 import { reactive, onMounted } from 'vue'
-import { Flight, ClaimsForm, Review, Airport, Route } from '@/types'
+import { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
 
 
 interface State {
@@ -68,7 +68,9 @@ watch(() => state.claims.airport, () => {
 }, { deep: true, immediate: true });
 
 
-export const airports = computed(() => reduceAirports(state.claims));
+export const airports = ref({} as Record<string, Airport>);
+
+export const airlines = ref({} as Record<string, Airline>);
 
 
 declare module '@vue/runtime-core' {

@@ -46,7 +46,7 @@
           ><span class="text-sm leading-none">
             Ich habe die
             <a href="/faq" class="text-primary-600 hover:underline"
-              >Nutzungsbedingungen</a
+              target="_blank">Nutzungsbedingungen</a
             >
             gelesen und stimme diesen zu.</span
           ></template
@@ -121,7 +121,7 @@ const createAccount = async () => {
         .from("cases")
         .insert([
           {
-            user_id: '02e843b8-f968-4901-b3f2-7e648fb573df',
+            email: modelValue.client.email,
             data: useAppState().claims,
           },
         ]);

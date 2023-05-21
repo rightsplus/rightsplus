@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1
-      class="text-4xl sm:text-7xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative min-w-[700px]"
+      class="text-4xl sm:text-6xl md:text-7xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative max-w-[300px] sm:max-w-full lg:min-w-[700px]"
     >
       <ClientOnly>
         <template #fallback>

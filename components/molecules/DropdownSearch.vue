@@ -11,7 +11,7 @@
       :id="id || name"
       :validation="validation"
       @focus="inputFocused = true"
-      @blur="inputFocused = false"
+      @blur="blur"
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
       @prefix-icon-click="$emit('prefix-icon-click')"
@@ -19,16 +19,17 @@
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleInput"
       :floatingLabel="true"
+      :placeholder="placeholder"
       :classes="{
         inner:
           inputFocused && options?.length && inputValue?.length
-            ? 'rounded-b-none max-w-full'
-            : 'max-w-full',
+            ? 'rounded-b-none max-w-full duration-75'
+            : 'max-w-full duration-75',
       }"
     />
     <Transition name="dropdown">
     <Dropdown
-      class="w-full -mt-[15px]"
+      class="w-full -mt-[15px] z-50"
       v-if="inputFocused && inputValue?.length"
       :active="highlighted"
       :options="options"
@@ -45,6 +46,7 @@ const props = defineProps<{
   modelValue: string;
   name: string;
   label: string;
+  placeholder?: string;
   id?: string;
   validation?: string;
   prefixIcon?: string;
@@ -74,6 +76,10 @@ function handleInput(input: DropdownItem) {
   console.log(props.options[index])
   emit("update:modelValue", props.options[index]);
   focusNext(true);
+}
+function blur() {
+  if (!inputValue.value?.length) emit("update:modelValue", "");
+  inputFocused.value = false
 }
 </script>
 

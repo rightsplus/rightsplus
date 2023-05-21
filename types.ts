@@ -67,39 +67,46 @@ interface FlightAirport {
   estimated_runway: string;
   actual_runway: string;
 }
+export interface FlightInfo {
+  number: string;
+  iata_number: string;
+  icao_number: string;
+}
+export interface FlightAirline {
+  name: string;
+  iata_code: string;
+  icao_code: string;
+}
+export interface FlightPhase {
+  iata_code: string;
+  icao_code: string;
+  scheduled_time: string;
+  estimated_time?: string;
+  actual_time?: string;
+  estimated_runway?: string;
+  actual_runway?: string;
+  gate?: string;
+  terminal?: string;
+}
 export interface Flight {
-  flight_date: string;
-  flight_status: string;
-  departure: FlightAirport;
-  arrival: FlightAirport;
-  airline: {
-    name: string;
-    iata: string;
-    icao?: string;
+  type: string;
+  status: string;
+  departure: FlightPhase;
+  arrival: FlightPhase;
+  airline: FlightAirline;
+  flight: FlightInfo;
+  codeshared?: {
+    airline: FlightAirline;
+    flight: FlightInfo;
   };
-  flight: {
-    number: string;
-    iata: string;
-    icao?: string;
-    codeshared?: string | null;
-  };
-  aircraft?: {
-    registration: string;
-    iata: string;
-    icao: string;
-    icao24: string;
-  };
-  live?: {
-    updated: string;
-    latitude: number;
-    longitude: number;
-    altitude: number;
-    direction: number;
-    speed_horizontal: number;
-    speed_vertical: number;
-    is_ground: boolean;
-  };
-  distance?: number;
+}
+
+export interface Airline {
+  name: string
+  nameCountry: string
+  country: string
+  iata: string
+  isEuMember: boolean
 }
 
 export interface Route extends Record<'departure' | 'arrival', {

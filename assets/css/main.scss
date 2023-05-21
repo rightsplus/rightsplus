@@ -77,6 +77,11 @@
   }
 }
 
+a[target="_blank"] {
+  &:after {
+    content: "\00a0\2197";
+  }
+}
 .text-shadow {
   text-shadow: 0 5px 15px var(--tw-shadow-color, black);
 }

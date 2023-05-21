@@ -7,42 +7,25 @@
         !selected,
     }"
   >
-    <span class="leading-none" v-if="icon"><FontAwesomeIcon :icon="icon" class="text-base" /></span>
+    <span class="leading-none" v-if="icon"><FontAwesomeIcon :icon="icon" class="text-sm" /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
-      <span class="text-lg font-bold leading-none" v-if="label">{{
+      <span class="text-sm font-bold leading-none" v-if="label">{{
         label
       }}</span>
-      <span class="text-sm leading-none" v-if="subLabel">{{ subLabel }}</span>
+      <span class="text-xs leading-none" v-if="subLabel">{{ subLabel }}</span>
     </div>
     <slot />
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+defineProps<{
+  selected: boolean
+  icon: string
+  name: string
+  label: string
+  subLabel: string
+}>()
+const baseUrl = "https://serkowebtest.blob.core.windows.net/airline-logos"
 
-export default defineComponent({
-  props: {
-    selected: {
-      type: Boolean,
-    },
-    icon: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    label: {
-      type: String,
-    },
-    subLabel: {
-      type: String,
-    },
-  },
-  data() {
-    return {
-      baseUrl: "https://serkowebtest.blob.core.windows.net/airline-logos",
-    };
-  },
-});
 </script>

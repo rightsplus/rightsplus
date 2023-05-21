@@ -1,5 +1,7 @@
-import { Airport, ClaimsForm, Route } from "types";
+import { Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
 import weatherCodes from "~~/assets/weather-codes.json";
+import { countries } from "@/config/countries";
+import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 
 export const getAirlineLogo = (iata: string) => {
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${iata}.png?crop=false&width=100&height=100`;
@@ -21,25 +23,40 @@ export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: 
 	return Math.round(d);
 }
 
-export interface WeatherResponse {
-	time: string[];
-	temperature_2m: number[];
-	relativehumidity_2m: number[];
-	dewpoint_2m: number[];
-	apparent_temperature: number[];
-	pressure_msl: number[];
-	precipitation: number[];
-	windgusts_10m: number[];
-	weathercode: number[];
-	vapor_pressure_deficit: number[];
-	snowfall: number[];
-	cloudcover: number[];
-	surface_pressure: number[];
-	windspeed_100m: number[];
+export interface WeatherResponse<N = number[], S = string[]> {
+	time?: S;
+	temperature_2m?: N;
+	relativehumidity_2m?: N;
+	dewpoint_2m?: N;
+	apparent_temperature?: N;
+	pressure_msl?: N;
+	precipitation?: N;
+	windgusts_10m?: N;
+	weathercode?: N;
+	vapor_pressure_deficit?: N;
+	snowfall?: N;
+	cloudcover?: N;
+	surface_pressure?: N;
+	windspeed_100m?: N;
+}
+export const getHumanReadableWeather = async (flight: FlightPhase) => {
+	await new Promise(resolve => setTimeout(resolve, 1000))
+	const airports = useAirports().value
+	const weather = await getWeather(airports[flight.iata_code], flight.scheduled_time)
+	const getByHour = (weather: WeatherResponse | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): WeatherResponse<number, string> => {
+		if (!weather) return {}
+		return Object.fromEntries(
+			Object.entries(weather)
+				.filter(([key]) => pick ? pick.includes(key) : true)
+				.map(([key, value]) => [key, value[new Date(time).getHours()]])
+		)
+	}
+	return  getByHour(weather, flight.scheduled_time)
 }
 
-export const getWeather = async (airport: Airport, date: string): Promise<WeatherResponse> => {
-	const { lat, lon } = airport;
+export const getWeather = async (airport: Airport, date: Date | string): Promise<WeatherResponse | null> => {
+	const { lat, lon } = airport || {};
+	if (!lat || !lon) return null;
 	const d = new Date(date).toISOString().slice(0, 10);
 	const params = [
 		"temperature_2m",
@@ -65,8 +82,8 @@ export const getWeather = async (airport: Airport, date: string): Promise<Weathe
 		return null
 	}
 }
-export const isUnsafeToTakeoffOrLand = (response: WeatherResponse, hour: number): string | false => {
-	if (!response) return;
+export const isUnsafeToTakeoffOrLand = (response: WeatherResponse | null, hour: number): string | boolean => {
+	if (!response) return false;
 	const {
 		time,
 		temperature_2m,
@@ -79,19 +96,23 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse, hour: number)
 		windspeed_100m,
 		pressure_msl,
 		vapor_pressure_deficit,
-		apparent_temperature,
 	} = response;
 
 	const reasons: { message: string, weight: number, excess: number }[] = [];
 
-	if (temperature_2m[hour] > 35) {
-		const excess = (temperature_2m[hour] - 35) / 35;
-		reasons.push({ message: `Temperature too high: ${temperature_2m[hour]}°C (limit: 35°C)`, weight: 10, excess });
+	if (temperature_2m[hour] > 49) {
+		const excess = (temperature_2m[hour] - 49) / 49;
+		reasons.push({ message: `Temperature too high: ${temperature_2m[hour]}°C (limit: 49°C)`, weight: 10, excess });
 	}
 
 	if (windgusts_10m[hour] > 30) {
 		const excess = (windgusts_10m[hour] - 30) / 30;
 		reasons.push({ message: `Wind gusts too strong: ${windgusts_10m[hour]}m/s (limit: 30m/s)`, weight: 8, excess });
+	}
+
+	if (windspeed_100m[hour] > 50) {
+		const excess = (windspeed_100m[hour] - 50) / 50;
+		reasons.push({ message: `Wind speed too high: ${windspeed_100m[hour]}m/s (limit: 50m/s)`, weight: 8, excess });
 	}
 
 	if (precipitation[hour] > 10) {
@@ -116,12 +137,6 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse, hour: number)
 		const excess = (970 - surface_pressure[hour]) / 970;
 		reasons.push({ message: `Surface pressure too low: ${surface_pressure[hour]}hPa (limit: 970hPa)`, weight: 5, excess });
 	}
-
-	if (windspeed_100m[hour] > 50) {
-		const excess = (windspeed_100m[hour] - 50) / 50;
-		reasons.push({ message: `Wind speed too high: ${windspeed_100m[hour]}m/s (limit: 50m/s)`, weight: 8, excess });
-	}
-
 	if (pressure_msl[hour] < 970) {
 		const excess = (970 - pressure_msl[hour]) / 970;
 		reasons.push({ message: `Mean sea level pressure too low: ${pressure_msl[hour]}hPa (limit: 970hPa)`, weight: 5, excess });
@@ -138,7 +153,7 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse, hour: number)
 		const date = new Date(time[hour]).toLocaleTimeString('de', { hour: '2-digit', minute: '2-digit' });
 		const code = weatherCodes.unsafe.includes(weathercode[hour]) ? weatherCodes.messages[weathercode[hour]] : null;
 
-		return `Unsafe at ${date}. ${code ?? ""}Reasons: ${reasons.map(e => e.message).join(", ")}.`;
+		return `Unsafe at ${date}. ${code ?? ""}. Reasons: ${reasons.map(e => e.message).join(", ")}.`;
 	}
 	return false;
 };
@@ -178,7 +193,7 @@ const getAirportsRaw = async () => {
 		});
 };
 
-export const reduceAirports = (claims: ClaimsForm) => {
+export const reduceAirports = (claims: ClaimsForm, fetch?: string[]) => {
 	const all = ([
 		claims.airport?.departure,
 		...(claims.airport?.layover || []),
@@ -208,7 +223,7 @@ export const generateRoutes = (claims: ClaimsForm) => {
 			flight: undefined
 		})
 	})
-
+	console.log(routes)
 	return routes;
 }
 
@@ -218,7 +233,7 @@ export const keyIncrement = (e: KeyboardEvent, value: number, length: number) =>
 		v = v + 1;
 		if (v > length - 1)
 			v = 0;
-	}getCurrentInstance()?.refs.input?.focus()
+	} getCurrentInstance()?.refs.input?.focus()
 	if (e?.key === "ArrowUp") {
 		v = v - 1;
 		if (v < 0)
@@ -252,4 +267,47 @@ export const focusNext = (select = false, active = document.activeElement as HTM
 	} else {
 		active.blur()
 	}
+}
+
+export const getISODate = (value: Date | string) => {
+	try {
+		value = new Date(value)
+		const offset = value.getTimezoneOffset()
+		const date = new Date(value.getTime() - (offset * 60 * 1000))
+		return date.toISOString().split('T')[0]
+	} catch (e) {
+		return ""
+	}
+}
+
+
+export const getDuration = (minutes: number) => {
+	const min = `${minutes % 60} min`;
+	const h = `${Math.floor(minutes / 60)} h`;
+	return minutes >= 60 ? `${h} ${min}` : min;
+}
+
+
+export const queryAirports = (search, query: string) => {
+  if (query?.length < 1) return;
+    search({ query, hitsPerPage: 10 }).then(({ hits }) => {
+      hits.forEach((hit: Airport) => {
+        const a = { ...hit };
+        delete a._highlightResult;
+        delete a.objectID;
+        useAirports().value[hit.iata] = a;
+      });
+      return hits.map((airport: Airport) => ({
+        value: airport.iata,
+        label: airport._highlightResult?.full.value || "Airport",
+        sublabel: [
+          airport._highlightResult?.city.value,
+          airport.countryName?.[useI18n().locale.value] ||
+            countries.getName(airport.country, useI18n().locale.value),
+        ]
+          .filter(Boolean)
+          .join(", "),
+        icon: "plane",
+      })) as DropdownItem[];
+    });
 }

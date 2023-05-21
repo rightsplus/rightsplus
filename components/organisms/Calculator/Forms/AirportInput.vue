@@ -1,14 +1,15 @@
 <template>
   <DropdownSearch
-    :modelValue="modelValue?.full"
-    @update:modelValue="$emit('update:modelValue', airports[$event.value])"
+    :modelValue="modelValue?.name ? `${modelValue?.name} (${modelValue?.iata})` : ''"
+    @update:modelValue="$emit('update:modelValue', useAirports()?.value?.[$event?.value])"
     :label="label"
     :name="name"
     :id="id || name"
     :options="dropdownList"
     @query="findAirports"
-    :prefix-icon="prefixIcon"
-    :suffix-icon="suffixIcon"
+    :prefix-icon="modelValue?.name?.includes('Rail') ? 'train' : prefixIcon"
+    :suffix-icon="modelValue?.name?.includes('Rail') ? 'train' : suffixIcon"
+    :placeholder="placeholder"
     @prefix-icon-click="$emit('prefix-icon-click')"
     @suffix-icon-click="$emit('suffix-icon-click')"
   />
@@ -19,12 +20,13 @@ import { countries } from "@/config/countries";
 import { Airport } from "@/types";
 import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import DropdownSearch from "~~/components/molecules/DropdownSearch.vue";
+import airportRelevance from "~~/public/api/airportRelevance.json";
 
 const props = defineProps<{
   modelValue: Airport;
   name: string;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   id?: string;
   validation?: string;
   prefixIcon?: string;
@@ -39,30 +41,30 @@ emit("update:modelValue", {
 
 const { search } = useAlgoliaSearch("AIRPORTS");
 const { locale } = useI18n();
-const airports = useAirports();
 
 const dropdownList = ref([] as DropdownItem[])
 
 function findAirports (query: string) {
   if (query?.length < 1) return;
-    search({ query, hitsPerPage: 10 }).then(({ hits }) => {
-      dropdownList.value = hits.map((airport) => ({
+    search({ query, hitsPerPage: 5 }).then(({ hits }) => {
+      dropdownList.value = hits.map((airport) => {
+        // if (airport.name.includes('Rail')) return
+        return {
         value: airport.iata,
-        label: airport._highlightResult?.full.value || "Airport",
+        label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
         sublabel: [
-          airport._highlightResult?.city.value,
-          airport.countryName?.[locale.value] ||
-            countries.getName(airport.country, locale.value),
+          airport._highlightResult.city_translations?.[locale.value]?.value || airport._highlightResult.city.value,
+          countries.getName(airport.country_code, locale.value),
         ]
           .filter(Boolean)
           .join(", "),
-        icon: "plane",
-      }));
+        icon: airport.name.includes('Rail') ? "train" : "plane",
+      }}).filter(Boolean)
       hits.forEach((hit: Airport, i: number) => {
         const a = { ...hit };
         delete a._highlightResult;
         delete a.objectID;
-        airports.value[hit.iata] = a;
+        useAirports().value[hit.iata] = a;
       });
     });
 }

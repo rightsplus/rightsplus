@@ -43,6 +43,19 @@ import {
   faExclamationTriangle,
   faPlaneSlash,
   faTimesCircle,
+  faInfoCircle,
+  faSun,
+  faCloudRain,
+  faCloudShowersHeavy,
+  faBolt,
+  faCloudSunRain,
+  faSnowflake,
+  faSmog,
+  faWind,
+  faCloud,
+  faCloudSun,
+  faCloudMoon,
+  faTrain,
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -91,7 +104,22 @@ library.add(
   faExclamationTriangle,
   faPlaneSlash,
   faTimesCircle,
-  faEuropeanUnion
+  faEuropeanUnion,
+  faInfoCircle,
+  faSun,
+  faCloudRain,
+  faCloudSunRain,
+  faCloudShowersHeavy,
+  faBolt,
+  faSnowflake,
+  faSmog,
+  faWind,
+  faCloud,
+  faCloudSun,
+  faCloudMoon,
+  faSmog,
+  faWind,
+  faTrain
 )
 
 config.autoAddCss = false

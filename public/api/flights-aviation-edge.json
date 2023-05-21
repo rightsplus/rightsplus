@@ -14,8 +14,8 @@
 			"actual_runway": "2020-07-18T07:30:00.000"
 		},
 		"arrival": {
-			"iata_code": "LGW",
-			"icao_code": "EGKK",
+			"iata_code": "DUB",
+			"icao_code": "EIDW",
 			"terminal": "N",
 			"scheduled_time": "2020-07-18T09:20:00.000",
 			"estimated_time": "2020-07-18T08:48:00.000",
@@ -32,6 +32,1168 @@
 			"number": "1981",
 			"iata_number": "TK1981",
 			"icao_number": "THY1981"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "cancelled",
+		"departure": {
+			"iata_code": "MLA",
+			"icao_code": "LMML",
+			"scheduled_time": "2020-07-18T08:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "LGW",
+			"icao_code": "EIDW",
+			"terminal": "S",
+			"scheduled_time": "2020-07-18T10:55:00.000"
+		},
+		"airline": {
+			"name": "Air Baltic",
+			"iata_code": "BT",
+			"icao_code": "BTI"
+		},
+		"flight": {
+			"number": "6079",
+			"iata_number": "BT6079",
+			"icao_number": "BTI6079"
+		},
+		"codeshared": {
+			"airline": {
+				"name": "Air Malta",
+				"iata_code": "KM",
+				"icao_code": "AMC"
+			},
+			"flight": {
+				"number": "116",
+				"iata_number": "KM116",
+				"icao_number": "AMC116"
+			}
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"gate": "A11A",
+			"delay": 20,
+			"scheduled_time": "2020-07-18T09:10:00.000",
+			"estimated_time": "2020-07-18T09:10:00.000",
+			"actual_time": "2020-07-18T09:30:00.000",
+			"estimated_runway": "2020-07-18T09:30:00.000",
+			"actual_runway": "2020-07-18T09:30:00.000"
+		},
+		"arrival": {
+			"iata_code": "DUB",
+			"icao_code": "EGKK",
+			"terminal": "N",
+			"scheduled_time": "2020-07-18T11:20:00.000",
+			"estimated_time": "2020-07-18T10:48:00.000",
+			"actual_time": "2020-07-18T10:48:00.000",
+			"estimated_runway": "2020-07-18T10:48:00.000",
+			"actual_runway": "2020-07-18T10:48:00.000"
+		},
+		"airline": {
+			"name": "Ryan Air",
+			"iata_code": "FR",
+			"icao_code": "RYR"
+		},
+		"flight": {
+			"number": "1981",
+			"iata_number": "FR1981",
+			"icao_number": "RYR1981"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "cancelled",
+		"departure": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"scheduled_time": "2020-07-18T14:30:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "4",
+			"scheduled_time": "2020-07-18T16:15:00.000"
+		},
+		"airline": {
+			"name": "Air France",
+			"iata_code": "AF",
+			"icao_code": "AFR"
+		},
+		"flight": {
+			"number": "1234",
+			"iata_number": "AF1234",
+			"icao_number": "AFR1234"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "BCN",
+			"icao_code": "LEBL",
+			"gate": "B12",
+			"delay": 30,
+			"scheduled_time": "2020-07-18T09:45:00.000",
+			"estimated_time": "2020-07-18T09:45:00.000",
+			"actual_time": "2020-07-18T10:15:00.000",
+			"estimated_runway": "2020-07-18T10:15:00.000",
+			"actual_runway": "2020-07-18T10:15:00.000"
+		},
+		"arrival": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T11:10:00.000",
+			"estimated_time": "2020-07-18T11:40:00.000",
+			"actual_time": "2020-07-18T11:40:00.000",
+			"estimated_runway": "2020-07-18T11:40:00.000",
+			"actual_runway": "2020-07-18T11:40:00.000"
+		},
+		"airline": {
+			"name": "Lufthansa",
+			"iata_code": "LH",
+			"icao_code": "DLH"
+		},
+		"flight": {
+			"number": "123",
+			"iata_number": "LH123",
+			"icao_number": "DLH123"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "cancelled",
+		"departure": {
+			"iata_code": "AMS",
+			"icao_code": "EHAM",
+			"scheduled_time": "2020-07-18T16:45:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2E",
+			"scheduled_time": "2020-07-18T18:15:00.000"
+		},
+		"airline": {
+			"name": "KLM",
+			"iata_code": "KL",
+			"icao_code": "KLM"
+		},
+		"flight": {
+			"number": "567",
+			"iata_number": "KL567",
+			"icao_number": "KLM567"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ATH",
+			"icao_code": "LGAV",
+			"gate": "C19",
+			"delay": 15,
+			"scheduled_time": "2020-07-18T13:20:00.000",
+			"estimated_time": "2020-07-18T13:20:00.000",
+			"actual_time": "2020-07-18T13:35:00.000",
+			"estimated_runway": "2020-07-18T13:35:00.000",
+			"actual_runway": "2020-07-18T13:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "MUC",
+			"icao_code": "EDDM",
+			"terminal": "2",
+			"scheduled_time": "2020-07-18T15:00:00.000",
+			"estimated_time": "2020-07-18T15:30:00.000",
+			"actual_time": "2020-07-18T15:30:00.000",
+			"estimated_runway": "2020-07-18T15:30:00.000",
+			"actual_runway": "2020-07-18T15:30:00.000"
+		},
+		"airline": {
+			"name": "Aegean Airlines",
+			"iata_code": "A3",
+			"icao_code": "AEE"
+		},
+		"flight": {
+			"number": "456",
+			"iata_number": "A3456",
+			"icao_number": "AEE456"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "cancelled",
+		"departure": {
+			"iata_code": "MAD",
+			"icao_code": "LEMD",
+			"scheduled_time": "2020-07-18T19:55:00.000"
+		},
+		"arrival": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T22:20:00.000"
+		},
+		"airline": {
+			"name": "Iberia",
+			"iata_code": "IB",
+			"icao_code": "IBE"
+		},
+		"flight": {
+			"number": "789",
+			"iata_number": "IB789",
+			"icao_number": "IBE789"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "BRU",
+			"icao_code": "EBBR",
+			"gate": "D8",
+			"delay": 10,
+			"scheduled_time": "2020-07-18T11:45:00.000",
+			"estimated_time": "2020-07-18T11:45:00.000",
+			"actual_time": "2020-07-18T11:55:00.000",
+			"estimated_runway": "2020-07-18T11:55:00.000",
+			"actual_runway": "2020-07-18T11:55:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "5",
+			"scheduled_time": "2020-07-18T13:05:00.000",
+			"estimated_time": "2020-07-18T13:25:00.000",
+			"actual_time": "2020-07-18T13:25:00.000",
+			"estimated_runway": "2020-07-18T13:25:00.000",
+			"actual_runway": "2020-07-18T13:25:00.000"
+		},
+		"airline": {
+			"name": "Brussels Airlines",
+			"iata_code": "SN",
+			"icao_code": "BEL"
+		},
+		"flight": {
+			"number": "5678",
+			"iata_number": "SN5678",
+			"icao_number": "BEL5678"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "cancelled",
+		"departure": {
+			"iata_code": "DUB",
+			"icao_code": "EIDW",
+			"scheduled_time": "2020-07-18T17:30:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2F",
+			"scheduled_time": "2020-07-18T19:10:00.000"
+		},
+		"airline": {
+			"name": "Ryanair",
+			"iata_code": "FR",
+			"icao_code": "RYR"
+		},
+		"flight": {
+			"number": "901",
+			"iata_number": "FR901",
+			"icao_number": "RYR901"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "LIS",
+			"icao_code": "LPPT",
+			"gate": "C15",
+			"delay": 5,
+			"scheduled_time": "2020-07-18T14:55:00.000",
+			"estimated_time": "2020-07-18T14:55:00.000",
+			"actual_time": "2020-07-18T15:00:00.000",
+			"estimated_runway": "2020-07-18T15:00:00.000",
+			"actual_runway": "2020-07-18T15:00:00.000"
+		},
+		"arrival": {
+			"iata_code": "MAD",
+			"icao_code": "LEMD",
+			"terminal": "4",
+			"scheduled_time": "2020-07-18T17:10:00.000",
+			"estimated_time": "2020-07-18T17:40:00.000",
+			"actual_time": "2020-07-18T17:40:00.000",
+			"estimated_runway": "2020-07-18T17:40:00.000",
+			"actual_runway": "2020-07-18T17:40:00.000"
+		},
+		"airline": {
+			"name": "TAP Air Portugal",
+			"iata_code": "TP",
+			"icao_code": "TAP"
+		},
+		"flight": {
+			"number": "7890",
+			"iata_number": "TP7890",
+			"icao_number": "TAP7890"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"gate": "A15",
+			"scheduled_time": "2020-07-18T08:00:00.000",
+			"estimated_time": "2020-07-18T08:00:00.000",
+			"actual_time": "2020-07-18T10:40:00.000",
+			"estimated_runway": "2020-07-18T10:40:00.000",
+			"actual_runway": "2020-07-18T10:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "3",
+			"scheduled_time": "2020-07-18T10:20:00.000",
+			"estimated_time": "2020-07-18T13:40:00.000",
+			"actual_time": "2020-07-18T13:40:00.000",
+			"estimated_runway": "2020-07-18T13:40:00.000",
+			"actual_runway": "2020-07-18T13:40:00.000"
+		},
+		"airline": {
+			"name": "Lufthansa",
+			"iata_code": "LH",
+			"icao_code": "DLH"
+		},
+		"flight": {
+			"number": "2345",
+			"iata_number": "LH2345",
+			"icao_number": "DLH2345"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "AMS",
+			"icao_code": "EHAM",
+			"gate": "C8",
+			"scheduled_time": "2020-07-18T10:45:00.000",
+			"estimated_time": "2020-07-18T10:45:00.000",
+			"actual_time": "2020-07-18T14:20:00.000",
+			"estimated_runway": "2020-07-18T14:20:00.000",
+			"actual_runway": "2020-07-18T14:20:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2F",
+			"scheduled_time": "2020-07-18T11:55:00.000",
+			"estimated_time": "2020-07-18T16:30:00.000",
+			"actual_time": "2020-07-18T16:30:00.000",
+			"estimated_runway": "2020-07-18T16:30:00.000",
+			"actual_runway": "2020-07-18T16:30:00.000"
+		},
+		"airline": {
+			"name": "Air France",
+			"iata_code": "AF",
+			"icao_code": "AFR"
+		},
+		"flight": {
+			"number": "3456",
+			"iata_number": "AF3456",
+			"icao_number": "AFR3456"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ZRH",
+			"icao_code": "LSZH",
+			"gate": "B4",
+			"scheduled_time": "2020-07-18T13:30:00.000",
+			"estimated_time": "2020-07-18T13:30:00.000",
+			"actual_time": "2020-07-18T17:10:00.000",
+			"estimated_runway": "2020-07-18T17:10:00.000",
+			"actual_runway": "2020-07-18T17:10:00.000"
+		},
+		"arrival": {
+			"iata_code": "MUC",
+			"icao_code": "EDDM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T14:50:00.000",
+			"estimated_time": "2020-07-18T18:30:00.000",
+			"actual_time": "2020-07-18T18:30:00.000",
+			"estimated_runway": "2020-07-18T18:30:00.000",
+			"actual_runway": "2020-07-18T18:30:00.000"
+		},
+		"airline": {
+			"name": "Swiss International Air Lines",
+			"iata_code": "LX",
+			"icao_code": "SWR"
+		},
+		"flight": {
+			"number": "4567",
+			"iata_number": "LX4567",
+			"icao_number": "SWR4567"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ATH",
+			"icao_code": "LGAV",
+			"gate": "A2",
+			"scheduled_time": "2020-07-18T15:20:00.000",
+			"estimated_time": "2020-07-18T15:20:00.000",
+			"actual_time": "2020-07-18T19:10:00.000",
+			"estimated_runway": "2020-07-18T19:10:00.000",
+			"actual_runway": "2020-07-18T19:10:00.000"
+		},
+		"arrival": {
+			"iata_code": "FCO",
+			"icao_code": "LIRF",
+			"terminal": "3",
+			"scheduled_time": "2020-07-18T17:00:00.000",
+			"estimated_time": "2020-07-18T20:50:00.000",
+			"actual_time": "2020-07-18T20:50:00.000",
+			"estimated_runway": "2020-07-18T20:50:00.000",
+			"actual_runway": "2020-07-18T20:50:00.000"
+		},
+		"airline": {
+			"name": "Aegean Airlines",
+			"iata_code": "A3",
+			"icao_code": "AEE"
+		},
+		"flight": {
+			"number": "5678",
+			"iata_number": "A35678",
+			"icao_number": "AEE5678"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "BCN",
+			"icao_code": "LEBL",
+			"gate": "D7",
+			"scheduled_time": "2020-07-18T18:45:00.000",
+			"estimated_time": "2020-07-18T18:45:00.000",
+			"actual_time": "2020-07-18T22:35:00.000",
+			"estimated_runway": "2020-07-18T22:35:00.000",
+			"actual_runway": "2020-07-18T22:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "AMS",
+			"icao_code": "EHAM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T21:00:00.000",
+			"estimated_time": "2020-07-19T00:50:00.000",
+			"actual_time": "2020-07-19T00:50:00.000",
+			"estimated_runway": "2020-07-19T00:50:00.000",
+			"actual_runway": "2020-07-19T00:50:00.000"
+		},
+		"airline": {
+			"name": "Vueling Airlines",
+			"iata_code": "VY",
+			"icao_code": "VLG"
+		},
+		"flight": {
+			"number": "6789",
+			"iata_number": "VY6789",
+			"icao_number": "VLG6789"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"gate": "B11",
+			"scheduled_time": "2020-07-18T22:10:00.000",
+			"estimated_time": "2020-07-18T22:10:00.000",
+			"actual_time": "2020-07-19T01:40:00.000",
+			"estimated_runway": "2020-07-19T01:40:00.000",
+			"actual_runway": "2020-07-19T01:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2E",
+			"scheduled_time": "2020-07-19T00:30:00.000",
+			"estimated_time": "2020-07-19T04:00:00.000",
+			"actual_time": "2020-07-19T04:00:00.000",
+			"estimated_runway": "2020-07-19T04:00:00.000",
+			"actual_runway": "2020-07-19T04:00:00.000"
+		},
+		"airline": {
+			"name": "British Airways",
+			"iata_code": "BA",
+			"icao_code": "BAW"
+		},
+		"flight": {
+			"number": "7890",
+			"iata_number": "BA7890",
+			"icao_number": "BAW7890"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"gate": "A9",
+			"scheduled_time": "2020-07-19T03:40:00.000",
+			"estimated_time": "2020-07-19T03:40:00.000",
+			"actual_time": "2020-07-19T07:30:00.000",
+			"estimated_runway": "2020-07-19T07:30:00.000",
+			"actual_runway": "2020-07-19T07:30:00.000"
+		},
+		"arrival": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"terminal": "1",
+			"scheduled_time": "2020-07-19T06:10:00.000",
+			"estimated_time": "2020-07-19T10:00:00.000",
+			"actual_time": "2020-07-19T10:00:00.000",
+			"estimated_runway": "2020-07-19T10:00:00.000",
+			"actual_runway": "2020-07-19T10:00:00.000"
+		},
+		"airline": {
+			"name": "Turkish Airlines",
+			"iata_code": "TK",
+			"icao_code": "THY"
+		},
+		"flight": {
+			"number": "8901",
+			"iata_number": "TK8901",
+			"icao_number": "THY8901"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "MAD",
+			"icao_code": "LEMD",
+			"gate": "D5",
+			"scheduled_time": "2020-07-19T07:25:00.000",
+			"estimated_time": "2020-07-19T07:25:00.000",
+			"actual_time": "2020-07-19T11:15:00.000",
+			"estimated_runway": "2020-07-19T11:15:00.000",
+			"actual_runway": "2020-07-19T11:15:00.000"
+		},
+		"arrival": {
+			"iata_code": "BCN",
+			"icao_code": "LEBL",
+			"terminal": "2",
+			"scheduled_time": "2020-07-19T09:00:00.000",
+			"estimated_time": "2020-07-19T12:50:00.000",
+			"actual_time": "2020-07-19T12:50:00.000",
+			"estimated_runway": "2020-07-19T12:50:00.000",
+			"actual_runway": "2020-07-19T12:50:00.000"
+		},
+		"airline": {
+			"name": "Iberia",
+			"iata_code": "IB",
+			"icao_code": "IBE"
+		},
+		"flight": {
+			"number": "9012",
+			"iata_number": "IB9012",
+			"icao_number": "IBE9012"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "CPH",
+			"icao_code": "EKCH",
+			"gate": "C4",
+			"scheduled_time": "2020-07-19T09:50:00.000",
+			"estimated_time": "2020-07-19T09:50:00.000",
+			"actual_time": "2020-07-19T13:40:00.000",
+			"estimated_runway": "2020-07-19T13:40:00.000",
+			"actual_runway": "2020-07-19T13:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "5",
+			"scheduled_time": "2020-07-19T11:30:00.000",
+			"estimated_time": "2020-07-19T15:20:00.000",
+			"actual_time": "2020-07-19T15:20:00.000",
+			"estimated_runway": "2020-07-19T15:20:00.000",
+			"actual_runway": "2020-07-19T15:20:00.000"
+		},
+		"airline": {
+			"name": "Scandinavian Airlines",
+			"iata_code": "SK",
+			"icao_code": "SAS"
+		},
+		"flight": {
+			"number": "0123",
+			"iata_number": "SK0123",
+			"icao_number": "SAS0123"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "DXB",
+			"icao_code": "OMDB",
+			"gate": "B7",
+			"scheduled_time": "2020-07-19T12:30:00.000",
+			"estimated_time": "2020-07-19T12:30:00.000",
+			"actual_time": "2020-07-19T16:20:00.000",
+			"estimated_runway": "2020-07-19T16:20:00.000",
+			"actual_runway": "2020-07-19T16:20:00.000"
+		},
+		"arrival": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-19T15:00:00.000",
+			"estimated_time": "2020-07-19T18:50:00.000",
+			"actual_time": "2020-07-19T18:50:00.000",
+			"estimated_runway": "2020-07-19T18:50:00.000",
+			"actual_runway": "2020-07-19T18:50:00.000"
+		},
+		"airline": {
+			"name": "Emirates",
+			"iata_code": "EK",
+			"icao_code": "UAE"
+		},
+		"flight": {
+			"number": "2345",
+			"iata_number": "EK2345",
+			"icao_number": "UAE2345"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "SVO",
+			"icao_code": "UUEE",
+			"gate": "D9",
+			"scheduled_time": "2020-07-19T14:45:00.000",
+			"estimated_time": "2020-07-19T14:45:00.000",
+			"actual_time": "2020-07-19T18:35:00.000",
+			"estimated_runway": "2020-07-19T18:35:00.000",
+			"actual_runway": "2020-07-19T18:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2E",
+			"scheduled_time": "2020-07-19T16:30:00.000",
+			"estimated_time": "2020-07-19T20:20:00.000",
+			"actual_time": "2020-07-19T20:20:00.000",
+			"estimated_runway": "2020-07-19T20:20:00.000",
+			"actual_runway": "2020-07-19T20:20:00.000"
+		},
+		"airline": {
+			"name": "Aeroflot",
+			"iata_code": "SU",
+			"icao_code": "AFL"
+		},
+		"flight": {
+			"number": "3456",
+			"iata_number": "SU3456",
+			"icao_number": "AFL3456"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "OSL",
+			"icao_code": "ENGM",
+			"gate": "C2",
+			"scheduled_time": "2020-07-19T16:00:00.000",
+			"estimated_time": "2020-07-19T16:00:00.000",
+			"actual_time": "2020-07-19T19:50:00.000",
+			"estimated_runway": "2020-07-19T19:50:00.000",
+			"actual_runway": "2020-07-19T19:50:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "3",
+			"scheduled_time": "2020-07-19T18:30:00.000",
+			"estimated_time": "2020-07-19T22:20:00.000",
+			"actual_time": "2020-07-19T22:20:00.000",
+			"estimated_runway": "2020-07-19T22:20:00.000",
+			"actual_runway": "2020-07-19T22:20:00.000"
+		},
+		"airline": {
+			"name": "Norwegian Air Shuttle",
+			"iata_code": "DY",
+			"icao_code": "NAX"
+		},
+		"flight": {
+			"number": "5678",
+			"iata_number": "DY5678",
+			"icao_number": "NAX5678"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"gate": "A15",
+			"scheduled_time": "2020-07-18T08:00:00.000",
+			"estimated_time": "2020-07-18T08:00:00.000",
+			"actual_time": "2020-07-18T10:40:00.000",
+			"estimated_runway": "2020-07-18T10:40:00.000",
+			"actual_runway": "2020-07-18T10:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "3",
+			"scheduled_time": "2020-07-18T10:20:00.000",
+			"estimated_time": "2020-07-18T13:40:00.000",
+			"actual_time": "2020-07-18T13:40:00.000",
+			"estimated_runway": "2020-07-18T13:40:00.000",
+			"actual_runway": "2020-07-18T13:40:00.000"
+		},
+		"airline": {
+			"name": "Lufthansa",
+			"iata_code": "LH",
+			"icao_code": "DLH"
+		},
+		"flight": {
+			"number": "2345",
+			"iata_number": "LH2345",
+			"icao_number": "DLH2345"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ZRH",
+			"icao_code": "LSZH",
+			"gate": "B4",
+			"scheduled_time": "2020-07-18T13:30:00.000",
+			"estimated_time": "2020-07-18T13:30:00.000",
+			"actual_time": "2020-07-18T17:10:00.000",
+			"estimated_runway": "2020-07-18T17:10:00.000",
+			"actual_runway": "2020-07-18T17:10:00.000"
+		},
+		"arrival": {
+			"iata_code": "MUC",
+			"icao_code": "EDDM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T14:50:00.000",
+			"estimated_time": "2020-07-18T18:30:00.000",
+			"actual_time": "2020-07-18T18:30:00.000",
+			"estimated_runway": "2020-07-18T18:30:00.000",
+			"actual_runway": "2020-07-18T18:30:00.000"
+		},
+		"airline": {
+			"name": "Swiss International Air Lines",
+			"iata_code": "LX",
+			"icao_code": "SWR"
+		},
+		"flight": {
+			"number": "4567",
+			"iata_number": "LX4567",
+			"icao_number": "SWR4567"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ATH",
+			"icao_code": "LGAV",
+			"gate": "A2",
+			"scheduled_time": "2020-07-18T15:20:00.000",
+			"estimated_time": "2020-07-18T15:20:00.000",
+			"actual_time": "2020-07-18T19:10:00.000",
+			"estimated_runway": "2020-07-18T19:10:00.000",
+			"actual_runway": "2020-07-18T19:10:00.000"
+		},
+		"arrival": {
+			"iata_code": "FCO",
+			"icao_code": "LIRF",
+			"terminal": "3",
+			"scheduled_time": "2020-07-18T17:00:00.000",
+			"estimated_time": "2020-07-18T20:50:00.000",
+			"actual_time": "2020-07-18T20:50:00.000",
+			"estimated_runway": "2020-07-18T20:50:00.000",
+			"actual_runway": "2020-07-18T20:50:00.000"
+		},
+		"airline": {
+			"name": "Aegean Airlines",
+			"iata_code": "A3",
+			"icao_code": "AEE"
+		},
+		"flight": {
+			"number": "5678",
+			"iata_number": "A35678",
+			"icao_number": "AEE5678"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "BCN",
+			"icao_code": "LEBL",
+			"gate": "D7",
+			"scheduled_time": "2020-07-18T18:45:00.000",
+			"estimated_time": "2020-07-18T18:45:00.000",
+			"actual_time": "2020-07-18T22:35:00.000",
+			"estimated_runway": "2020-07-18T22:35:00.000",
+			"actual_runway": "2020-07-18T22:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "AMS",
+			"icao_code": "EHAM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-18T21:00:00.000",
+			"estimated_time": "2020-07-19T00:50:00.000",
+			"actual_time": "2020-07-19T00:50:00.000",
+			"estimated_runway": "2020-07-19T00:50:00.000",
+			"actual_runway": "2020-07-19T00:50:00.000"
+		},
+		"airline": {
+			"name": "Vueling Airlines",
+			"iata_code": "VY",
+			"icao_code": "VLG"
+		},
+		"flight": {
+			"number": "6789",
+			"iata_number": "VY6789",
+			"icao_number": "VLG6789"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"gate": "B11",
+			"scheduled_time": "2020-07-18T22:10:00.000",
+			"estimated_time": "2020-07-18T22:10:00.000",
+			"actual_time": "2020-07-19T01:40:00.000",
+			"estimated_runway": "2020-07-19T01:40:00.000",
+			"actual_runway": "2020-07-19T01:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2E",
+			"scheduled_time": "2020-07-19T00:30:00.000",
+			"estimated_time": "2020-07-19T04:00:00.000",
+			"actual_time": "2020-07-19T04:00:00.000",
+			"estimated_runway": "2020-07-19T04:00:00.000",
+			"actual_runway": "2020-07-19T04:00:00.000"
+		},
+		"airline": {
+			"name": "British Airways",
+			"iata_code": "BA",
+			"icao_code": "BAW"
+		},
+		"flight": {
+			"number": "7890",
+			"iata_number": "BA7890",
+			"icao_number": "BAW7890"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "CPH",
+			"icao_code": "EKCH",
+			"gate": "C4",
+			"scheduled_time": "2020-07-19T09:50:00.000",
+			"estimated_time": "2020-07-19T09:50:00.000",
+			"actual_time": "2020-07-19T13:40:00.000",
+			"estimated_runway": "2020-07-19T13:40:00.000",
+			"actual_runway": "2020-07-19T13:40:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "5",
+			"scheduled_time": "2020-07-19T11:30:00.000",
+			"estimated_time": "2020-07-19T15:20:00.000",
+			"actual_time": "2020-07-19T15:20:00.000",
+			"estimated_runway": "2020-07-19T15:20:00.000",
+			"actual_runway": "2020-07-19T15:20:00.000"
+		},
+		"airline": {
+			"name": "Scandinavian Airlines",
+			"iata_code": "SK",
+			"icao_code": "SAS"
+		},
+		"flight": {
+			"number": "0123",
+			"iata_number": "SK0123",
+			"icao_number": "SAS0123"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "LIS",
+			"icao_code": "LPPT",
+			"gate": "A3",
+			"scheduled_time": "2020-07-19T11:15:00.000",
+			"estimated_time": "2020-07-19T11:15:00.000",
+			"actual_time": "2020-07-19T15:05:00.000",
+			"estimated_runway": "2020-07-19T15:05:00.000",
+			"actual_runway": "2020-07-19T15:05:00.000"
+		},
+		"arrival": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"terminal": "2",
+			"scheduled_time": "2020-07-19T13:05:00.000",
+			"estimated_time": "2020-07-19T16:55:00.000",
+			"actual_time": "2020-07-19T16:55:00.000",
+			"estimated_runway": "2020-07-19T16:55:00.000",
+			"actual_runway": "2020-07-19T16:55:00.000"
+		},
+		"airline": {
+			"name": "TAP Air Portugal",
+			"iata_code": "TP",
+			"icao_code": "TAP"
+		},
+		"flight": {
+			"number": "1234",
+			"iata_number": "TP1234",
+			"icao_number": "TAP1234"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "DXB",
+			"icao_code": "OMDB",
+			"gate": "B7",
+			"scheduled_time": "2020-07-19T12:30:00.000",
+			"estimated_time": "2020-07-19T12:30:00.000",
+			"actual_time": "2020-07-19T16:20:00.000",
+			"estimated_runway": "2020-07-19T16:20:00.000",
+			"actual_runway": "2020-07-19T16:20:00.000"
+		},
+		"arrival": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"terminal": "1",
+			"scheduled_time": "2020-07-19T15:00:00.000",
+			"estimated_time": "2020-07-19T18:50:00.000",
+			"actual_time": "2020-07-19T18:50:00.000",
+			"estimated_runway": "2020-07-19T18:50:00.000",
+			"actual_runway": "2020-07-19T18:50:00.000"
+		},
+		"airline": {
+			"name": "Emirates",
+			"iata_code": "EK",
+			"icao_code": "UAE"
+		},
+		"flight": {
+			"number": "2345",
+			"iata_number": "EK2345",
+			"icao_number": "UAE2345"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "SVO",
+			"icao_code": "UUEE",
+			"gate": "D9",
+			"scheduled_time": "2020-07-19T14:45:00.000",
+			"estimated_time": "2020-07-19T14:45:00.000",
+			"actual_time": "2020-07-19T18:35:00.000",
+			"estimated_runway": "2020-07-19T18:35:00.000",
+			"actual_runway": "2020-07-19T18:35:00.000"
+		},
+		"arrival": {
+			"iata_code": "CDG",
+			"icao_code": "LFPG",
+			"terminal": "2E",
+			"scheduled_time": "2020-07-19T16:30:00.000",
+			"estimated_time": "2020-07-19T20:20:00.000",
+			"actual_time": "2020-07-19T20:20:00.000",
+			"estimated_runway": "2020-07-19T20:20:00.000",
+			"actual_runway": "2020-07-19T20:20:00.000"
+		},
+		"airline": {
+			"name": "Aeroflot",
+			"iata_code": "SU",
+			"icao_code": "AFL"
+		},
+		"flight": {
+			"number": "3456",
+			"iata_number": "SU3456",
+			"icao_number": "AFL3456"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "OSL",
+			"icao_code": "ENGM",
+			"gate": "C2",
+			"scheduled_time": "2020-07-19T16:00:00.000",
+			"estimated_time": "2020-07-19T16:00:00.000",
+			"actual_time": "2020-07-19T19:50:00.000",
+			"estimated_runway": "2020-07-19T19:50:00.000",
+			"actual_runway": "2020-07-19T19:50:00.000"
+		},
+		"arrival": {
+			"iata_code": "LHR",
+			"icao_code": "EGLL",
+			"terminal": "3",
+			"scheduled_time": "2020-07-19T18:30:00.000",
+			"estimated_time": "2020-07-19T22:20:00.000",
+			"actual_time": "2020-07-19T22:20:00.000",
+			"estimated_runway": "2020-07-19T22:20:00.000",
+			"actual_runway": "2020-07-19T22:20:00.000"
+		},
+		"airline": {
+			"name": "Norwegian Air Shuttle",
+			"iata_code": "DY",
+			"icao_code": "NAX"
+		},
+		"flight": {
+			"number": "5678",
+			"iata_number": "DY5678",
+			"icao_number": "NAX5678"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "ATH",
+			"icao_code": "LGAV",
+			"gate": "A6",
+			"scheduled_time": "2020-07-19T17:30:00.000",
+			"estimated_time": "2020-07-19T17:30:00.000",
+			"actual_time": "2020-07-19T21:20:00.000",
+			"estimated_runway": "2020-07-19T21:20:00.000",
+			"actual_runway": "2020-07-19T21:20:00.000"
+		},
+		"arrival": {
+			"iata_code": "FRA",
+			"icao_code": "EDDF",
+			"terminal": "1",
+			"scheduled_time": "2020-07-19T19:00:00.000",
+			"estimated_time": "2020-07-19T22:50:00.000",
+			"actual_time": "2020-07-19T22:50:00.000",
+			"estimated_runway": "2020-07-19T22:50:00.000",
+			"actual_runway": "2020-07-19T22:50:00.000"
+		},
+		"airline": {
+			"name": "Aegean Airlines",
+			"iata_code": "A3",
+			"icao_code": "AEE"
+		},
+		"flight": {
+			"number": "7890",
+			"iata_number": "A37890",
+			"icao_number": "AEE7890"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "IST",
+			"icao_code": "LTFM",
+			"gate": "B4",
+			"scheduled_time": "2020-07-19T19:10:00.000",
+			"estimated_time": "2020-07-19T19:10:00.000",
+			"actual_time": "2020-07-19T23:00:00.000",
+			"estimated_runway": "2020-07-19T23:00:00.000",
+			"actual_runway": "2020-07-19T23:00:00.000"
+		},
+		"arrival": {
+			"iata_code": "CPH",
+			"icao_code": "EKCH",
+			"terminal": "3",
+			"scheduled_time": "2020-07-19T20:40:00.000",
+			"estimated_time": "2020-07-20T00:30:00.000",
+			"actual_time": "2020-07-20T00:30:00.000",
+			"estimated_runway": "2020-07-20T00:30:00.000",
+			"actual_runway": "2020-07-20T00:30:00.000"
+		},
+		"airline": {
+			"name": "Turkish Airlines",
+			"iata_code": "TK",
+			"icao_code": "THY"
+		},
+		"flight": {
+			"number": "9012",
+			"iata_number": "TK9012",
+			"icao_number": "THY9012"
+		}
+	},
+	{
+		"type": "arrival",
+		"status": "landed",
+		"departure": {
+			"iata_code": "MAD",
+			"icao_code": "LEMD",
+			"gate": "D5",
+			"scheduled_time": "2019-07-19T21:25:00.000",
+			"estimated_time": "2019-07-19T21:25:00.000",
+			"actual_time": "2019-07-20T01:15:00.000",
+			"estimated_runway": "2019-07-20T01:15:00.000",
+			"actual_runway": "2019-07-20T01:15:00.000"
+		},
+		"arrival": {
+			"iata_code": "BCN",
+			"icao_code": "LEBL",
+			"terminal": "2",
+			"scheduled_time": "2019-07-19T23:00:00.000",
+			"estimated_time": "2019-07-20T02:50:00.000",
+			"actual_time": "2019-07-20T02:50:00.000",
+			"estimated_runway": "2019-07-20T02:50:00.000",
+			"actual_runway": "2019-07-20T02:50:00.000"
+		},
+		"airline": {
+			"name": "Iberia",
+			"iata_code": "IB",
+			"icao_code": "IBE"
+		},
+		"flight": {
+			"number": "1234",
+			"iata_number": "IB1234",
+			"icao_number": "IBE1234"
 		}
 	}
 ]

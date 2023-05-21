@@ -30,7 +30,7 @@ button {
 		height: var(--border-default);
 		transform: rotate(var(--rotate, 0deg)) translate(-50%, var(--translate, 0));
 		transform-origin: 0%;
-		transition: transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+		transition: transform 0.5s cubic-bezier(0.1, 1, 0.2, 1);
 	}
 	--factor: 1;
 	&:hover {

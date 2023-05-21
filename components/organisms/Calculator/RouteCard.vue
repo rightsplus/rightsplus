@@ -62,7 +62,7 @@ import {
   isUnsafeToTakeoffOrLand,
 } from "@/utils";
 import { Airport, Flight } from "@/types";
-import { isEuMember } from "is-eu-member";
+import { euMember } from "is-european";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";
 
@@ -142,8 +142,8 @@ export default defineComponent({
     isEuMember() {
       const airport = this.$state.claims?.airport;
       return (
-        isEuMember(airport?.departure?.country || "") ||
-        isEuMember(airport?.arrival?.country || "")
+        euMember(airport?.departure?.country || "") ||
+        euMember(airport?.arrival?.country || "")
       );
     },
   },

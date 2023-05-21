@@ -80,9 +80,11 @@ export default defineComponent({
   },
   methods: {
     submitHandler() {
-      fetch("api/aviationstack.json")
+      // fetch("api/aviationstack.json")
+      fetch("api/flights-aviation-edge.json")
         .then((data) => data.json())
         .then(({ data }) => {
+          console.log(data)
           this.$state.flights = data;
         })
         .catch((error) => {

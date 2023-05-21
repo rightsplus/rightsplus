@@ -60,6 +60,7 @@ module.exports = {
     },
   },
   plugins: [
+    require('@tailwindcss/container-queries'),
     require('@formkit/tailwindcss'),
     require("tailwindcss-hyphens"),
     require('@tailwindcss/forms'),

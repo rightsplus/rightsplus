@@ -371,22 +371,22 @@
 			"departure": {
 				"airport": "Cologne Bonn Airport",
 				"iata": "CGN",
-				"delay": 15,
+				"delay": 135,
 				"scheduled": "2023-03-21T12:30:00+00:00",
-				"estimated": "2023-03-21T12:45:00+00:00",
-				"actual": "2023-03-21T12:50:00+00:00",
-				"estimated_runway": "2023-03-21T12:45:00+00:00",
-				"actual_runway": "2023-03-21T12:50:30+00:00"
+				"estimated": "2023-03-21T14:45:00+00:00",
+				"actual": "2023-03-21T14:50:00+00:00",
+				"estimated_runway": "2023-03-21T14:45:00+00:00",
+				"actual_runway": "2023-03-21T143:50:30+00:00"
 			},
 			"arrival": {
 				"airport": "Ataturk International Airport",
 				"iata": "ISL",
-				"delay": 10,
+				"delay": 190,
 				"scheduled": "2023-03-21T16:30:00+00:00",
-				"estimated": "2023-03-21T16:40:00+00:00",
-				"actual": "2023-03-21T16:50:00+00:00",
-				"estimated_runway": "2023-03-21T16:40:00+00:00",
-				"actual_runway": "2023-03-21T16:50:20+00:00"
+				"estimated": "2023-03-21T18:40:00+00:00",
+				"actual": "2023-03-21T18:50:00+00:00",
+				"estimated_runway": "2023-03-21T18:40:00+00:00",
+				"actual_runway": "2023-03-21T18:50:20+00:00"
 			},
 			"airline": {
 				"name": "Turkish Airlines",

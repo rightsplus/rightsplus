@@ -11,7 +11,7 @@
     <BurgerIcon
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
-      class="absolute cursor-pointer right-5 top-4 sm:top-5 z-50 md:hidden"
+      class="absolute cursor-pointer right-5 top-4 sm:top-6 z-50 md:hidden"
       :class="[$state?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
@@ -31,7 +31,7 @@
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLink
             to="/"
-            class="duration-500 flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
+            class="flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
             @click="clickLink"
           >
@@ -49,7 +49,7 @@
         <li
           v-for="(item, i) in links"
           :key="item.name"
-          class="order-1 flex"
+          class="order-1 flex whitespace-nowrap"
           :class="{ 'button text-base': item.type === 'button' }"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
           :style="{
@@ -58,7 +58,7 @@
         >
           <NuxtLink
             :to="item.path"
-            class="duration-500 flex gap-3 items-center py-3 leading-none cursor-pointer"
+            class="flex gap-3 items-center py-3 leading-none cursor-pointer"
             exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
@@ -298,7 +298,7 @@ export default defineComponent({
           }
           li.button {
             transition-delay: calc(var(--k) * 70ms + 500ms);
-          transition-timing-function: cubic-bezier(0, 1, 0, 1);
+            transition-timing-function: cubic-bezier(0, 1, 0, 1);
             @media screen and (orientation: landscape) {
               margin-top: 10vh;
             }

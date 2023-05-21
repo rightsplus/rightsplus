@@ -1,6 +1,6 @@
 <template>
   <ul
-    class="peer-focus:none absolute bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-64 overflow-y-auto w-full"
+    class="peer-focus:none absolute bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-52 overflow-y-auto w-full"
     v-if="options?.length"
     ref="options"
   >
@@ -8,7 +8,7 @@
       v-for="(item, i) in options"
       :key="item.value"
       :name="item.value"
-      class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600"
+      class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 border-b border-b-white last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600"
       :class="{
         'bg-primary-50': i === active,
       }"

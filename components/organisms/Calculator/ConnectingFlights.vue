@@ -27,7 +27,7 @@
     <div v-if="modelValue.airport" class="relative">
       <AirportInput
         label="Abflug"
-        placeholder="z.B. Frankfurt oder FRA"
+        placeholder="z.B. New York oder JFK"
         name="layover"
         prefix-icon="plane-arrival"
         :modelValue="modelValue.airport.departure"
@@ -65,7 +65,7 @@
       <div>
         <AirportInput
           label="Ankunft"
-          placeholder="z.B. Frankfurt oder FRA"
+          placeholder="z.B. Tokyo oder NRT"
           name="layover"
           prefix-icon="plane-arrival"
           :modelValue="modelValue.airport.arrival"
@@ -74,7 +74,43 @@
         />
       </div>
     </div>
-    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
+    <div class="flex flex-col gap-3"
+        v-if="
+          useAppState().routes && Object.values(useAppState().routes).length > 1
+        ">
+    <h3
+      class="flex justify-between items-center text-lg sm:text-xl font-medium"
+    >
+      <span class="text-gray-500">Um welche Strecke geht es?</span>
+    </h3>
+      <div
+        v-for="([key, route], i) in Object.entries(useAppState().routes)"
+        :key="key"
+        class="w-full flex flex-col gap-3"
+      >
+        <ButtonLarge
+          :selected="modelValue.route === key"
+          name="no"
+          @click="modelValue.route = key"
+          class="flex flex-col !gap-1 !items-start"
+        >
+          <span class="flex items-center gap-3 font-bold"
+            >{{ route.departure.airport.iata
+            }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
+            {{ route.arrival?.airport.iata }}</span
+          >
+          <span class="text-sm"
+            ><span class="font-bold">{{ route.departure.airport.city }}</span>
+            to
+            <span class="font-bold">{{
+              route.arrival?.airport.city
+            }}</span></span
+          >
+        </ButtonLarge>
+      </div>
+    </div>
+
+    <NavigationButtons @next="$emit('submit')" />
   </div>
 </template>
 
@@ -92,7 +128,7 @@ const { modelValue } = defineProps<{
 }>();
 
 function update(e: any, i: number) {
-  if ("iata" in e && modelValue.airport.layover) {
+  if (e && "iata" in e && modelValue.airport.layover) {
     modelValue.airport.layover[i] = e;
   }
 }

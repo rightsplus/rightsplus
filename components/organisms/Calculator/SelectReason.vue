@@ -2,8 +2,37 @@
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
     <div
-      class="flex flex-wrap lg:flex-row gap-4"
+      class="flex items-center gap-3 p-3 border border-blue-200 bg-blue-100 text-blue-600 rounded-lg text-sm"
     >
+      <ClientOnly><FontAwesomeIcon icon="info-circle" /></ClientOnly>
+      <span v-if="useFlightStatus($state.claims.flight).cancelled.value"
+        >Laut unseren Informationen wurde dein Flug
+        <span class="font-bold">gecancelled</span>.</span
+      >
+      <span v-else-if="useFlightStatus($state.claims.flight).delayed.value > 0"
+        >Laut unseren Informationen ist dein Flug mit
+        <span
+          class="font-bold"
+          v-html="getDuration(getDelay($state.claims.flight?.arrival))"
+        />
+        Verspätung in
+        {{
+          useAirports().value[$state.claims.flight?.arrival.iata_code || ""]
+            ?.city
+        }}
+        gelandet.</span
+      >
+      <span v-else
+        >Laut unseren Informationen ist dein Flug
+        <span class="font-bold">ohne Verspätung</span> in
+        {{
+          useAirports().value[$state.claims.flight?.arrival.iata_code || ""]
+            ?.city
+        }}
+        gelandet.</span
+      >
+    </div>
+    <div class="flex flex-wrap lg:flex-row gap-4">
       <!-- <FormKit
         type="select"
         v-model="modelValue.reason"
@@ -38,42 +67,29 @@
       />
     </div>
 
-    <div
-      class="flex flex-col gap-5"
-      v-if="modelValue.reason === 'delayed'"
-    >
-      <span class="text-sm">Laus unseren Informationen ist dein Flug mit <span class="font-bold">{{ $n($state.claims.flight?.arrival.delay || 0) }} min</span> Verspätung in {{ useAirports().value[$state.claims.flight?.arrival.iata].city }} gelandet.</span>
-    <div
-      class="grid sm:grid-cols-3 gap-3"
-    >
-      <ButtonLarge
-        v-for="c in delayed"
-        :key="c.value"
-        @click.prevent="$state.claims.reasonDetails = { delayed: c.value }"
-        :selected="$state.claims.reasonDetails?.delayed === c.value"
-        :name="c.value"
-        :label="c.label"
-      />
+    <div class="flex flex-col gap-5" v-if="modelValue.reason === 'delayed'">
+      <div class="grid sm:grid-cols-3 gap-3">
+        <ButtonLarge
+          v-for="c in delayed"
+          :key="c.value"
+          @click.prevent="$state.claims.reasonDetails = { delayed: c.value }"
+          :selected="$state.claims.reasonDetails?.delayed === c.value"
+          :name="c.value"
+          :label="c.label"
+        />
+      </div>
     </div>
-    </div>
-    <div
-      class="flex flex-col gap-5"
-      v-if="modelValue.reason === 'cancelled'"
-    >
-    <!-- <pre>{{$state.claims.flight}}</pre> -->
-      <span class="text-sm">Laus unseren Informationen wurde dein Flug nicht gecancelled.</span>
-    <div
-      class="grid sm:grid-cols-3 gap-3"
-    >
-      <ButtonLarge
-        v-for="c in cancelled"
-        :key="c.value"
-        @click.prevent="$state.claims.reasonDetails = { cancelled: c.value }"
-        :selected="$state.claims.reasonDetails?.cancelled === c.value"
-        :name="c.value"
-        :label="c.label"
-      />
-    </div>
+    <div class="flex flex-col gap-5" v-if="modelValue.reason === 'cancelled'">
+      <div class="grid sm:grid-cols-3 gap-3">
+        <ButtonLarge
+          v-for="c in cancelled"
+          :key="c.value"
+          @click.prevent="$state.claims.reasonDetails = { cancelled: c.value }"
+          :selected="$state.claims.reasonDetails?.cancelled === c.value"
+          :name="c.value"
+          :label="c.label"
+        />
+      </div>
     </div>
     <FormKit
       type="textarea"
@@ -105,10 +121,10 @@ const showNoBordingDropdown = ref(false);
 const submitHandler = () => emit("submit");
 
 const disruptions = [
-  { value: "delayed", label: "Verspätet", icon: 'clock' },
-  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: 'times' },
-  { value: "noBoarding", label: "Boarding untersagt / verpasst", icon: 'ban' },
-  { value: "other", label: "Sonstige", icon: 'question' },
+  { value: "delayed", label: "Verspätet", icon: "clock" },
+  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: "times" },
+  { value: "noBoarding", label: "Boarding untersagt / verpasst", icon: "ban" },
+  { value: "other", label: "Sonstige", icon: "question" },
 ];
 const delayed = [
   { value: "<=3", label: "Weniger als 3h" },
@@ -171,7 +187,7 @@ const noBoarding = [
     label: "Restricted Destinations",
     icon: "map-marker-alt",
   },
-]
+];
 const reasons = [
   { value: "dontRemember", label: "Ich kann mich nicht erinnern" },
   { value: "technicalIssues", label: "Technische Probleme" },
@@ -185,5 +201,5 @@ const reasons = [
   { value: "securityIssues", label: "Sicherheitsprobleme" },
   { value: "airTrafficControl", label: "Flugverkehrskontrolle" },
   { value: "unexpectedIssues", label: "Unerwartete Probleme" },
-]
+];
 </script>

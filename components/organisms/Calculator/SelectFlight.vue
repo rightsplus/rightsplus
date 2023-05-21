@@ -5,38 +5,20 @@
         Wähle den Flug um den es geht
       </h2>
     </div>
-      <h3 class="flex justify-between items-center text-lg sm:text-xl  font-medium">
-        <span class="text-gray-500">Wann bist du geflogen?</span>
-        <span  class="">{{new Date(modelValue.flight_date).toLocaleDateString(useI18n().locale.value)}}</span>
-      </h3>
-    <InputDate v-model="modelValue.flight_date" />
-    <div
-      v-if="
-        useAppState().routes && Object.values(useAppState().routes).length > 1
-      "
-      v-for="([key, route], i) in Object.entries(useAppState().routes)"
-      :key="key"
-      class="w-full flex flex-col gap-3"
-    >
-      <ButtonLarge
-        :selected="modelValue.route === key"
-        name="no"
-        @click="modelValue.route = key"
-        class="flex flex-col !gap-1 !items-start"
-      >
-        <span class="flex items-center gap-3 font-bold"
-          >{{ route.departure.airport.iata
-          }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
-          {{ route.arrival?.airport.iata }}</span
-        >
-        <span class="text-sm"
-          ><span class="font-bold">{{ route.departure.airport.city }}</span> to
-          <span class="font-bold">{{ route.arrival?.airport.city }}</span></span
-        >
-      </ButtonLarge>
-    </div>
 
-    <h3 class="text-xl sm:text-2xl font-bold text-gray-500">
+    <h3
+      class="flex justify-between items-center text-lg sm:text-xl font-medium"
+    >
+      <span class="text-gray-500">Wann bist du geflogen?</span>
+      <span class="">{{
+        new Date(modelValue.flight_date).toLocaleDateString(
+          useI18n().locale.value
+        )
+      }}</span>
+    </h3>
+    <InputDate v-model="modelValue.flight_date" />
+
+    <h3 class="text-lg sm:text-xl font-medium text-gray-500">
       Welcher war dein Flug?
     </h3>
     <div
@@ -44,7 +26,7 @@
       class="w-full flex flex-col gap-3"
     >
       <ButtonFlight
-        v-for="flight in useAppState().flights.filter(filterFlights)"
+        v-for="flight in useAppState().flights.filter(filterFlights).sort((a, b) => new Date(a.departure.scheduled_time).getTime() - new Date(b.departure.scheduled_time).getTime())"
         :key="flight.flight.number"
         :flight="flight"
         :selected="modelValue.flight"
@@ -77,16 +59,17 @@ const filterFlights = (flight: Flight) => {
   if (!props.modelValue.route) return false;
   const { departure, arrival } = useAppState().routes[props.modelValue.route];
   return (
-    flight.departure.iata === departure.airport.iata &&
-    flight.arrival.iata === arrival.airport.iata &&
-    flight.flight_date === props.modelValue.flight_date
+    flight.departure.iata_code === departure.airport.iata &&
+    flight.arrival.iata_code === arrival.airport.iata &&
+    getISODate(flight.departure.scheduled_time) ===
+      getISODate(props.modelValue.flight_date)
   );
 };
 
 const handleSelect = (flight: Flight) => {
-  console.log(flight);
   if (
-    flight.flight.iata?.toUpperCase() === props.modelValue.flight?.flight.iata
+    flight.flight.iata_number?.toUpperCase() ===
+    props.modelValue.flight?.flight.iata_number
   ) {
     props.modelValue.flight = null;
     return;
@@ -108,9 +91,17 @@ const handleSelect = (flight: Flight) => {
   // }
 };
 const init = () => {
-  fetch("api/aviationstack-new.json")
+  // fetch("api/aviationstack-new.json")
+  fetch("api/flights-aviation-edge.json")
     .then((data) => data.json())
-    .then(({ data }) => {
+    .then((data) => {
+      console.log(
+        data.map((e) => [
+          `${e.departure.iata_code} → ${e.arrival.iata_code}`,
+          new Date(e.departure.scheduled_time).toISOString().slice(0, 10),
+          e.status,
+        ])
+      );
       useAppState().flights = (data as Flight[]).map((flight) => {
         return {
           ...flight,

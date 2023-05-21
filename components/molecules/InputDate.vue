@@ -5,9 +5,11 @@
     :masks="{modelValue: 'DD.MM.YYYY'}"
     class="calendar"
     color="orange"
+    step="1"
     :columns="columns"
     :max-date="new Date()"
     expanded
+    :locale="useI18n().locale.value"
     :attributes="[
       {
         key: 'today',
@@ -34,9 +36,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['update:modelValue']);
 const updateModelValue = (value: Date) => {
-  const offset = value.getTimezoneOffset()
-  value = new Date(value.getTime() - (offset*60*1000))
-  emit('update:modelValue', value.toISOString().split('T')[0]);
+  emit('update:modelValue', getISODate(value));
 };
 </script>
 <style lang="scss">

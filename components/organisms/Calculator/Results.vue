@@ -23,7 +23,7 @@ import Button from "@/components/molecules/Button.vue";
 import ButtonBack from "@/components/molecules/ButtonBack.vue";
 import { getAirportDistance } from "@/utils";
 import { Flight } from "@/types";
-import { isEuMember } from "is-eu-member";
+import { euMember } from "is-european";
 import FlightResult from "./FlightResult.vue";
 import NavigationButtons from "./NavigationButtons.vue";
 
@@ -58,7 +58,7 @@ export default defineComponent({
             nameCountry: cur.nameCountry,
             country: cur.codeIso2Country,
             iata: cur.codeIataAirline,
-            isEuMember: isEuMember(cur.codeIso2Country),
+            isEuMember: euMember(cur.codeIso2Country),
           };
           return acc;
         }, {})
@@ -74,7 +74,7 @@ export default defineComponent({
   methods: {
     isEuMember,
     euLabel(country: string) {
-      return isEuMember(country) ? `Ja (${country})` : `Nein (${country})`;
+      return euMember(country) ? `Ja (${country})` : `Nein (${country})`;
     },
     getAirportDistance,
     submitHandler() {
