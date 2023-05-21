@@ -74,7 +74,11 @@ const getDistance = (flight: Flight | null) => {
 	return getAirportDistance(departureAirport, arrivalAirport)
 }
 const getEU = (flight: Flight | null) =>{
-	if (!flight) return false
+	if (!flight) return {
+		departure: false,
+		arrival: false,
+		airline: false,
+	}
 	const { departureAirport, arrivalAirport } = getAirports(flight)
 
 	const airlineObject = useAirlines().value[flight.airline.iata_code || ""]

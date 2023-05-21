@@ -9,6 +9,7 @@
   >
     <span class="leading-none" v-if="icon"><FontAwesomeIcon :icon="icon" class="text-sm" /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
+      <span class="text-xs leading-none" v-if="preLabel">{{ preLabel }}</span>
       <span class="text-sm font-bold leading-none" v-if="label">{{
         label
       }}</span>
@@ -24,7 +25,8 @@ defineProps<{
   icon: string
   name: string
   label: string
-  subLabel: string
+  preLabel?: string
+  subLabel?: string
 }>()
 const baseUrl = "https://serkowebtest.blob.core.windows.net/airline-logos"
 

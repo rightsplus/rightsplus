@@ -227,6 +227,13 @@ export const generateRoutes = (claims: ClaimsForm) => {
 	return routes;
 }
 
+export const reimbursementByDistance = (distance: number, withinEU: boolean) => {
+	let claims = 250
+	if (distance > 1500) claims = 400
+	if (distance > 3500 && !withinEU) claims = 600
+	return claims
+}
+
 export const keyIncrement = (e: KeyboardEvent, value: number, length: number) => {
 	let v = value
 	if (e?.key === "ArrowDown") {

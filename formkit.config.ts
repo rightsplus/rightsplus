@@ -99,7 +99,7 @@ const config: DefaultConfigOptions = {
       },
       range: {
         inner: '$reset flex items-center max-w-2xl',
-        input: '$reset w-full mb-1 h-2 p-0 rounded-full',
+        input: '$reset w-full mb-1 h-2 p-0 rounded-full accent-primary-600',
         prefixIcon: '$reset w-4 mr-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto',
         suffixIcon: '$reset w-4 ml-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto'
       },

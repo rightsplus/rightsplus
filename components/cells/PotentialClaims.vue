@@ -23,13 +23,9 @@ const noClaims = computed(() => {
 	return false
 })
 const potentialReimbursment = computed(() => {
-	let claims = 250
 	const { value: eu } = status.value.europeanUnion
 	const { value: distance } = status.value.distance
-	const withinEU = eu.airline || eu.departure
-	if (distance > 1500) claims = 400
-	if (distance > 3500 && !withinEU) claims = 400
-	return claims
+	return reimbursementByDistance(distance, eu.departure || eu.arrival)
 })
 onMounted(() => {
 	fetch("api/airlines-aviation-edge.json")
