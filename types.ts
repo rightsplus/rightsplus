@@ -8,12 +8,12 @@ export interface ClaimsForm {
   flight: Flight | null,
   flight_date: string,
   reason: string | null,
-
   disruption: string | null,
   reasonDetails: {
     noBoarding?: string,
     delayed?: string,
     cancelled?: string
+    other?: string
   },
   step: number,
   client: {

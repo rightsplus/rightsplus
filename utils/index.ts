@@ -24,26 +24,26 @@ export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: 
 }
 
 export interface WeatherResponse<N = number[], S = string[]> {
-	time?: S;
-	temperature_2m?: N;
-	relativehumidity_2m?: N;
-	dewpoint_2m?: N;
-	apparent_temperature?: N;
-	pressure_msl?: N;
-	precipitation?: N;
-	windgusts_10m?: N;
-	weathercode?: N;
-	vapor_pressure_deficit?: N;
-	snowfall?: N;
-	cloudcover?: N;
-	surface_pressure?: N;
-	windspeed_100m?: N;
+	time: S;
+	temperature_2m: N;
+	relativehumidity_2m: N;
+	dewpoint_2m: N;
+	apparent_temperature: N;
+	pressure_msl: N;
+	precipitation: N;
+	windgusts_10m: N;
+	weathercode: N;
+	vapor_pressure_deficit: N;
+	snowfall: N;
+	cloudcover: N;
+	surface_pressure: N;
+	windspeed_100m: N;
 }
 export const getHumanReadableWeather = async (flight: FlightPhase) => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
 	const airports = useAirports().value
 	const weather = await getWeather(airports[flight.iata_code], flight.scheduled_time)
-	const getByHour = (weather: WeatherResponse | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): WeatherResponse<number, string> => {
+	const getByHour = (weather: Partial<WeatherResponse> | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): Partial<WeatherResponse<number, string>> => {
 		if (!weather) return {}
 		return Object.fromEntries(
 			Object.entries(weather)
@@ -240,7 +240,7 @@ export const keyIncrement = (e: KeyboardEvent, value: number, length: number) =>
 		v = v + 1;
 		if (v > length - 1)
 			v = 0;
-	} getCurrentInstance()?.refs.input?.focus()
+	} (getCurrentInstance()?.refs.input as HTMLInputElement)?.focus()
 	if (e?.key === "ArrowUp") {
 		v = v - 1;
 		if (v < 0)
@@ -292,29 +292,4 @@ export const getDuration = (minutes: number) => {
 	const min = `${minutes % 60} min`;
 	const h = `${Math.floor(minutes / 60)} h`;
 	return minutes >= 60 ? `${h} ${min}` : min;
-}
-
-
-export const queryAirports = (search, query: string) => {
-  if (query?.length < 1) return;
-    search({ query, hitsPerPage: 10 }).then(({ hits }) => {
-      hits.forEach((hit: Airport) => {
-        const a = { ...hit };
-        delete a._highlightResult;
-        delete a.objectID;
-        useAirports().value[hit.iata] = a;
-      });
-      return hits.map((airport: Airport) => ({
-        value: airport.iata,
-        label: airport._highlightResult?.full.value || "Airport",
-        sublabel: [
-          airport._highlightResult?.city.value,
-          airport.countryName?.[useI18n().locale.value] ||
-            countries.getName(airport.country, useI18n().locale.value),
-        ]
-          .filter(Boolean)
-          .join(", "),
-        icon: "plane",
-      })) as DropdownItem[];
-    });
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-2xl sm:text-3xl font-bold">Deine Flugroute</h1>
+    <span class="text-sm">Wenn du einen Zwischenstopp hattest, kannst du ihn hier eintragen.</span>
 
     <!-- <div class="grid sm:grid-cols-2 gap-3">
       <ButtonLarge
@@ -28,7 +29,8 @@
       <AirportInput
         label="Abflug"
         placeholder="z.B. New York oder JFK"
-        name="layover"
+        name="departure"
+        id="departure"
         prefix-icon="plane-arrival"
         :modelValue="modelValue.airport.departure"
         @update:modelValue="modelValue.airport.departure = $event"
@@ -66,7 +68,8 @@
         <AirportInput
           label="Ankunft"
           placeholder="z.B. Tokyo oder NRT"
-          name="layover"
+        name="arrival"
+        id="arrival"
           prefix-icon="plane-arrival"
           :modelValue="modelValue.airport.arrival"
           @update:modelValue="modelValue.airport.arrival = $event"
@@ -109,13 +112,11 @@
         </ButtonLarge>
       </div>
     </div>
-
-    <NavigationButtons @next="$emit('submit')" />
+    <NavigationButtons @next="$emit('submit')" :nextDisabled="!modelValue.airport.departure || !modelValue.airport.arrival || !!(modelValue.route && !useAppState().routes[modelValue.route || ''])" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { FormKit } from "@formkit/vue";
 import Button from "@/components/molecules/Button.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirportInput from "./Forms/AirportInput.vue";
@@ -127,6 +128,11 @@ const { modelValue } = defineProps<{
   modelValue: ClaimsForm;
 }>();
 
+watch(() => useAppState().routes, () => {
+  if (useAppState().routes && Object.values(useAppState().routes).length <= 1) {
+    modelValue.route = Object.keys(useAppState().routes)[0];
+  }
+}, {deep: true})
 function update(e: any, i: number) {
   if (e && "iata" in e && modelValue.airport.layover) {
     modelValue.airport.layover[i] = e;

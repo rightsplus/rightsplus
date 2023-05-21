@@ -15,7 +15,7 @@
       /></span>
       <FlightResultAirport
         label="Ankunft"
-        :flight="flight.arrival"
+        :flight="flight?.arrival"
         class="items-end text-right"
       />
     </div>
@@ -58,7 +58,7 @@ import FlightResultAirport from "@/components/organisms/Calculator/FlightResultA
 import Weather from "@/components/molecules/Weather.vue";
 
 const props = defineProps<{
-  flight: Flight;
+  flight?: Flight;
 }>();
 
 const lat = 52.520008;

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
     <Stepper
       class="mb-5"
       :steps="steps"
@@ -7,7 +7,7 @@
       @setStep="$state.claims.step = $event"
     />
     <div
-      class="container md:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12"
+      class="container lg:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >

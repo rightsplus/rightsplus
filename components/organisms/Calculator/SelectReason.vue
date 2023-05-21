@@ -76,10 +76,15 @@
           :selected="$state.claims.reasonDetails?.delayed === c.value"
           :name="c.value"
           :label="c.label"
+          :preLabel="c.preLabel"
         />
       </div>
     </div>
     <div class="flex flex-col gap-5" v-if="modelValue.reason === 'cancelled'">
+      <span class="text-sm"
+        >Wieviel Zeit vor dem Abflug wurdest du über die Streichung / Umbuchung
+        informiert?</span
+      >
       <div class="grid sm:grid-cols-3 gap-3">
         <ButtonLarge
           v-for="c in cancelled"
@@ -88,19 +93,31 @@
           :selected="$state.claims.reasonDetails?.cancelled === c.value"
           :name="c.value"
           :label="c.label"
+          :preLabel="c.preLabel"
         />
       </div>
     </div>
     <FormKit
+      v-if="modelValue.reason === 'other'"
       type="textarea"
-      label="Gib den tatächlichen Flugstatus an"
-      placeholder="Flugstatus wählen"
+      label="Welche Angaben hat die Fluggesellschaft gemacht?"
+      placeholder="Weitere Informationen"
       name="reason"
-      v-model="modelValue.reason"
-      :options="reasons"
+      v-model="modelValue.reasonDetails.other"
       select-icon="angle-down"
     />
-    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
+    <div
+      v-if="modelValue.reason"
+      class="text-xs cursor-pointer hover:underline"
+      @click="modelValue.reason = null"
+    >
+      reset reason
+    </div>
+    <NavigationButtons
+      @previous="$emit('back')"
+      @next="$emit('submit')"
+      :nextDisabled="!modelValue.reason"
+    />
   </div>
 </template>
 
@@ -122,19 +139,19 @@ const submitHandler = () => emit("submit");
 
 const disruptions = [
   { value: "delayed", label: "Verspätet", icon: "clock" },
-  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: "times" },
+  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: "arrow-right-arrow-left" },
   { value: "noBoarding", label: "Boarding untersagt / verpasst", icon: "ban" },
   { value: "other", label: "Sonstige", icon: "question" },
 ];
 const delayed = [
-  { value: "<=3", label: "Weniger als 3h" },
-  { value: "3-4", label: "3 - 4h" }, // bei +3500 km: Vergütung 50%
-  { value: ">4", label: "Mehr als 4h" },
+  { value: "<=3", preLabel: "Weniger als", label: "3 Stunden" },
+  { value: "3-4", label: "3 – 4 Stunden" }, // bei +3500 km: Vergütung 50%
+  { value: ">4", preLabel: "Mehr als", label: "4 Stunden" },
 ];
 const cancelled = [
-  { value: "<72", label: "Weniger als 72h" },
-  { value: "72-14", label: "72h - 14 Tage" },
-  { value: ">14", label: "Mehr als 14 Tage" },
+  { value: "<72", preLabel: "Weniger als", label: "72 Stunden" },
+  { value: "72-14", label: "3 – 14 Tage" },
+  { value: ">14", preLabel: "Mehr als", label: "14 Tage" },
 ];
 const noBoarding = [
   {

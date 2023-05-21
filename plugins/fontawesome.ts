@@ -56,6 +56,9 @@ import {
   faCloudSun,
   faCloudMoon,
   faTrain,
+  faArrowsLeftRight,
+  faArrowRightArrowLeft,
+  faHand,
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -119,7 +122,9 @@ library.add(
   faCloudMoon,
   faSmog,
   faWind,
-  faTrain
+  faTrain,
+  faArrowRightArrowLeft,
+  faHand
 )
 
 config.autoAddCss = false

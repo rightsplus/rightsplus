@@ -22,6 +22,7 @@
           <ButtonLarge
             v-for="option in distances"
             :key="option.value"
+            :name="option.label"
             @click="distance = option.value"
             :label="option.label"
             :preLabel="option.preLabel"

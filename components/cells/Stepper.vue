@@ -1,6 +1,6 @@
 <template>
   <ol
-    class="flex md:flex-col w-full text-md font-medium text-center md:text-base gap-5 md:gap-8 md:py-2"
+    class="flex lg:flex-col w-full text-md font-medium text-center md:text-base gap-5 md:gap-8 md:py-2"
   >
     <Step
       v-for="({ label }, index) in steps"

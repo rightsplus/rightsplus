@@ -62,6 +62,7 @@ const inputValue = ref(props.modelValue)
 function updateInput (input: string) {
   highlighted.value = 0;
   inputValue.value = input;
+  if (!input.length) emit("update:modelValue", "");
   emit("query", input);
 }
 function keydown(e: KeyboardEvent) {
@@ -73,7 +74,6 @@ function keydown(e: KeyboardEvent) {
 }
 function handleInput(input: DropdownItem) {
   const index = typeof input === "number" ? input : highlighted.value;
-  console.log(props.options[index])
   emit("update:modelValue", props.options[index]);
   focusNext(true);
 }

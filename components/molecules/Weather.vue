@@ -21,9 +21,9 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 defineProps<{
-  code: number;
-  temperature: number;
-  wind: number;
+  code?: number;
+  temperature?: number;
+  wind?: number;
 }>();
 
 const getColor = (icon: string) => {

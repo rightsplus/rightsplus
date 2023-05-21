@@ -44,7 +44,8 @@ export const state = reactive({
     reasonDetails: {
       noBoarding: undefined,
       delayed: undefined,
-      cancelled: undefined
+      cancelled: undefined,
+      other: undefined
     },
     step: 0,
   } as ClaimsForm,

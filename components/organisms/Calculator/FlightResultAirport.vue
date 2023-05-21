@@ -33,11 +33,11 @@
 import { Airport, Flight, FlightPhase } from "@/types";
 import Weather from "@/components/molecules/Weather.vue";
 import { WeatherResponse } from "~~/utils";
-const weather = ref(null as null | WeatherResponse<number, string>);
+const weather = ref(null as null | Partial<WeatherResponse<number, string>>);
 
 const props = defineProps<{
   label: string;
-  flight: FlightPhase;
+  flight?: FlightPhase;
 }>();
 getHumanReadableWeather(props.flight).then((data) => {
   weather.value = data;

@@ -17,14 +17,23 @@
       }}</span>
     </h3>
     <InputDate v-model="modelValue.flight_date" />
+    <div
+      v-if="!useAppState().flights.filter(filterFlights).length"
+      class="w-full flex flex-col gap-3"><span class="text-sm font-medium"
+        >An diesem Datum konnten wir keinen Flug von {{
+          useAirports().value[modelValue.airport.departure.iata]?.city
+        }} nach {{
+          useAirports().value[modelValue.airport.arrival.iata]?.city
+        }} finden.</span
+      ></div>
 
+    <div
+      v-if="useAppState().flights.filter(filterFlights).length"
+      class="w-full flex flex-col gap-3"
+    >
     <h3 class="text-lg sm:text-xl font-medium text-gray-500">
       Welcher war dein Flug?
     </h3>
-    <div
-      v-if="modelValue.route && useAppState().routes[modelValue.route]"
-      class="w-full flex flex-col gap-3"
-    >
       <ButtonFlight
         v-for="flight in useAppState().flights.filter(filterFlights).sort((a, b) => new Date(a.departure.scheduled_time).getTime() - new Date(b.departure.scheduled_time).getTime())"
         :key="flight.flight.number"
@@ -33,8 +42,8 @@
         @click="handleSelect"
       />
     </div>
-    <div class="flex flex-col gap-3"></div>
-    <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
+    
+  <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" :nextDisabled="!modelValue.flight || !useAppState().flights.filter(filterFlights).length" />
     <!-- :nextDisabled="
         useAppState().routes && !Object.values(useAppState().routes).every((e) => e.flight)
       " -->

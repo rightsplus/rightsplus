@@ -1,6 +1,6 @@
 <template>
   <DropdownSearch
-    :modelValue="modelValue?.name ? `${modelValue?.name} (${modelValue?.iata})` : ''"
+    :modelValue="convertName(modelValue)"
     @update:modelValue="$emit('update:modelValue', useAirports()?.value?.[$event?.value])"
     :label="label"
     :name="name"
@@ -41,7 +41,7 @@ emit("update:modelValue", {
 
 const { search } = useAlgoliaSearch("AIRPORTS");
 const { locale } = useI18n();
-
+const convertName = (value: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
 const dropdownList = ref([] as DropdownItem[])
 
 function findAirports (query: string) {
