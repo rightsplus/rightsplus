@@ -20,7 +20,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Button from "@/components/molecules/Button.vue";
-import ButtonBack from "@/components/molecules/ButtonBack.vue";
 import { getAirportDistance } from "@/utils";
 import { Flight } from "@/types";
 import { euMember } from "is-european";
@@ -30,7 +29,6 @@ import NavigationButtons from "./NavigationButtons.vue";
 export default defineComponent({
   components: {
     Button,
-    ButtonBack,
     FlightResult,
     NavigationButtons
   },

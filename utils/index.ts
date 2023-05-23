@@ -2,6 +2,9 @@ import { Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
 import weatherCodes from "~~/assets/weather-codes.json";
 import { countries } from "@/config/countries";
 import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
+import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
+import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
+import { airports } from "~~/store";
 
 export const getAirlineLogo = (iata: string) => {
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${iata}.png?crop=false&width=100&height=100`;
@@ -41,7 +44,7 @@ export interface WeatherResponse<N = number[], S = string[]> {
 }
 export const getHumanReadableWeather = async (flight: FlightPhase) => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
-	const airports = useAirports().value
+	const airports = useAirports()
 	const weather = await getWeather(airports[flight.iata_code], flight.scheduled_time)
 	const getByHour = (weather: Partial<WeatherResponse> | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): Partial<WeatherResponse<number, string>> => {
 		if (!weather) return {}
@@ -292,4 +295,15 @@ export const getDuration = (minutes: number) => {
 	const min = `${minutes % 60} min`;
 	const h = `${Math.floor(minutes / 60)} h`;
 	return minutes >= 60 ? `${h} ${min}` : min;
+}
+
+export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query?: string) => {
+	if (!query) return;
+	const { hits } = await algolia.search({ query })
+	hits.forEach((hit) => {
+		const a = { ...hit };
+		delete a._highlightResult, a.objectID;
+		airports.value[hit.iata] = a;
+	});
+	return hits
 }

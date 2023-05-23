@@ -59,6 +59,9 @@ import {
   faArrowsLeftRight,
   faArrowRightArrowLeft,
   faHand,
+  faMemory,
+  faCogs,
+  faRoad
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -124,7 +127,10 @@ library.add(
   faWind,
   faTrain,
   faArrowRightArrowLeft,
-  faHand
+  faHand,
+  faMemory,
+  faCogs,
+  faRoad
 )
 
 config.autoAddCss = false

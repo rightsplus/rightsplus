@@ -128,10 +128,14 @@ a[target="_blank"] {
     --scale: 0.75;
     --top: 0.25em;
   }
+  textarea ~ .formkit-label {
+    white-space: pre-wrap;
+  }
   textarea:focus ~ .formkit-label,
   textarea ~ .formkit-label[data-has-value="true"],
   &[data-complete="true"] textarea ~ .formkit-label {
     --top: -0.5em;
+    white-space: nowrap;
   }
   button ~ .formkit-label[data-has-value="true"],
   &[data-complete="true"] button ~ .formkit-label {

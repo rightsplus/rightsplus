@@ -1,4 +1,5 @@
 <template>
+  {{ test }}
   <ul
     class="peer-focus:none absolute bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-52 overflow-y-auto w-full"
     v-if="options?.length"

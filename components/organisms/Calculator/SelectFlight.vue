@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-8" v-if="useAppState()">
     <div class="flex flex-col gap-3">
       <h2 class="text-2xl sm:text-3xl font-bold">
-        Wähle den Flug um den es geht
+        Flug auswählen
       </h2>
     </div>
 
@@ -10,20 +10,21 @@
       class="flex justify-between items-center text-lg sm:text-xl font-medium"
     >
       <span class="text-gray-500">Wann bist du geflogen?</span>
-      <span class="">{{
+      <span v-if="modelValue.flight_date" class="">{{
         new Date(modelValue.flight_date).toLocaleDateString(
           useI18n().locale.value
         )
       }}</span>
     </h3>
+    <!-- verjährt oder in Zukunft rauskegeln -->
     <InputDate v-model="modelValue.flight_date" />
     <div
       v-if="!useAppState().flights.filter(filterFlights).length"
       class="w-full flex flex-col gap-3"><span class="text-sm font-medium"
         >An diesem Datum konnten wir keinen Flug von {{
-          useAirports().value[modelValue.airport.departure.iata]?.city
+          useAirports(modelValue.airport.departure.iata)?.city
         }} nach {{
-          useAirports().value[modelValue.airport.arrival.iata]?.city
+          useAirports(modelValue.airport.arrival.iata)?.city
         }} finden.</span
       ></div>
 
@@ -114,11 +115,11 @@ const init = () => {
       useAppState().flights = (data as Flight[]).map((flight) => {
         return {
           ...flight,
-          ...(useAirports().value[flight.arrival.iata] &&
-            useAirports().value[flight.departure.iata] && {
+          ...(useAirports()[flight.arrival.iata] &&
+            useAirports()[flight.departure.iata] && {
               distance: getAirportDistance(
-                useAirports().value[flight.arrival.iata],
-                useAirports().value[flight.departure.iata]
+                useAirports()[flight.arrival.iata],
+                useAirports()[flight.departure.iata]
               ),
             }),
         };

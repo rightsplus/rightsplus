@@ -115,8 +115,8 @@
 .move-up-move,
 .move-up-enter-active,
 .move-up-leave-active {
-  transition-duration: var(--transition-duration-500, 500ms);
-  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+  transition-duration: var(--duration, var(--transition-duration-500, 500ms));
+  transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
   transition-property: opacity, transform;
   transform-origin: 0 0;
 }

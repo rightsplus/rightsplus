@@ -13,7 +13,6 @@
         }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
         {{ airports?.[i + 1] }}</span
       >
-      <DatePicker v-model="route.date" name="date" label="Fligdatum" />
     </div>
 
     <NavigationButtons
@@ -28,22 +27,18 @@
 import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
 import Button from "@/components/molecules/Button.vue";
-import ButtonBack from "@/components/molecules/ButtonBack.vue";
 import ButtonFlight from "./ButtonFlight.vue";
 import { ClaimsForm, Flight } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import DatePicker from "@/components/molecules/DatePicker.vue";
 
 export default defineComponent({
   components: {
     FormKit,
     Button,
-    ButtonBack,
     ButtonFlight,
     NavigationButtons,
     FontAwesomeIcon,
-    DatePicker
   },
   props: {
     modelValue: {

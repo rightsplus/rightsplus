@@ -30,27 +30,38 @@ interface AlgoliaResult {
   matchedWords: string[];
 }
 export interface Airport {
+  search_text: string;
   iata: string;
-  full: string;
-  city: string;
+  latitude: number;
+  longitude: number;
   name: string;
+  city: string;
+  city_translations: {
+    [key: string]: string;
+  };
   country: string;
-  lat: number;
-  lon: number;
-  state?: string;
-  icao?: string;
-  elevation?: number;
-  tz?: string;
-  countryName?: Record<string, string>;
+  country_code: string;
+  ec261: boolean;
+  rank: number;
+  time_zone: string;
+  metropolitan_area: {
+    code: string;
+    name: string;
+    country_code: string;
+    country_name: string;
+    rank: number;
+  };
   objectID?: string;
   _highlightResult?: {
-    iata: AlgoliaResult;
-    full: AlgoliaResult;
-    city: AlgoliaResult;
+    iata: AlgoliaResult & {
+      fullyHighlighted: boolean;
+    };
     name: AlgoliaResult;
-    country: AlgoliaResult;
-    countryName?: Record<string, AlgoliaResult>;
-  }
+    city: AlgoliaResult;
+    city_translations: {
+      [key: string]: AlgoliaResult;
+    };
+  };
 }
 
 interface FlightAirport {
@@ -139,7 +150,7 @@ export interface UsersTable {
 export interface CasesTable {
   id: string;
   user_id: string;
-  data: string;
+  data: ClaimsForm;
 }
 export interface Database {
   public: {
@@ -155,5 +166,13 @@ export interface Database {
         Update: {} // The data expected passed to an "update" statement.
       }
     }
+  }
+}
+
+
+import '@nuxtjs/algolia'
+declare module '@nuxtjs/algolia' {
+  interface AlgoliaIndices {
+    AIRPORTS: Airport
   }
 }

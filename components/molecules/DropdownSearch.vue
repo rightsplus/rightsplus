@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative mb-5">
     <FormKit
       ref="input"
       type="text"
@@ -10,7 +10,7 @@
       :name="name"
       :id="id || name"
       :validation="validation"
-      @focus="inputFocused = true"
+      @focus="focus"
       @blur="blur"
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
@@ -21,16 +21,17 @@
       :floatingLabel="true"
       :placeholder="placeholder"
       :classes="{
+        outer: '!mb-0',
         inner:
           inputFocused && options?.length && inputValue?.length
-            ? 'rounded-b-none max-w-full duration-75'
-            : 'max-w-full duration-75',
+            ? 'rounded-b-none max-w-full duration-75 !mb-0'
+            : 'max-w-full duration-75 !mb-0',
       }"
     />
     <Transition name="dropdown">
     <Dropdown
-      class="w-full -mt-[15px] z-50"
       v-if="inputFocused && inputValue?.length"
+      class="w-full z-50"
       :active="highlighted"
       :options="options"
       @input="handleInput"
@@ -76,6 +77,12 @@ function handleInput(input: DropdownItem) {
   const index = typeof input === "number" ? input : highlighted.value;
   emit("update:modelValue", props.options[index]);
   focusNext(true);
+}
+function focus() {
+  inputFocused.value = true;
+  setTimeout(() => {
+    (document.activeElement as HTMLInputElement)?.select()
+  }, 0)
 }
 function blur() {
   if (!inputValue.value?.length) emit("update:modelValue", "");

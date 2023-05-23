@@ -1,7 +1,7 @@
 <template>
   <DropdownSearch
     :modelValue="convertName(modelValue)"
-    @update:modelValue="$emit('update:modelValue', useAirports()?.value?.[$event?.value])"
+    @update:modelValue="$emit('update:modelValue', useAirports()[$event?.value])"
     :label="label"
     :name="name"
     :id="id || name"
@@ -34,39 +34,32 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["update:modelValue", "suffix-icon-click", "prefix-icon-click"]);
 
-emit("update:modelValue", {
-  ...props.modelValue,
-  full: props.modelValue?.full || "",
-})
+emit("update:modelValue", props.modelValue)
 
-const { search } = useAlgoliaSearch("AIRPORTS");
 const { locale } = useI18n();
 const convertName = (value: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
 const dropdownList = ref([] as DropdownItem[])
 
+const algolia = useAlgoliaSearch("AIRPORTS");
 function findAirports (query: string) {
   if (query?.length < 1) return;
-    search({ query, hitsPerPage: 5 }).then(({ hits }) => {
+    queryAirports(algolia, query).then(hits => {
+      if (!hits) return
       dropdownList.value = hits.map((airport) => {
         // if (airport.name.includes('Rail')) return
+        console.log(airport)
         return {
-        value: airport.iata,
-        label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
-        sublabel: [
-          airport._highlightResult.city_translations?.[locale.value]?.value || airport._highlightResult.city.value,
-          countries.getName(airport.country_code, locale.value),
-        ]
-          .filter(Boolean)
-          .join(", "),
-        icon: airport.name.includes('Rail') ? "train" : "plane",
-      }}).filter(Boolean)
-      hits.forEach((hit: Airport, i: number) => {
-        const a = { ...hit };
-        delete a._highlightResult;
-        delete a.objectID;
-        useAirports().value[hit.iata] = a;
-      });
-    });
+          value: airport.iata,
+          label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
+          sublabel: [
+            airport._highlightResult?.city_translations?.[locale.value]?.value || airport._highlightResult?.city.value,
+            countries.getName(airport.country_code, locale.value),
+          ]
+            .filter(Boolean)
+            .join(", "),
+          icon: airport.name.includes('Rail') ? "train" : "plane",
+        }}).filter(Boolean)
+    })
 }
 </script>
 

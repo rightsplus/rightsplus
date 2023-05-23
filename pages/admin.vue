@@ -17,17 +17,23 @@ const currentUser = useSupabaseUser();
 import { Database } from "~~/types";
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("user", async () => {
+  const user = (
+    await client
+      .from("users")
+      .select("role")
+      .eq("email", currentUser.value?.email)
+      .single()
+  ).data;
+
+  const cases =
+    user?.role === "admin"
+      ? (await client.from("cases").select("*, users(first_name, last_name)"))
+          .data
+      : [];
+
   return {
-    user: (
-      await client
-        .from("users")
-        .select("role")
-        .eq("email", currentUser.value?.email)
-        .single()
-    ).data,
-    cases: (
-      await client.from("cases").select("*, users(first_name, last_name)")
-    ).data,
+    user,
+    cases,
   };
 });
 
@@ -43,7 +49,7 @@ const tableData = computed(() => {
       reason: "Reason",
       client_name: "Client Name",
       client_email: "Client Email",
-      client_iban: "Client IBAN",
+      // client_iban: "Client IBAN",
       airport_departure: "Airport Departure",
       airport_arrival: "Airport Arrival",
       updated_at: "Updated At",
@@ -51,15 +57,15 @@ const tableData = computed(() => {
     body: data.value?.cases?.map((item) => {
       return {
         case_id: item.id,
-        flight: item.data.flight?.flight?.iata,
-        departure_date: date(item.data.flight?.departure?.scheduled),
+        flight: item.data.flight?.flight?.iata_number,
+        departure_date: date(item.data.flight?.departure?.scheduled_time),
         reason: item.data.reason,
         client_name:
           item.data.client?.firstName + " " + item.data.client?.lastName,
         client_email: item.data.client?.email,
-        client_iban: item.data.client?.iban,
-        airport_departure: item.data.flight?.departure?.airport,
-        airport_arrival: item.data.flight?.arrival?.airport,
+        // client_iban: item.data.client?.iban,
+        airport_departure: item.data?.airport?.departure?.name,
+        airport_arrival: item.data?.airport?.arrival?.name,
         updated_at: date(item.updated_at || item.created_at),
       };
     }),

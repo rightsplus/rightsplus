@@ -37,28 +37,36 @@
             :required="true"
             ><template #label
               ><span class="text-sm leading-none">
-                Start <strong>und</strong> Landung befinden sich innerhalb der EU</span
+                Start <strong>und</strong> Landung innerhalb der EU</span
               ></template
             >
           </FormKit>
         </div>
       </div>
-      <div class="flex gap-12 justify-between">
-        <div class="flex flex-col">
-          <span class="text-gray-500 font-medium text-base">Du erhältst</span>
-          <span class="font-bold text-4xl sm:text-5xl tracking-tighter tabular-nums">{{
-            $n(youGet.number, "currency", {
+      <div class="flex gap-12 justify-between text-right">
+        <div class="flex flex-col w-full sm:text-xl">
+            <!-- {{ total }} -->
+          <span class="text-base">Anspruch nach EU-Recht: <span class="font-bold tabular-nums tracking-tighter">{{
+            $n(total.number, "currency", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })
-          }}</span>
-        </div>
-        <div class="flex flex-col text-right">
-          <span class="text-gray-500 font-medium text-base text"
-            >Unsere Vergütung</span
-          >
-          <span class="font-bold text-4xl sm:text-5xl tracking-tighter tabular-nums">{{
-            $n(weGet.number, "currency", {
+          }}</span></span>
+          <span class="text-base">Unsere Vergütung ({{$n(commission, 'percent')}}): <span class="font-bold tabular-nums tracking-tighter">{{
+            $n(weGet.number * -1, "currency", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          }}</span></span>
+          <span class="text-base">Mehrwertsteuer ({{$n(vatRate, 'percent')}}): <span class="font-bold tabular-nums tracking-tighter">{{
+            $n(vat.number * -1, "currency", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          }}</span></span>
+          <span class="text-gray-500 font-medium text-base mt-5">Du erhältst</span>
+          <span class="font-bold tabular-nums tracking-tighter text-4xl sm:text-5xl">{{
+            $n(youGet.number, "currency", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })
@@ -73,6 +81,7 @@ import gsap from "gsap";
 import ButtonLarge from "../Calculator/ButtonLarge.vue";
 
 const commission = 0.25;
+const vatRate = 0.19;
 const distance = ref(1000);
 const distances = ref([
   {
@@ -96,18 +105,24 @@ const compensation = computed(() =>
 );
 const compensate = (value: number, reduce: number) =>
   Number(value) * reduce || 0;
-const youGet = reactive({
-  number: compensate(compensation.value, 1 - commission),
+const total = reactive({
+  number: compensate(compensation.value, 1),
 });
 const weGet = reactive({
   number: compensate(compensation.value, commission),
 });
+const vat = reactive({
+  number: compensate(compensation.value, commission) * vatRate,
+});
+const youGet = reactive({
+  number: compensate(compensation.value, 1 - commission - vat.number),
+});
 
 watch(compensation, (n) => {
-  gsap.to(youGet, {
+  gsap.to(total, {
     duration: 1,
     ease: "expo",
-    number: compensate(n, 1 - commission),
+    number: compensate(n, 1),
   });
 });
 watch(compensation, (n) => {
@@ -116,5 +131,19 @@ watch(compensation, (n) => {
     ease: "expo",
     number: compensate(n, commission),
   });
+watch(compensation, (n) => {
+  gsap.to(vat, {
+    duration: 1,
+    ease: "expo",
+    number: compensate(n, commission) * vatRate,
+  });
+});
+watch(compensation, (n) => {
+  gsap.to(youGet, {
+    duration: 1,
+    ease: "expo",
+    number: compensate(n, 1 - commission) - compensate(n, commission) * vatRate,
+  });
+});
 });
 </script>

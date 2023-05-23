@@ -87,6 +87,7 @@ function handleInput(input: DropdownItem) {
   highlighted.value = index;
   emit("update:modelValue", props.options[index].value);
   focusNext(true);
+  inputFocused.value = false
 }
 </script>
 

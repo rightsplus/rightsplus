@@ -1,5 +1,5 @@
 <template>
-  <div class=" overflow-x-hidden">
+  <div class="overflow-x-hidden">
     <section class="min-h-screen pt-16 sm:pt-36 pb-8 bg-neutral-200">
       <img
         src="/airport-light-comp.jpg"
@@ -9,13 +9,24 @@
       <div class="max-w-7xl mx-auto p-5 sm:px-12 h-full relative z-1">
         <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
           <Dashboard />
-          <div class="container bg-white rounded-3xl p-5 sm:p-12" v-if="useAppState().claims">
-            <ClientOnly><FlightByAirport
-              v-model="useAppState().claims"
-              @submit="useAppState().claims.step = (useAppState().claims.step || 0)"
-            /></ClientOnly>
-          </div>
-          <ScrollDown class="mt-auto" />
+          <Transition name="fade">
+          <div
+              class="container bg-white rounded-3xl p-5 sm:p-12"
+              v-if="useAppState().claims && ready"
+            >
+            
+              <FlightByAirport
+                v-model="useAppState().claims"
+                @submit="
+                  useAppState().claims.step = useAppState().claims.step || 0
+                "
+              /></div
+          ></Transition>
+          <div style="--duration: 1000ms">
+          <Transition name="move-up">
+            <ScrollDown v-if="scrollDownReady" class="mt-auto" />
+          </Transition>
+        </div>
         </div>
       </div>
     </section>
@@ -39,4 +50,12 @@ import Reasons from "@/components/organisms/Sections/Reasons.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
 import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
 import Reviews from "@/components/organisms/Sections/Reviews.vue";
+const ready = ref(false);
+const scrollDownReady = ref(false);
+onMounted(() => {
+  ready.value = true
+  setTimeout(() => {
+    scrollDownReady.value = true
+  }, 1000)
+})
 </script>

@@ -36,7 +36,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['update:modelValue']);
 const updateModelValue = (value: Date) => {
-  emit('update:modelValue', getISODate(value));
+  emit('update:modelValue', value ? getISODate(value) : undefined);
 };
 </script>
 <style lang="scss">

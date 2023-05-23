@@ -25,7 +25,7 @@
         subLabel="Zwischenstopps hinzufügen"
       />
     </div> -->
-    <div v-if="modelValue.airport" class="relative">
+    <div v-if="modelValue.airport" class="relative -mb-5">
       <AirportInput
         label="Abflug"
         placeholder="z.B. New York oder JFK"
@@ -40,8 +40,8 @@
         v-for="(layover, i) in modelValue.airport.layover"
         v-if="modelValue.airport?.layover && modelValue.airport.layover.length"
       >
-        <div v-if="modelValue.airport.layover[i]">
           <AirportInput
+            v-if="modelValue.airport.layover[i]"
             :id="`layover-${i}`"
             :label="`${i + 1}. Zwischenstopp hinzufügen`"
             placeholder="z.B. Frankfurt oder FRA"
@@ -54,11 +54,10 @@
             "
             @suffix-icon-click="modelValue.airport.layover?.splice(i, 1)"
           />
-        </div>
       </div>
       <button
         v-if="showAddLayoverButton"
-        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-8 my-7"
+        class="text-sm font-medium text-blue-600 hover:underline underline-offset-2 text-left flex gap-2 items-center h-8 my-8"
         @click="addLayover"
       >
         <span><FontAwesomeIcon icon="plus" /></span>

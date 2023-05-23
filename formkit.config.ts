@@ -45,7 +45,7 @@ const config: DefaultConfigOptions = {
         wrapper: 'flex items-center mb-1',
       },
       'family:button': {
-        input: '$reset inline-flex items-center justify-center bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-14 leading-tight',
+        input: '$reset inline-flex items-center justify-center disabled:bg-primary-500 bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-14 leading-tight',
         wrapper: 'mb-1',
         prefixIcon: '$reset block w-3 -ml-2 mr-2 stretch [&>svg]:fill-white',
         suffixIcon: '$reset block w-3 ml-2 stretch [&>svg]:fill-white',

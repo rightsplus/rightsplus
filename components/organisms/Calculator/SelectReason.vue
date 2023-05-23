@@ -17,7 +17,7 @@
         />
         Verspätung in
         {{
-          useAirports().value[$state.claims.flight?.arrival.iata_code || ""]
+          useAirports()[$state.claims.flight?.arrival.iata_code || ""]
             ?.city
         }}
         gelandet.</span
@@ -26,61 +26,45 @@
         >Laut unseren Informationen ist dein Flug
         <span class="font-bold">ohne Verspätung</span> in
         {{
-          useAirports().value[$state.claims.flight?.arrival.iata_code || ""]
+          useAirports()[$state.claims.flight?.arrival.iata_code || ""]
             ?.city
         }}
         gelandet.</span
       >
     </div>
     <div class="flex flex-wrap lg:flex-row gap-4">
-      <!-- <FormKit
-        type="select"
-        v-model="modelValue.reason"
-        :options="disruptions"
-        select-icon="angle-down"
-        label="Gib den tatächlichen Flugstatus an"
-      /> -->
       <DropdownButton
-        label="Flugstatus wählen"
+        :label="`Was ist schiefgelaufen?`"
         name="reason"
-        v-model="modelValue.reason"
+        v-model="modelValue.disruption"
         :options="disruptions"
         prefix-icon="exclamation-triangle"
       />
-      <!-- <FormKit
-        v-if="modelValue.reason === 'delayed'"
-        type="datetime-local"
-        v-model="modelValue.actualArrivalTime"
-        label="Tatsächliche Ankunftszeit"
-        help="Relevant ist hier, wann die Türen offiziell geöffnet wurden."
-        validation="required"
-        validation-visibility="live"
-      /> -->
       <!--  // mindestens 14 Tage // Ersatzbeförderung -->
       <DropdownButton
-        v-if="modelValue.reason === 'noBoarding'"
-        label="Welchen Grund hat die  Airline angegeben?"
+        v-if="modelValue.disruption === 'noBoarding'"
+        label="Welchen Grund hat die Airline angegeben?"
         name="actualArrivalTime"
-        v-model="modelValue.reasonDetails.noBoarding"
+        v-model="modelValue.reason"
         :options="noBoarding"
         prefix-icon="clock"
       />
     </div>
 
-    <div class="flex flex-col gap-5" v-if="modelValue.reason === 'delayed'">
+    <div class="flex flex-col gap-5" v-if="modelValue.disruption === 'delayed'">
       <div class="grid sm:grid-cols-3 gap-3">
         <ButtonLarge
           v-for="c in delayed"
           :key="c.value"
-          @click.prevent="$state.claims.reasonDetails = { delayed: c.value }"
-          :selected="$state.claims.reasonDetails?.delayed === c.value"
+          @click.prevent="$state.claims.reason = c.value"
+          :selected="$state.claims.reason === c.value"
           :name="c.value"
           :label="c.label"
           :preLabel="c.preLabel"
         />
       </div>
     </div>
-    <div class="flex flex-col gap-5" v-if="modelValue.reason === 'cancelled'">
+    <div class="flex flex-col gap-5" v-if="modelValue.disruption === 'cancelled'">
       <span class="text-sm"
         >Wieviel Zeit vor dem Abflug wurdest du über die Streichung / Umbuchung
         informiert?</span
@@ -89,19 +73,26 @@
         <ButtonLarge
           v-for="c in cancelled"
           :key="c.value"
-          @click.prevent="$state.claims.reasonDetails = { cancelled: c.value }"
-          :selected="$state.claims.reasonDetails?.cancelled === c.value"
+          @click.prevent="$state.claims.reason = c.value"
+          :selected="$state.claims.reason === c.value"
           :name="c.value"
           :label="c.label"
           :preLabel="c.preLabel"
         />
       </div>
     </div>
+    <DropdownButton
+      v-if="modelValue.disruption === 'delayed'"
+      label="Welchen Grund hat die Airline angegeben?"
+      name="actualArrivalTime"
+      v-model="modelValue.reasonDetails.delayed"
+      :options="reasons"
+      prefix-icon="clock"
+    />
     <FormKit
-      v-if="modelValue.reason === 'other'"
+      v-if="modelValue.disruption === 'other'"
       type="textarea"
-      label="Welche Angaben hat die Fluggesellschaft gemacht?"
-      placeholder="Weitere Informationen"
+      label="Welchen Grund hat die Airline angegeben?"
       name="reason"
       v-model="modelValue.reasonDetails.other"
       select-icon="angle-down"
@@ -129,18 +120,39 @@ import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import Button from "@/components/molecules/Button.vue";
 import { ClaimsForm } from "~~/types";
 
-defineProps<{
+const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const emit = defineEmits(["submit", "back"]);
 const value = ref(null);
 const showNoBordingDropdown = ref(false);
 const submitHandler = () => emit("submit");
-
+const departureAirport = computed(() =>
+  useAirports()[props.modelValue.flight?.departure.iata_code || ""]
+);
+const arrivalAirport = computed(() =>
+  useAirports()[props.modelValue.flight?.arrival.iata_code || ""]
+);
 const disruptions = [
-  { value: "delayed", label: "Verspätet", icon: "clock" },
-  { value: "cancelled", label: "Gestrichen / Umgebucht", icon: "arrow-right-arrow-left" },
-  { value: "noBoarding", label: "Boarding untersagt / verpasst", icon: "ban" },
+  {
+    value: "delayed",
+    label: "Verspätet",
+    sublabel: `Dein Flug hat ${arrivalAirport.value?.city || 'sein Ziel'} später als geplant erreicht`,
+    icon: "clock",
+  },
+  {
+    value: "cancelled",
+    label: "Gestrichen / Umgebucht",
+    sublabel:
+      "Dein Flug wurde gestrichen oder deine Abflugzeiten haben sich geändert",
+    icon: "arrow-right-arrow-left",
+  },
+  {
+    value: "noBoarding",
+    label: "Boarding untersagt / verpasst",
+    sublabel: "Du warst pünktlich am Gate, aber sie haben dich abgewiesen",
+    icon: "ban",
+  },
   { value: "other", label: "Sonstige", icon: "question" },
 ];
 const delayed = [
@@ -206,17 +218,15 @@ const noBoarding = [
   },
 ];
 const reasons = [
-  { value: "dontRemember", label: "Ich kann mich nicht erinnern" },
-  { value: "technicalIssues", label: "Technische Probleme" },
-  { value: "weatherConditions", label: "Wetterbedingungen" },
-  {
-    value: "lateArrivalOfAircraft",
-    label: "Verspätete Ankunft des Flugzeugs",
-  },
-  { value: "crewIssues", label: "Crew-Probleme" },
-  { value: "airportCongestion", label: "Flughafenüberlastung" },
-  { value: "securityIssues", label: "Sicherheitsprobleme" },
-  { value: "airTrafficControl", label: "Flugverkehrskontrolle" },
-  { value: "unexpectedIssues", label: "Unerwartete Probleme" },
+  { value: "dontRemember", label: "Ich kann mich nicht erinnern", icon: "question" },
+  { value: "technicalIssues", label: "Technische Probleme", icon: "cogs" },
+  { value: "weatherConditions", label: "Wetterbedingungen", icon: "cloud-sun" },
+  { value: "lateArrivalOfAircraft", label: "Verspätete Ankunft des Flugzeugs", icon: "plane-arrival" },
+  { value: "crewIssues", label: "Crew-Probleme", icon: "users" },
+  { value: "airportCongestion", label: "Flughafenüberlastung", icon: "road" },
+  { value: "securityIssues", label: "Sicherheitsprobleme", icon: "shield-alt" },
+  { value: "airTrafficControl", label: "Flugverkehrskontrolle", icon: "plane-departure" },
+  { value: "unexpectedIssues", label: "Unerwartete Probleme", icon: "exclamation-triangle" },
 ];
+
 </script>

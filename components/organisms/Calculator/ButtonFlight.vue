@@ -15,11 +15,11 @@
     <div class="flex flex-col items-start text-start">
       <span class="text-sm leading-none"
         ><span class="font-bold">{{
-          useAirports().value[flight.departure.iata_code]?.city
+          useAirports()[flight.departure.iata_code]?.city
         }}</span>
         to
         <span class="font-bold">{{
-          useAirports().value[flight.arrival.iata_code]?.city
+          useAirports()[flight.arrival.iata_code]?.city
         }}</span></span
       >
       <span class="text-lg font-bold flex items-center gap-3"

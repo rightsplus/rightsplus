@@ -1,7 +1,6 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
     <Stepper
-      class="mb-5"
       :steps="steps"
       :step="$state.claims.step"
       @setStep="$state.claims.step = $event"
@@ -29,7 +28,7 @@
     <div class="flex flex-col gap-3">
       <Transition mode="out-in" name="fade">
       <div
-      v-if="$state.claims.flight"
+        v-if="$state.claims.flight && $state.claims.step > 1"
         class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
         v-bind="$attrs"
       >

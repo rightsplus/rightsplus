@@ -6,7 +6,7 @@
         flight.iata_code
       }}</span>
       <span class="text-base leading-none">{{
-        useAirports().value[flight.iata_code]?.city
+        useAirports()[flight.iata_code]?.city
       }}</span>
     </div>
     <div class="flex flex-col leading-none">

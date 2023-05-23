@@ -25,7 +25,7 @@ function findAirports (query?: string) {
       const a = { ...hit };
       delete a._highlightResult;
       delete a.objectID;
-      useAirports().value[hit.iata] = a;
+      useAirports()[hit.iata] = a;
     });
   });
 }
@@ -56,7 +56,7 @@ useAsyncData("cases", async () => {
   data.value?.forEach(({data}: { data: ClaimsForm }) => {
     findAirports(data.flight?.departure.iata_code);
     findAirports(data.flight?.arrival.iata_code);
-    useAirports().value;
+    useAirports();
   })
 });
 
