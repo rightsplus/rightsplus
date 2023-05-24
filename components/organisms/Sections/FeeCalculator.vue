@@ -82,7 +82,7 @@ import ButtonLarge from "../Calculator/ButtonLarge.vue";
 
 const commission = 0.25;
 const vatRate = 0.19;
-const distance = ref(1000);
+const distance = ref(2000);
 const distances = ref([
   {
     preLabel: `weniger als`,
