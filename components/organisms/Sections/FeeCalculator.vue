@@ -105,6 +105,7 @@ const compensation = computed(() =>
 );
 const compensate = (value: number, reduce: number) =>
   Number(value) * reduce || 0;
+
 const total = reactive({
   number: compensate(compensation.value, 1),
 });
@@ -115,7 +116,7 @@ const vat = reactive({
   number: compensate(compensation.value, commission) * vatRate,
 });
 const youGet = reactive({
-  number: compensate(compensation.value, 1 - commission - vat.number),
+  number: compensate(compensation.value, 1 - commission) - compensate(compensation.value, commission) * vatRate,
 });
 
 watch(compensation, (n) => {

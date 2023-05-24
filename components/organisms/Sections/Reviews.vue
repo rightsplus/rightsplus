@@ -39,7 +39,7 @@ import { Review } from "@/types";
 const { $state } = useNuxtApp();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
-const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review&language=${locale.value}`;
+const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review&language=${locale.value || "de"}`;
 
 interface MapsResponseData {
   result: {
