@@ -1,6 +1,6 @@
 <template>
   <section class="sm:py-24 bg-gray-200 relative">
-    <img src="airfield.jpg" class="object-cover w-full h-full absolute inset-0 opacity-50" />
+    <img src="/airfield.jpg" class="object-cover w-full h-full absolute inset-0 opacity-50" />
     <div
       class="grid gap-12 max-w-full sm:max-w-xl mx-auto p-5 sm:p-12 h-full relative z-1 bg-white sm:rounded-xl"
     >
