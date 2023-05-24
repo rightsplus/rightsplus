@@ -131,6 +131,7 @@ watch(compensation, (n) => {
     ease: "expo",
     number: compensate(n, commission),
   });
+});
 watch(compensation, (n) => {
   gsap.to(vat, {
     duration: 1,
@@ -144,6 +145,5 @@ watch(compensation, (n) => {
     ease: "expo",
     number: compensate(n, 1 - commission) - compensate(n, commission) * vatRate,
   });
-});
 });
 </script>
