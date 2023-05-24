@@ -82,7 +82,8 @@ const current = computed(() => {
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
-function handleInput(input: DropdownItem) {
+function handleInput(input: KeyboardEvent): void
+function handleInput(input: DropdownItem | KeyboardEvent) {
   const index = typeof input === "number" ? input : highlighted.value;
   highlighted.value = index;
   emit("update:modelValue", props.options[index].value);
