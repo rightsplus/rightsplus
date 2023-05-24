@@ -29,13 +29,12 @@
       }"
     />
     <Transition name="dropdown">
-    <Dropdown
-      v-if="inputFocused && inputValue?.length"
-      class="w-full z-50"
-      :active="highlighted"
-      :options="options"
-      @input="handleInput"
-    />
+      <Dropdown
+        v-if="inputFocused && inputValue?.length" class="w-full z-50"
+        :active="highlighted"
+        :options="options"
+        @input="handleInput"
+      />
     </Transition>
   </div>
 </template>
@@ -54,24 +53,25 @@ const props = defineProps<{
   suffixIcon?: string;
   options: DropdownItem[];
 }>();
-const emit = defineEmits(["update:modelValue", "query", "suffix-icon-click", "prefix-icon-click"]);
+const emit = defineEmits([
+  "update:modelValue",
+  "query",
+  "suffix-icon-click",
+  "prefix-icon-click",
+]);
 
 const highlighted = ref(0);
 const inputFocused = ref(false);
-const inputValue = ref(props.modelValue)
+const inputValue = ref(props.modelValue);
 
-function updateInput (input: string) {
+function updateInput(input: string) {
   highlighted.value = 0;
   inputValue.value = input;
   if (!input.length) emit("update:modelValue", "");
   emit("query", input);
 }
 function keydown(e: KeyboardEvent) {
-  highlighted.value = keyIncrement(
-    e,
-    highlighted.value,
-    props.options.length
-  );
+  highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
 function handleInput(input: DropdownItem) {
   const index = typeof input === "number" ? input : highlighted.value;
@@ -81,12 +81,12 @@ function handleInput(input: DropdownItem) {
 function focus() {
   inputFocused.value = true;
   setTimeout(() => {
-    (document.activeElement as HTMLInputElement)?.select()
-  }, 0)
+    (document.activeElement as HTMLInputElement)?.select();
+  }, 0);
 }
 function blur() {
   if (!inputValue.value?.length) emit("update:modelValue", "");
-  inputFocused.value = false
+  inputFocused.value = false;
 }
 </script>
 
