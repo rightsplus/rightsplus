@@ -77,8 +77,8 @@
   }
 }
 
-a[target="_blank"] {
-  &:after {
+span, label, p {
+  a[target="_blank"]:after {
     content: "\00a0\2197";
   }
 }
