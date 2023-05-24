@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import Dropdown, { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 const props = defineProps<{
-  modelValue: string;
+  modelValue: string | null | undefined;
   name: string;
   label: string;
   id?: string;

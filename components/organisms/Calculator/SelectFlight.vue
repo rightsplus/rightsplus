@@ -115,11 +115,11 @@ const init = () => {
       useAppState().flights = (data as Flight[]).map((flight) => {
         return {
           ...flight,
-          ...(useAirports()[flight.arrival.iata] &&
-            useAirports()[flight.departure.iata] && {
+          ...(useAirports()[flight.arrival.iata_code] &&
+            useAirports()[flight.departure.iata_code] && {
               distance: getAirportDistance(
-                useAirports()[flight.arrival.iata],
-                useAirports()[flight.departure.iata]
+                useAirports()[flight.arrival.iata_code],
+                useAirports()[flight.departure.iata_code]
               ),
             }),
         };

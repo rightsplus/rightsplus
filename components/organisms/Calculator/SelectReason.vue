@@ -5,19 +5,19 @@
       class="flex items-center gap-3 p-3 border border-blue-200 bg-blue-100 text-blue-600 rounded-lg text-sm"
     >
       <ClientOnly><FontAwesomeIcon icon="info-circle" /></ClientOnly>
-      <span v-if="useFlightStatus($state.claims.flight).cancelled.value"
+      <span v-if="useFlightStatus(modelValue.flight).cancelled.value"
         >Laut unseren Informationen wurde dein Flug
         <span class="font-bold">gecancelled</span>.</span
       >
-      <span v-else-if="useFlightStatus($state.claims.flight).delayed.value > 0"
+      <span v-else-if="useFlightStatus(modelValue.flight).delayed.value > 0"
         >Laut unseren Informationen ist dein Flug mit
         <span
           class="font-bold"
-          v-html="getDuration(getDelay($state.claims.flight?.arrival))"
+          v-html="getDuration(getDelay(modelValue.flight?.arrival))"
         />
         Verspätung in
         {{
-          useAirports()[$state.claims.flight?.arrival.iata_code || ""]
+          useAirports()[modelValue.flight?.arrival.iata_code || ""]
             ?.city
         }}
         gelandet.</span
@@ -26,7 +26,7 @@
         >Laut unseren Informationen ist dein Flug
         <span class="font-bold">ohne Verspätung</span> in
         {{
-          useAirports()[$state.claims.flight?.arrival.iata_code || ""]
+          useAirports()[modelValue.flight?.arrival.iata_code || ""]
             ?.city
         }}
         gelandet.</span
@@ -56,8 +56,8 @@
         <ButtonLarge
           v-for="c in delayed"
           :key="c.value"
-          @click.prevent="$state.claims.reason = c.value"
-          :selected="$state.claims.reason === c.value"
+          @click.prevent="modelValue.reason = c.value"
+          :selected="modelValue.reason === c.value"
           :name="c.value"
           :label="c.label"
           :preLabel="c.preLabel"
@@ -73,8 +73,8 @@
         <ButtonLarge
           v-for="c in cancelled"
           :key="c.value"
-          @click.prevent="$state.claims.reason = c.value"
-          :selected="$state.claims.reason === c.value"
+          @click.prevent="modelValue.reason = c.value"
+          :selected="modelValue.reason === c.value"
           :name="c.value"
           :label="c.label"
           :preLabel="c.preLabel"
@@ -100,7 +100,7 @@
     <div
       v-if="modelValue.reason"
       class="text-xs cursor-pointer hover:underline"
-      @click="modelValue.reason = null"
+      @click="{modelValue.reason = null; modelValue.disruption = null}"
     >
       reset reason
     </div>
@@ -126,6 +126,22 @@ const props = defineProps<{
 const emit = defineEmits(["submit", "back"]);
 const value = ref(null);
 const showNoBordingDropdown = ref(false);
+
+onMounted(() => {
+  if (useFlightStatus(props.modelValue.flight).cancelled.value) {
+    props.modelValue.disruption = "cancelled";
+  } else if (useFlightStatus(props.modelValue.flight).delayed.value > 0) {
+    props.modelValue.disruption = "delayed";
+    if (useFlightStatus(props.modelValue.flight).delayed.value < 180) {
+      props.modelValue.reason = delayed[0].value;
+    } else if (useFlightStatus(props.modelValue.flight).delayed.value >= 240) {
+      props.modelValue.reason = delayed[2].value;
+    } else {
+      props.modelValue.reason = delayed[1].value;
+    }
+  }
+})
+
 const submitHandler = () => emit("submit");
 const departureAirport = computed(() =>
   useAirports()[props.modelValue.flight?.departure.iata_code || ""]

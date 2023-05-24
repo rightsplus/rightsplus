@@ -128,10 +128,10 @@ const { modelValue } = defineProps<{
 }>();
 
 watch(() => useAppState().routes, () => {
-  if (useAppState().routes && Object.values(useAppState().routes).length <= 1) {
+  if ((useAppState().routes && Object.values(useAppState().routes).length <= 1)) {
     modelValue.route = Object.keys(useAppState().routes)[0];
   }
-}, {deep: true})
+}, {deep: true, immediate: true})
 function update(e: any, i: number) {
   if (e && "iata" in e && modelValue.airport.layover) {
     modelValue.airport.layover[i] = e;
