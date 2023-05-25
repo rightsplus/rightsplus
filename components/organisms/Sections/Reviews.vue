@@ -11,7 +11,7 @@
           <h2 class="text-lg sm:text-2xl font-medium text-gray-500">
             Unsere Kunden sprechen für sich! Über 500 zufriedene Nutzer:innen
             haben bereits auf die einfache und effektive Erstattung ihrer
-            Entschädigungsansprüche durch RightsPlus.
+            Entschädigungsansprüche durch RightsPlus gesetzt.
           </h2>
         </div>
         <div

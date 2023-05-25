@@ -5,7 +5,7 @@
     class="flex flex-col gap-4 bg-neutral-100 rounded-xl p-5 sm:px-8 sm:py-7 w-full hover:bg-white duration-300"
   >
     <div class="flex justify-between items-center leading-none gap-5">
-      <Stars :rating="review.rating" />
+      <Stars :rating="review.rating" :label="size === 'large' ? `${review.rating} Sterne bei Google Maps` : undefined"/>
       <span class="text-base font-medium leading-none text-gray-500 ml-auto">{{
         review.relative_time_description
       }}</span>
