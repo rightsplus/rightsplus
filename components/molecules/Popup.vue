@@ -1,14 +1,14 @@
 <template>
-  <Transition name="page" style="--total: 1; --i: 1">
+  <Transition name="fade">
     <div
       v-if="open"
       class="fixed flex items-center justify-center inset-0 w-screen h-screen bg-black/60 z-50"
-      @click.self="$emit('close')"
+      @click.self="{$emit('close'); $emit('closeOutside')}"
     >
       <div
-        class="bg-white rounded-2xl p-5 m-3 sm:p-12 shadow-2xl w-[960px] max-w-screen max-h-[90vh] overflow-auto flex flex-col justify-between"
+        class="bg-white rounded-2xl shadow-2xl w-[640px] max-w-screen min-h-[160px] max-h-[90vh] overflow-auto flex flex-col justify-between"
       >
-        <div class="flex justify-between gap-12">
+        <div class="flex justify-between gap-12" v-if="$attrs.onClose || title">
           <div class="flex flex-col">
             <div class="z-10 relative"><slot name="pretitle"></slot></div>
             <h3
@@ -18,10 +18,11 @@
             </h3>
           </div>
           <button
-            class="font-normal text-4xl md:text-6xl h-12 w-12 min-w-[48px] md:h-16 md:w-16 md:min-w-[48px] items-center justify-center -m-3 md:-m-5 text-stone-400 hover:text-primary-500 rounded-xl"
+            v-if="$attrs.onClose"
+            class="h-12 w-12 min-w-[48px] md:h-16 md:w-16 md:min-w-[48px] items-center justify-center -m-3 md:-m-5 text-stone-400 hover:text-primary-500 rounded-xl"
             @click="$emit('close')"
           >
-            &times;
+            <FontAwesomeIcon icon="times" />
           </button>
         </div>
         <p class="markdown" v-html="content" v-if="content" />
@@ -31,19 +32,12 @@
   </Transition>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  props: {
-    title: {
-      type: String,
-    },
-    content: {
-      type: String,
-    },
-    open: {
-      type: Boolean,
-      default: false,
-    },
-  },
-});
+<script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+defineProps<{
+  title?: string;
+  content?: string;
+  open?: boolean;
+}>();
 </script>

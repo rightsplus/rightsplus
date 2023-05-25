@@ -8,7 +8,7 @@
     :options="dropdownList"
     @query="findAirports"
     :prefix-icon="modelValue?.name?.includes('Rail') ? 'train' : prefixIcon"
-    :suffix-icon="modelValue?.name?.includes('Rail') ? 'train' : suffixIcon"
+    :suffix-icon="suffixIcon"
     :placeholder="placeholder"
     @prefix-icon-click="$emit('prefix-icon-click')"
     @suffix-icon-click="$emit('suffix-icon-click')"
