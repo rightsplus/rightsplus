@@ -9,6 +9,7 @@
         :class="n > rating ? 'text-gray-200' : 'text-yellow-500'"
     /></ClientOnly>
   </div>
+  
     <span v-if="label" class="text-sm leading-none text-gray-500">{{ label }}</span>
     <span v-else class="sr-only">{{ rating }} Sterne Bewertung</span>
   </div>
