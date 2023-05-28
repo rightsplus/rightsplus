@@ -6,7 +6,7 @@
       @setStep="$state.claims.step = $event"
     />
     <div
-      class="container lg:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12"
+      class="lg:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12 w-full"
       :style="`--height: ${containerHeight}px`"
       ref="container"
     >
@@ -24,7 +24,6 @@
       </ClientOnly>
     </div>
 
-		<!-- <pre>{{ useFlightStatus(useAppState().claims.flight) }}</pre> -->
     <div class="flex flex-col gap-3">
       <Transition mode="out-in" name="fade">
       <div
@@ -51,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent } from "vue";
 import { FormKit } from "@formkit/vue";
 import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
@@ -126,11 +124,4 @@ const reset = (e?: number) => {
 // }
 </script>
 <style scoped>
-.container {
-  min-height: 100px;
-  /* height: var(--height, initial); */
-  /* box-sizing: content-box; */
-  transition: height 1s cubic-bezier(0.5, 0, 0, 1);
-  /* overflow-y: auto; */
-}
 </style>

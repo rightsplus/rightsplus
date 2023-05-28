@@ -51,7 +51,6 @@ export default defineComponent({
       if (!this.modelValue.airport?.departure?.iata) return [1];
       const airports = [this.modelValue.airport?.departure?.iata];
       if (this.modelValue.airport.layover) {
-        console.log(this.modelValue.airport.layover);
         airports.push(
           ...this.modelValue.airport.layover.map((e) => e.iata).filter(Boolean)
         );

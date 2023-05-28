@@ -80,12 +80,11 @@ const added = [
 const entries = computed(() => shuffle([...added, ...useAppState().reviews.entries || []]));
 useFetch<MapsResponseData>(request)
   .then(({ data }) => {
-  if (!data.value?.result) return;
-  useAppState().reviews = {
-    entries: data.value?.result?.reviews,
-    url: data.value?.result?.url,
-  };
-  console.log(data.value?.result);
+    if (!data.value?.result) return;
+    useAppState().reviews = {
+      entries: data.value?.result?.reviews,
+      url: data.value?.result?.url,
+    }
   })
   .catch((e) => console.log(e));
 </script>

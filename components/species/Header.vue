@@ -1,9 +1,8 @@
 <template>
   <header
-    class="z-50 overflow-hidden absolute w-full text-neutral"
+    class="z-40 overflow-hidden absolute w-full text-neutral"
     :class="{
       open: menuOpen,
-      loaded,
     }"
     @click.self="menuOpen = false"
     :style="`--total: ${links.length}`"
@@ -11,22 +10,21 @@
     <BurgerIcon
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
-      class="absolute cursor-pointer right-5 top-4 sm:top-6 z-50 md:hidden"
+      class="absolute cursor-pointer right-5 top-4 sm:top-6 z-40 md:hidden"
       :class="[$state?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
-      class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b max-w-7xl mx-auto font-bold md:font-medium"
-      :class="[$state?.headerColor === 'white' ? 'dark' : '']"
+      class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
+      :class="{
+        'dark': $state?.headerColor === 'white',
+        'max-w-7xl': useRoute().path !== '/admin',
+        'max-w-screen': useRoute().path === '/admin',
+        }"
     >
       <TransitionGroup
         name="list"
         tag="ul"
         class="w-full flex flex-col md:flex-row gap-x-6 gap-y-2 landscape:gap-y-[1vh] relative"
-        :style="{
-          '--line-width': `${lineWidth}px`,
-          '--line-offset-x': `${lineOffsetX}px`,
-          '--line-opacity': `${lineOpacity}`,
-        }"
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLink
@@ -42,10 +40,11 @@
                 'text-white drop-shadow': $state?.headerColor === 'white',
               }"
             >
-              <span class="font-bold">RightsPlus</span><span class="font-medium">Flights</span>
+              <span class="font-bold">RightsPlus</span
+              ><span class="font-medium">Flights</span>
             </span>
           </NuxtLink>
-        </li> 
+        </li>
         <li
           v-for="(item, i) in links"
           :key="item.name"
@@ -64,8 +63,7 @@
             :class="{
               'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
-              'hover:text-gray-500 ':
-                item.type !== 'button',
+              'hover:text-gray-500 ': item.type !== 'button',
               'text-white drop-shadow': $state?.headerColor === 'white',
             }"
             @click="clickLink(item)"
@@ -78,11 +76,12 @@
   </header>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "~/components/molecules/Button.vue";
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
+import { Database } from "~/types";
 interface Route {
   name: string;
   path: string;
@@ -92,122 +91,77 @@ interface Route {
   type?: string;
   onClick?: () => void;
 }
-export default defineComponent({
-  setup() {
-    const user = useSupabaseUser();
-    const client = useSupabaseClient();
-    return { user, client };
-  },
-  components: {
-    Button,
-    BurgerIcon,
-    Icon,
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.setLine(false);
-      setTimeout(() => {
-        this.loaded = true;
-      }, 300);
-    });
-    window.addEventListener("resize", () =>
-      setTimeout(this.setLine, 300, false)
-    );
-  },
-  unmounted() {
-    window.removeEventListener("resize", () =>
-      setTimeout(this.setLine, 300, false)
-    );
-  },
-  data() {
-    return {
-      Logo,
-      menuOpen: false,
-      lineWidth: 0,
-      lineOffsetX: 0,
-      lineOpacity: 1,
-      loaded: false,
-    };
-  },
-  computed: {
-    links(): Route[] {
-      const logout = {
-        name: "status",
-        onClick: () => {
-          this.client.auth.signOut();
-          navigateTo("/");
-        },
-        title: "Ausloggen",
+const user = useSupabaseUser();
+const client = useSupabaseClient<Database>();
+
+const menuOpen = ref(false);
+const isAdmin =
+  (
+    await client
+      .from("users")
+      .select("role")
+      .eq("email", user.value?.email)
+      .single()
+  ).data?.role === "admin";
+
+const links = computed((): Route[] => {
+  const { path } = useRouter().currentRoute.value;
+  const logout = {
+    name: "status",
+    onClick: () => {
+      client.auth.signOut();
+      navigateTo("/");
+    },
+    title: "Ausloggen",
+    type: "button",
+  } as Route;
+
+  const status = isAdmin
+    ? {
+        name: "admin",
+        path: "/admin",
+        title: "Admin",
         type: "button",
-      } as Route;
-      const status = {
+      }
+    : ({
         name: "status",
         path: "/status",
         title: "Meine Forderungen",
         type: "button",
-      } as Route;
+      } as Route);
 
-      const routes = [
-        {
-          name: "rechte",
-          path: "/deine-rechte",
-          title: "Deine Rechte",
-        },
-        {
-          name: "ueber-rights-plus",
-          path: "/ueber-rights-plus",
-          title: "Über RightsPlus",
-        },
-        {
-          name: "faq",
-          path: "/faq",
-          title: "FAQ",
-        },
-        this.user && this.$router.currentRoute.value.path === "/status"
-          ? logout
-          : status,
-      ] as Route[];
-      return routes;
+  const routes = [
+    {
+      name: "rechte",
+      path: "/deine-rechte",
+      title: "Deine Rechte",
     },
-  },
-  methods: {
-    clickLink(item: Route) {
-      item.onClick?.();
-      this.menuOpen = false;
+    {
+      name: "ueber-rights-plus",
+      path: "/ueber-rights-plus",
+      title: "Über RightsPlus",
     },
-    setLine(e: MouseEvent | false) {
-      const target = e
-        ? (e.target as HTMLElement)
-        : this.$refs[this.$route.path]?.[0];
-      if (!target) {
-        this.lineOpacity = 0;
-        return;
-      }
-      const rect = target.getBoundingClientRect();
-      this.lineWidth = rect.width;
-      this.lineOpacity = 1;
-      this.lineOffsetX = target.offsetLeft + rect.width / 2;
+    {
+      name: "faq",
+      path: "/faq",
+      title: "FAQ",
     },
-  },
-  watch: {
-    menuOpen(value) {
-      if (value) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-    },
-    $route() {
-      this.setLine(false);
-    },
-  },
+    user && (path === "/status" || path === "/admin") ? logout : status,
+  ] as Route[];
+  return routes;
 });
+
+const clickLink = (item: Route) => {
+  item.onClick?.();
+  menuOpen.value = false;
+};
+watch(
+  () => menuOpen,
+  (value) => document.body.style.overflow = value ? "hidden" : "auto"
+);
 </script>
 
 <style lang="scss" scoped>
-.loaded nav:deep(ul):after {
-  opacity: var(--line-opacity, 1);
-}
 @media (min-width: 768px) {
   header {
     nav:deep(ul) {
@@ -240,7 +194,7 @@ export default defineComponent({
       pointer-events: all;
     }
     nav {
-      background-color: #DA792D00;
+      background-color: #da792d00;
       transition-duration: 500ms;
       transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
       transition-property: background-color, height;

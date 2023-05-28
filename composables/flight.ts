@@ -1,14 +1,17 @@
+import { App } from 'vue'
 import { euMember } from "is-european";
+import { useI18n } from "#i18n"
 import { Flight, FlightPhase } from "~~/types";
+
 
 const circumstance = reactive({
 	departure: false as boolean | string,
 	arrival: false as boolean | string,
 })
 const getAirports = (flight: Flight) => {
-	const airports = useAirports()
-	const departureAirport = airports.value?.[flight?.departure?.iata_code || ""]
-	const arrivalAirport = airports.value?.[flight?.arrival?.iata_code || ""]
+	const airports = useAirports([flight?.departure?.iata_code, flight?.arrival?.iata_code])
+	const departureAirport = airports?.[flight?.departure?.iata_code || ""]
+	const arrivalAirport = airports?.[flight?.arrival?.iata_code || ""]
 
 	if (!departureAirport || !arrivalAirport) {
 		// @todo: here I could actually make sure i load the appropriate airports, if they have not been loaded yet
@@ -19,14 +22,18 @@ const getAirports = (flight: Flight) => {
 		arrivalAirport,
 	}
 }
-export const isBarred = (flight: Flight | null) => {
+export function isBarred(flight: string): Date
+export function isBarred(flight: Flight | null): false | Date
+export function isBarred(flight: Flight | string | null) {
 	if (!flight) return false
-	const date = flight.arrival?.scheduled_time && new Date(flight.arrival.scheduled_time).getFullYear()
-	if (typeof date !== "number") {
-		console.warn("Missing scheduled date")
+	const flightDate = typeof flight === 'string' ? flight : flight.arrival?.scheduled_time
+	const date = flightDate && new Date(flightDate)
+
+	if (!date || typeof date === 'string') {
+		console.warn("Missing scheduled date", typeof date)
 		return false
 	}
-	return new Date().getFullYear() - date > 3 && date
+	return new Date().getFullYear() - date.getFullYear() > 3 ? new Date(date.getFullYear() + 1, 0) : false
 }
 export const getDelay = (flightPhase?: FlightPhase, limit?: number) => {
 	if (!flightPhase) return 0
@@ -62,7 +69,7 @@ export const isExtraordinaryCircumstance = (flight: Flight | null) => {
 	getWeather(arrivalAirport, arrivalDate).then((weather) => {
 		circumstance.arrival = isUnsafeToTakeoffOrLand(weather, departureDate.getHours())
 	})
-	
+
 
 	return circumstance
 }
@@ -73,7 +80,8 @@ const getDistance = (flight: Flight | null) => {
 
 	return getAirportDistance(departureAirport, arrivalAirport)
 }
-const getEU = (flight: Flight | null) =>{
+
+const getEU = (flight: Flight | null) => {
 	if (!flight) return {
 		departure: false,
 		arrival: false,
@@ -81,7 +89,7 @@ const getEU = (flight: Flight | null) =>{
 	}
 	const { departureAirport, arrivalAirport } = getAirports(flight)
 
-	const airlineObject = useAirlines().value[flight.airline.iata_code || ""]
+	const airlineObject = useAirlines(flight.airline.iata_code)
 
 	const departure = euMember(departureAirport?.country || "")
 	const arrival = euMember(arrivalAirport?.country || "")
@@ -96,7 +104,9 @@ const getEU = (flight: Flight | null) =>{
 
 
 export const useFlightStatus = (flight: Flight | null) => {
+	const nuxtApp = useNuxtApp();
 	isExtraordinaryCircumstance(flight)
+
 	return {
 		barred: {
 			value: isBarred(flight),
@@ -107,12 +117,12 @@ export const useFlightStatus = (flight: Flight | null) => {
 			label: flight?.status === "cancelled" ? "Annulliert" : "Nicht annulliert",
 		},
 		delayed: {
-			value: getDelay(flight?.arrival, 180), 
+			value: getDelay(flight?.arrival, 180),
 			label: getDelay(flight?.arrival, 180) ? `Verspätet (${getDelay(flight?.arrival, 180)} min)` : "Nicht verspätet",
 		},
 		distance: {
 			value: getDistance(flight),
-			label: getDistance(flight) ? useI18n().n(getDistance(flight), 'km') : "Keine Distanz",
+			label: getDistance(flight) ? nuxtApp.$i18n.n(getDistance(flight), 'km') : "Keine Distanz",
 		},
 		europeanUnion: {
 			value: getEU(flight),

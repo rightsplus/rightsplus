@@ -1,9 +1,7 @@
 <template>
   <div class="flex flex-col gap-8" v-if="useAppState()">
     <div class="flex flex-col gap-3">
-      <h2 class="text-2xl sm:text-3xl font-bold">
-        Flug auswählen
-      </h2>
+      <h2 class="text-2xl sm:text-3xl font-bold">Flug auswählen</h2>
     </div>
 
     <h3
@@ -18,33 +16,71 @@
     </h3>
     <!-- verjährt oder in Zukunft rauskegeln -->
     <InputDate v-model="modelValue.flight_date" />
-    <div
-      v-if="!useAppState().flights.filter(filterFlights).length"
-      class="w-full flex flex-col gap-3"><span class="text-sm font-medium"
-        >An diesem Datum konnten wir keinen Flug von {{
-          useAirports(modelValue.airport.departure.iata)?.city
-        }} nach {{
-          useAirports(modelValue.airport.arrival.iata)?.city
-        }} finden.</span
-      ></div>
 
+    <Callout
+      type="info"
+      icon="info-circle"
+      v-if="isBarred(modelValue.flight_date)"
+      ><template #title>Dein Flug ist verjährt</template
+      ><span
+        >Ansprüche für Flugverspätungen vor dem
+        {{
+          isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale)
+        }}
+        sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung mehr einfordern.</span
+      >
+      <NuxtLink
+        :to="'/faq/verjaehrung'"
+        class="flex gap-2 items-center mt-2 mr-auto hover:underline"
+        ><FontAwesomeIcon icon="arrow-right" class="text-xs" />Mehr
+        erfahren</NuxtLink
+      >
+    </Callout>
     <div
-      v-if="useAppState().flights.filter(filterFlights).length"
+      v-else-if="!useAppState().flights.filter(filterFlights).length"
       class="w-full flex flex-col gap-3"
     >
-    <h3 class="text-lg sm:text-xl font-medium text-gray-500">
-      Welcher war dein Flug?
-    </h3>
+      <span class="text-sm font-medium"
+        >An diesem Datum konnten wir keinen Flug von
+        {{ getCityTranslation(useAirports(modelValue.airport.departure.iata), useI18n().locale.value) }} nach
+        {{ getCityTranslation(useAirports(modelValue.airport.arrival.iata), useI18n().locale.value) }} finden.</span
+      >
+    </div>
+
+    <div
+      v-if="
+        !isBarred(modelValue.flight_date) &&
+        useAppState().flights.filter(filterFlights).length
+      "
+      class="w-full flex flex-col gap-3"
+    >
+      <h3 class="text-lg sm:text-xl font-medium text-gray-500">
+        Welcher war dein Flug?
+      </h3>
       <ButtonFlight
-        v-for="flight in useAppState().flights.filter(filterFlights).sort((a, b) => new Date(a.departure.scheduled_time).getTime() - new Date(b.departure.scheduled_time).getTime())"
+        v-for="flight in useAppState()
+          .flights.filter(filterFlights)
+          .sort(
+            (a, b) =>
+              new Date(a.departure.scheduled_time).getTime() -
+              new Date(b.departure.scheduled_time).getTime()
+          )"
         :key="flight.flight.number"
         :flight="flight"
         :selected="modelValue.flight"
         @click="handleSelect"
       />
     </div>
-    
-  <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" :nextDisabled="!modelValue.flight || !useAppState().flights.filter(filterFlights).length" />
+
+    <NavigationButtons
+      @previous="$emit('back')"
+      @next="$emit('submit')"
+      :nextDisabled="
+        isBarred(modelValue.flight_date) ||
+        !modelValue.flight ||
+        !useAppState().flights.filter(filterFlights).length
+      "
+    />
     <!-- :nextDisabled="
         useAppState().routes && !Object.values(useAppState().routes).every((e) => e.flight)
       " -->
@@ -55,7 +91,8 @@ import ButtonFlight from "./ButtonFlight.vue";
 import { ClaimsForm, Flight } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
 import ButtonLarge from "./ButtonLarge.vue";
-import InputDate from "~~/components/molecules/InputDate.vue";
+import InputDate from "@/components/molecules/InputDate.vue";
+import Callout from "@/components/molecules/Callout.vue";
 
 const props = defineProps<{
   modelValue: ClaimsForm;
@@ -85,33 +122,19 @@ const handleSelect = (flight: Flight) => {
     return;
   }
   props.modelValue.flight = flight;
-  console.log(props.modelValue.flight);
-  // consol
-  // if (useAppState().claims.flight?.flight.iata === flight.flight.iata) {
-  //   useAppState().routes[key].flight = undefined;
-  // } else {
-  //   useAppState().routes[key].flight = flight;
-  // }
-  // console.log(useAppState().routes[key]);
-  // if (!this.useAppState().routes[i]?.flight) {
-  //   this.useAppState().routes[i] = {
-  //     ...this.useAppState().routes[i],
-  //     flight,
-  //   }
-  // }
 };
 const init = () => {
   // fetch("api/aviationstack-new.json")
   fetch("api/flights-aviation-edge.json")
     .then((data) => data.json())
     .then((data) => {
-      console.log(
-        data.map((e) => [
-          `${e.departure.iata_code} → ${e.arrival.iata_code}`,
-          new Date(e.departure.scheduled_time).toISOString().slice(0, 10),
-          e.status,
-        ])
-      );
+      // console.log(
+      //   data.map((e) => [
+      //     `${e.departure.iata_code} → ${e.arrival.iata_code}`,
+      //     new Date(e.departure.scheduled_time).toISOString().slice(0, 10),
+      //     e.status,
+      //   ])
+      // );
       useAppState().flights = (data as Flight[]).map((flight) => {
         return {
           ...flight,
@@ -125,7 +148,7 @@ const init = () => {
         };
       });
 
-      console.log(useAppState().flights);
+      // console.log(useAppState().flights);
     })
     .catch((error) => {
       console.log(error);

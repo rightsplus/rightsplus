@@ -17,7 +17,9 @@ import FlightResult from "~~/components/organisms/Calculator/FlightResult.vue";
 import { Airport, ClaimsForm } from "~~/types";
 
 const { search } = useAlgoliaSearch("AIRPORTS");
-
+definePageMeta({
+  middleware: ["auth"],
+});
 function findAirports (query?: string) {
   if (!query) return;
   search({ query, hitsPerPage: 10 }).then(({ hits }) => {
@@ -34,8 +36,8 @@ const user = useSupabaseUser();
 definePageMeta({
   middleware: ["auth"],
 });
-watchEffect(() => {
-  if (!user.value) navigateTo("/login");
+const data = await useAsyncData(async () => {
+  // if (!user.value) navigateTo("/login");
 });
 
 const client = useSupabaseClient();
@@ -49,7 +51,7 @@ useAsyncData("cases", async () => {
     .select("*")
     .eq("email", user.value?.email);
   if (error) throw error;
-  console.log(data);
+  // console.log(data);
   return data;
 }).then(({data}) => {
   claims.value = data.value;

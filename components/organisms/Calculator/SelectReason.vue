@@ -1,15 +1,12 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
-    <div
-      class="flex items-center gap-3 p-3 border border-blue-200 bg-blue-100 text-blue-600 rounded-lg text-sm"
-    >
-      <ClientOnly><FontAwesomeIcon icon="info-circle" /></ClientOnly>
-      <span v-if="useFlightStatus(modelValue.flight).cancelled.value"
+    <Callout type="info" icon="info-circle">
+      <span v-if="status?.cancelled.value"
         >Laut unseren Informationen wurde dein Flug
-        <span class="font-bold">gecancelled</span>.</span
+        <span class="font-bold">annulliert</span>.</span
       >
-      <span v-else-if="useFlightStatus(modelValue.flight).delayed.value > 0"
+      <span v-else-if="(status?.delayed.value || 0) > 0"
         >Laut unseren Informationen ist dein Flug mit
         <span
           class="font-bold"
@@ -31,7 +28,7 @@
         }}
         gelandet.</span
       >
-    </div>
+    </Callout>
     <div class="flex flex-wrap lg:flex-row gap-4">
       <DropdownButton
         :label="`Was ist schiefgelaufen?`"
@@ -82,6 +79,14 @@
       </div>
     </div>
     <DropdownButton
+      v-if="modelValue.disruption === 'cancelled'"
+      label="Welchen Grund hat die Airline angegeben?"
+      name="actualArrivalTime"
+      v-model="modelValue.reasonDetails.cancelled"
+      :options="reasons"
+      prefix-icon="clock"
+    />
+    <DropdownButton
       v-if="modelValue.disruption === 'delayed'"
       label="Welchen Grund hat die Airline angegeben?"
       name="actualArrivalTime"
@@ -118,6 +123,7 @@ import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import Dropdown from "@/components/molecules/Dropdown.vue";
 import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import Button from "@/components/molecules/Button.vue";
+import Callout from "@/components/molecules/Callout.vue";
 import { ClaimsForm } from "~~/types";
 
 const props = defineProps<{
@@ -125,16 +131,18 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["submit", "back"]);
 const value = ref(null);
+const status = ref(null as null | ReturnType<typeof useFlightStatus>);
 const showNoBordingDropdown = ref(false);
 
 onMounted(() => {
-  if (useFlightStatus(props.modelValue.flight).cancelled.value) {
+  status.value = useFlightStatus(props.modelValue.flight);
+  if (status.value?.cancelled.value) {
     props.modelValue.disruption = "cancelled";
-  } else if (useFlightStatus(props.modelValue.flight).delayed.value > 0) {
+  } else if (status.value?.delayed.value > 0) {
     props.modelValue.disruption = "delayed";
-    if (useFlightStatus(props.modelValue.flight).delayed.value < 180) {
+    if (status.value?.delayed.value < 180) {
       props.modelValue.reason = delayed[0].value;
-    } else if (useFlightStatus(props.modelValue.flight).delayed.value >= 240) {
+    } else if (status.value?.delayed.value >= 240) {
       props.modelValue.reason = delayed[2].value;
     } else {
       props.modelValue.reason = delayed[1].value;
@@ -158,9 +166,9 @@ const disruptions = [
   },
   {
     value: "cancelled",
-    label: "Gestrichen / Umgebucht",
+    label: "Annulliert / Umgebucht",
     sublabel:
-      "Dein Flug wurde gestrichen oder deine Abflugzeiten haben sich geändert",
+      "Dein Flug wurde annulliert oder deine Abflugzeiten haben sich geändert",
     icon: "arrow-right-arrow-left",
   },
   {

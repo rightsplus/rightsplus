@@ -64,14 +64,17 @@ onMounted(() => {
 watch(
   () => props.active,
   () => {
-    const refs = instance.value?.refs;
-    const el = refs?.[
-      `item-${props.active}`
-    ] as HTMLCollectionOf<HTMLElement>;
-    if (el && refs.options) {
-      el[0].scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-  }
+    setTimeout(() => {
+      const refs = instance.value?.refs;
+      const el = refs?.[
+        `item-${props.active}`
+      ] as HTMLCollectionOf<HTMLElement>;
+      if (el && refs.options) {
+        el[0].scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }, 0);
+  },
+  {immediate: true}
 );
 </script>
 <style scoped>

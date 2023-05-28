@@ -1,5 +1,6 @@
 import i18n from './config/i18n'
 import postcss from './config/postcss'
+import mail from './config/mail'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
 	app: {
@@ -25,10 +26,14 @@ export default defineNuxtConfig({
 		'@nuxtjs/i18n',
 		'@formkit/nuxt',
 		'@nuxtjs/supabase',
+		'nuxt-mail',
 	],
 	buildModules: [
 		'@nuxtjs/pwa',
 	],
+	build: {
+		transpile: ["primevue"]
+	},
 	nitro: {
 		compressPublicAssets: true,
 	},
@@ -38,7 +43,9 @@ export default defineNuxtConfig({
 	css: [
 		'~/assets/css/main.scss',
 		'~/assets/css/transitions.css',
-		'@fortawesome/fontawesome-svg-core/styles.css'
+		'@fortawesome/fontawesome-svg-core/styles.css',
+		"primevue/resources/themes/lara-light-blue/theme.css",
+		"primevue/resources/primevue.css"
 	],
 	i18n,
 	postcss,
@@ -46,8 +53,12 @@ export default defineNuxtConfig({
 		server: process.env.NODE_ENV === 'development',
 		client: process.env.NODE_ENV === 'development',
 	},
+	mail,
 	runtimeConfig: {
 		public: {
+			stripe: {
+				key: process.env.STRIPE_KEY,
+			},
 			google: {
 				key: process.env.GOOGLE_KEY,
 				placeId: process.env.GOOGLE_PLACE_ID

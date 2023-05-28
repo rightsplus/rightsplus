@@ -6,6 +6,7 @@
       <h1 class="text-2xl font-bold text-center">Login</h1>
       <div class="flex flex-col gap-3">
         <ProviderButton provider="google" @click="login('google')" />
+        <ProviderButton provider="github" @click="login('github')" />
         <!-- <ProviderButton provider="apple" @click="login('apple')" /> -->
       </div>
       <span class="text-sm text-neutral-500 text-center">oder</span>

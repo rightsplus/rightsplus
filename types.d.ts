@@ -22,6 +22,7 @@ export interface ClaimsForm {
     lastName: string,
     iban: string,
     agreedToTerms: boolean,
+    passengerCount: number,
   }
 }
 interface AlgoliaResult {
@@ -145,25 +146,46 @@ export interface UsersTable {
   last_name: string;
   email: string;
   iban: string;
-  agreedToTerms: boolean;
+  agreed_to_terms: boolean;
 }
 export interface CasesTable {
   id: string;
-  user_id: string;
-  data: ClaimsForm;
+  flight_number: string;
+  passenger_count: number;
+}
+export interface FlightsTable {
+  id: string;
+  number: string;
+  status: string;
+  flight_date: string;
+  flight_number: string;
+  airline: string;
+  airline_iata: string;
+  scheduled_time_departure: string;
+  scheduled_time_arrival: string;
+  actual_time_departure: string;
+  actual_time_arrival: string;
+  delay_arrival: string;
+  airport_departure: string;
+  airport_arrival: string;
 }
 export interface Database {
   public: {
     Tables: {
       users: {
-        Row: UsersTable // The data expected to be returned from a "select" statement.
-        Insert: {} // The data expected passed to an "insert" statement.
-        Update: {} // The data expected passed to an "update" statement.
+        Row: UsersTable
+        Insert: UsersTable
+        Update: UsersTable
       }
       cases: {
-        Row: CasesTable // The data expected to be returned from a "select" statement.
-        Insert: {} // The data expected passed to an "insert" statement.
-        Update: {} // The data expected passed to an "update" statement.
+        Row: CasesTable
+        Insert: CasesTable
+        Update: CasesTable
+      }
+      cases: {
+        Row: FlightsTable
+        Insert: FlightsTable
+        Update: FlightsTable
       }
     }
   }

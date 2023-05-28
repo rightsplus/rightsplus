@@ -47,12 +47,11 @@ function findAirports (query: string) {
       if (!hits) return
       dropdownList.value = hits.map((airport) => {
         // if (airport.name.includes('Rail')) return
-        console.log(airport)
         return {
           value: airport.iata,
           label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
           sublabel: [
-            airport._highlightResult?.city_translations?.[locale.value]?.value || airport._highlightResult?.city.value,
+            getCityTranslation(airport, locale.value, true),
             countries.getName(airport.country_code, locale.value),
           ]
             .filter(Boolean)

@@ -5,16 +5,16 @@ import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
 import { airports } from "~~/store";
+import { euMember } from "is-european";
 
 export const getAirlineLogo = (iata: string) => {
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${iata}.png?crop=false&width=100&height=100`;
-	// return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/LY.png?crop=false&width=100&height=100`
 	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
 }
 export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: Airport) => {
 	if (!departureAirport || !arrivalAirport) return 0;
-	const { lat: lat1, lon: lon1 } = departureAirport;
-	const { lat: lat2, lon: lon2 } = arrivalAirport;
+	const { latitude: lat1, longitude: lon1 } = departureAirport;
+	const { latitude: lat2, longitude: lon2 } = arrivalAirport;
 	const R = 6371; // radius of the earth in km
 	const dLat = (lat2 - lat1) * (Math.PI / 180);
 	const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -54,7 +54,7 @@ export const getHumanReadableWeather = async (flight: FlightPhase) => {
 				.map(([key, value]) => [key, value[new Date(time).getHours()]])
 		)
 	}
-	return  getByHour(weather, flight.scheduled_time)
+	return getByHour(weather, flight.scheduled_time)
 }
 
 export const getWeather = async (airport: Airport, date: Date | string): Promise<WeatherResponse | null> => {
@@ -162,40 +162,6 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse | null, hour: 
 };
 
 
-const getAirportsRaw = async () => {
-	const countries = await import("i18n-iso-countries");
-	fetch(
-		"https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/mwgg/Airports/master/airports.json"
-	)
-		.then((response) => response.json())
-		.then((data: Record<string, Airport>) => {
-			const raw = Object.values(data).reduce(
-				(acc: Airport[], { name, iata, city, country, lat, lon }: Airport) => {
-					return iata
-						? [
-							...acc,
-							{
-								full: `${name} (${iata})`,
-								name,
-								iata,
-								city,
-								lat,
-								lon,
-								country,
-								countryName: {
-									'de': countries.getName(country, 'de'),
-									'en': countries.getName(country, 'en'),
-								}
-							},
-						]
-						: acc;
-				},
-				[]
-			);
-			console.log(raw);
-		});
-};
-
 export const reduceAirports = (claims: ClaimsForm, fetch?: string[]) => {
 	const all = ([
 		claims.airport?.departure,
@@ -226,15 +192,27 @@ export const generateRoutes = (claims: ClaimsForm) => {
 			flight: undefined
 		})
 	})
-	console.log(routes)
 	return routes;
 }
 
-export const reimbursementByDistance = (distance: number, withinEU: boolean) => {
-	let claims = 250
-	if (distance > 1500) claims = 400
-	if (distance > 3500 && !withinEU) claims = 600
-	return claims
+const commission = 0.25;
+const vatRate = 0.19;
+export const reimbursementByDistance = (distance: number, withinEU: boolean, passengers = 1) => {
+	let total = 250
+	if ((distance || 0) > 1500) total = 400
+	if ((distance || 0) > 3500 && !withinEU) total = 600
+	total = total * (passengers || 1)
+	const weGet = total * commission
+	const vat = total * commission * vatRate
+	const youGet = total * (1 - commission) - vat
+	return {
+		total,
+		weGet,
+		vat,
+		youGet,
+		vatRate,
+		commission
+	}
 }
 
 export const keyIncrement = (e: KeyboardEvent, value: number, length: number) => {
@@ -306,4 +284,29 @@ export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query
 		airports.value[hit.iata] = a;
 	});
 	return hits
+}
+export const queryAirlines = async (query?: string) => {
+	if (!query) return;
+	const hits = await fetch("api/airlines-aviation-edge.json")
+		.then((data) => data.json())
+		.then((data) => data.reduce((acc, cur) => {
+			acc[cur.codeIataAirline] = {
+				// ...cur,
+				name: cur.nameAirline,
+				nameCountry: cur.nameCountry,
+				country: cur.codeIso2Country,
+				iata: cur.codeIataAirline,
+				isEuMember: euMember(cur.codeIso2Country),
+			};
+			return acc;
+		}, {}));
+	return hits
+}
+
+export const getCityTranslation = (airport: Airport, locale: string, highlight = false) => {
+	if (!airport) return;
+	if (highlight) {
+		return airport._highlightResult?.city_translations?.[locale]?.value || airport._highlightResult?.city.value
+	}
+	return airport.city_translations?.[locale] || airport.city
 }

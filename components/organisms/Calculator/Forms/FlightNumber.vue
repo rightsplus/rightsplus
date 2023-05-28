@@ -84,7 +84,6 @@ export default defineComponent({
       fetch("api/flights-aviation-edge.json")
         .then((data) => data.json())
         .then(({ data }) => {
-          console.log(data)
           this.$state.flights = data;
         })
         .catch((error) => {

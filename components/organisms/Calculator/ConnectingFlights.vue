@@ -1,7 +1,12 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-2xl sm:text-3xl font-bold">Deine Flugroute</h1>
-    <span class="text-sm">Wenn du einen Zwischenstopp hattest, kannst du ihn hier eintragen.</span>
+
+    <h3
+      class="flex justify-between items-center text-lg sm:text-xl font-medium"
+    >
+      <span class="text-gray-500">Hattest du Zwischenstopps?</span>
+    </h3>
 
     <!-- <div class="grid sm:grid-cols-2 gap-3">
       <ButtonLarge
@@ -83,7 +88,7 @@
     <h3
       class="flex justify-between items-center text-lg sm:text-xl font-medium"
     >
-      <span class="text-gray-500">Um welche Strecke geht es?</span>
+      <span class="text-gray-500">Bei welchem Flug gab es Probleme?</span>
     </h3>
       <div
         v-for="([key, route], i) in Object.entries(useAppState().routes)"
@@ -150,8 +155,7 @@ function addLayover() {
     return;
   }
   modelValue.airport.layover.push({});
-  // console.log(`#layover-${modelValue.airport.layover.length - 2}`)
-  // console.log(document.querySelector(`#layover-${modelValue.airport.layover.length - 2}`))
+
   setTimeout(() => {
     document
       .querySelector(`#layover-${modelValue.airport.layover.length - 1}`)

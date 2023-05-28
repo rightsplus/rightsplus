@@ -63,7 +63,7 @@ import {
   faCogs,
   faRoad
 } from '@fortawesome/free-solid-svg-icons'
-import { faApple, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
   faCheck,
   faArrowDown,
@@ -86,6 +86,7 @@ library.add(
   faMeteor,
   faGoogle,
   faApple,
+  faGithub,
   faUserGroup,
   faSignsPost,
   faCalendar,

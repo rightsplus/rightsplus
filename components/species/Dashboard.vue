@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1
-      class="text-4xl sm:text-6xl md:text-7xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative max-w-[300px] sm:max-w-full lg:min-w-[700px]"
+      class="text-4xl sm:text-6xl md:text-7xl tracking-tighter leading-tight font-extrabold uppercase font-mono relative max-w-[300px] sm:max-w-[640px] lg:max-w-full lg:min-w-[700px]"
     >
       <ClientOnly>
         <template #fallback>
-          {{ title[0] }}
+          {{ title.join(' ') }}
         </template>
         <span v-for="(char, i) in titleASCII" :key="i">
           {{ transform(char) }}

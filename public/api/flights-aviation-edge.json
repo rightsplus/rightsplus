@@ -350,40 +350,6 @@
 		"type": "arrival",
 		"status": "landed",
 		"departure": {
-			"iata_code": "FRA",
-			"icao_code": "EDDF",
-			"gate": "A15",
-			"scheduled_time": "2020-07-18T08:00:00.000",
-			"estimated_time": "2020-07-18T08:00:00.000",
-			"actual_time": "2020-07-18T10:40:00.000",
-			"estimated_runway": "2020-07-18T10:40:00.000",
-			"actual_runway": "2020-07-18T10:40:00.000"
-		},
-		"arrival": {
-			"iata_code": "LHR",
-			"icao_code": "EGLL",
-			"terminal": "3",
-			"scheduled_time": "2020-07-18T10:20:00.000",
-			"estimated_time": "2020-07-18T13:40:00.000",
-			"actual_time": "2020-07-18T13:40:00.000",
-			"estimated_runway": "2020-07-18T13:40:00.000",
-			"actual_runway": "2020-07-18T13:40:00.000"
-		},
-		"airline": {
-			"name": "Lufthansa",
-			"iata_code": "LH",
-			"icao_code": "DLH"
-		},
-		"flight": {
-			"number": "2345",
-			"iata_number": "LH2345",
-			"icao_number": "DLH2345"
-		}
-	},
-	{
-		"type": "arrival",
-		"status": "landed",
-		"departure": {
 			"iata_code": "AMS",
 			"icao_code": "EHAM",
 			"gate": "C8",
@@ -690,40 +656,6 @@
 		"type": "arrival",
 		"status": "landed",
 		"departure": {
-			"iata_code": "SVO",
-			"icao_code": "UUEE",
-			"gate": "D9",
-			"scheduled_time": "2020-07-19T14:45:00.000",
-			"estimated_time": "2020-07-19T14:45:00.000",
-			"actual_time": "2020-07-19T18:35:00.000",
-			"estimated_runway": "2020-07-19T18:35:00.000",
-			"actual_runway": "2020-07-19T18:35:00.000"
-		},
-		"arrival": {
-			"iata_code": "CDG",
-			"icao_code": "LFPG",
-			"terminal": "2E",
-			"scheduled_time": "2020-07-19T16:30:00.000",
-			"estimated_time": "2020-07-19T20:20:00.000",
-			"actual_time": "2020-07-19T20:20:00.000",
-			"estimated_runway": "2020-07-19T20:20:00.000",
-			"actual_runway": "2020-07-19T20:20:00.000"
-		},
-		"airline": {
-			"name": "Aeroflot",
-			"iata_code": "SU",
-			"icao_code": "AFL"
-		},
-		"flight": {
-			"number": "3456",
-			"iata_number": "SU3456",
-			"icao_number": "AFL3456"
-		}
-	},
-	{
-		"type": "arrival",
-		"status": "landed",
-		"departure": {
 			"iata_code": "OSL",
 			"icao_code": "ENGM",
 			"gate": "C2",
@@ -826,40 +758,6 @@
 		"type": "arrival",
 		"status": "landed",
 		"departure": {
-			"iata_code": "ATH",
-			"icao_code": "LGAV",
-			"gate": "A2",
-			"scheduled_time": "2020-07-18T15:20:00.000",
-			"estimated_time": "2020-07-18T15:20:00.000",
-			"actual_time": "2020-07-18T19:10:00.000",
-			"estimated_runway": "2020-07-18T19:10:00.000",
-			"actual_runway": "2020-07-18T19:10:00.000"
-		},
-		"arrival": {
-			"iata_code": "FCO",
-			"icao_code": "LIRF",
-			"terminal": "3",
-			"scheduled_time": "2020-07-18T17:00:00.000",
-			"estimated_time": "2020-07-18T20:50:00.000",
-			"actual_time": "2020-07-18T20:50:00.000",
-			"estimated_runway": "2020-07-18T20:50:00.000",
-			"actual_runway": "2020-07-18T20:50:00.000"
-		},
-		"airline": {
-			"name": "Aegean Airlines",
-			"iata_code": "A3",
-			"icao_code": "AEE"
-		},
-		"flight": {
-			"number": "5678",
-			"iata_number": "A35678",
-			"icao_number": "AEE5678"
-		}
-	},
-	{
-		"type": "arrival",
-		"status": "landed",
-		"departure": {
 			"iata_code": "BCN",
 			"icao_code": "LEBL",
 			"gate": "D7",
@@ -922,40 +820,6 @@
 			"number": "7890",
 			"iata_number": "BA7890",
 			"icao_number": "BAW7890"
-		}
-	},
-	{
-		"type": "arrival",
-		"status": "landed",
-		"departure": {
-			"iata_code": "CPH",
-			"icao_code": "EKCH",
-			"gate": "C4",
-			"scheduled_time": "2020-07-19T09:50:00.000",
-			"estimated_time": "2020-07-19T09:50:00.000",
-			"actual_time": "2020-07-19T13:40:00.000",
-			"estimated_runway": "2020-07-19T13:40:00.000",
-			"actual_runway": "2020-07-19T13:40:00.000"
-		},
-		"arrival": {
-			"iata_code": "LHR",
-			"icao_code": "EGLL",
-			"terminal": "5",
-			"scheduled_time": "2020-07-19T11:30:00.000",
-			"estimated_time": "2020-07-19T15:20:00.000",
-			"actual_time": "2020-07-19T15:20:00.000",
-			"estimated_runway": "2020-07-19T15:20:00.000",
-			"actual_runway": "2020-07-19T15:20:00.000"
-		},
-		"airline": {
-			"name": "Scandinavian Airlines",
-			"iata_code": "SK",
-			"icao_code": "SAS"
-		},
-		"flight": {
-			"number": "0123",
-			"iata_number": "SK0123",
-			"icao_number": "SAS0123"
 		}
 	},
 	{

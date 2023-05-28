@@ -2,43 +2,33 @@
   <FormKit
     type="button"
     class="font-medium rounded-lg text-sm px-5 py-3 text-center items-center"
-    input-class="bg-white hover:!bg-gray-700 hover:!border-gray-800 hover:!text-white [&:hover_svg]:fill-white !text-black border border-1 border-blue"
+    input-class="bg-white hover:!bg-gray-700 hover:!border-gray-800 hover:!text-white [&>svg]:fill-black [&:hover_svg]:fill-white !text-black border border-1 border-blue"
     outer-class="!mb-0"
     :prefix-icon="prefixIcon"
-    prefix-icon-class="fill-current mr-3"
-    >{{ label }}</FormKit
+    prefix-icon-class="[&>svg]:fill-gray-600 mr-3 w-5"
+    ><span class="flex items-center gap-2"><img :src="img" v-if="img" class="w-5"/>{{ label }}</span></FormKit
   >
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  setup() {
-    return {};
-  },
-  props: {
-    provider: {
-      type: String,
-      required: true,
-      validator: (value: string) => {
-        return ["google", "apple"].includes(value);
-      },
-    },
-  },
-  computed: {
-    label() {
-      const providerName = {
-        google: "Google",
-        apple: "Apple-ID",
-      }[this.provider];
-      return `Mit ${providerName} einloggen`;
-    },
-    prefixIcon() {
-      return `fab-${this.provider}`;
-    },
-  },
-});
+<script setup lang="ts">
+const props = defineProps<{
+  provider: "google" | "apple" | "github";
+}>();
+const label = computed(() => {
+  const providerName = {
+    github: "GitHub",
+    google: "Google",
+    apple: "Apple-ID",
+  }[props.provider];
+  return `Mit ${providerName} einloggen`;
+})
+const prefixIcon = computed(() => {
+  if (props.provider === 'google') return 
+  return `fab-${props.provider}`;
+})
+const img = computed(() => {
+  if (props.provider === 'google') return `https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1176px-Google_%22G%22_Logo.svg.png?20230305195327`;
+})
 </script>
 
 <style scoped></style>
