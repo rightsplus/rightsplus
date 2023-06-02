@@ -276,7 +276,6 @@ export const getDuration = (minutes: number) => {
 }
 
 export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query?: string) => {
-	if (!query) return;
 	const { hits } = await algolia.search({ query })
 	hits.forEach((hit) => {
 		const a = { ...hit };

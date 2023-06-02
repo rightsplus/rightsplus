@@ -14,33 +14,17 @@
 
 <script setup lang="ts">
 import FlightResult from "~~/components/organisms/Calculator/FlightResult.vue";
-import { Airport, ClaimsForm } from "~~/types";
+import { ClaimsForm, Database } from "~~/types";
 
-const { search } = useAlgoliaSearch("AIRPORTS");
 definePageMeta({
   middleware: ["auth"],
 });
-function findAirports (query?: string) {
-  if (!query) return;
-  search({ query, hitsPerPage: 10 }).then(({ hits }) => {
-    hits.forEach((hit: Airport, i: number) => {
-      const a = { ...hit };
-      delete a._highlightResult;
-      delete a.objectID;
-      useAirports()[hit.iata] = a;
-    });
-  });
-}
 const user = useSupabaseUser();
 
 definePageMeta({
   middleware: ["auth"],
 });
-const data = await useAsyncData(async () => {
-  // if (!user.value) navigateTo("/login");
-});
-
-const client = useSupabaseClient();
+const client = useSupabaseClient<Database>();
 const claims = ref(null as null | {
   id: string
   data: ClaimsForm
@@ -51,31 +35,14 @@ useAsyncData("cases", async () => {
     .select("*")
     .eq("email", user.value?.email);
   if (error) throw error;
-  // console.log(data);
   return data;
 }).then(({data}) => {
   claims.value = data.value;
   data.value?.forEach(({data}: { data: ClaimsForm }) => {
-    findAirports(data.flight?.departure.iata_code);
-    findAirports(data.flight?.arrival.iata_code);
-    useAirports();
+    if (data.flight) useAirports([data.flight.departure.iata_code, data.flight.arrival.iata_code]);
   })
 });
 
-// useAsyncData("user", async () => {
-//   console.log('user')
-// }).then((data) => {
-//   console.log(data)
-// });
-
-// const claims = (await client.from("cases").select(`
-// 			*,
-// 			users (
-// 				first_name,
-// 				last_name
-// 			)
-//   `)).data
-//   console.log()
 </script>
 
 <style scoped></style>

@@ -12,6 +12,7 @@
       :validation="validation"
       @focus="focus"
       @blur="blur"
+      :errors="errors"
       :prefix-icon="prefixIcon"
       :suffix-icon="suffixIcon"
       @prefix-icon-click="$emit('prefix-icon-click')"
@@ -23,14 +24,14 @@
       :classes="{
         outer: '!mb-0',
         inner:
-          inputFocused && options?.length && inputValue?.length
+          inputFocused && options?.length && inputValue?.length && !errors?.length
             ? 'rounded-b-none max-w-full duration-75 !mb-0'
             : 'max-w-full duration-75 !mb-0',
       }"
     />
     <Transition name="dropdown">
       <Dropdown
-        v-if="inputFocused && inputValue?.length" class="w-full z-50"
+        v-if="inputFocused && inputValue?.length && !errors?.length" class="w-full z-50"
         :active="highlighted"
         :options="options"
         @input="handleInput"
@@ -51,6 +52,7 @@ const props = defineProps<{
   validation?: string;
   prefixIcon?: string;
   suffixIcon?: string;
+  errors?: string[];
   options: DropdownItem[];
 }>();
 const emit = defineEmits([
