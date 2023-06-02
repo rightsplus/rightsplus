@@ -25,7 +25,7 @@ export default defineComponent({
     definePageMeta({
       title: "Angebote",
       description:
-        "Hier wirst du deinen Weg finden und kannst im Wald oder mit den Pferden einen Prozess der Heilung zu beginnen.",
+        "",
     });
 
     return {};
