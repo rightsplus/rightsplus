@@ -46,6 +46,7 @@
     "maska": "^2.1.7",
     "nodemailer": "^6.9.2",
     "nuxt-mail": "^4.0.1",
+    "nuxt-storage": "^1.2.2",
     "primevue": "^3.29.1",
     "stripe": "^12.7.0",
     "tailwind-css-variables": "^3.0.1",

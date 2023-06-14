@@ -69,7 +69,7 @@ const end = "2021-01-01";
 const warning = ref([] as string[]);
 
 const isEuMember = computed(() => {
-  const airport = useAppState().claims?.airport;
+  const airport = useClaim().value?.airport;
   return (
     euMember(airport?.departure?.country || "") ||
     euMember(airport?.arrival?.country || "")

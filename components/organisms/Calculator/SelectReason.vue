@@ -1,66 +1,38 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
-    <Callout type="info" icon="info-circle">
-      <span v-if="status?.cancelled.value"
-        >Laut unseren Informationen wurde dein Flug
-        <span class="font-bold">annulliert</span>.</span
-      >
-      <span v-else-if="(status?.delayed.value || 0) > 0"
-        >Laut unseren Informationen ist dein Flug mit
-        <span
-          class="font-bold"
-          v-html="getDuration(getDelay(modelValue.flight?.arrival))"
-        />
-        Verspätung in
-        {{
-          useAirports()[modelValue.flight?.arrival.iata_code || ""]
-            ?.city
-        }}
-        gelandet.</span
-      >
-      <span v-else
-        >Laut unseren Informationen ist dein Flug
-        <span class="font-bold">ohne Verspätung</span> in
-        {{
-          useAirports()[modelValue.flight?.arrival.iata_code || ""]
-            ?.city
-        }}
-        gelandet.</span
-      >
-    </Callout>
-    <div class="flex flex-wrap lg:flex-row gap-4">
+    <DisruptionAssumption :status="status" :modelValue="modelValue" />
+    {{modelValue.disruption}}
+    <div class="flex flex-col gap-5">
       <DropdownButton
         :label="`Was ist schiefgelaufen?`"
-        name="reason"
-        v-model="modelValue.disruption"
+        name="disruptionType"
+        v-model="modelValue.disruption.type"
         :options="disruptions"
         prefix-icon="exclamation-triangle"
       />
-      <!--  // mindestens 14 Tage // Ersatzbeförderung -->
-      <DropdownButton
-        v-if="modelValue.disruption === 'noBoarding'"
-        label="Welchen Grund hat die Airline angegeben?"
-        name="actualArrivalTime"
-        v-model="modelValue.reason"
-        :options="noBoarding"
-        prefix-icon="clock"
-      />
-    </div>
-
-    <div class="flex flex-col gap-5" v-if="modelValue.disruption === 'delayed'">
-      <div class="grid sm:grid-cols-3 gap-3">
+      <div v-if="modelValue.disruption.type === 'delayed'" class="grid sm:grid-cols-3 gap-3">
         <ButtonLarge
-          v-for="c in delayed"
+          v-for="c in delayedDetails"
           :key="c.value"
-          @click.prevent="modelValue.reason = c.value"
-          :selected="modelValue.reason === c.value"
+          @click.prevent="modelValue.disruption.details = c.value"
+          :selected="modelValue.disruption.details === c.value"
           :name="c.value"
           :label="c.label"
           :preLabel="c.preLabel"
         />
       </div>
     </div>
+
+      <!--  // mindestens 14 Tage // Ersatzbeförderung -->
+      <DropdownButton
+        v-if="modelValue.disruption.type === 'noBoarding'"
+        label="Welchen Grund hat die Airline angegeben?"
+        name="actualArrivalTime"
+        v-model="modelValue.disruption.reason"
+        :options="noBoarding"
+        prefix-icon="clock"
+      />
     <div class="flex flex-col gap-5" v-if="modelValue.disruption === 'cancelled'">
       <span class="text-sm"
         >Wieviel Zeit vor dem Abflug wurdest du über die Streichung / Umbuchung
@@ -120,10 +92,10 @@
 <script setup lang="ts">
 import NavigationButtons from "./NavigationButtons.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
+import DisruptionAssumption from "@/components/organisms/Calculator/DisruptionAssumption.vue";
 import Dropdown from "@/components/molecules/Dropdown.vue";
 import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import Button from "@/components/molecules/Button.vue";
-import Callout from "@/components/molecules/Callout.vue";
 import { ClaimsForm } from "~~/types";
 
 const props = defineProps<{
@@ -179,12 +151,12 @@ const disruptions = [
   },
   { value: "other", label: "Sonstige", icon: "question" },
 ];
-const delayed = [
+const delayedDetails = [
   { value: "<=3", preLabel: "Weniger als", label: "3 Stunden" },
   { value: "3-4", label: "3 – 4 Stunden" }, // bei +3500 km: Vergütung 50%
   { value: ">4", preLabel: "Mehr als", label: "4 Stunden" },
 ];
-const cancelled = [
+const cancelledDetails = [
   { value: "<72", preLabel: "Weniger als", label: "72 Stunden" },
   { value: "72-14", label: "3 – 14 Tage" },
   { value: ">14", preLabel: "Mehr als", label: "14 Tage" },

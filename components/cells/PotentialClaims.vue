@@ -29,14 +29,14 @@
       <li><b>Mindestens 3h Verspätet:</b> {{ status.delayed?.label }}</li>
       <li><b>Außergewöhlicher Umstand:</b> {{ status.extraordinaryCirumstance?.label }}</li>
 		</ol> -->
-    <!-- <pre>{{ $state.claims }}</pre> -->
+    <!-- <pre>{{ useClaim().value }}</pre> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import gsap from "gsap";
 
-const status = computed(() => useFlightStatus(useAppState().claims.flight));
+const status = computed(() => useFlightStatus(useClaim().value.flight));
 const noClaims = computed(() => {
   if (status.value.barred?.value) return "Verjährt";
   if (!status.value.cancelled.value || !status.value.delayed.value)
@@ -47,7 +47,7 @@ const potentialReimbursment = computed(() => {
   if (!status.value.cancelled.value && !status.value.delayed.value) return 0;
   const { value: eu } = status.value.europeanUnion;
   const { value: distance } = status.value.distance;
-  return reimbursementByDistance(distance, eu.departure || eu.arrival, useAppState().claims.client.passengerCount).youGet;
+  return reimbursementByDistance(distance, eu.departure || eu.arrival, useClaim().value.client.passengerCount).youGet;
 });
 const youGet = reactive({
   number: potentialReimbursment.value,
@@ -64,10 +64,10 @@ watch(potentialReimbursment, (n) => {
 });
 
 const reset = (e?: number) => {
-  useAppState().claims.airport.departure = null;
-  useAppState().claims.airport.arrival = null;
-  useAppState().claims.airport.layover = [];
-  useAppState().claims.flight = null;
-  useAppState().claims.step = 0;
+  useClaim().value.airport.departure = null;
+  useClaim().value.airport.arrival = null;
+  useClaim().value.airport.layover = [];
+  useClaim().value.flight = null;
+  useClaim().value.step = 0;
 };
 </script>

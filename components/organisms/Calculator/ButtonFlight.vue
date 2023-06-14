@@ -28,13 +28,15 @@
           time(flight.arrival.scheduled_time)
         }}</span
       >
-      <span class="flex items-center gap-2 text-base">
+      <span class="flex items-center gap-2 text-base leading-none">
         <span
           class="w-6 h-6 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
         >
-          <img :alt="flight.airline.name" :src="logo" class="w-5" /> </span
-        >{{ flight.airline.name }}</span
-      >
+          <img :alt="flight.airline.name" :src="logo" class="w-5" /></span
+        ><span>{{ flight.airline.name }}<span v-if="flight.codeshared?.airline.name" class="opacity-50"
+        > operated by {{ flight.codeshared.airline.name }}</span
+      ></span
+      ></span>
     </div>
 
     <div class="flex flex-col items-center ml-auto">

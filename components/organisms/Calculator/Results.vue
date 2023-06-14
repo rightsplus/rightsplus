@@ -1,19 +1,19 @@
 <template>
-  <!-- <pre>{{$state.claims}}</pre> -->
+  <!-- <pre>{{useClaim().value}}</pre> -->
   <div class="flex flex-col gap-5" v-if="Object.keys($state.routes).length">
     <h1 class="text-3xl font-bold">Du hast Anspruch auf Entschädigung!</h1>
-    <div>{{ getAirportDistance($state.claims.airport.departure, $state.claims.airport.arrival) }}</div>
-      <FlightResult :flight="$state.claims.flight" />
+    <div>{{ getAirportDistance(useClaim().value.airport.departure, useClaim().value.airport.arrival) }}</div>
+      <FlightResult :flight="useClaim().value.flight" />
       <NavigationButtons @previous="$emit('back')" @next="$emit('submit')" />
 
       <!-- <p><b>Außergewöhlicher Umstand:</b> {{ route.flight?.extraordinaryCircumstances }}</p>
       <p><b>Verjährt:</b> {{ barred ? `Ja (${barred})` : "Nein" }}</p>
       <p><b>Mindestens 3h Verspätet:</b> {{ (route.flight?.departure.delay || 0) / 60 > 3 }}</p>
       <p><b>Fluggesellschaft in EU:</b> {{ airlines[route.flight?.airline.iata]?.isEuMember }} ({{airlines[route.flight?.airline.iata]?.nameCountry}})</p>
-      <p><b>Abflug in EU:</b> {{ euLabel($state.claims?.airport.departure?.country) }}</p>
-      <p><b>Landung in EU:</b> {{ euLabel($state.claims?.airport.arrival?.country) }}</p>
+      <p><b>Abflug in EU:</b> {{ euLabel(useClaim().value?.airport.departure?.country) }}</p>
+      <p><b>Landung in EU:</b> {{ euLabel(useClaim().value?.airport.arrival?.country) }}</p>
       <p><b>Distanz:</b> {{ $n(route.flight?.distance || 0, "km") }}</p> -->
-      <!-- <pre>{{ $state.claims }}</pre> -->
+      <!-- <pre>{{ useClaim().value }}</pre> -->
   </div>
 </template>
 
@@ -65,7 +65,7 @@ export default defineComponent({
   computed: {
     barred() {
       // @todo better to use arrival date
-      const d = this.$state.claims?.date.departure
+      const d = useClaim().value?.date.departure
       return d && new Date().getFullYear() - new Date(d).getFullYear() > 3 ? new Date(d).getFullYear() : false
     }
   },

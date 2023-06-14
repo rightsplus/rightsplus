@@ -72,8 +72,8 @@
         <AirportInput
           label="Ankunft"
           placeholder="z.B. Tokyo oder NRT"
-        name="arrival"
-        id="arrival"
+          name="arrival"
+          id="arrival"
           prefix-icon="plane-arrival"
           :modelValue="modelValue.airport.arrival"
           @update:modelValue="modelValue.airport.arrival = $event"
@@ -116,7 +116,7 @@
         </ButtonLarge>
       </div>
     </div>
-    <NavigationButtons @next="$emit('submit')" :nextDisabled="!modelValue.airport.departure || !modelValue.airport.arrival || !!(modelValue.route && !useAppState().routes[modelValue.route || ''])" />
+    <NavigationButtons @next="$emit('submit')" :nextDisabled="!modelValue.airport.departure || !modelValue.airport.arrival || !!(modelValue.route && useAppState().routes && !useAppState().routes[modelValue.route || ''])" />
   </div>
 </template>
 
@@ -138,13 +138,14 @@ watch(() => useAppState().routes, () => {
   }
 }, {deep: true, immediate: true})
 function update(e: any, i: number) {
+  console.log(e, i)
   if (e && "iata" in e && modelValue.airport.layover) {
     modelValue.airport.layover[i] = e;
   }
 }
 const showAddLayoverButton = computed(() => {
   return (
-    modelValue.airport.layover.every(e => 'iata' in e) &&
+    (!modelValue.airport.layover.length || modelValue.airport.layover.every(e => 'iata' in e)) &&
     (!modelValue.airport.layover ||
     (modelValue.airport.layover && modelValue.airport.layover.length < 3))
   );

@@ -96,7 +96,7 @@ const client = useSupabaseClient<Database>();
 
 const menuOpen = ref(false);
 const isAdmin =
-  (
+user.value?.email && (
     await client
       .from("users")
       .select("role")

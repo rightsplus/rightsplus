@@ -1,9 +1,9 @@
-import { state, airports, airlines } from '@/store'
-import { euMember } from 'is-european';
+import { state, claim, airports, airlines } from '@/store'
 import { Airline, Airport } from '~~/types';
 
 
 export const useAppState = () => state
+export const useClaim = () => claim
 export function useAirports(): Record<string, Airport>;
 export function useAirports (iata: string): Airport
 export function useAirports (iata: string[]): Record<string, Airport>

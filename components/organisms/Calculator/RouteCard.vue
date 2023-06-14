@@ -94,7 +94,7 @@ export default defineComponent({
         if (!value) return
         this.warning = [];
         this.weather = [];
-        const times = this.$state.claims?.selectedFlight?.departure;
+        const times = useClaim().value?.selectedFlight?.departure;
         const departure = new Date(
           times?.actual_runway || times?.estimated || times?.scheduled || 0
         );
@@ -140,7 +140,7 @@ export default defineComponent({
       );
     },
     isEuMember() {
-      const airport = this.$state.claims?.airport;
+      const airport = useClaim().value?.airport;
       return (
         euMember(airport?.departure?.country || "") ||
         euMember(airport?.arrival?.country || "")

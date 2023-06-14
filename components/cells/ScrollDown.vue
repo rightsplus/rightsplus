@@ -1,7 +1,8 @@
 <template>
   <div>
     <button
-      to="/"
+      role="button"
+      @click="scroll"
       class="text-sm flex items-center gap-3 text-neutral-600 hover:text-black !bg-transparent"
     >
       <span
@@ -13,18 +14,17 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { defineComponent } from "vue";
-import Button from "@/components/molecules/Button.vue";
-export default defineComponent({
-  components: {
-    Button,
-  },
-  setup() {
-    return {};
-  },
-});
+
+const props = defineProps<{
+  scrollTo?: string
+}>()
+const scroll = () => {
+  const element = props.scrollTo ? document.getElementById(props.scrollTo) : false
+
+  if (element) element.scrollIntoView({behavior: 'smooth'});
+}
 </script>
 
 <style scoped></style>

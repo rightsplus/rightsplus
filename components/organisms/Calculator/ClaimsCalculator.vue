@@ -2,8 +2,8 @@
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
     <Stepper
       :steps="steps"
-      :step="$state.claims.step"
-      @setStep="$state.claims.step = $event"
+      :step="useClaim().value.step"
+      @setStep="useClaim().value.step = $event"
     />
     <div
       class="lg:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12 w-full"
@@ -13,8 +13,8 @@
       <ClientOnly
         ><Transition mode="out-in" name="fade"
           ><component
-            v-if="$state.claims"
-            v-model="$state.claims"
+            v-if="useClaim().value"
+            v-model="useClaim().value"
             :is="activeStep?.component"
             :title="activeStep?.title"
             @submit="next"
@@ -26,87 +26,67 @@
 
     <div class="flex flex-col gap-3">
       <Transition mode="out-in" name="fade">
-      <div
-        v-if="$state.claims.flight && $state.claims.step > 1"
-        class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
-        v-bind="$attrs"
-      >
-        <PotentialClaims />
-      </div>
-    </Transition>
-      <!-- <span class="font-bold">Dein Flug</span> -->
-      <!-- <TransitionGroup
-        tag="div"
-        name="new-list"
-        class="relative flex flex-col gap-5"
-        :show="$state.claims.flight"
-      >
-        <RouteCard
-          :route="route"
-        />
-      </TransitionGroup> -->
+        <div
+          v-if="useClaim().value.flight && useClaim().value.step > 1"
+          class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
+          v-bind="$attrs"
+        >
+          <PotentialClaims />
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { FormKit } from "@formkit/vue";
-import FlightByAirport from "./Forms/FlightByAirport.vue";
 import ConnectingFlights from "./ConnectingFlights.vue";
-import TransitionGroup from "@/components/cells/TransitionGroup.vue";
-import FlightDate from "./FlightDate.vue";
 import SelectFlight from "./SelectFlight.vue";
 import PersonalInfo from "./PersonalInfo.vue";
 import SelectReason from "./SelectReason.vue";
-import Results from "./Results.vue";
-import Reset from "./Reset.vue";
 import Stepper from "@/components/cells/Stepper.vue";
-import FlightResult from "./FlightResult.vue";
-import RouteCard from "./RouteCard.vue";
 import PotentialClaims from "@/components/cells/PotentialClaims.vue";
 
 const steps = [
   {
     label: "Strecke",
     title: "Wohin bist du geflogen?",
-    component: ConnectingFlights
+    component: ConnectingFlights,
   },
   {
     label: "Flug",
     title: "Welchen Flug hast du genommen?",
-    component: SelectFlight
+    component: SelectFlight,
   },
   {
     label: "Grund",
     title: "Was ist schief gelaufen?",
-    component: SelectReason
+    component: SelectReason,
   },
   {
     label: "Passagiere",
     title: "Wer ist mitgeflogen?",
-    component: PersonalInfo
+    component: PersonalInfo,
   },
   // {
   //   label: "Results",
   //   component: Results
   // },
-]
+];
 const containerHeight = ref(100);
-const activeStep = computed(() => steps[useAppState().claims?.step || 0])
+const activeStep = computed(() => steps[useClaim().value?.step || 0]);
 
 const next = (e?: number) => {
-  useAppState().claims.step = e ?? useAppState().claims.step + 1;
-}
+  useClaim().value.step = e ?? useClaim().value.step + 1;
+};
 const back = (e?: number) => {
-  useAppState().claims.step = e ?? useAppState().claims.step - 1;
-}
+  useClaim().value.step = e ?? useClaim().value.step - 1;
+};
 const reset = (e?: number) => {
-  useAppState().claims.step = e ?? 0;
-}
-
+  useClaim().value.step = e ?? 0;
+};
 
 // watch(
-//   () => useAppState().claims?.step,
+//   () => useClaim().value?.step,
 //   () => setTimeout(setHeight, 0)
 // );
 // const setHeight = () => {
@@ -123,5 +103,4 @@ const reset = (e?: number) => {
 //   )?.children[0]?.offsetHeight;
 // }
 </script>
-<style scoped>
-</style>
+<style scoped></style>

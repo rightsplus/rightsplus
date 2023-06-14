@@ -5,7 +5,7 @@
         <div class="flex flex-col gap-5">
           <ClaimsCalculator />
         </div>
-      <!-- <pre class="text-sm text-gray-500">{{ $state.claims }}</pre> -->
+      <!-- <pre class="text-sm text-gray-500">{{ useClaim().value }}</pre> -->
       </div>
 
     </div>

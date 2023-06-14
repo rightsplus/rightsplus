@@ -1,19 +1,17 @@
 export interface ClaimsForm {
   airport: {
-    departure: Airport,
-    arrival: Airport,
+    departure: Airport | {},
+    arrival: Airport | {},
     layover: (Airport | {})[],
   },
   route: string | null,
   flight: Flight | null,
   flight_date: string,
-  reason: string | null,
-  disruption: string | null,
-  reasonDetails: {
-    noBoarding?: string,
-    delayed?: string,
-    cancelled?: string
-    other?: string
+  disruption: {
+    type: string | null,
+    details: string | null,
+    reason: string | null,
+    other: string | null
   },
   step: number,
   client: {

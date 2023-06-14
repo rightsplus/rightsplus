@@ -1,5 +1,6 @@
 import { reactive, onMounted } from 'vue'
 import { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
+import nuxtStorage from 'nuxt-storage';
 
 
 interface State {
@@ -10,45 +11,39 @@ interface State {
     url?: string,
     entries?: Review[],
   },
-  claims: ClaimsForm,
   routes: Record<string, Route>,
   log: (message: string) => void,
 }
 
-const storedClaims = process.client && localStorage.getItem('claims') && JSON.parse(localStorage.getItem('claims') as string) as ClaimsForm
-
-
-export const state = reactive({
-  claims: storedClaims || {
-    airport: {
-      departure: {
-        full: ""
-      },
-      arrival: {
-        full: ""
-      },
-      layover: [{}],
-    },
-    flight: null,
-    route: null,
-    date: {
-      departure: new Date().toISOString().slice(0, 10),
-    },
-    client: {
-      email: '',
-      firstName: '',
-      agreedToTerms: false,
-    },
-    disruption: null,
+const defaultClaim = {
+  airport: {
+    departure: {},
+    arrival: {},
+    layover: [{}],
+  },
+  flight: null,
+  route: null,
+  flight_date: '',
+  client: {
+    email: '',
+    firstName: '',
+    lastName: '',
+    iban: '',
+    passengerCount: 1,
+    agreedToTerms: false,
+  },
+  disruption: {
+    type: null,
+    details: null,
     reason: null,
-    reasonDetails: {
-      noBoarding: undefined,
-      delayed: undefined,
-      cancelled: undefined,
-      other: undefined
-    },
-    step: 0,
-  } as ClaimsForm,
+    other: null
+  },
+  step: 0,
+} as ClaimsForm
+export const claim = reactive({
+  value: defaultClaim
+})
+export const state = reactive({
   routes: {} as Record<string, Route>,
   flights: [] as Flight[],
   reviews: {
@@ -59,15 +54,19 @@ export const state = reactive({
   log: (message: string) => console.log(message),
 } as State)
 
-
-watch(state, () => {
-  process.client && localStorage.setItem('claims', JSON.stringify(state.claims))
-})
-
-watch(() => state.claims.airport, () => {
-  state.routes = generateRoutes(state.claims);
+watch(() => claim.value, (value) => {
+  if (value) state.routes = generateRoutes?.(value);
 }, { deep: true, immediate: true });
-
+watch(() => claim.value, (value) => {
+  if (!process.client || !value) return
+  nuxtStorage.localStorage.setData('rights-plus-claims', value, 30);
+}, { deep: true});
+watch(() => {}, () => {
+  if (process.client) {
+    const value = nuxtStorage.localStorage.getData('rights-plus-claims')
+    if (value) claim.value = value
+  }
+}, { immediate: true });
 
 export const airports = ref({} as Record<string, Airport>);
 

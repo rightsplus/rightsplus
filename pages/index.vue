@@ -1,36 +1,40 @@
 <template>
   <div class="overflow-x-hidden">
-    <section class="min-h-screen pt-16 sm:pt-36 pb-8 bg-neutral-200">
+    <section
+      class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
+    >
       <img
         src="/airport-light-comp.jpg"
         alt="Airport"
         class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
       />
-      <div class="max-w-7xl mx-auto p-5 sm:px-12 h-full relative z-1">
-        <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
+      <div
+        class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1"
+      >
+        <div class="flex flex-col gap-12 lg:w-1/2">
           <Dashboard />
           <Transition name="fade">
-          <div
+            <div
               class="container bg-white rounded-3xl p-5 sm:p-12"
-              v-if="useAppState().claims && ready"
+              v-if="useClaim().value && ready"
             >
-            
               <FlightByAirport
-                v-model="useAppState().claims"
-                @submit="
-                  useAppState().claims.step = useAppState().claims.step || 0
-                "
+                v-model="useClaim().value"
+                @submit="useClaim().value.step = useClaim().value.step || 0"
               /></div
           ></Transition>
-          <div style="--duration: 1000ms">
-          <Transition name="move-up">
-            <ScrollDown v-if="scrollDownReady" class="mt-auto" />
-          </Transition>
-        </div>
         </div>
       </div>
+      <div
+        style="--duration: 1000ms"
+        class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10"
+      >
+        <Transition name="move-up">
+          <ScrollDown v-if="scrollDownReady" scrollTo="process-summary" />
+        </Transition>
+      </div>
     </section>
-    <ProcessSummary />
+    <ProcessSummary id="process-summary" />
     <YourRights />
     <CTASection />
     <Reasons />
@@ -53,9 +57,9 @@ import Reviews from "@/components/organisms/Sections/Reviews.vue";
 const ready = ref(false);
 const scrollDownReady = ref(false);
 onMounted(() => {
-  ready.value = true
+  ready.value = true;
   setTimeout(() => {
-    scrollDownReady.value = true
-  }, 1000)
-})
+    scrollDownReady.value = true;
+  }, 1000);
+});
 </script>
