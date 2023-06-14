@@ -61,12 +61,17 @@ import {
   faHand,
   faMemory,
   faCogs,
-  faRoad
+  faRoad,
+  faPhone,
+  faAt,
+  faSearch,
+  faArrowUp
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
   faCheck,
   faArrowDown,
+  faArrowUp,
   faPlus,
   faPlusCircle,
   faPlaneArrival,
@@ -131,7 +136,10 @@ library.add(
   faHand,
   faMemory,
   faCogs,
-  faRoad
+  faRoad,
+  faPhone,
+  faAt,
+  faSearch
 )
 
 config.autoAddCss = false

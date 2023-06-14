@@ -138,7 +138,6 @@ watch(() => useAppState().routes, () => {
   }
 }, {deep: true, immediate: true})
 function update(e: any, i: number) {
-  console.log(e, i)
   if (e && "iata" in e && modelValue.airport.layover) {
     modelValue.airport.layover[i] = e;
   }
