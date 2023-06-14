@@ -54,6 +54,7 @@
         :floatingLabel="true"
         type="email"
         :required="true"
+        inner-class="max-w-full"
       />
       <!-- <InputIBAN
         v-model="modelValue.client.iban"
@@ -68,6 +69,7 @@
         type="checkbox"
         decorator-icon="check"
         :required="true"
+        outer-class="mr-auto"
       >
         <template #label
           ><span class="text-sm leading-none">

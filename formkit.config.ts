@@ -26,7 +26,7 @@ const config: DefaultConfigOptions = {
         fieldset: 'max-w-2xl border border-neutral-400 rounded-lg px-2 pb-1',
         help: 'text-xs text-neutral-500 leading-tight',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
-        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200',
+        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200 hover:bg-neutral-50',
         label: 'text-neutral-500 font-medium text-sm leading-tight block',
         legend: 'text-neutral-500 font-medium text-sm',
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
@@ -162,7 +162,7 @@ const config: DefaultConfigOptions = {
         wrapper: 'flex flex-wrap items-center mb-1'
       },
       checkbox: {
-        wrapper: '[&>span]:mt-0',
+        wrapper: '[&>span]:mt-0 hover:cursor-pointer [&[data-checked=true]:hover>.formkit-inner>.formkit-decorator]:!bg-primary-600 [&:hover>.formkit-inner>.formkit-decorator]:!bg-neutral-50',
         inner: 'bg-transparent',
         decorator: '!rounded !bg-neutral-100 peer-checked:!bg-primary-500 from-transparent !to-transparent [&>.formkit-decorator-icon]:p-0.5 [&>.formkit-decorator-icon]:opacity-0 [&>.formkit-decorator-icon]:justify-center peer-checked:[&>.formkit-decorator-icon]:opacity-100 [&>.formkit-decorator-icon>svg]:fill-white',
       }

@@ -16,8 +16,8 @@
       </button>
     </span>
     <span v-else class="flex flex-col gap-2 font-bold leading-tight"
-      >Du hast gute Aussichten auf {{ $n(youGet.number, "currency")
-      }}<span class="text-xs font-normal"
+      ><span>Du hast gute Aussichten auf <span class="tabular-nums tracking-tighter">{{ $n(youGet.number, "currency")
+      }}</span></span><span class="text-xs font-normal"
         >Jetzt Prüfung vervollständigen!</span
       ></span
     >
