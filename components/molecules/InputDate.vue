@@ -1,4 +1,6 @@
 <template>
+  <div 
+    ref="calendar">
   <DatePicker
     :modelValue.string="modelValue"
     @update:modelValue="updateModelValue"
@@ -18,18 +20,16 @@
       },
     ]"
   />
+</div>
 </template>
 <script setup lang="ts">
-import { useScreens } from 'vue-screen-utils';
+import { useElementSize } from '@vueuse/core'
 
-const { mapCurrent } = useScreens({
-  xs: '0px',
-  sm: '640px',
-  md: '768px',
-  lg: '1024px',
-});
-const columns = mapCurrent({ lg: 2 }, 1);
-const props = defineProps<{
+const calendar = ref(null)
+const { width } = useElementSize(calendar)
+const columns = computed(() => width.value < 540 ? 1 : 2)
+
+defineProps<{
   modelValue: string;
   name?: string;
   label?: string;
