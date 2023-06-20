@@ -262,8 +262,9 @@ function fetchFlights() {
   )
     return;
   // Create a URL instance with the desired URL string
+  // const proxy = "";
   const proxy = "https://cors-anywhere.herokuapp.com/";
-  const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
+  const url = new URL("http://api.aviationstack.com/v1/flights");
 
   url.searchParams.append("access_key", aviationstack);
   url.searchParams.append("dep_iata", props.modelValue.airport?.departure.iata);
@@ -273,8 +274,8 @@ function fetchFlights() {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
   headers.append("Access-Control-Allow-Origin", "*");
-  headers.append("Origin", "http://localhost:3000");
-  headers.append("X-Requested-With", "XMLHttpRequest");
+  // headers.append("Origin", "http://localhost:3000");
+  // headers.append("X-Requested-With", "XMLHttpRequest");
 
   const requestOptions = {
     method: "GET",
@@ -291,17 +292,17 @@ function fetchFlights() {
   // );
 
   console.log("fetching...");
-  fetch(url.href, requestOptions)
+  fetch(url.href)
     .then((data) => data.json())
     .then(({ data }: { data: Flight[] }) => {
-      // console.log(
-      //   data.map((e) => [
-      //     `${e.departure.iata_code} → ${e.arrival.iata_code}`,
-      //     new Date(e.departure.scheduled_time).toISOString().slice(0, 10),
-      //     e.status,
-      //   ])
-      // );
-      const uniqueFlights = removeDuplicateFlights(data.sort(sortByScheduled));
+      const uniqueFlights = data ? removeDuplicateFlights(data.sort(sortByScheduled)) : [];
+      console.log(
+        uniqueFlights.map((e) => [
+          `${e.departure.iata} → ${e.arrival.iata}`,
+          new Date(e.departure.scheduled).toISOString().slice(0, 10),
+          e.flight_status,
+        ])
+      );
 
       useAppState().flights = uniqueFlights?.map((flight) => {
         return {
@@ -315,8 +316,6 @@ function fetchFlights() {
             }),
         };
       });
-
-      // console.log(useAppState().flights);
     })
     .catch((error) => {
       console.log(error);
@@ -325,27 +324,6 @@ function fetchFlights() {
   if (Object.keys(useAppState().routes || {})?.length === 1) {
     props.modelValue.route = Object.keys(useAppState().routes)[0];
   }
-  return;
-  // const cors = "https://cors-anywhere.herokuapp.com/";
-  // const aviationstack = useRuntimeConfig().public.flight.aviationstack;
-  // const date = modelValue.flightDate.split("-");
-
-  // const request = `https://cors-anywhere.herokuapp.com/https://api.flightstats.com/flex/flightstatus/historical/rest/v3/json/route/status/${modelValue.departure}/${modelValue.arrival}/arr/${date[0]}/${date[1]}/${date[2]}?appId=${appId}&appKey=${token}&utc=false&maxFlights=1`;
-  // const request = `${cors}https://app.goflightlabs.com/historical/${modelValue.flightDate}?access_key=${flighlabs}&code=${modelValue.departure}&type=departure`
-
-  const request = `${cors}http://api.aviationstack.com/v1/flights/?access_key=${aviationstack}`;
-  fetch(request)
-    .then((data) => {
-      console.log(data);
-      return data.json();
-    })
-    .then((data) => {
-      console.log(data);
-      // console.log(data.filter(({ arrival }) => arrival.iataCode?.toUpperCase() === modelValue.arrival.toUpperCase()));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 }
 const submitHandler = () => {
   emit("submit");
