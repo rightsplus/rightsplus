@@ -9,9 +9,9 @@ const circumstance = reactive({
 	arrival: false as boolean | string,
 })
 const getAirports = (flight: Flight) => {
-	const airports = useAirports([flight?.departure?.iata_code, flight?.arrival?.iata_code])
-	const departureAirport = airports?.[flight?.departure?.iata_code || ""]
-	const arrivalAirport = airports?.[flight?.arrival?.iata_code || ""]
+	const airports = useAirports([flight?.departure?.iata, flight?.arrival?.iata])
+	const departureAirport = airports?.[flight?.departure?.iata || ""]
+	const arrivalAirport = airports?.[flight?.arrival?.iata || ""]
 
 	if (!departureAirport || !arrivalAirport) {
 		// @todo: here I could actually make sure i load the appropriate airports, if they have not been loaded yet
@@ -26,7 +26,7 @@ export function isBarred(flight: string): Date
 export function isBarred(flight: Flight | null): false | Date
 export function isBarred(flight: Flight | string | null) {
 	if (!flight) return false
-	const flightDate = typeof flight === 'string' ? flight : flight.arrival?.scheduled_time
+	const flightDate = typeof flight === 'string' ? flight : flight.arrival?.scheduled
 	const date = flightDate && new Date(flightDate)
 
 	if (!date || typeof date === 'string') {
@@ -37,8 +37,8 @@ export function isBarred(flight: Flight | string | null) {
 }
 export const getDelay = (flightPhase?: FlightPhase, limit?: number) => {
 	if (!flightPhase) return 0
-	const scheduledDate = flightPhase.scheduled_time && new Date(flightPhase.scheduled_time)
-	const actualDate = flightPhase.actual_time && new Date(flightPhase.actual_time)
+	const scheduledDate = flightPhase.scheduled && new Date(flightPhase.scheduled)
+	const actualDate = flightPhase.actual && new Date(flightPhase.actual)
 
 	if (!scheduledDate || !actualDate) {
 		console.warn("Missing scheduled or actual date")
@@ -55,8 +55,8 @@ export const isExtraordinaryCircumstance = (flight: Flight | null) => {
 
 	const { departureAirport, arrivalAirport } = getAirports(flight)
 
-	const departureDate = flight.departure?.scheduled_time && new Date(flight.departure.scheduled_time)
-	const arrivalDate = flight.arrival?.scheduled_time && new Date(flight.arrival.scheduled_time)
+	const departureDate = flight.departure?.scheduled && new Date(flight.departure.scheduled)
+	const arrivalDate = flight.arrival?.scheduled && new Date(flight.arrival.scheduled)
 
 	if (!departureDate || !arrivalDate) {
 		console.warn("Missing departure or arrival date")
@@ -89,7 +89,7 @@ const getEU = (flight: Flight | null) => {
 	}
 	const { departureAirport, arrivalAirport } = getAirports(flight)
 
-	const airlineObject = useAirlines(flight.airline.iata_code)
+	const airlineObject = useAirlines(flight.airline.iata)
 
 	const departure = euMember(departureAirport?.country || "")
 	const arrival = euMember(arrivalAirport?.country || "")
@@ -113,8 +113,8 @@ export const useFlightStatus = (flight: Flight | null) => {
 			label: isBarred(flight) ? "Verjährt" : "Nicht verjährt",
 		},
 		cancelled: {
-			value: flight?.status === "cancelled",
-			label: flight?.status === "cancelled" ? "Annulliert" : "Nicht annulliert",
+			value: flight?.flight_status === "cancelled",
+			label: flight?.flight_status === "cancelled" ? "Annulliert" : "Nicht annulliert",
 		},
 		delayed: {
 			value: getDelay(flight?.arrival, 180),

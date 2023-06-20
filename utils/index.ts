@@ -45,7 +45,7 @@ export interface WeatherResponse<N = number[], S = string[]> {
 export const getHumanReadableWeather = async (flight: FlightPhase) => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
 	const airports = useAirports()
-	const weather = await getWeather(airports[flight.iata_code], flight.scheduled_time)
+	const weather = await getWeather(airports[flight.iata], flight.scheduled)
 	const getByHour = (weather: Partial<WeatherResponse> | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): Partial<WeatherResponse<number, string>> => {
 		if (!weather) return {}
 		return Object.fromEntries(
@@ -54,7 +54,7 @@ export const getHumanReadableWeather = async (flight: FlightPhase) => {
 				.map(([key, value]) => [key, value[new Date(time).getHours()]])
 		)
 	}
-	return getByHour(weather, flight.scheduled_time)
+	return getByHour(weather, flight.scheduled)
 }
 
 export const getWeather = async (airport: Airport, date: Date | string): Promise<WeatherResponse | null> => {
@@ -263,6 +263,14 @@ export const getISODate = (value: Date | string) => {
 		const offset = value.getTimezoneOffset()
 		const date = new Date(value.getTime() - (offset * 60 * 1000))
 		return date.toISOString().split('T')[0]
+	} catch (e) {
+		return ""
+	}
+}
+export const getISOTime = (value: Date | string) => {
+	try {
+		value = new Date(value)
+		return String(value.getHours()).padStart(2, '0') + String(value.getMinutes()).padStart(2, '0')
 	} catch (e) {
 		return ""
 	}

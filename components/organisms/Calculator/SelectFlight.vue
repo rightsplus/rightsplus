@@ -24,10 +24,9 @@
       ><template #title>Dein Flug ist verjährt</template
       ><span
         >Ansprüche für Flugverspätungen vor dem
-        {{
-          isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale)
-        }}
-        sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung mehr einfordern.</span
+        {{ isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale) }}
+        sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung
+        mehr einfordern.</span
       >
       <NuxtLink
         :to="'/faq/verjaehrung'"
@@ -36,49 +35,71 @@
         erfahren</NuxtLink
       >
     </Callout>
-    <div
-      v-else-if="!useAppState().flights.filter(filterFlights).length"
-      class="w-full flex flex-col gap-3"
-    >
+    <div v-else-if="!filteredFlights.length" class="w-full flex flex-col gap-3">
       <span class="text-sm font-medium"
         >An diesem Datum konnten wir keinen Flug von
-        {{ getCityTranslation(useAirports(modelValue.airport.departure.iata), useI18n().locale.value) }} nach
-        {{ getCityTranslation(useAirports(modelValue.airport.arrival.iata), useI18n().locale.value) }} finden.</span
+        {{
+          getCityTranslation(
+            useAirports(modelValue.airport.departure.iata),
+            useI18n().locale.value
+          )
+        }}
+        nach
+        {{
+          getCityTranslation(
+            useAirports(modelValue.airport.arrival.iata),
+            useI18n().locale.value
+          )
+        }}
+        finden.</span
       >
     </div>
-
-    <div
-      v-if="
-        !isBarred(modelValue.flight_date) &&
-        useAppState().flights.filter(filterFlights).length
-      "
-      class="w-full flex flex-col gap-3"
-    >
-      <h3 class="text-lg sm:text-xl font-medium text-gray-500">
-        Welcher war dein Flug?
-      </h3>
-      <ButtonFlight
-        v-for="flight in useAppState()
-          .flights.filter(filterFlights)
-          .sort(
-            (a, b) =>
-              new Date(a.departure.scheduled_time).getTime() -
-              new Date(b.departure.scheduled_time).getTime()
-          )"
-        :key="flight.flight.number"
-        :flight="flight"
-        :selected="modelValue.flight"
-        @click="handleSelect"
+    <div v-if="filteredFlights.length > 7" class="relative flex gap-5 mb-5">
+      <ButtonLarge
+        v-for="timeOfDay in filteredDayTimeButtons"
+        :key="timeOfDay.value"
+        :name="timeOfDay.value"
+        :label="$t(timeOfDay.value)"
+        :subLabel="timeOfDay.subLabel"
+        @click="selectTimeOfDay(timeOfDay.value)"
+        :selected="dayTime === timeOfDay.value"
+        class="grow"
       />
     </div>
 
+    <div
+      v-if="!isBarred(modelValue.flight_date) && filteredFlights.length"
+      class="w-full flex flex-col gap-3"
+    >
+      <h3 class="text-lg sm:text-xl font-medium text-gray-500">
+        Welchen Flug hast du genommen?
+      </h3>
+
+      <ListGroupTransition
+        name="list"
+        class="relative flex flex-col gap-3"
+        :style="`--total: ${filteredFlights.length};`"
+      >
+        <ButtonFlight
+          v-for="(flight, index) in filteredFlights
+            .filter((e) => dayTimeFilter(e))
+            .sort(sortByScheduled)"
+          :key="flight.flight.icao"
+          :style="`top: ${(index + 1) * 100 - 10}px; --i: ${index + 1};`"
+          :flight="flight"
+          :selected="modelValue.flight"
+          @click="handleSelect"
+          class="w-full"
+        />
+      </ListGroupTransition>
+    </div>
     <NavigationButtons
       @previous="$emit('back')"
       @next="$emit('submit')"
       :nextDisabled="
         isBarred(modelValue.flight_date) ||
         !modelValue.flight ||
-        !useAppState().flights.filter(filterFlights).length
+        !filteredFlights.length
       "
     />
     <!-- :nextDisabled="
@@ -93,41 +114,186 @@ import NavigationButtons from "./NavigationButtons.vue";
 import ButtonLarge from "./ButtonLarge.vue";
 import InputDate from "@/components/molecules/InputDate.vue";
 import Callout from "@/components/molecules/Callout.vue";
+import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
+
+const { aviationstack } = useRuntimeConfig().public.flight;
 
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const emit = defineEmits(["back", "submit"]);
-onMounted(() => {
-  init();
-});
+
+const timesOfDay = [
+  {
+    value: "morning",
+    subLabel: "00:00 - 12:00",
+  },
+  {
+    value: "afternoon",
+    subLabel: "12:00 - 20:00",
+  },
+  {
+    value: "evening",
+    subLabel: "20:00 - 24:00",
+  },
+];
+
+watch(
+  () => props.modelValue.flight_date || props.modelValue.airport,
+  fetchFlights,
+  { immediate: true, deep: true }
+);
+const removeDuplicateFlights = (flights: Flight[]) => {
+  const uniqueFlights = new Set();
+  return flights.filter((flight) => {
+    const operatedBy =
+      flight.flight.codeshared?.airline_iata?.toUpperCase() ||
+      flight.airline.iata.toUpperCase();
+    const id = `${operatedBy}-${getISOTime(
+      flight.departure.scheduled
+    )}-${getISOTime(flight.arrival.scheduled)}-${getISODate(
+      flight.departure.scheduled
+    )}`;
+    if (uniqueFlights.has(id)) return false;
+    uniqueFlights.add(id);
+    return true;
+  });
+};
+const sortByScheduled = (a: Flight, b: Flight) =>
+  new Date(a.departure.scheduled).getTime() -
+  new Date(b.departure.scheduled).getTime();
+const dayTime = ref(null as null | string);
+const selectTimeOfDay = (value: string) => {
+  if (dayTime.value === value) {
+    dayTime.value = null;
+    return;
+  }
+  dayTime.value = value;
+};
 
 const filterFlights = (flight: Flight) => {
   if (!props.modelValue.route) return false;
   const { departure, arrival } = useAppState().routes[props.modelValue.route];
   return (
-    flight.departure.iata_code === departure.airport.iata &&
-    flight.arrival.iata_code === arrival.airport.iata &&
-    getISODate(flight.departure.scheduled_time) ===
+    flight.departure.iata === departure.airport.iata &&
+    flight.arrival.iata === arrival.airport.iata &&
+    getISODate(flight.departure.scheduled) ===
       getISODate(props.modelValue.flight_date)
   );
 };
 
+const filteredFlights = computed(() =>
+  useAppState().flights?.filter(filterFlights)
+);
+
+const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
+  if (!time) return true;
+  if (
+    time === "morning" &&
+    parseInt(getISOTime(flight.departure.scheduled)) < 1200
+  ) {
+    return true;
+  }
+  if (
+    time === "afternoon" &&
+    parseInt(getISOTime(flight.departure.scheduled)) >= 1200 &&
+    parseInt(getISOTime(flight.departure.scheduled)) <= 2000
+  ) {
+    return true;
+  }
+  if (
+    time === "evening" &&
+    parseInt(getISOTime(flight.departure.scheduled)) > 2000
+  ) {
+    return true;
+  }
+};
+const filteredDayTimeButtons = computed(() =>
+  timesOfDay.filter((button: { value: string; subLabel: string }) => {
+    return filteredFlights.value.some((flight) =>
+      dayTimeFilter(flight, button.value)
+    );
+  })
+);
+
+watch(
+  () => filteredDayTimeButtons.value,
+  () => {
+    if (!dayTime.value) return;
+    if (
+      !filteredDayTimeButtons.value.some(
+        (button) => button.value === dayTime.value
+      )
+    ) {
+      dayTime.value = null;
+    }
+  }
+);
+
+watch(
+  () => filteredFlights.value && dayTime.value,
+  () => {
+    if (
+      !filteredFlights.value.filter((e) => dayTimeFilter(e, dayTime.value)).some((flight) =>
+        flight.flight.iata?.toUpperCase() ===
+          props.modelValue.flight?.flight.iata
+      )
+    ) {
+      props.modelValue.flight = null;
+    }
+  },
+  { immediate: true, deep: true }
+);
+
 const handleSelect = (flight: Flight) => {
   if (
-    flight.flight.iata_number?.toUpperCase() ===
-    props.modelValue.flight?.flight.iata_number
+    flight.flight.iata?.toUpperCase() === props.modelValue.flight?.flight.iata
   ) {
     props.modelValue.flight = null;
     return;
   }
   props.modelValue.flight = flight;
 };
-const init = () => {
-  // fetch("api/aviationstack-new.json")
-  fetch("api/flights-aviation-edge.json")
+function fetchFlights() {
+  if (
+    !props.modelValue.flight_date ||
+    !props.modelValue.airport?.departure.iata ||
+    !props.modelValue.airport?.arrival.iata
+  )
+    return;
+  // Create a URL instance with the desired URL string
+  const proxy = "https://cors-anywhere.herokuapp.com/";
+  const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
+
+  url.searchParams.append("access_key", aviationstack);
+  url.searchParams.append("dep_iata", props.modelValue.airport?.departure.iata);
+  url.searchParams.append("arr_iata", props.modelValue.airport?.arrival.iata);
+  // url.searchParams.append('flight_date', props.modelValue.flight_date);
+
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Access-Control-Allow-Origin", "*");
+  headers.append("Origin", "http://localhost:3000");
+  headers.append("X-Requested-With", "XMLHttpRequest");
+
+  const requestOptions = {
+    method: "GET",
+    headers: headers,
+  };
+
+  // console.log(useAppState().flights);
+  // console.log(
+  //   useAppState().flights?.map((e) => [
+  //     `${e.departure.iata} → ${e.arrival.iata}`,
+  //     new Date(e.departure.scheduled).toISOString().slice(0, 10),
+  //     e.flight_status,
+  //   ])
+  // );
+
+  console.log("fetching...");
+  fetch(url.href, requestOptions)
     .then((data) => data.json())
-    .then((data) => {
+    .then(({ data }: { data: Flight[] }) => {
       // console.log(
       //   data.map((e) => [
       //     `${e.departure.iata_code} → ${e.arrival.iata_code}`,
@@ -135,14 +301,16 @@ const init = () => {
       //     e.status,
       //   ])
       // );
-      useAppState().flights = (data as Flight[]).map((flight) => {
+      const uniqueFlights = removeDuplicateFlights(data.sort(sortByScheduled));
+
+      useAppState().flights = uniqueFlights?.map((flight) => {
         return {
           ...flight,
-          ...(useAirports()[flight.arrival.iata_code] &&
-            useAirports()[flight.departure.iata_code] && {
+          ...(useAirports()[flight.arrival.iata] &&
+            useAirports()[flight.departure.iata] && {
               distance: getAirportDistance(
-                useAirports()[flight.arrival.iata_code],
-                useAirports()[flight.departure.iata_code]
+                useAirports()[flight.arrival.iata],
+                useAirports()[flight.departure.iata]
               ),
             }),
         };
@@ -153,7 +321,7 @@ const init = () => {
     .catch((error) => {
       console.log(error);
     });
-  console.log(props.modelValue.route);
+
   if (Object.keys(useAppState().routes || {})?.length === 1) {
     props.modelValue.route = Object.keys(useAppState().routes)[0];
   }
@@ -178,18 +346,8 @@ const init = () => {
     .catch((error) => {
       console.log(error);
     });
-};
+}
 const submitHandler = () => {
   emit("submit");
 };
 </script>
-<style scoped>
-.double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-</style>

@@ -1,9 +1,9 @@
 <template>
   <li
-    class="border-b last:border-none border-gray-100 py-5 [&_em]:bg-primary-300 [&_em]:ring-2 [&_em]:ring-primary-300 [&_em]:rounded [&_em]:not-italic"
+    class="border-b last:border-none border-gray-100 py-5 first:-mt-5 last:-mb-5 [&_em]:bg-primary-300 [&_em]:ring-2 [&_em]:ring-primary-300 [&_em]:rounded [&_em]:not-italic"
   >
     <div
-      class="flex gap-5 justify-between text-xl font-bold cursor-pointer"
+      class="flex gap-5 py-5 -my-5 justify-between text-xl font-bold cursor-pointer"
       @click="open"
     >
       <slot name="title" />
@@ -24,7 +24,7 @@
       scale="1"
       :duration="300"
     >
-      <div class="text-lg"><slot name="content" /></div>
+      <div class="text-lg mt-2"><slot name="content" /></div>
     </TransitionExpand>
   </li>
 </template>

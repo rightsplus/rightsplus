@@ -1,8 +1,8 @@
 export interface ClaimsForm {
   airport: {
-    departure: Airport | {},
-    arrival: Airport | {},
-    layover: (Airport | {})[],
+    departure: Airport,
+    arrival: Airport,
+    layover: (Airport)[],
   },
   route: string | null,
   flight: Flight | null,
@@ -78,37 +78,65 @@ interface FlightAirport {
   actual_runway: string;
 }
 export interface FlightInfo {
+  codeshared: CodeSharedInfo;
+  iata: string;
+  icao: string;
+  icao24: string;
+}
+export interface FlightLive {
+  updated: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  direction: number;
+  speed_horizontal: number;
+  speed_vertical: number;
+  is_ground: boolean;
+};
+export interface CodeSharedInfo {
+  airline_name: string;
+  airline_iata: string;
+  airline_icao: string;
+  flight_number: string;
+  flight_iata: string;
+  flight_icao: string;
+}
+export interface AircraftInfo {
   number: string;
-  iata_number: string;
-  icao_number: string;
+  iata: string;
+  icao: string;
+  codeshared: string | null;
 }
 export interface FlightAirline {
   name: string;
-  iata_code: string;
-  icao_code: string;
+  iata: string;
+  icao: string;
 }
 export interface FlightPhase {
-  iata_code: string;
-  icao_code: string;
-  scheduled_time: string;
-  estimated_time?: string;
-  actual_time?: string;
-  estimated_runway?: string;
-  actual_runway?: string;
-  gate?: string;
-  terminal?: string;
+  airport: string;
+  timezone: string;
+  iata: string;
+  icao: string;
+  terminal: string;
+  gate: string;
+  delay: number;
+  scheduled: string;
+  estimated: string;
+  actual: string | null;
+  estimated_runway: string | null;
+  actual_runway: string | null;
 }
 export interface Flight {
-  type: string;
-  status: string;
+  flight_date: string;
+  flight_status: string;
   departure: FlightPhase;
-  arrival: FlightPhase;
+  arrival: FlightPhase & {
+    baggage: string;
+  };
   airline: FlightAirline;
   flight: FlightInfo;
-  codeshared?: {
-    airline: FlightAirline;
-    flight: FlightInfo;
-  };
+  aircraft: AircraftInfo;
+  live: FlightLive
 }
 
 export interface Airline {

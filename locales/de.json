@@ -2,5 +2,8 @@
   "cancelled": "annuliert",
   "delayed": "verspätet",
   "landed": "gelandet",
-  "open.mainmenu": "Hauptmenü öffnen"
+  "open.mainmenu": "Hauptmenü öffnen",
+  "morning": "Morgens",
+  "afternoon": "Nachmittags",
+  "evening": "Abends"
 }

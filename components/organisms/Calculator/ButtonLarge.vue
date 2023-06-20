@@ -28,6 +28,4 @@ defineProps<{
   preLabel?: string
   subLabel?: string
 }>()
-const baseUrl = "https://serkowebtest.blob.core.windows.net/airline-logos"
-
 </script>

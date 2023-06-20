@@ -11,13 +11,13 @@
         v-html="getDuration(getDelay(modelValue.flight?.arrival))"
       />
       Verspätung in
-      {{ useAirports()[modelValue.flight?.arrival.iata_code || ""]?.city }}
+      {{ useAirports()[modelValue.flight?.arrival.iata || ""]?.city }}
       gelandet.</span
     >
     <span v-else
       >Laut unseren Informationen ist dein Flug
       <span class="font-bold">ohne Verspätung</span> in
-      {{ useAirports()[modelValue.flight?.arrival.iata_code || ""]?.city }}
+      {{ useAirports()[modelValue.flight?.arrival.iata || ""]?.city }}
       gelandet.</span
     >
   </Callout>

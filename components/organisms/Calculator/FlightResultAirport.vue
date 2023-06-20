@@ -3,15 +3,15 @@
     <span class="uppercase tracking-wider">{{ label }}</span>
     <div class="flex flex-col">
       <span class="font-bold leading-none text-lg text-gray-700">{{
-        flight.iata_code
+        flight.iata
       }}</span>
       <span class="text-base leading-none">{{
-        useAirports()[flight.iata_code]?.city
+        useAirports()[flight.iata]?.city
       }}</span>
     </div>
     <div class="flex flex-col leading-none">
       <span class="font-bold text-gray-700"
-        >{{ time(flight.actual_time) }} Ortszeit</span
+        >{{ time(flight.actual) }} Ortszeit</span
       >
       <span
         :class="{
@@ -42,7 +42,7 @@ const props = defineProps<{
 getHumanReadableWeather(props.flight).then((data) => {
   weather.value = data;
 });
-const time = (date?: string) => {
+const time = (date?: string | null) => {
   if (!date) return;
   return new Date(date).toLocaleTimeString(useI18n().locale.value, {
     hour: "2-digit",
