@@ -14,16 +14,16 @@
 }
 
 .list-leave-active {
-  transition-delay: calc(10000ms * (var(--total, 1) - var(--i, 1)));
+  transition-delay: calc(100ms * (1 - var(--i, 1)));
   transition-duration: var(--transition-duration-75, 75ms);
 }
 
 .list-enter-active {
-  transition-delay: calc(calc(1000ms / var(--total, 1000)) * var(--i, 1) + 100ms);
+  transition-delay: calc(calc(300ms / var(--total, 1000)) * var(--i, 1) + 100ms);
 }
 
 .list-move {
-  transition-delay: calc(calc(750ms / var(--total, 1000)) * var(--i, 1));
+  transition-delay: calc(calc(200ms / var(--total, 1000)) * var(--i, 1));
 }
 
 .list-leave-active {

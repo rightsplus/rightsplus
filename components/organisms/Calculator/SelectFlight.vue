@@ -54,6 +54,32 @@
         finden.</span
       >
     </div>
+    <div class="flex gap-2 items-end">
+      <div v-for="(feq, hour) in frequency" class="w-full flex flex-col gap-2">
+        <div
+          class="rounded cursor-pointer bg-gray-200 hover:bg-gray-300 shrink-0"
+          :class="{
+            'opacity-50': !feq,
+
+            'bg-primary-400 hover:!bg-primary-500':
+              (dayTime === 'morning' && hour < 12) ||
+              (dayTime === 'afternoon' && hour >= 12 && hour < 20) ||
+              (dayTime === 'evening' && hour >= 20),
+          }"
+          :style="`height: ${feq * 10 + 5}px`"
+          @click="
+            selectTimeOfDay(
+              hour < 12
+                ? 'morning'
+                : hour >= 12 && hour < 20
+                ? 'afternoon'
+                : 'evening'
+            )
+          "
+        />
+        <span class="text-xs text-center w-full font-medium">{{ hour }}</span>
+      </div>
+    </div>
     <div v-if="filteredFlights.length > 7" class="relative flex gap-5 mb-5">
       <ButtonLarge
         v-for="timeOfDay in filteredDayTimeButtons"
@@ -84,8 +110,8 @@
           v-for="(flight, index) in filteredFlights
             .filter((e) => dayTimeFilter(e))
             .sort(sortByScheduled)"
-          :key="flight.flight.icao"
-          :style="`top: ${(index + 1) * 100 - 10}px; --i: ${index + 1};`"
+          :key="`${flight.flight.iata}-${flight.flight_date}`"
+          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
           :flight="flight"
           :selected="modelValue.flight"
           @click="handleSelect"
@@ -97,14 +123,11 @@
       @previous="$emit('back')"
       @next="$emit('submit')"
       :nextDisabled="
-        isBarred(modelValue.flight_date) ||
+        !!isBarred(modelValue.flight_date) ||
         !modelValue.flight ||
         !filteredFlights.length
       "
     />
-    <!-- :nextDisabled="
-        useAppState().routes && !Object.values(useAppState().routes).every((e) => e.flight)
-      " -->
   </div>
 </template>
 <script setup lang="ts">
@@ -115,6 +138,7 @@ import ButtonLarge from "./ButtonLarge.vue";
 import InputDate from "@/components/molecules/InputDate.vue";
 import Callout from "@/components/molecules/Callout.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
+import { filterFlightByEU, get24HTime } from "@/utils";
 
 const { aviationstack } = useRuntimeConfig().public.flight;
 
@@ -148,10 +172,10 @@ const removeDuplicateFlights = (flights: Flight[]) => {
   return flights.filter((flight) => {
     const operatedBy =
       flight.flight.codeshared?.airline_iata?.toUpperCase() ||
-      flight.airline.iata.toUpperCase();
-    const id = `${operatedBy}-${getISOTime(
+      flight.airline.iata?.toUpperCase();
+    const id = `${operatedBy}-${get24HTime(
       flight.departure.scheduled
-    )}-${getISOTime(flight.arrival.scheduled)}-${getISODate(
+    )}-${get24HTime(flight.arrival.scheduled)}-${getISODate(
       flight.departure.scheduled
     )}`;
     if (uniqueFlights.has(id)) return false;
@@ -186,24 +210,36 @@ const filteredFlights = computed(() =>
   useAppState().flights?.filter(filterFlights)
 );
 
+const flightsPerHour = computed(() =>
+  filteredFlights.value.map((e, i) =>
+    new Date(e.departure.scheduled).getHours()
+  )
+);
+const frequency = computed(() =>
+  [...Array(24)].map(
+    (_, index) =>
+      flightsPerHour.value.filter((flight) => flight === index).length
+  )
+);
+
 const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
   if (!time) return true;
   if (
     time === "morning" &&
-    parseInt(getISOTime(flight.departure.scheduled)) < 1200
+    parseInt(get24HTime(flight.departure.scheduled)) < 1200
   ) {
     return true;
   }
   if (
     time === "afternoon" &&
-    parseInt(getISOTime(flight.departure.scheduled)) >= 1200 &&
-    parseInt(getISOTime(flight.departure.scheduled)) <= 2000
+    parseInt(get24HTime(flight.departure.scheduled)) >= 1200 &&
+    parseInt(get24HTime(flight.departure.scheduled)) <= 2000
   ) {
     return true;
   }
   if (
     time === "evening" &&
-    parseInt(getISOTime(flight.departure.scheduled)) > 2000
+    parseInt(get24HTime(flight.departure.scheduled)) > 2000
   ) {
     return true;
   }
@@ -234,10 +270,13 @@ watch(
   () => filteredFlights.value && dayTime.value,
   () => {
     if (
-      !filteredFlights.value.filter((e) => dayTimeFilter(e, dayTime.value)).some((flight) =>
-        flight.flight.iata?.toUpperCase() ===
-          props.modelValue.flight?.flight.iata
-      )
+      !filteredFlights.value
+        .filter((e) => dayTimeFilter(e, dayTime.value))
+        .some(
+          (flight) =>
+            flight.flight.iata?.toUpperCase() ===
+            props.modelValue.flight?.flight.iata
+        )
     ) {
       props.modelValue.flight = null;
     }
@@ -262,9 +301,11 @@ function fetchFlights() {
   )
     return;
   // Create a URL instance with the desired URL string
-  // const proxy = "";
-  const proxy = "https://cors-anywhere.herokuapp.com/";
-  const url = new URL("http://api.aviationstack.com/v1/flights");
+  const proxy =
+    process.env.NODE_ENV === "development"
+      ? "https://cors-anywhere.herokuapp.com/"
+      : "";
+  const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
 
   url.searchParams.append("access_key", aviationstack);
   url.searchParams.append("dep_iata", props.modelValue.airport?.departure.iata);
@@ -274,51 +315,53 @@ function fetchFlights() {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
   headers.append("Access-Control-Allow-Origin", "*");
-  // headers.append("Origin", "http://localhost:3000");
-  // headers.append("X-Requested-With", "XMLHttpRequest");
+  headers.append("Origin", "http://localhost:3000");
+  headers.append("X-Requested-With", "XMLHttpRequest");
 
   const requestOptions = {
     method: "GET",
     headers: headers,
   };
 
-  // console.log(useAppState().flights);
-  // console.log(
-  //   useAppState().flights?.map((e) => [
-  //     `${e.departure.iata} → ${e.arrival.iata}`,
-  //     new Date(e.departure.scheduled).toISOString().slice(0, 10),
-  //     e.flight_status,
-  //   ])
-  // );
-
-  console.log("fetching...");
-  fetch(url.href)
+  console.log("fetching...", url.href);
+  fetch(url.href, requestOptions)
+  // fetch("api/aviationstack-lax-jfk.json")
+  // fetch("api/aviationstack-delayed.json")
     .then((data) => data.json())
     .then(({ data }: { data: Flight[] }) => {
-      const uniqueFlights = data ? removeDuplicateFlights(data.sort(sortByScheduled)) : [];
-      console.log(
-        uniqueFlights.map((e) => [
-          `${e.departure.iata} → ${e.arrival.iata}`,
-          new Date(e.departure.scheduled).toISOString().slice(0, 10),
-          e.flight_status,
-        ])
-      );
+      const uniqueFlights = data
+        ? removeDuplicateFlights(data.sort(sortByScheduled))
+        : [];
+      // const europeanFlights = uniqueFlights.filter(filterFlightByEU);
+      // console.log(europeanFlights);
+      // console.log(
+      //   europeanFlights.map((e) => [
+      //     `${e.departure.iata} → ${e.arrival.iata}`,
+      //     e.arrival.delay,
+      //     new Date(e.departure.scheduled).toISOString().slice(0, 10),
+      //     e.flight_status,
+      //   ])
+      // );
 
       useAppState().flights = uniqueFlights?.map((flight) => {
+        const airports = {
+          departure: useAirports(flight.departure.iata),
+          arrival: useAirports(flight.arrival.iata),
+        };
         return {
           ...flight,
-          ...(useAirports()[flight.arrival.iata] &&
-            useAirports()[flight.departure.iata] && {
+          ...(airports.departure &&
+            airports.arrival && {
               distance: getAirportDistance(
-                useAirports()[flight.arrival.iata],
-                useAirports()[flight.departure.iata]
+                airports.departure,
+                airports.arrival
               ),
             }),
         };
       });
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
     });
 
   if (Object.keys(useAppState().routes || {})?.length === 1) {

@@ -7,8 +7,12 @@ import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
 import { airports } from "~~/store";
 import { euMember } from "is-european";
 
-export const getAirlineLogo = (iata: string) => {
-	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${iata}.png?crop=false&width=100&height=100`;
+export const getAirlineLogo = (iata: string, size = 100) => {
+	let code = iata
+	switch (iata) {
+		case 'GEC': code = 'LH'
+	}
+	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${code}.png?crop=false&width=${size}&height=${size}`;
 	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
 }
 export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: Airport) => {
@@ -267,7 +271,7 @@ export const getISODate = (value: Date | string) => {
 		return ""
 	}
 }
-export const getISOTime = (value: Date | string) => {
+export const get24HTime = (value: Date | string) => {
 	try {
 		value = new Date(value)
 		return String(value.getHours()).padStart(2, '0') + String(value.getMinutes()).padStart(2, '0')
@@ -275,7 +279,6 @@ export const getISOTime = (value: Date | string) => {
 		return ""
 	}
 }
-
 
 export const getDuration = (minutes: number) => {
 	const min = `${minutes % 60} min`;
@@ -316,4 +319,8 @@ export const getCityTranslation = (airport: Airport, locale: string, highlight =
 		return airport._highlightResult?.city_translations?.[locale]?.value || airport._highlightResult?.city.value
 	}
 	return airport.city_translations?.[locale] || airport.city
+}
+
+export const filterFlightByEU = (flight: Flight) => {
+	return euMember(useAirports(flight.departure.iata)?.country_code) || euMember(useAirports(flight.arrival.iata)?.country_code) || useAirlines(flight.airline.iata)?.isEuMember
 }

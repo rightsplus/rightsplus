@@ -1,18 +1,28 @@
 <template>
-  <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 md:p-12 py-24">
-    <nav class="grid grid-cols-12 gap-6 md:gap-12 max-w-5xl mx-auto w-full">
-      <div class="col-span-12 sm:col-span-6 lg:col-span-6 flex flex-col gap-24">
+  <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24">
+    <nav class="grid grid-cols-12 gap-6 md:gap-12 max-w-5xl mx-auto w-ful">
+      <div class="col-span-12 sm:col-span-3 flex flex-col gap-24">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <NuxtLink to="/" class="w-full max-w-[160px] h-min" title="home" @click="scrollTop">
             <Icon v-if="Logo" :icon="Logo"  />
           </NuxtLink>
         </div>
       </div>
-      <ul
+      <ul class="col-span-12 sm:col-span-9 grid grid-cols-4 font-medium gap-12">
+        <li v-for="column in routes" class="flex flex-col gap-3">
+          <span class="uppercase font-semibold tracking-widest text-xs md:text-sm text-gray-500">{{ column.title }}</span>
+          <ul class="flex flex-col gap-3 text-sm md:text-base">
+            <li v-for="item in column.links" class="leading-tight">
+              <NuxtLink :to="item.link || `/${item.name}`" class="hover:text-gray-400">{{ item.title }}</NuxtLink>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <!-- <ul
         class="col-span-6 sm:col-span-3 lg:col-span-3 flex flex-col text-xl font-medium leading-loose md:leading-normal"
         :style="{ '--total': routes.length }"
       >
-        <!-- <li v-for="(item, i) in routes" :key="item.name" :style="{ '--i': i }">
+        <li v-for="(item, i) in routes" :key="item.name" :style="{ '--i': i }">
           <NuxtLink
             :to="item.path"
             v-if="!item.spacer"
@@ -23,77 +33,90 @@
             <template v-else>{{ item.title }}</template>
           </NuxtLink>
           <hr v-else class="border-none h-4" />
-        </li> -->
-      </ul>
+        </li>
+      </ul> -->
     </nav>
-    <span class="flex justify-center w-full pt-24 text-sm text-center">{{
-      `Copyright © 2015-${new Date().getFullYear()} Rights Plus Gbr. All rights reserved.`
+    <span class="flex justify-center w-full pt-24 text-sm text-center text-gray-500">{{
+      `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. All rights reserved.`
     }}</span>
   </footer>
 </template>
 
-<script lang="ts">
-import Button from "~/components/molecules/Button.vue";
+<script setup lang="ts">
 import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
-export default defineComponent({
-  components: {
-    Button,
-    Icon,
+const routes = ref([
+  {
+    title: 'Unser Service',
+    links: [
+      {
+        name: 'claims-calculator',
+        title: 'Entschädigung berechnen',
+      },
+      
+      {
+        name: 'your-rights',
+        title: 'Deine Rechte',
+      },
+      {
+        name: 'prices-and-services',
+        title: 'Preise und Leistungen',
+      }
+    ]
   },
-  mounted() {
-    this.routes = [
+  {
+    title: 'Über Uns',
+    links: [
       {
-        name: "termine",
-        path: "/termine",
-        title: "Termine",
+        link: 'about',
+        name: 'about-rights-plus',
+        title: 'RightsPlus',
       },
       {
-        name: "angebote",
-        path: "/angebote",
-        title: "Angebote",
+        name: 'team',
+        title: 'Team',
       },
-      {
-        name: "ueber-mich",
-        path: "/ueber-mich",
-        title: "Über Mich",
-      },
-      {
-        name: "kontakt",
-        path: "/kontakt",
-        title: "Kontakt",
-      },
-      {
-        spacer: true,
-      },
-      {
-        name: "impressum",
-        path: "/impressum",
-        title: "Impressum",
-      },
-      {
-        name: "datenschutz",
-        path: "/datenschutz",
-        title: "Datenschutz",
-      },
-    ];
+    ]
   },
-  data() {
-    return {
-      Logo,
-      routes: [],
-    };
+  {
+    title: 'Rechtliches', // Legal
+    links: [
+      {
+        name: 'privacy',
+        title: 'Datenschutz',
+      },
+      {
+        name: 'term-and-conditions',
+        title: 'AGB',
+      },
+      {
+        name: 'legal-notice',
+        title: 'Impressum',
+      },
+    ]
   },
-  methods: {
-    scrollTop() {
-      // scroll to top smooth
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
-    offset(i: number, array: number[]) {
-      return Math.abs(i - Math.ceil((array.length - 1) / 2));
-    },
-  },
-});
+  {
+    title: 'Hilfe',
+    links: [
+      {
+        name: 'customer-service',
+        title: 'Kundenservice',
+      },
+      {
+        name: 'faq',
+        title: 'FAQ',
+      },
+    ]
+  }
+])
+const scrollTop = () => {
+  // scroll to top smooth
+  // @todo use animejs instead
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+const offset = (i: number, array: number[]) => {
+  return Math.abs(i - Math.ceil((array.length - 1) / 2));
+}
 </script>
 
 <style scoped></style>

@@ -10,7 +10,7 @@
     <div
       class="w-14 h-14 hidden justify-center items-center bg-white rounded-full -ml-2 shrink-0 @md:flex"
     >
-      <img :alt="flight.airline.name" :src="logo" class="w-10" />
+      <img :alt="flight.airline.name" :src="logo" class="w-10 text-xs" />
     </div>
     <div class="flex flex-col items-start text-start">
       <span class="text-sm leading-none"
@@ -66,8 +66,8 @@ const iata = computed(() => {
   return props.flight.flight.iata?.replace(/^(.{2})(.*)$/, "$1 $2")
 });
 const logo = computed(() => {
-  const iata = props.flight.flight.codeshared?.airline_iata?.toUpperCase() || props.flight.airline.iata
-  return getAirlineLogo(iata);
+  let iata = props.flight.flight.codeshared?.airline_iata?.toUpperCase() || props.flight.airline.iata
+  return getAirlineLogo(iata, 80);
 });
 const date = (date: string) => {
   return new Date(date).toLocaleDateString(useI18n().locale.value);
@@ -84,13 +84,5 @@ const time = (time: string) => {
 const ucfirst = (value: string) => {
   // return value
   return value?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())
-}
-const id = (flight: Flight) => {
-    const operatedBy =
-      flight.flight.codeshared?.airline_iata?.toUpperCase() ||
-      flight.airline.iata.toUpperCase();
-    return `${operatedBy}-${getISOTime(
-      flight.departure.scheduled
-    )}-${getISOTime(flight.arrival.scheduled)}`;
 }
 </script>
