@@ -13,7 +13,7 @@
           <!-- {{ (char).toFixed() }} -->
       </ClientOnly>
     </h1>
-    <span class="text-xl sm:text-2xl font-medium text-gray-500">{{
+    <span class="text-xl sm:text-2xl font-medium text-black/50">{{
       subtitle
     }}</span>
   </div>

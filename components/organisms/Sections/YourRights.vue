@@ -1,11 +1,11 @@
 <template>
-  <section class="py-5 sm:py-12 md:py-24 bg-neutral-200 relative">
+  <section class="py-12 md:py-24 bg-neutral-200 relative">
     <img
       src="/airport-light-comp.jpg"
       alt="Airport"
       class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
     />
-    <div class="max-w-7xl mx-auto px-12 h-full relative z-1">
+    <div class="max-w-7xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full md:w-1/2">
         <div class="flex flex-col gap-6">
           <h3
@@ -17,25 +17,17 @@
             Wann bekomme ich eine Entschädigung?
           </h2>
         </div>
-        <ol class="flex flex-col gap-8">
+        <ol class="flex flex-col gap-8 text-base sm:text-lg">
           <li
             v-for="item in process"
             :key="item.title"
             class="flex gap-5 items-center"
+            :class="{'text-gray-500': item.exception}"
           >
             <ClientOnly><FontAwesomeIcon :icon="item.icon" :class="item.color" /></ClientOnly>
-            <div class="flex flex-col gap-1 leading-none">
-              <span class="font-medium">{{ item.title }}</span>
-            </div>
+            <span class="flex flex-col gap-1 leading-none font-medium">{{ item.title }}</span>
           </li>
         </ol>
-        <div class="flex gap-5 items-center text-gray-500">
-          <ClientOnly><FontAwesomeIcon icon="meteor" /></ClientOnly>
-          <span class="flex flex-col gap-1 leading-none font-medium"
-            >Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher
-            Umstände</span
-          >
-        </div>
       </div>
     </div>
   </section>
@@ -74,6 +66,12 @@ export default defineComponent({
           icon: "calendar",
           color: "text-green-600",
           title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
+        },
+        {
+          icon: "meteor",
+          color: "text-gray-500",
+          title: "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
+          exception: true,
         },
       ],
     };

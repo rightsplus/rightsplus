@@ -1,3 +1,4 @@
+/* Claims Form State */
 export interface ClaimsForm {
   airport: {
     departure: Airport,
@@ -23,6 +24,9 @@ export interface ClaimsForm {
     passengerCount: number,
   }
 }
+
+/* Airport */
+
 interface AlgoliaResult {
   value: string;
   matchLevel: string;
@@ -63,6 +67,7 @@ export interface Airport {
   };
 }
 
+/* Flight */
 interface FlightAirport {
   airport: string;
   timezone?: string;
@@ -76,6 +81,14 @@ interface FlightAirport {
   actual: string;
   estimated_runway: string;
   actual_runway: string;
+}
+export interface CodeSharedInfo {
+  airline_name: string;
+  airline_iata: string;
+  airline_icao: string;
+  flight_number: string;
+  flight_iata: string;
+  flight_icao: string;
 }
 export interface FlightInfo {
   codeshared: CodeSharedInfo;
@@ -93,14 +106,6 @@ export interface FlightLive {
   speed_vertical: number;
   is_ground: boolean;
 };
-export interface CodeSharedInfo {
-  airline_name: string;
-  airline_iata: string;
-  airline_icao: string;
-  flight_number: string;
-  flight_iata: string;
-  flight_icao: string;
-}
 export interface AircraftInfo {
   number: string;
   iata: string;
@@ -139,6 +144,46 @@ export interface Flight {
   live: FlightLive
 }
 
+
+export interface Route extends Record<'departure' | 'arrival', {
+  airport: Airport;
+}> {
+  flight?: Flight;
+  flight_date: string;
+}
+
+/* Airline */
+export interface AirlineAviationEdge { // legacy
+  airlineId: string;
+  nameAirline: string;
+  codeIataAirline: string;
+  iataPrefixAccounting: string;
+  codeIcaoAirline: string;
+  callsign: string;
+  type: string;
+  statusAirline: string;
+  sizeAirline: string;
+  ageFleet: string;
+  founding: string;
+  codeHub: string;
+  nameCountry: string;
+  codeIso2Country: string;
+}
+export interface AirlineAviationStack { // not yet used, but should be used when using api for airlines
+  airline_name: string;
+  iata_code: string;
+  iata_prefix_accounting: string;
+  icao_code: string;
+  callsign: string;
+  type: string;
+  status: string;
+  fleet_size: string;
+  fleet_average_age: string;
+  date_founded: string;
+  hub_code: string;
+  country_name: string;
+  country_iso2: string;
+}
 export interface Airline {
   name: string
   nameCountry: string
@@ -147,12 +192,7 @@ export interface Airline {
   isEuMember: boolean
 }
 
-export interface Route extends Record<'departure' | 'arrival', {
-  airport: Airport;
-}> {
-  flight?: Flight;
-  flight_date: string;
-}
+/* Google Maps */
 
 export interface Review {
   author_name: string;
@@ -166,6 +206,9 @@ export interface Review {
   time: number;
   translated: boolean;
 }
+
+
+/* Database */
 export interface UsersTable {
   id: string;
   first_name: string;

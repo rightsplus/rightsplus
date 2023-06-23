@@ -1,6 +1,6 @@
 <template>
   <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24">
-    <nav class="grid grid-cols-12 gap-6 md:gap-12 max-w-5xl mx-auto w-ful">
+    <nav class="grid grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-ful">
       <div class="col-span-12 sm:col-span-3 flex flex-col gap-24">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <NuxtLink to="/" class="w-full max-w-[160px] h-min" title="home" @click="scrollTop">
@@ -8,12 +8,12 @@
           </NuxtLink>
         </div>
       </div>
-      <ul class="col-span-12 sm:col-span-9 grid grid-cols-4 font-medium gap-12">
+      <ul class="col-span-12 sm:col-span-9 grid grid-cols-2 lg:grid-cols-4 font-medium gap-5 gap-y-12 sm:gap-12">
         <li v-for="column in routes" class="flex flex-col gap-3">
           <span class="uppercase font-semibold tracking-widest text-xs md:text-sm text-gray-500">{{ column.title }}</span>
           <ul class="flex flex-col gap-3 text-sm md:text-base">
             <li v-for="item in column.links" class="leading-tight">
-              <NuxtLink :to="item.link || `/${item.name}`" class="hover:text-gray-400">{{ item.title }}</NuxtLink>
+              <NuxtLink :to="item.link || `/${item.name}`" class="hover:text-gray-400 break-words hyphens-auto">{{ item.title }}</NuxtLink>
             </li>
           </ul>
         </li>
@@ -36,9 +36,7 @@
         </li>
       </ul> -->
     </nav>
-    <span class="flex justify-center w-full pt-24 text-sm text-center text-gray-500">{{
-      `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. All rights reserved.`
-    }}</span>
+    <span class="flex justify-center w-full pt-24 text-xs sm:text-sm text-center text-gray-500" v-html="`Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. All rights reserved.`" />
   </footer>
 </template>
 
@@ -68,7 +66,7 @@ const routes = ref([
     title: 'Über Uns',
     links: [
       {
-        link: 'about',
+        link: 'ueber-rights-plus',
         name: 'about-rights-plus',
         title: 'RightsPlus',
       },

@@ -1,4 +1,4 @@
-import { Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
+import { Airline, AirlineAviationEdge, Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
 import weatherCodes from "~~/assets/weather-codes.json";
 import { countries } from "@/config/countries";
 import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
@@ -62,8 +62,8 @@ export const getHumanReadableWeather = async (flight: FlightPhase) => {
 }
 
 export const getWeather = async (airport: Airport, date: Date | string): Promise<WeatherResponse | null> => {
-	const { lat, lon } = airport || {};
-	if (!lat || !lon) return null;
+	const { latitude, longitude } = airport || {};
+	if (!latitude || !longitude) return null;
 	const d = new Date(date).toISOString().slice(0, 10);
 	const params = [
 		"temperature_2m",
@@ -79,7 +79,7 @@ export const getWeather = async (airport: Airport, date: Date | string): Promise
 		"apparent_temperature"
 	];
 	try {
-		const data = await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${d}&end_date=${d}&hourly=${params.join(',')}`).then((res) => res.json()).then(({ hourly, error, reason }) => {
+		const data = await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=${d}&end_date=${d}&hourly=${params.join(',')}`).then((res) => res.json()).then(({ hourly, error, reason }) => {
 			if (error) throw new Error(reason)
 			return hourly
 		});
@@ -299,7 +299,7 @@ export const queryAirlines = async (query?: string) => {
 	if (!query) return;
 	const hits = await fetch("api/airlines-aviation-edge.json")
 		.then((data) => data.json())
-		.then((data) => data.reduce((acc, cur) => {
+		.then((data: AirlineAviationEdge[]) => data.reduce((acc, cur) => {
 			acc[cur.codeIataAirline] = {
 				// ...cur,
 				name: cur.nameAirline,
@@ -309,7 +309,7 @@ export const queryAirlines = async (query?: string) => {
 				isEuMember: euMember(cur.codeIso2Country),
 			};
 			return acc;
-		}, {}));
+		}, {} as Record<string, Airline>));
 	return hits
 }
 

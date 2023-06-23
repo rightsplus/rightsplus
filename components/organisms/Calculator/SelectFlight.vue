@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-8" v-if="useAppState()">
+  <div class="flex flex-col gap-8 @container" v-if="useAppState()">
     <div class="flex flex-col gap-3">
       <h2 class="text-2xl sm:text-3xl font-bold">Flug auswählen</h2>
     </div>
@@ -53,33 +53,14 @@
         }}
         finden.</span
       >
+      <FormKit type="button">Mit Flugnummer finden</FormKit>
     </div>
-    <div class="flex gap-2 items-end">
-      <div v-for="(feq, hour) in frequency" class="w-full flex flex-col gap-2">
-        <div
-          class="rounded cursor-pointer bg-gray-200 hover:bg-gray-300 shrink-0"
-          :class="{
-            'opacity-50': !feq,
+    <FlightFrequency
+      :flights="filteredFlights"
+      :dayTime="dayTime"
+      @select="selectTimeOfDay"
+    />
 
-            'bg-primary-400 hover:!bg-primary-500':
-              (dayTime === 'morning' && hour < 12) ||
-              (dayTime === 'afternoon' && hour >= 12 && hour < 20) ||
-              (dayTime === 'evening' && hour >= 20),
-          }"
-          :style="`height: ${feq * 10 + 5}px`"
-          @click="
-            selectTimeOfDay(
-              hour < 12
-                ? 'morning'
-                : hour >= 12 && hour < 20
-                ? 'afternoon'
-                : 'evening'
-            )
-          "
-        />
-        <span class="text-xs text-center w-full font-medium">{{ hour }}</span>
-      </div>
-    </div>
     <div v-if="filteredFlights.length > 7" class="relative flex gap-5 mb-5">
       <ButtonLarge
         v-for="timeOfDay in filteredDayTimeButtons"
@@ -89,7 +70,7 @@
         :subLabel="timeOfDay.subLabel"
         @click="selectTimeOfDay(timeOfDay.value)"
         :selected="dayTime === timeOfDay.value"
-        class="grow"
+        class="grow basis-0"
       />
     </div>
 
@@ -139,13 +120,14 @@ import InputDate from "@/components/molecules/InputDate.vue";
 import Callout from "@/components/molecules/Callout.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import { filterFlightByEU, get24HTime } from "@/utils";
+import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 
 const { aviationstack } = useRuntimeConfig().public.flight;
 
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-const emit = defineEmits(["back", "submit"]);
+defineEmits(["back", "submit"]);
 
 const timesOfDay = [
   {
@@ -208,18 +190,6 @@ const filterFlights = (flight: Flight) => {
 
 const filteredFlights = computed(() =>
   useAppState().flights?.filter(filterFlights)
-);
-
-const flightsPerHour = computed(() =>
-  filteredFlights.value.map((e, i) =>
-    new Date(e.departure.scheduled).getHours()
-  )
-);
-const frequency = computed(() =>
-  [...Array(24)].map(
-    (_, index) =>
-      flightsPerHour.value.filter((flight) => flight === index).length
-  )
 );
 
 const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
@@ -325,8 +295,8 @@ function fetchFlights() {
 
   console.log("fetching...", url.href);
   fetch(url.href, requestOptions)
-  // fetch("api/aviationstack-lax-jfk.json")
-  // fetch("api/aviationstack-delayed.json")
+    // fetch("api/aviationstack-lax-jfk.json")
+    // fetch("api/aviationstack-delayed.json")
     .then((data) => data.json())
     .then(({ data }: { data: Flight[] }) => {
       const uniqueFlights = data
@@ -368,7 +338,4 @@ function fetchFlights() {
     props.modelValue.route = Object.keys(useAppState().routes)[0];
   }
 }
-const submitHandler = () => {
-  emit("submit");
-};
 </script>

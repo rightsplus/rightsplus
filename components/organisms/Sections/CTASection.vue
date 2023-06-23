@@ -3,7 +3,7 @@
     class="py-12 md:py-36 bg-gradient-to-tr from-primary-700 to-primary-300 text-white relative"
   >
     <div
-      class="grid gap-12 max-w-3xl mx-auto px-12 h-full relative z-1"
+      class="grid gap-12 max-w-3xl mx-auto px-5 sm:px-12 h-full relative z-1"
     >
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-6">

@@ -1,6 +1,6 @@
 <template>
   <section class="py-24 bg-grey-200 relative">
-    <div class="grid gap-12 max-w-7xl mx-auto px-12 h-full relative z-1">
+    <div class="grid gap-12 max-w-7xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div v-for="(section, i) in sections" class="flex flex-col gap-4">
           <span

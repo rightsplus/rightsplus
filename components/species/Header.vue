@@ -132,11 +132,6 @@ const links = computed((): Route[] => {
 
   const routes = [
     {
-      name: "rechte",
-      path: "/deine-rechte",
-      title: "Deine Rechte",
-    },
-    {
       name: "ueber-rights-plus",
       path: "/ueber-rights-plus",
       title: "Über RightsPlus",
@@ -145,6 +140,11 @@ const links = computed((): Route[] => {
       name: "faq",
       path: "/faq",
       title: "FAQ",
+    },
+    {
+      name: "rechte",
+      path: "/deine-rechte",
+      title: "Deine Rechte",
     },
     user && (path === "/status" || path === "/admin") ? logout : status,
   ] as Route[];
