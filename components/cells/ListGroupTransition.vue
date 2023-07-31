@@ -2,7 +2,7 @@
   <div
     class="relative"
     :class="{
-      [`${transitionName}-container`]: name,
+      [`${name}-container`]: name,
       activeTransition
     }"
     :style="`--height: ${containerHeight}`"
@@ -59,7 +59,7 @@ export default {
       setTimeout(() => {
         let children = [];
         for (let item of this.$el.children) {
-          if (!item.classList.contains(`${this.transitionName}-leave-active`))
+          if (!item.classList.contains(`${this.name}-leave-active`))
             children.push(item);
         }
         this.containerHeight =

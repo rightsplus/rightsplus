@@ -9,7 +9,7 @@
     </h3>
     <div class="flex items-center bg-neutral-100 rounded-lg border border-neutral-200 overflow-hidden focus-within:border-primary-500">
       <button
-      class="w-14 h-14 hover:bg-neutral-50 text-2xl"
+      class="w-14 h-14 shrink-0 hover:bg-neutral-50 text-2xl"
         @click="
           modelValue.client.passengerCount = Math.max(
             (modelValue.client.passengerCount || 2) - 1,
@@ -19,8 +19,8 @@
       >
         –
       </button>
-      <input type="number" class="border-y-0 border-x border-neutral-200 focus:border-primary-500 !ring-0 h-14 grow justify-center flex items-center bg-neutral-50 font-bold text-center [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" v-model="modelValue.client.passengerCount" />
-      <button @click="modelValue.client.passengerCount++" class="w-14 h-14 hover:bg-neutral-50 text-2xl">+</button>
+      <input type="number" class="border-y-0 border-x border-neutral-200 focus:border-primary-500 !ring-0 h-14 grow justify-center flex items-center bg-neutral-50 font-bold text-center [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-0" v-model="modelValue.client.passengerCount" />
+      <button @click="modelValue.client.passengerCount++" class="w-14 h-14 shrink-0 hover:bg-neutral-50 text-2xl">+</button>
     </div>
 
     <h3
@@ -28,6 +28,11 @@
     >
       <span class="text-gray-500">Wir benötigen noch ein paar Informationen, damit wir dich kontaktieren können.</span>
     </h3>
+
+    <div class="flex flex-col gap-3">
+        <ProviderButton provider="google" @click="login('google')" />
+        <ProviderButton provider="apple" @click="login('apple')" />
+      </div>
     <form class="flex flex-col" v-if="modelValue.client" autocomplete="on">
       <div class="grid grid-cols-2 gap-5">
         <FormKit
@@ -97,6 +102,7 @@
 import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import { Database, ClaimsForm } from "@/types";
 import NavigationButtons from "./NavigationButtons.vue";
+import ProviderButton from "~/components/molecules/ProviderButton.vue";
 
 const client = useSupabaseClient<Database>();
 const user = useSupabaseUser();
@@ -129,23 +135,23 @@ const createAccount = async () => {
           },
         },
       });
-      console.log(signUpData);
+
+    console.log(signUpData, signUpError)
     if (signUpError) throw Error(signUpError.message)
 
     const preparedFlight = {
-      number: modelValue.flight.flight.iata_number,
-      status: modelValue.flight.status,
-      airline_iata: modelValue.flight.airline.iata_code,
+      number: modelValue.flight.flight.iata,
+      status: modelValue.flight.flight_status,
+      airline_iata: modelValue.flight.airline.iata,
       airline: modelValue.flight.airline.name,
-      codeshared: modelValue.flight.codeshared,
-      scheduled_time_departure: modelValue.flight.departure.scheduled_time,
-      actual_time_departure: modelValue.flight.departure.actual_time,
-      delay_departure: getDelay(modelValue.flight.departure),
-      airport_departure: modelValue.flight.departure.iata_code,
-      scheduled_time_arrival: modelValue.flight.arrival.scheduled_time,
-      actual_time_arrival: modelValue.flight.arrival.actual_time,
-      delay_arrival: getDelay(modelValue.flight.arrival),
-      airport_arrival: modelValue.flight.arrival.iata_code,
+      codeshared: modelValue.flight.flight.codeshared,
+      scheduled_departure: modelValue.flight.departure.scheduled,
+      actual_departure: modelValue.flight.departure.actual,
+      airport_departure: modelValue.flight.departure.iata,
+      scheduled_arrival: modelValue.flight.arrival.scheduled,
+      actual_arrival: modelValue.flight.arrival.actual,
+      delay_arrival: modelValue.flight.arrival.delay,
+      airport_arrival: modelValue.flight.arrival.iata,
       data: modelValue.flight
       // arrival_delay: arrival_delay,
     }
@@ -154,22 +160,23 @@ const createAccount = async () => {
       .upsert([preparedFlight], { onConflict: 'number' })
 
 
-      if (flightError) throw Error(flightError.message)
-      console.log(flightData);
+    if (flightError) throw Error(flightError.message)
 
     const preparedCase = {
       email: modelValue.client.email,
       passenger_count: modelValue.client.passengerCount,
-      flight_number: modelValue.flight.flight.iata_number,
+      flight_number: modelValue.flight.flight.iata,
     }
     const { data: caseData, error: caseError } = await client
       .from("cases")
-      .insert([preparedCase])
-
-      
-
+      .upsert([preparedCase])
+      .select('*')
 
     if (caseError) throw Error(caseError.message)
+
+    if (Object.keys(caseData).length) {
+      useRouter().push('/status')
+    }
     // console.log(flightData, flightError);
     // console.log(caseData, caseError);
     // // }
@@ -184,5 +191,3 @@ const createAccount = async () => {
   }
 };
 </script>
-
-<style lang="scss" scoped></style>

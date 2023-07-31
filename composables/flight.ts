@@ -35,19 +35,22 @@ export function isBarred(flight: Flight | string | null) {
 	}
 	return new Date().getFullYear() - date.getFullYear() > 3 ? new Date(date.getFullYear() + 1, 0) : false
 }
+
+// legacy
 export const getDelay = (flightPhase?: FlightPhase, limit?: number) => {
 	if (!flightPhase) return 0
-	const scheduledDate = flightPhase.scheduled && new Date(flightPhase.scheduled)
-	const actualDate = flightPhase.actual && new Date(flightPhase.actual)
+	// const scheduledDate = flightPhase.scheduled && new Date(flightPhase.scheduled)
+	// const actualDate = flightPhase.actual && new Date(flightPhase.actual)
 
-	if (!scheduledDate || !actualDate) {
-		console.warn("Missing scheduled or actual date")
-	}
+	// if (!scheduledDate || !actualDate) {
+	// 	console.warn("Missing scheduled or actual date")
+	// }
 
-	const difference = scheduledDate && actualDate && (actualDate.getTime() - scheduledDate.getTime()) / 1000 / 60 || 0
+	// const delay = scheduledDate && actualDate && (actualDate.getTime() - scheduledDate.getTime()) / 1000 / 60 || 0
+	const {delay} = flightPhase
 
-	if (!limit) return difference
-	return difference > limit ? difference : 0
+	if (!limit) return delay
+	return delay > limit ? delay : 0
 }
 
 export const isExtraordinaryCircumstance = (flight: Flight | null) => {
@@ -81,7 +84,7 @@ const getDistance = (flight: Flight | null) => {
 	return getAirportDistance(departureAirport, arrivalAirport)
 }
 
-const getEU = (flight: Flight | null) => {
+export const getEU = (flight: Flight | null) => {
 	if (!flight) return {
 		departure: false,
 		arrival: false,
@@ -91,10 +94,9 @@ const getEU = (flight: Flight | null) => {
 
 	const airlineObject = useAirlines(flight.airline.iata)
 
-	const departure = euMember(departureAirport?.country || "")
-	const arrival = euMember(arrivalAirport?.country || "")
-	const airline = euMember(airlineObject?.country || "")
-
+	const departure = euMember(departureAirport?.country_code || "")
+	const arrival = euMember(arrivalAirport?.country_code || "")
+	const airline = airlineObject?.isEuMember
 	return {
 		departure,
 		arrival,
@@ -107,26 +109,30 @@ export const useFlightStatus = (flight: Flight | null) => {
 	const nuxtApp = useNuxtApp();
 	isExtraordinaryCircumstance(flight)
 
+	const barred = isBarred(flight)
+	const delay = getDelay(flight?.arrival, 180)
+	const distance = getDistance(flight)
+	const eu = getEU(flight)
 	return {
 		barred: {
-			value: isBarred(flight),
-			label: isBarred(flight) ? "Verjährt" : "Nicht verjährt",
+			value: barred,
+			label: barred ? "Verjährt" : "Nicht verjährt",
 		},
 		cancelled: {
 			value: flight?.flight_status === "cancelled",
 			label: flight?.flight_status === "cancelled" ? "Annulliert" : "Nicht annulliert",
 		},
 		delayed: {
-			value: getDelay(flight?.arrival, 180),
-			label: getDelay(flight?.arrival, 180) ? `Verspätet (${getDelay(flight?.arrival, 180)} min)` : "Nicht verspätet",
+			value: delay,
+			label: delay ? `Verspätet (${delay} min)` : "Nicht verspätet",
 		},
 		distance: {
-			value: getDistance(flight),
-			label: getDistance(flight) ? nuxtApp.$i18n.n(getDistance(flight), 'km') : "Keine Distanz",
+			value: distance,
+			label: distance ? nuxtApp.$i18n.n(distance, 'km') : "Keine Distanz",
 		},
 		europeanUnion: {
-			value: getEU(flight),
-			label: Object.values(getEU(flight)).some(e => e) ? getEU(flight) : "Nicht EU",
+			value: eu,
+			label: Object.values(eu).some(Boolean) ? eu : "Nicht EU",
 		},
 		extraordinaryCirumstance: {
 			value: !!Object.values(circumstance).length,

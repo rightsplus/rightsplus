@@ -3,18 +3,19 @@
     <div
       v-for="(freq, hour) in frequency"
       class="flex flex-col gap-2 basis-0 grow"
+      :class="{
+        'pointer-events-none opacity-50': !freq,
+      }"
     >
       <div
         class="cursor-pointer rounded-sm bg-gray-200 hover:bg-gray-300"
         :class="{
-          'pointer-events-none opacity-50': !freq,
-
           'bg-primary-400 hover:!bg-primary-500':
             (dayTime === 'morning' && hour < 12) ||
             (dayTime === 'afternoon' && hour >= 12 && hour < 20) ||
             (dayTime === 'evening' && hour >= 20),
         }"
-        :style="`height: ${freq * 10 + 5}px`"
+        :style="`height: ${freq * 10 + 2}px`"
         @click="
           freq &&
             $emit('select',

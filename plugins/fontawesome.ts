@@ -65,7 +65,8 @@ import {
   faPhone,
   faAt,
   faSearch,
-  faArrowUp
+  faArrowUp,
+  faCircleNotch
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -139,7 +140,8 @@ library.add(
   faRoad,
   faPhone,
   faAt,
-  faSearch
+  faSearch,
+  faCircleNotch
 )
 
 config.autoAddCss = false

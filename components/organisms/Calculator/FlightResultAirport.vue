@@ -14,9 +14,15 @@
         >{{ time(flight.actual) }} Ortszeit</span
       >
       <span
+        v-if="cancelled"
+        class='text-red-600'
+        >annulliert</span
+      >
+      <span
+        v-else
         :class="{
-          'text-red-600': getDelay(flight) > 0,
-          'text-green-600': getDelay(flight) <= 0,
+          'text-red-600': flight.delay > 0,
+          'text-green-600': flight.delay <= 0,
         }"
         >{{ delay }}</span
       >
@@ -38,6 +44,7 @@ const weather = ref(null as null | Partial<WeatherResponse<number, string>>);
 const props = defineProps<{
   label: string;
   flight?: FlightPhase;
+  cancelled?: boolean;
 }>();
 getHumanReadableWeather(props.flight).then((data) => {
   weather.value = data;
@@ -53,7 +60,7 @@ const date = (date: string) => {
   return new Date(date).toLocaleDateString(useI18n().locale.value);
 };
 const delay = computed(() => {
-  const delay = getDelay(props.flight);
+  const delay = props.flight?.delay || 0;
 
   if (delay === 0) return "pünktlich";
   if (delay < 0) return `${getDuration(delay)} früher`;

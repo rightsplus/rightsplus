@@ -9,6 +9,7 @@
       <FlightResultAirport
         label="Abflug"
         :flight="flight?.departure"
+        :cancelled="flight?.flight_status === 'cancelled'"
       />
       <span class="text-center text-primary-500"
         ><FontAwesomeIcon icon="plane"
@@ -16,11 +17,12 @@
       <FlightResultAirport
         label="Ankunft"
         :flight="flight?.arrival"
+        :cancelled="flight?.flight_status === 'cancelled'"
         class="items-end text-right"
       />
     </div>
     <ol>
-      <li
+      <!-- <li
         class="flex gap-3 items-center text-base font-medium"
         v-if="flight?.distance"
       >
@@ -32,15 +34,15 @@
         class="flex gap-3 items-center text-base font-medium"
       >
         Weder Abflug- noch Ankuftsflughafen liegen in der EU.
-      </li>
-      <li v-if="isEuMember" class="flex gap-3 items-start">
+      </li> -->
+      <!-- <li v-if="isEuMember" class="flex gap-3 items-start">
         <FontAwesomeIcon icon="european-union" class="text-2xl" />
         <p class="text-xs leading-tight">
           Bei Ansprüchen, die unter das EU-Fluggastrecht (EG 261) fallen, müssen
           die Fluggesellschaften nur bei Verspätungen von mehr als 3 Stunden
           eine Entschädigung zahlen.
         </p>
-      </li>
+      </li> -->
     </ol>
   </div>
 </template>

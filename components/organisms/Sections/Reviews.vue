@@ -6,10 +6,10 @@
           class="flex flex-col gap-5 text-center sm:max-w-3xl mx-auto box-content"
         >
           <h1 class="text-2xl sm:text-5xl font-bold">
-            RightsPlus Kund:innen berichten
+            RightsPlus Kund·innen berichten
           </h1>
           <h2 class="text-lg sm:text-2xl font-medium text-gray-500">
-            Unsere Kunden sprechen für sich! Über 500 zufriedene Nutzer:innen
+            Unsere Kund·innen sprechen für sich! Über 500 zufriedene Nutzer·innen
             haben bereits auf die einfache und effektive Erstattung ihrer
             Entschädigungsansprüche durch RightsPlus gesetzt.
           </h2>

@@ -13,7 +13,7 @@
           <span class="uppercase font-semibold tracking-widest text-xs md:text-sm text-gray-500">{{ column.title }}</span>
           <ul class="flex flex-col gap-3 text-sm md:text-base">
             <li v-for="item in column.links" class="leading-tight">
-              <NuxtLink :to="item.link || `/${item.name}`" class="hover:text-gray-400 break-words hyphens-auto">{{ item.title }}</NuxtLink>
+              <NuxtLink :to="item.link || `/${item.name}`" class="hover:text-gray-400 break-words hyphens-auto" exactActiveClass="text-gray-400">{{ item.title }}</NuxtLink>
             </li>
           </ul>
         </li>

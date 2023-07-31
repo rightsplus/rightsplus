@@ -1,30 +1,25 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-    <Stepper
-      :steps="steps"
-      :step="useClaim().value.step"
-      @setStep="useClaim().value.step = $event"
-    />
-    <div
-      class="lg:col-span-3 bg-white rounded-2xl md:rounded-3xl p-5 md:p-12 w-full"
-      :style="`--height: ${containerHeight}px`"
-      ref="container"
-    >
-      <ClientOnly
-        ><Transition mode="out-in" name="fade"
-          ><component
-            v-if="useClaim().value"
+    <ClientOnly
+      ><Transition mode="out-in" name="fade">
+        <div
+          v-if="useClaim().value"
+          class="lg:col-span-3 lg:col-start-2 bg-white rounded-2xl md:rounded-3xl p-4 md:p-12 w-full"
+          :style="`--height: ${containerHeight}px`"
+          ref="container"
+        >
+          <component
             v-model="useClaim().value"
             :is="activeStep?.component"
             :title="activeStep?.title"
             @submit="next"
             @back="back"
             @reset="reset"
-        /></Transition>
-      </ClientOnly>
-    </div>
+          /></div
+      ></Transition>
+    </ClientOnly>
 
-    <div class="flex flex-col gap-3">
+    <!-- <div class="flex flex-col gap-3">
       <Transition mode="out-in" name="fade">
         <div
           v-if="useClaim().value.flight && useClaim().value.step > 1"
@@ -34,46 +29,13 @@
           <PotentialClaims />
         </div>
       </Transition>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import ConnectingFlights from "./ConnectingFlights.vue";
-import SelectFlight from "./SelectFlight.vue";
-import PersonalInfo from "./PersonalInfo.vue";
-import SelectReason from "./SelectReason.vue";
-import Stepper from "@/components/cells/Stepper.vue";
-import PotentialClaims from "@/components/cells/PotentialClaims.vue";
-
-const steps = [
-  {
-    label: "Strecke",
-    title: "Wohin bist du geflogen?",
-    component: ConnectingFlights,
-  },
-  {
-    label: "Flug",
-    title: "Welchen Flug hast du genommen?",
-    component: SelectFlight,
-  },
-  {
-    label: "Grund",
-    title: "Was ist schief gelaufen?",
-    component: SelectReason,
-  },
-  {
-    label: "Passagiere",
-    title: "Wer ist mitgeflogen?",
-    component: PersonalInfo,
-  },
-  // {
-  //   label: "Results",
-  //   component: Results
-  // },
-];
 const containerHeight = ref(100);
-const activeStep = computed(() => steps[useClaim().value?.step || 0]);
+const activeStep = computed(() => useSteps()[useClaim().value?.step || 0]);
 
 const next = (e?: number) => {
   useClaim().value.step = e ?? useClaim().value.step + 1;

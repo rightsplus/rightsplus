@@ -1,0 +1,19 @@
+{
+    "format": "json",
+    "projects": [
+        {
+            "id": "323",
+            "name": "RightsPlus",
+            "localizations": [
+                {
+                    "locale": "de",
+                    "path": "locales/de.json"
+                },
+                {
+                    "locale": "en",
+                    "path": "locales/en.json"
+                }
+            ]
+        }
+    ]
+}

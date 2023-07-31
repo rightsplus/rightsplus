@@ -1,26 +1,25 @@
 <template>
-  <div 
-    ref="calendar">
-  <DatePicker
-    :modelValue.string="modelValue"
-    @update:modelValue="updateModelValue"
-    :masks="{modelValue: 'DD.MM.YYYY'}"
-    class="calendar"
-    color="orange"
-    step="1"
-    :columns="columns"
-    :max-date="new Date()"
-    expanded
-    :locale="useI18n().locale.value"
-    :attributes="[
-      {
-        key: 'today',
-        content: 'orange',
-        dates: new Date(),
-      },
-    ]"
-  />
-</div>
+  <div ref="calendar">
+    <DatePicker
+      :modelValue.string="modelValue"
+      @update:modelValue="updateModelValue"
+      :masks="{modelValue: 'DD.MM.YYYY'}"
+      class="calendar"
+      color="orange"
+      :step="1"
+      :columns="columns"
+      :max-date="new Date()"
+      expanded
+      :locale="useI18n().locale.value"
+      :attributes="[
+        {
+          key: 'today',
+          content: 'orange',
+          dates: new Date(),
+        },
+      ]"
+    />
+  </div>
 </template>
 <script setup lang="ts">
 import { useElementSize } from '@vueuse/core'

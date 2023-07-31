@@ -161,11 +161,6 @@ export default defineComponent({
         year: "numeric",
       });
     },
-    duration(minutes: number) {
-      const min = `${minutes % 60} min`;
-      const h = `${Math.floor(minutes / 60)} h`;
-      return minutes >= 60 ? `${h} ${min}` : min;
-    },
     delay(delay: number) {
       if (delay === 0) return "pünktlich";
       if (delay < 0) return `${this.duration(delay)} früher`;

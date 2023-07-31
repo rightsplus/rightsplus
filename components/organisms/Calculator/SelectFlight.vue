@@ -1,104 +1,150 @@
 <template>
-  <div class="flex flex-col gap-8 @container" v-if="useAppState()">
+  <div class="flex flex-col gap-2 @container" v-if="useAppState()" ref="container">
     <div class="flex flex-col gap-3">
       <h2 class="text-2xl sm:text-3xl font-bold">Flug auswählen</h2>
     </div>
-
-    <h3
-      class="flex justify-between items-center text-lg sm:text-xl font-medium"
+    <AccordionItem
+      index="date"
+      :modelValue="active"
+      @update:modelValue="active = $event"
+      headless
+      :tag="{ outer: 'div', inner: 'div', title: 'h3' }"
+      :collapsible="false"
     >
-      <span class="text-gray-500">Wann bist du geflogen?</span>
-      <span v-if="modelValue.flight_date" class="">{{
-        new Date(modelValue.flight_date).toLocaleDateString(
-          useI18n().locale.value
-        )
-      }}</span>
-    </h3>
-    <!-- verjährt oder in Zukunft rauskegeln -->
-    <InputDate v-model="modelValue.flight_date" />
+      <template #title>
+        <h3
+          class="w-full flex justify-between items-center text-base sm:text-lg md:text-xl leading-tight font-medium"
+        >
+          <span class="text-gray-500">Wann bist du geflogen?</span>
+          <span v-if="modelValue.flight_date">{{
+            new Date(modelValue.flight_date).toLocaleDateString(
+              useI18n().locale.value, { weekday: width > 480 ? 'long' : undefined, year: 'numeric', month: 'long', day: 'numeric'}
+            )
+          }}</span>
+        </h3>
+      </template>
+      <template #content>
+        <InputDate v-model="modelValue.flight_date" class="mt-5"/>
+      </template>
+    </AccordionItem>
+    <div v-if="modelValue.flight_date">
+      <Callout
+        type="info"
+        icon="info-circle"
+        v-if="isBarred(modelValue.flight_date)"
+        ><template #title>Dein Flug ist verjährt</template
+        ><span
+          >Ansprüche für Flugverspätungen vor dem
+          {{
+            isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale)
+          }}
+          sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung
+          mehr einfordern.</span
+        >
+        <NuxtLink
+          :to="'/faq/verjaehrung'"
+          class="flex gap-2 items-center mt-2 mr-auto hover:underline"
+          ><FontAwesomeIcon icon="arrow-right" class="text-xs" />Mehr
+          erfahren</NuxtLink
+        >
+      </Callout>
+
+      <Callout
+        type="error"
+        icon="exclamation-triangle"
+        v-else-if="!filteredFlights.length && error"
+        >Flüge konnten nicht geladen werden
+      </Callout>
 
     <Callout
-      type="info"
-      icon="info-circle"
-      v-if="isBarred(modelValue.flight_date)"
-      ><template #title>Dein Flug ist verjährt</template
-      ><span
-        >Ansprüche für Flugverspätungen vor dem
-        {{ isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale) }}
-        sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung
-        mehr einfordern.</span
-      >
-      <NuxtLink
-        :to="'/faq/verjaehrung'"
-        class="flex gap-2 items-center mt-2 mr-auto hover:underline"
-        ><FontAwesomeIcon icon="arrow-right" class="text-xs" />Mehr
-        erfahren</NuxtLink
-      >
-    </Callout>
-    <div v-else-if="!filteredFlights.length" class="w-full flex flex-col gap-3">
-      <span class="text-sm font-medium"
-        >An diesem Datum konnten wir keinen Flug von
-        {{
-          getCityTranslation(
-            useAirports(modelValue.airport.departure.iata),
-            useI18n().locale.value
-          )
-        }}
-        nach
-        {{
-          getCityTranslation(
-            useAirports(modelValue.airport.arrival.iata),
-            useI18n().locale.value
-          )
-        }}
-        finden.</span
-      >
-      <FormKit type="button">Mit Flugnummer finden</FormKit>
-    </div>
-    <FlightFrequency
-      :flights="filteredFlights"
-      :dayTime="dayTime"
-      @select="selectTimeOfDay"
-    />
+        type="info"
+        icon="info-circle"
+        v-else-if="!filteredFlights.length"
+        >
+        An diesem Datum konnten wir keinen Flug von
+          {{
+            getCityTranslation(
+              useAirports(modelValue.airport.departure.iata),
+              useI18n().locale.value
+            )
+          }}
+          nach
+          {{
+            getCityTranslation(
+              useAirports(modelValue.airport.arrival.iata),
+              useI18n().locale.value
+            )
+          }}
+          finden.
+                  <!-- <FormKit type="button">Mit Flugnummer finden</FormKit> -->
 
-    <div v-if="filteredFlights.length > 7" class="relative flex gap-5 mb-5">
-      <ButtonLarge
-        v-for="timeOfDay in filteredDayTimeButtons"
-        :key="timeOfDay.value"
-        :name="timeOfDay.value"
-        :label="$t(timeOfDay.value)"
-        :subLabel="timeOfDay.subLabel"
-        @click="selectTimeOfDay(timeOfDay.value)"
-        :selected="dayTime === timeOfDay.value"
-        class="grow basis-0"
-      />
-    </div>
-
+      </Callout>
     <div
-      v-if="!isBarred(modelValue.flight_date) && filteredFlights.length"
+      v-else-if="!isBarred(modelValue.flight_date) && filteredFlights.length"
       class="w-full flex flex-col gap-3"
     >
-      <h3 class="text-lg sm:text-xl font-medium text-gray-500">
-        Welchen Flug hast du genommen?
-      </h3>
-
-      <ListGroupTransition
-        name="list"
-        class="relative flex flex-col gap-3"
-        :style="`--total: ${filteredFlights.length};`"
-      >
-        <ButtonFlight
-          v-for="(flight, index) in filteredFlights
-            .filter((e) => dayTimeFilter(e))
-            .sort(sortByScheduled)"
-          :key="`${flight.flight.iata}-${flight.flight_date}`"
-          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
-          :flight="flight"
-          :selected="modelValue.flight"
-          @click="handleSelect"
-          class="w-full"
+    <AccordionItem
+      index="flight"
+      :modelValue="active"
+      @update:modelValue="active = $event"
+      headless
+      :tag="{ outer: 'div', inner: 'div', title: 'h3' }"
+      :classes="{ title: 'w-full flex justify-between items-center text-base sm:text-lg md:text-xl leading-tight font-medium mb-5' }"
+      :collapsible="false"
+    >
+      <template #title>
+        <span class="text-gray-500">Welchen Flug hast du genommen?</span>
+        <span v-if="modelValue.flight" class="flex items-center gap-2"><div class="flex items-center justify-center w-7 h-7 border border-neutral-200 rounded-full"><img :src="logo" :alt="modelValue.flight.airline.name" class="w-5"/></div> {{ new Date(modelValue.flight.departure.scheduled).toLocaleTimeString(useI18n().locale.value, { hour: '2-digit', minute: '2-digit'}) }}</span>
+      </template>
+      <template #content>
+      <Callout v-if="loading" class="justify-center">Loading ... </Callout>
+      <div v-else class="flex flex-col gap-5">
+        <FlightFrequency
+          :flights="filteredFlights"
+          :dayTime="dayTime"
+          @select="selectTimeOfDay"
         />
-      </ListGroupTransition>
+
+        <div v-if="filteredFlights.length > 7" class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5">
+          <ButtonLarge
+            v-for="timeOfDay in filteredDayTimeButtons"
+            :key="timeOfDay.value"
+            :name="timeOfDay.value"
+            :label="$t(timeOfDay.value)"
+            :subLabel="timeOfDay.subLabel"
+            @click="selectTimeOfDay(timeOfDay.value)"
+            :selected="dayTime === timeOfDay.value"
+            class="grow basis-0 shrink-0 min-w-[140px]"
+          />
+        </div>
+          <ListGroupTransition
+            name="list"
+            class="relative flex flex-col gap-3"
+            :style="`--total: ${filteredFlights.length};`"
+          >
+            <ButtonFlight
+              v-for="(flight, index) in filteredFlights
+                .filter((e) => dayTimeFilter(e))
+                .sort(sortByScheduled)"
+              :key="`${flight.flight.iata}-${flight.flight_date}`"
+              :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
+              :flight="flight"
+              :selected="modelValue.flight"
+              @click="handleSelect"
+              class="w-full"
+            />
+          </ListGroupTransition>
+        <Callout
+          type="warning"
+          icon="exclamation-triangle"
+          v-if="modelValue.route && modelValue.flight && europeanUnion"
+        >
+        Sowohl der Abflugs- und Zielflughafen als auch die Fluggesellschaft haben ihren Sitz außerhalb der Europäischen Union.
+      </Callout>
+        </div>
+        </template>
+      </AccordionItem>
+    </div>
     </div>
     <NavigationButtons
       @previous="$emit('back')"
@@ -121,14 +167,23 @@ import Callout from "@/components/molecules/Callout.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import { filterFlightByEU, get24HTime } from "@/utils";
 import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
+import AccordionItem from "../Accordion/AccordionItem.vue";
+import { useElementSize } from '@vueuse/core'
+
+const container = ref(null as HTMLElement | null);
+const { width } = useElementSize(container)
+
 
 const { aviationstack } = useRuntimeConfig().public.flight;
 
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
+const europeanUnion = computed(() => Object.values(useFlightStatus(props.modelValue.flight).europeanUnion.value).every(e => !e))
 defineEmits(["back", "submit"]);
-
+const loading = ref(true);
+const error = ref(false);
+const active = ref(['date'] as string[]);
 const timesOfDay = [
   {
     value: "morning",
@@ -143,10 +198,13 @@ const timesOfDay = [
     subLabel: "20:00 - 24:00",
   },
 ];
-
+const queries = ref([] as string[]);
 watch(
   () => props.modelValue.flight_date || props.modelValue.airport,
-  fetchFlights,
+  () => {
+    fetchFlights()
+    if (props.modelValue.flight_date) active.value = ['flight'];
+  },
   { immediate: true, deep: true }
 );
 const removeDuplicateFlights = (flights: Flight[]) => {
@@ -179,10 +237,10 @@ const selectTimeOfDay = (value: string) => {
 
 const filterFlights = (flight: Flight) => {
   if (!props.modelValue.route) return false;
-  const { departure, arrival } = useAppState().routes[props.modelValue.route];
+  const { departure, arrival } = props.modelValue.airport;
   return (
-    flight.departure.iata === departure.airport.iata &&
-    flight.arrival.iata === arrival.airport.iata &&
+    flight.departure.iata === departure.iata &&
+    flight.arrival.iata === arrival.iata &&
     getISODate(flight.departure.scheduled) ===
       getISODate(props.modelValue.flight_date)
   );
@@ -221,6 +279,11 @@ const filteredDayTimeButtons = computed(() =>
     );
   })
 );
+
+const logo = computed(() => {
+  let iata = props.modelValue.flight?.flight.codeshared?.airline_iata?.toUpperCase() || props.modelValue.flight?.airline?.iata
+  return getAirlineLogo(iata, 80);
+});
 
 watch(
   () => filteredDayTimeButtons.value,
@@ -270,13 +333,18 @@ function fetchFlights() {
     !props.modelValue.airport?.arrival.iata
   )
     return;
+  const query = `${props.modelValue.airport.departure.iata}-${props.modelValue.airport.arrival.iata}-${getISODate(
+    props.modelValue.flight_date
+  )}`;
+  if (queries.value.includes(query)) return;
+  queries.value.push(query);
   // Create a URL instance with the desired URL string
   const proxy =
     process.env.NODE_ENV === "development"
-      ? "https://cors-anywhere.herokuapp.com/"
+    ? "https://cors-anywhere.herokuapp.com/"
+    // ? "https://corsproxy.io/?"
       : "";
   const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
-
   url.searchParams.append("access_key", aviationstack);
   url.searchParams.append("dep_iata", props.modelValue.airport?.departure.iata);
   url.searchParams.append("arr_iata", props.modelValue.airport?.arrival.iata);
@@ -285,8 +353,8 @@ function fetchFlights() {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
   headers.append("Access-Control-Allow-Origin", "*");
-  headers.append("Origin", "http://localhost:3000");
-  headers.append("X-Requested-With", "XMLHttpRequest");
+  // headers.append("Origin", "http://localhost:3000");
+  // headers.append("X-Requested-With", "XMLHttpRequest");
 
   const requestOptions = {
     method: "GET",
@@ -294,9 +362,9 @@ function fetchFlights() {
   };
 
   console.log("fetching...", url.href);
+  // fetch("api/aviationstack-lax-jfk.json")
+  // fetch("api/aviationstack-delayed.json")
   fetch(url.href, requestOptions)
-    // fetch("api/aviationstack-lax-jfk.json")
-    // fetch("api/aviationstack-delayed.json")
     .then((data) => data.json())
     .then(({ data }: { data: Flight[] }) => {
       const uniqueFlights = data
@@ -313,6 +381,7 @@ function fetchFlights() {
       //   ])
       // );
 
+      console.log("success", data);
       useAppState().flights = uniqueFlights?.map((flight) => {
         const airports = {
           departure: useAirports(flight.departure.iata),
@@ -332,10 +401,11 @@ function fetchFlights() {
     })
     .catch((error) => {
       console.error(error);
+      error.value = error;
+    })
+    .finally(() => {
+      console.log("done")
+      loading.value = false;
     });
-
-  if (Object.keys(useAppState().routes || {})?.length === 1) {
-    props.modelValue.route = Object.keys(useAppState().routes)[0];
-  }
 }
 </script>

@@ -14,7 +14,7 @@
       @blur="blur"
       :errors="errors"
       :prefix-icon="prefixIcon"
-      :suffix-icon="suffixIcon"
+      :suffix-icon="loading ? 'circle-notch' : (suffixIcon || 'circle-notch')"
       @prefix-icon-click="$emit('prefix-icon-click')"
       @suffix-icon-click="$emit('suffix-icon-click')"
       @keydown.down.up.prevent="keydown"
@@ -22,16 +22,21 @@
       :floatingLabel="true"
       :placeholder="placeholder"
       :classes="{
-        outer: '!mb-0',
-        inner:
-          inputFocused && options?.length && inputValue?.length && !errors?.length
-            ? 'rounded-b-none max-w-full duration-75 !mb-0'
-            : 'max-w-full duration-75 !mb-0',
+        outer: `!mb-0 ${!loading && !suffixIcon ? 'hidden-suffix [&_.formkit-suffix-icon]:hidden' : ''}`,
+        inner: `${
+          inputFocused &&
+          options?.length &&
+          inputValue?.length &&
+          !errors?.length
+            ? 'rounded-b-none'
+            : ''
+        } ${loading ? '[&_.formkit-suffix-icon_svg]:animate-spin' : ''} max-w-full duration-75 !mb-0`,
       }"
     />
     <Transition name="dropdown">
       <Dropdown
-        v-if="inputFocused && inputValue?.length && !errors?.length" class="w-full z-50"
+        v-if="inputFocused && inputValue?.length && !errors?.length"
+        class="w-full z-50"
         :active="highlighted"
         :options="options"
         @input="handleInput"
@@ -53,6 +58,7 @@ const props = defineProps<{
   prefixIcon?: string;
   suffixIcon?: string;
   errors?: string[];
+  loading?: boolean;
   options: DropdownItem[];
 }>();
 const emit = defineEmits([
@@ -70,7 +76,7 @@ function updateInput(input: string) {
   highlighted.value = 0;
   inputValue.value = input;
   if (!input.length) emit("update:modelValue", "");
-  emit("query", input);
+  if (input !== props.modelValue) emit("query", input);
 }
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);

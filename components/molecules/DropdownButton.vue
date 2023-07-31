@@ -43,7 +43,7 @@
     <label :for="id || name" class="formkit-label" :data-has-value="modelValue && 'true'">{{ label }}</label>
     <Transition name="dropdown">
       <Dropdown
-        class="w-full mt-[1px] z-50"
+        class="w-full mt-[1px] z-40"
         v-if="inputFocused"
         :active="highlighted"
         :options="options"

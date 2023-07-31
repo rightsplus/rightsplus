@@ -4,16 +4,18 @@ import { countries } from "@/config/countries";
 import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
-import { airports } from "~~/store";
+import { State, airlines, airports } from "~~/store";
 import { euMember } from "is-european";
 
-export const getAirlineLogo = (iata: string, size = 100) => {
+export const getAirlineLogo = (iata?: string, size = 100) => {
+	if (!iata) return;
 	let code = iata
 	switch (iata) {
 		case 'GEC': code = 'LH'
+		case 'D0': code = 'LH'
 	}
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${code}.png?crop=false&width=${size}&height=${size}`;
-	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${airline}_1x.png`
+	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${code}_1x.png`
 }
 export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: Airport) => {
 	if (!departureAirport || !arrivalAirport) return 0;
@@ -166,11 +168,11 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse | null, hour: 
 };
 
 
-export const reduceAirports = (claims: ClaimsForm, fetch?: string[]) => {
+export const reduceAirports = (airport: State['airport'], fetch?: string[]) => {
 	const all = ([
-		claims.airport?.departure,
-		...(claims.airport?.layover || []),
-		claims.airport?.arrival,
+		airport?.departure,
+		...(airport?.layover || []),
+		airport?.arrival,
 	]).filter(e => e && 'iata' in e) as Airport[];
 
 	return all.reduce((acc: Record<string, Airport>, cur) => {
@@ -180,8 +182,8 @@ export const reduceAirports = (claims: ClaimsForm, fetch?: string[]) => {
 }
 
 
-export const generateRoutes = (claims: ClaimsForm) => {
-	const airports = reduceAirports(claims);
+export const generateRoutes = (airport: ClaimsForm['airport']['trip']) => {
+	const airports = reduceAirports(airport);
 	const routes = {} as Record<string, Route>;
 	Object.values(airports).forEach((airport, i, arr) => {
 		if (i === arr.length - 1) return;
@@ -300,7 +302,7 @@ export const queryAirlines = async (query?: string) => {
 	const hits = await fetch("api/airlines-aviation-edge.json")
 		.then((data) => data.json())
 		.then((data: AirlineAviationEdge[]) => data.reduce((acc, cur) => {
-			acc[cur.codeIataAirline] = {
+			const airline = {
 				// ...cur,
 				name: cur.nameAirline,
 				nameCountry: cur.nameCountry,
@@ -308,12 +310,14 @@ export const queryAirlines = async (query?: string) => {
 				iata: cur.codeIataAirline,
 				isEuMember: euMember(cur.codeIso2Country),
 			};
+			acc[cur.codeIataAirline] = airline
+			airlines.value[cur.codeIataAirline] = airline
 			return acc;
 		}, {} as Record<string, Airline>));
 	return hits
 }
 
-export const getCityTranslation = (airport: Airport, locale: string, highlight = false) => {
+export const getCityTranslation = (airport: Airport, locale = unref(useI18n().locale), highlight = false) => {
 	if (!airport) return;
 	if (highlight) {
 		return airport._highlightResult?.city_translations?.[locale]?.value || airport._highlightResult?.city.value

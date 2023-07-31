@@ -36,8 +36,7 @@
 .page-move,
 .page-enter-active,
 .page-leave-active {
-  transition-duration: var(--transition-duration-100, 50ms);
-  transition-duration: 0ms;
+  transition-duration: var(--transition-duration-50, 50ms);
   transition-property: opacity, transform;
   transition-delay: calc(50ms * (var(--total, 1) - var(--i, 1)));
 }
@@ -46,16 +45,14 @@
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-  transform-origin: 50%;
+  transform-origin: 50% 0;
 }
 
 .page-enter-from {
-  transform: translateY(-5px);
   transition-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
 }
 
 .page-leave-to {
-  transform: translateY(20px);
   transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94)
 }
 

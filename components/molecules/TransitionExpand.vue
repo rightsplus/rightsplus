@@ -7,18 +7,23 @@
     @leave="leave"
     :style="`--duration: ${duration}ms; --timing: ${timing}; --scale: ${scale};--opacity: ${opacity};`"
   >
-    <div v-if="show">
+    <div v-if="show && !keepAlive">
+      <slot />
+    </div>
+    <div v-else v-show="show && keepAlive">
       <slot />
     </div>
   </transition>
 </template>
 <script setup lang="ts">
+
 interface Props {
   show: boolean;
   opacity?: string;
   scale?: string;
   duration?: number;
   timing?: string;
+  keepAlive?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   opacity: "0",

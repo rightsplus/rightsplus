@@ -1,27 +1,31 @@
 /* Claims Form State */
 export interface ClaimsForm {
   airport: {
-    departure: Airport,
-    arrival: Airport,
-    layover: (Airport)[],
-  },
-  route: string | null,
-  flight: Flight | null,
-  flight_date: string,
+    departure: Airport;
+    arrival: Airport;
+    trip: {
+      departure: Airport;
+      arrival: Airport;
+      layover: Airport[];
+    }
+  };
+  route: string | null;
+  flight: Flight | null;
+  flight_date: string;
   disruption: {
-    type: string | null,
-    details: string | null,
-    reason: string | null,
+    type: string | null;
+    details: string | null;
+    reason: string | null;
     other: string | null
-  },
-  step: number,
+  };
+  step: number;
   client: {
-    email: string,
-    firstName: string,
-    lastName: string,
-    iban: string,
-    agreedToTerms: boolean,
-    passengerCount: number,
+    email: string;
+    firstName: string;
+    lastName: string;
+    iban: string;
+    agreedToTerms: boolean;
+    passengerCount: number;
   }
 }
 
@@ -262,6 +266,8 @@ export interface Database {
 
 
 import '@nuxtjs/algolia'
+import { DefineComponent } from 'nuxt/dist/app/compat/capi';
+import { Component } from 'nuxt/schema';
 declare module '@nuxtjs/algolia' {
   interface AlgoliaIndices {
     AIRPORTS: Airport

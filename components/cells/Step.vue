@@ -12,6 +12,7 @@
         'pointer-events-none': isPending,
       }"
       @click="$emit('setStep', index)"
+      v-bind="$attrs"
     >
 		
       <div class="flex items-center leading-none text-left gap-1 sm:gap-3 h-4">
@@ -21,7 +22,7 @@
         <span v-else class="text-lg font-black leading-none w-4 text-center">{{
           index + 1
         }}</span>
-        <span v-html="label" class="leading-none text-sm sr-only sm:!not-sr-only" />
+        <span v-html="label" class="leading-none text-sm" />
 			
       </div>
 		

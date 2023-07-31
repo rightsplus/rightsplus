@@ -1,16 +1,29 @@
 <template>
+  <div class="w-full">
+  <span class="text-sm font-medium">{{ step + 1 }}. {{ steps[step].label }}</span>
   <ol
-    class="flex lg:flex-col w-full text-md font-medium text-center md:text-base gap-5 md:gap-8 md:py-2"
+    class="flex w-full text-md font-medium text-center md:text-base gap-1 md:gap-2 py-2 overflow-x-auto -mx-3 px-3"
   >
-    <Step
+    <div
+      v-for="({}, index) in steps"
+      @click="$emit('setStep', index)"
+      class="w-full max-w-[50px] h-2 rounded-full cursor-pointer"
+      :class="{
+        'bg-primary-400 hover:bg-primary-500': index <= step,
+        'bg-neutral-200 hover:bg-neutral-300': index > step,
+      }"
+    />
+    <!-- <Step
       v-for="({ label }, index) in steps"
       :key="label"
       :label="label"
       :step="step"
       :index="index"
       @setStep="$emit('setStep', index)"
-    />
+      class="min-w-[60px]"
+    /> -->
   </ol>
+</div>
 </template>
 
 <script lang="ts" setup>

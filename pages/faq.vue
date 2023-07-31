@@ -22,7 +22,7 @@
               :floatingLabel="false"
               placeholder="Suche nach Stichworten"
               prefix-icon="search"
-              suffix-icon="times"
+              suffix-icon="xmark"
               @suffix-icon-click="filter = ''"
               outer-class="py-12 w-full max-w-2xl"
               :modelValue="filter"
@@ -30,35 +30,28 @@
             />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-12">
-            <ul>
-              <AccordioItem
-                v-for="(item, i) in qa"
-                :key="name"
-                :modelValue="active"
-                :index="i"
-                @update:modelValue="active = $event"
+          <Accordion :items="qa" itemKey="name" :active="active" @setActive="active = $event" border arrow collapsible>
+            <template #title="{ item }">
+              <span v-html="wrapWithEmTags(filter, item.q)"/>
+            </template>
+            <template #content="{ item }">
+              <div v-html="wrapWithEmTags(filter, item.a)" />
+                <div
+                  class="flex flex-wrap gap-1 mt-3"
+                  v-if="filter.length >= 2"
+                >
+                <span
+                  v-for="tag in item.tags.filter((e) =>
+                    e.toLowerCase().includes(filter.toLowerCase())
+                  )"
+                  v-html="tag"
+                  class="text-sm py-1 px-2 leading-none rounded bg-neutral-300"
+                /></div
               >
-                <template #title
-                  ><div v-html="wrapWithEmTags(filter, item.q)"
-                /></template>
-                <template #content
-                  ><div v-html="wrapWithEmTags(filter, item.a)" />
-                  <div
-                    class="flex flex-wrap gap-1 mt-3"
-                    v-if="filter.length >= 2"
-                  >
-                    <span
-                      v-for="tag in item.tags.filter((e) =>
-                        e.toLowerCase().includes(filter.toLowerCase())
-                      )"
-                      v-html="tag"
-                      class="text-sm py-1 px-2 leading-none rounded bg-neutral-300"
-                    /></div
-                ></template>
-              </AccordioItem>
-            </ul>
+            </template>
+          </Accordion>
             <div class="flex flex-col gap-5">
-              <div class="flex flex-col gap-5">
+              <div class="sm:sticky sm:top-5 my-12 sm:my-0 flex flex-col gap-5">
                 <p class="">
                   Deine Frage ist nicht dabei? Dann ruf an oder schreib uns eine
                   Email!
@@ -86,12 +79,12 @@
                     </li>
                   </ul>
                 </div>
-                <Button class="max-w-min !bg-gray-800 hover:!bg-gray-900"
+                <!-- <Button class="max-w-min !bg-gray-800 hover:!bg-gray-900"
                   >Kontakt aufnehmen<ClientOnly
                     ><FontAwesomeIcon
                       icon="arrow-right"
                       class="text-sm" /></ClientOnly
-                ></Button>
+                ></Button> -->
               </div>
             </div>
           </div>
@@ -103,7 +96,7 @@
 
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import AccordioItem from "@/components/organisms/Accordion/AccordionItem.vue";
+import Accordion from "@/components/organisms/Accordion/Accordion.vue";
 import Button from "~/components/molecules/Button.vue";
 
 definePageMeta({
@@ -224,5 +217,3 @@ const contact = [
   },
 ];
 </script>
-
-<style scoped></style>

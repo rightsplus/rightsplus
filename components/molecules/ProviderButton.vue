@@ -2,10 +2,10 @@
   <FormKit
     type="button"
     class="font-medium rounded-lg text-sm px-5 py-3 text-center items-center"
-    input-class="bg-white hover:!bg-gray-700 hover:!border-gray-800 hover:!text-white [&>svg]:fill-black [&:hover_svg]:fill-white !text-black border border-1 border-blue"
+    input-class="!bg-neutral-100 hover:!bg-gray-700 hover:!border-gray-800 hover:!text-white [&_svg]:fill-black [&:hover_svg]:fill-white [&:hover_img]:brightness-[100] !text-black border border-1 border-neutral-200 items-center"
     outer-class="!mb-0"
     :prefix-icon="prefixIcon"
-    prefix-icon-class="[&>svg]:fill-gray-600 mr-3 w-5"
+    prefix-icon-class="mr-3 w-5"
     ><span class="flex items-center gap-2"><img :src="img" v-if="img" class="w-5"/>{{ label }}</span></FormKit
   >
 </template>

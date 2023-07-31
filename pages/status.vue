@@ -5,7 +5,8 @@
         <div class="flex flex-col gap-12">
           <h1 class="text-4xl sm:text-6xl font-extrabold">Der Status deiner Forderung</h1>
           <!-- {{ user.email }} -->
-          <ClientOnly><FlightResult v-for="claim in claims" :key="claim.id" :flight="claim.data.flight || undefined" /></ClientOnly>
+          <!-- <pre v-for="claim in claims" :key="claim.id">{{ claim.flights }}</pre> -->
+          <ClientOnly><FlightResult v-for="claim in claims" :key="claim.id" :flight="claim.flights.data || undefined" /></ClientOnly>
         </div>
       </div>
     </div>
@@ -32,14 +33,18 @@ const claims = ref(null as null | {
 useAsyncData("cases", async () => {
   const { data, error } = await client
     .from("cases")
-    .select("*")
+    .select(`
+        *,
+        users ( * ),
+        flights ( * )
+      `)
     .eq("email", user.value?.email);
   if (error) throw error;
   return data;
 }).then(({data}) => {
   claims.value = data.value;
-  data.value?.forEach(({data}: { data: ClaimsForm }) => {
-    if (data.flight) useAirports([data.flight.departure.iata_code, data.flight.arrival.iata_code]);
+  data.value?.forEach(({flights}) => {
+    if (flights.data) useAirports([flights.data.departure?.iata, flights.arrival?.iata]);
   })
 });
 

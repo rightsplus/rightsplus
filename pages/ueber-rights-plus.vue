@@ -74,25 +74,17 @@
   </section>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Button from "~/components/molecules/Button.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
-export default defineComponent({
-  components: {
-    Button,
-    Stats,
-  },
-  data() {
-    return {
-      featured: [],
-    };
-  },
-  async mounted() {
-    this.$state.headerColor = "white";
-  },
-  unmounted() {
-    this.$state.headerColor = undefined;
-  },
+onMounted(() => {
+  useAppState().headerColor = "white";
+})
+onBeforeUnmount(() => {
+  useAppState().headerColor = undefined;
+})
+definePageMeta({
+  layout: 'default'
 });
 </script>
 

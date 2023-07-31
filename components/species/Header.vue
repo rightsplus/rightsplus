@@ -11,12 +11,12 @@
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
       class="absolute cursor-pointer right-5 top-4 sm:top-6 z-40 md:hidden"
-      :class="[$state?.headerColor === 'white' ? 'text-white' : '']"
+      :class="[useAppState()?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
       class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
       :class="{
-        'dark': $state?.headerColor === 'white',
+        'dark': useAppState()?.headerColor === 'white',
         'max-w-7xl': useRoute().path !== '/admin',
         'max-w-screen': useRoute().path === '/admin',
         }"
@@ -131,6 +131,11 @@ const links = computed((): Route[] => {
       } as Route);
 
   const routes = [
+    {
+      name: "claims",
+      path: "/claims-calculator",
+      title: "Rechner",
+    },
     {
       name: "ueber-rights-plus",
       path: "/ueber-rights-plus",

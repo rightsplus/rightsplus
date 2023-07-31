@@ -10,6 +10,7 @@
     :suffix-icon="suffixIcon"
     :placeholder="placeholder"
     :errors="errors"
+    :loading="loading"
     @query="findAirports"
     @prefix-icon-click="$emit('prefix-icon-click')"
     @suffix-icon-click="$emit('suffix-icon-click')"
@@ -38,36 +39,51 @@ emit("update:modelValue", props.modelValue)
 
 const { locale } = useI18n();
 const convertName = (value: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
-const dropdownList = ref([] as DropdownItem[])
-const errors = ref(undefined as undefined | string[])
-const errorTimeout = ref(undefined as undefined | ReturnType<typeof setTimeout>)
+const dropdownList = ref<DropdownItem[]>([])
+const loading = ref(false)
+const loadingTimeout = ref<undefined | ReturnType<typeof setTimeout>>()
+const errors = ref<undefined | string[]>()
+const errorTimeout = ref<undefined | ReturnType<typeof setTimeout>>()
 const algolia = useAlgoliaSearch("AIRPORTS");
+
+const mapAirports = (airport: Airport) => ({
+  value: airport.iata,
+  label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
+  sublabel: [
+    getCityTranslation(airport, locale.value, true),
+    countries.getName(airport.country_code, locale.value),
+  ]
+    .filter(Boolean)
+    .join(", "),
+  icon: airport.name.includes('Rail') ? "train" : "plane",
+})
 function findAirports (query: string) {
   if (query?.length < 1) return;
-    queryAirports(algolia, query)
-      .then(hits => {
-        errors.value = undefined
-        if (!hits) return
-        dropdownList.value = hits.map((airport) => {
-          // if (airport.name.includes('Rail')) return
-          return {
-            value: airport.iata,
-            label: `${airport._highlightResult?.name.value || "Airport"} (${airport._highlightResult?.iata.value})`,
-            sublabel: [
-              getCityTranslation(airport, locale.value, true),
-              countries.getName(airport.country_code, locale.value),
-            ]
-              .filter(Boolean)
-              .join(", "),
-            icon: airport.name.includes('Rail') ? "train" : "plane",
-          }}).filter(Boolean)
-      })
-      .catch(({transporterStackTrace}) => {
-        const [message] = transporterStackTrace
-        errors.value = [message?.response?.content]
-        clearTimeout(errorTimeout.value)
-        errorTimeout.value = setTimeout(() => errors.value = undefined, 5000)
-      })
+
+  clearTimeout(loadingTimeout.value)
+  loadingTimeout.value = setTimeout(() => {
+    if (query?.length < 1) return;
+    loading.value = true
+  }, 200)
+
+  queryAirports(algolia, query)
+    .then(hits => {
+      errors.value = undefined
+      if (!hits) return
+      dropdownList.value = hits
+        .filter((airport) => !airport.name.includes('Rail'))
+        .map(mapAirports)
+    })
+    .catch(({transporterStackTrace}) => {
+      const [message] = transporterStackTrace
+      errors.value = [message?.response?.content]
+      clearTimeout(errorTimeout.value)
+      errorTimeout.value = setTimeout(() => errors.value = undefined, 5000)
+    })
+    .finally(() => {
+      clearTimeout(loadingTimeout.value)
+      loading.value = false
+    })
 }
 </script>
 

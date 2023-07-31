@@ -3,23 +3,27 @@ import { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
 import nuxtStorage from 'nuxt-storage';
 
 
-interface State {
-  headerColor?: string | null,
-  flights: Flight[],
+export interface State {
+  headerColor?: string | null;
+  flights: Flight[];
   // airports: Record<string, Airport>,
   reviews: {
-    url?: string,
-    entries?: Review[],
-  },
-  routes: Record<string, Route>,
-  log: (message: string) => void,
+    url?: string;
+    entries?: Review[];
+  };
+  routes: Record<string, Route>;
+  log: (message: string) => void;
 }
 
 const defaultClaim = {
   airport: {
-    departure: {},
-    arrival: {},
-    layover: [{}],
+    departure: {} as Airport,
+    arrival: {} as Airport,
+    trip: {
+      departure: {} as Airport,
+      arrival: {} as Airport,
+      layover: [{}] as Airport[],
+    },
   },
   flight: null,
   route: null,
@@ -39,6 +43,7 @@ const defaultClaim = {
     other: null
   },
   step: 0,
+  steps: [],
 } as ClaimsForm
 export const claim = reactive({
   value: defaultClaim
@@ -54,9 +59,11 @@ export const state = reactive({
   log: (message: string) => console.log(message),
 } as State)
 
-watch(() => claim.value, (value) => {
-  if (value) state.routes = generateRoutes?.(value);
-}, { deep: true, immediate: true });
+// watch(() => claim.value.airport.trip, (value) => {
+//   if (value) state.routes = generateRoutes?.(value);
+//   console.log('trip', value)
+//   console.log('state.routes',state.routes)
+// }, { deep: true });
 watch(() => claim.value, (value) => {
   if (!process.client || !value) return
   nuxtStorage.localStorage.setData('rights-plus-claims', value, 30);

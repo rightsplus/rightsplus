@@ -150,7 +150,7 @@ span, label, p {
       padding-left: 2.8em;
     }
   }
-  &[data-suffix-icon="true"] {
+  &[data-suffix-icon="true"]:not(.hidden-suffix) {
     .formkit-label {
       --right: 2.8em;
     }

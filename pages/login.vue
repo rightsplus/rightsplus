@@ -52,21 +52,16 @@ const form = ref({
   password: "",
 })
 const login = async (provider?: Provider) => {
+  const { email, password } = form.value
   if (provider) {
-    const { error } = await client.auth.signInWithOAuth({
-      provider,
-    });
+    const { error } = await client.auth.signInWithOAuth({ provider });
     return;
   }
-  if (form.value.password) {
-    const { data, error } = await client.auth.signInWithPassword({
-      email: form.value.email,
-      password: form.value.password
-    });
+  if (password) {
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    return
   }
-  const { data, error } = await client.auth.signInWithOtp({
-    email: form.value.email
-  });
+  const { data, error } = await client.auth.signInWithOtp({ email });
 }
 const resetPassword = async () => {
   const { data, error } = await client.auth.resetPasswordForEmail(

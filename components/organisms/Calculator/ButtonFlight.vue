@@ -39,10 +39,29 @@
       ></span>
     </div>
 
-    <div class="flex flex-col items-center ml-auto">
+    <div class="flex flex-col gap-1 items-center ml-auto">
       <span
         class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
         >{{ iata }}</span
+      >
+      <span
+        v-if="flight.flight_status === 'cancelled'"
+        class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
+        :class="isSelected ? 'text-red-400' : 'text-red-500'"
+
+        >annuliert</span
+      >
+      <span
+        v-else-if="flight.arrival.delay"
+        class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
+        :class="isSelected ? 'text-red-400' : 'text-red-500'"
+        >{{ getDuration(flight.arrival.delay) }} verspätet</span
+      >
+      <span
+        v-else-if="flight.flight_status === 'scheduled' && new Date(flight.departure.scheduled) > new Date()"
+        class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
+        :class="isSelected ? 'text-green-400' : 'text-green-600'"
+        >pünktlich</span
       >
     </div>
   </button>
