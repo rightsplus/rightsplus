@@ -38,9 +38,10 @@ export default defineNuxtConfig({
     "primevue/resources/themes/lara-light-blue/theme.css",
     "primevue/resources/primevue.css"
   ],
-  imports: {
-    dirs: ['core', 'components/core', '~/components/core/']
-  },
+  components: [
+    '~/components',
+    '~/components/core',
+  ],
   i18n,
   postcss,
   sourcemap: {
