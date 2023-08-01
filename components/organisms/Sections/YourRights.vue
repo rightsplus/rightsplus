@@ -22,84 +22,51 @@
             v-for="item in process"
             :key="item.title"
             class="flex gap-5 items-center"
-            :class="{'text-gray-500': item.exception}"
+            :class="{ 'text-gray-500': item.exception }"
           >
-            <ClientOnly><FontAwesomeIcon :icon="item.icon" :class="item.color" /></ClientOnly>
-            <span class="flex flex-col gap-1 leading-none font-medium">{{ item.title }}</span>
+            <ClientOnly
+              ><FontAwesomeIcon :icon="item.icon" :class="item.color"
+            /></ClientOnly>
+            <span class="flex flex-col gap-1 leading-none font-medium">{{
+              item.title
+            }}</span>
           </li>
         </ol>
       </div>
     </div>
   </section>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import Button from "@/components/molecules/Button.vue";
-
-export default defineComponent({
-  components: {
-    Button,
+<script lang="ts" setup>
+const process = [
+  {
+    icon: "plane-circle-xmark",
+    color: "text-green-600",
+    title:
+      "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
   },
-  data() {
-    return {
-      page: null,
-      process: [
-        {
-          icon: "plane-circle-xmark",
-          color: "text-green-600",
-          title:
-            "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
-        },
-        {
-          icon: "clock",
-          color: "text-green-600",
-          title:
-            "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
-        },
-        {
-          icon: "globe-europe",
-          color: "text-green-600",
-          title:
-            "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
-        },
-        {
-          icon: "calendar",
-          color: "text-green-600",
-          title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
-        },
-        {
-          icon: "meteor",
-          color: "text-gray-500",
-          title: "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
-          exception: true,
-        },
-      ],
-    };
+  {
+    icon: "clock",
+    color: "text-green-600",
+    title:
+      "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
   },
-  methods: {
-    scrollToHash(hash: string) {
-      document.querySelector(hash)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    },
+  {
+    icon: "globe-europe",
+    color: "text-green-600",
+    title:
+      "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
   },
-});
+  {
+    icon: "calendar",
+    color: "text-green-600",
+    title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
+  },
+  {
+    icon: "meteor",
+    color: "text-gray-500",
+    title:
+      "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
+    exception: true,
+  },
+];
 </script>
-<style scoped>
-.green:after {
-  opacity: 0;
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: hard-light;
-  background-size: cover;
-  transition: 2s;
-}
-.show-green:after {
-  opacity: 1;
-}
-</style>

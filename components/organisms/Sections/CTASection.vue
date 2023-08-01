@@ -14,50 +14,12 @@
             Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich.
           </h3>
         </div>
-        <Button class="!bg-gray-800 hover:!bg-gray-900 mr-auto" @click="scrollToHash('#calculator')"
+        <Button class="!bg-gray-800 hover:!bg-gray-900 mr-auto" to="claims-calculator"
           >Jetzt Anspruch prüfen!</Button
         >
       </div>
     </div>
   </section>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import Button from "@/components/molecules/Button.vue";
-
-export default defineComponent({
-  components: {
-    Button,
-  },
-  data() {
-    return {
-      page: null,
-    };
-  },
-  methods: {
-    scrollToHash(hash: string) {
-      document.querySelector(hash)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    },
-  },
-});
+<script lang="ts" setup>
 </script>
-<style scoped>
-.green:after {
-  opacity: 0;
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: hard-light;
-  background-size: cover;
-  transition: 2s;
-}
-.show-green:after {
-  opacity: 1;
-}
-</style>

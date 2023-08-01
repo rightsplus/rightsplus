@@ -116,49 +116,18 @@
   </section>
 </template>
 
-<script lang="ts">
-import Button from "~/components/molecules/Button.vue";
-export default defineComponent({
-  components: {
-    Button,
-  },
-  setup() {
-    definePageMeta({
-      title: "Angebote",
-      description:
-        "Hier wirst du deinen Weg finden und kannst im Wald oder mit den Pferden einen Prozess der Heilung zu beginnen.",
-    });
+<script lang="ts" setup>
+definePageMeta({
+  title: "Angebote",
+  description:
+    "Hier wirst du deinen Weg finden und kannst im Wald oder mit den Pferden einen Prozess der Heilung zu beginnen.",
+});
 
-    return {};
-  },
-  data() {
-    return {
-      featured: [],
-    };
-  },
-  async mounted() {
-    this.$state.headerColor = "dark";
-  },
-  unmounted() {
-    this.$state.headerColor = null;
-  },
-  methods: {
-    ucFirstAll(string: string) {
-      return string
-        .replaceAll("-", " ")
-        .replaceAll("faq", "FAQ")
-        .replaceAll("ue", "ü")
-        .replaceAll("ae", "ä")
-        .replaceAll("oe", "ö")
-        .split(" ")
-        .map((word) => this.ucfirst(word))
-        .join(" ")
-        .replaceAll("Rights Plus", "RightsPlus");
-    },
-    ucfirst(string: string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-  },
+onMounted(() => {
+  useAppState().headerColor = "dark";
+});
+onUnmounted(() => {
+  useAppState().headerColor = null;
 });
 </script>
 

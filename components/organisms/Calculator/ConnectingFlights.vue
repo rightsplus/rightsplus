@@ -154,7 +154,6 @@
 </template>
 
 <script lang="ts" setup>
-import Button from "@/components/molecules/Button.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirportInput from "./Forms/AirportInput.vue";
 import ButtonLarge from "./ButtonLarge.vue";

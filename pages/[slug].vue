@@ -4,10 +4,12 @@
       <div class="flex flex-col gap-12 leading-0 h-full lg:w-1/2">
         <div class="flex flex-col gap-5">
           <h1 class="text-4xl sm:text-6xl font-extrabold">
-            {{ ucFirstAll($route.params.slug) }}
+            {{ ucFirstAll(useRoute().params.slug as string) }}
           </h1>
-          <span class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto">
-            {{ $route.meta.description }}
+          <span
+            class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto"
+          >
+            {{ useRoute().meta.description }}
           </span>
         </div>
       </div>
@@ -15,41 +17,33 @@
   </section>
 </template>
 
-<script lang="ts">
-import Button from "~/components/molecules/Button.vue";
-export default defineComponent({
-  components: {
-    Button,
-  },
-  setup() {
-    definePageMeta({
-      title: "Angebote",
-      description:
-        "",
-    });
-
-    return {};
-  },
-  data() {
-    return {
-      featured: [],
-    };
-  },
-  async mounted() {
-    this.$state.headerColor = "dark";
-  },
-  unmounted() {
-    this.$state.headerColor = null;
-  },
-  methods: {
-    ucFirstAll(string: string) {
-      return string.replaceAll('-', ' ').replaceAll("faq", "FAQ").replaceAll('ue', 'ü').replaceAll('ae', 'ä').replaceAll('oe', 'ö').split(" ").map((word) => this.ucfirst(word)).join(" ").replaceAll("Rights Plus", "RightsPlus");
-    },
-    ucfirst(string: string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-  },
+<script lang="ts" setup>
+definePageMeta({
+  title: "",
+  description: "",
 });
+onMounted(() => {
+  useAppState().headerColor = "dark";
+});
+onUnmounted(() => {
+  useAppState().headerColor = null;
+});
+
+const ucFirstAll = (string: string) => {
+  return string
+    .replaceAll("-", " ")
+    .replaceAll("faq", "FAQ")
+    .replaceAll("ue", "ü")
+    .replaceAll("ae", "ä")
+    .replaceAll("oe", "ö")
+    .split(" ")
+    .map((word) => ucfirst(word))
+    .join(" ")
+    .replaceAll("Rights Plus", "RightsPlus");
+};
+const ucfirst = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 </script>
 
 <style scoped></style>

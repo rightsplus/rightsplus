@@ -97,7 +97,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Accordion from "@/components/organisms/Accordion/Accordion.vue";
-import Button from "~/components/molecules/Button.vue";
 
 definePageMeta({
   title: "Angebote",

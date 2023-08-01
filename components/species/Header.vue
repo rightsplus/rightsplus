@@ -77,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import Button from "~/components/molecules/Button.vue";
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";

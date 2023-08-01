@@ -75,7 +75,6 @@
 </template>
 
 <script setup lang="ts">
-import Button from "~/components/molecules/Button.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
 onMounted(() => {
   useAppState().headerColor = "white";
