@@ -3,7 +3,7 @@
     <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
     >
-    <!-- <section
+      <!-- <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-white"
     > -->
       <img
@@ -37,12 +37,13 @@
         style="--duration: 1000ms"
         class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10"
       >
-
         <Transition name="move-up">
           <ScrollDown v-if="scrollDownReady" scrollTo="process-summary" />
         </Transition>
       </div>
     </section>
+
+    <Button @click="generate">Generate PDF</Button>
     <ProcessSummary id="process-summary" />
     <YourRights />
     <CTASection />
@@ -63,6 +64,7 @@ import Reasons from "@/components/organisms/Sections/Reasons.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
 import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
 import Reviews from "@/components/organisms/Sections/Reviews.vue";
+import { Database } from "~/types";
 const ready = ref(false);
 const scrollDownReady = ref(false);
 onMounted(() => {
@@ -71,4 +73,12 @@ onMounted(() => {
     scrollDownReady.value = true;
   }, 1000);
 });
+const client = useSupabaseClient<Database>();
+
+const generate = async () => {
+  const url = "https://en.wikipedia.org/wiki/Mac_(computer)"
+  generatePDF({ client, url }).then(console.log).catch(console.error);
+}
+
+
 </script>

@@ -1,4 +1,21 @@
 /* Claims Form State */
+export type Address = {
+  street: string;
+  postalCode: string;
+  city: string;
+  country?: string;
+};
+export interface PassengerDetails {
+  firstName: string;
+  lastName: string;
+  address: Address
+  email: string;
+  iban: string;
+  phone?: string;
+  bookingNumber: string;
+  boardingPass?: Files;
+  isMinor?: boolean;
+}
 export interface ClaimsForm {
   airport: {
     departure: Airport;
@@ -11,21 +28,20 @@ export interface ClaimsForm {
   };
   route: string | null;
   flight: Flight | null;
+  connectingFlight: Flight | null;
   flight_date: string;
   disruption: {
     type: string | null;
     details: string | null;
     reason: string | null;
-    other: string | null
+    replacement: boolean | null;
+    connectingFlight: boolean | null;
+    other: string | null;
   };
   step: number;
   client: {
-    email: string;
-    firstName: string;
-    lastName: string;
-    iban: string;
     agreedToTerms: boolean;
-    passengerCount: number;
+    passengers: PassengerDetails[];
   }
 }
 
@@ -95,10 +111,11 @@ export interface CodeSharedInfo {
   flight_icao: string;
 }
 export interface FlightInfo {
-  codeshared: CodeSharedInfo;
+  codeshared?: CodeSharedInfo;
   iata: string;
   icao: string;
-  icao24: string;
+  icao24?: string;
+  number?: string;
 }
 export interface FlightLive {
   updated: string;

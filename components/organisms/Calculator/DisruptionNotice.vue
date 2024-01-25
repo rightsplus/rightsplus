@@ -11,13 +11,13 @@
         v-html="getDuration(getDelay(modelValue.flight?.arrival))"
       />
       Verspätung in
-      {{ getCityTranslation(useAirports(modelValue.flight?.arrival.iata)) }}
+      {{ arrivalCity }}
       gelandet.</span
     >
     <span v-else
       >Laut unseren Informationen ist dein Flug
       <span class="font-bold">ohne große Verspätung</span> in
-      {{ getCityTranslation(useAirports(modelValue.flight?.arrival.iata)) }}
+      {{ arrivalCity }}
       gelandet.</span
     >
   </Callout>
@@ -26,8 +26,18 @@
 import Callout from "@/components/molecules/Callout.vue";
 import { ClaimsForm } from "~/types";
 
-defineProps<{
+const props = defineProps<{
   status: ReturnType<typeof useFlightStatus>;
   modelValue: ClaimsForm;
 }>();
+
+const arrivalCity = ref();
+const { locale } = useI18n();
+onMounted(() => {
+  if (!props.modelValue.flight?.arrival.iata) return
+  getCities([props.modelValue.flight?.arrival.iata], locale.value).then(([departure, arrival]) => {
+    arrivalCity.value = arrival;
+  });
+})
+
 </script>

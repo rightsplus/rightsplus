@@ -10,14 +10,12 @@
       <AirportInput
         name="departure"
         label="Abflug"
-        placeholder="z.B. Berlin oder BER"
         prefix-icon="plane-departure"
         v-model="modelValue.airport.trip.departure"
       />
       <AirportInput
         name="arrival"
         label="Ankunft"
-        placeholder="z.B. Tel Aviv oder TLV"
         prefix-icon="plane-arrival"
         v-model="modelValue.airport.trip.arrival"
       />

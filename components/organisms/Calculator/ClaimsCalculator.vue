@@ -46,6 +46,10 @@ const back = (e?: number) => {
 const reset = (e?: number) => {
   useClaim().value.step = e ?? 0;
 };
+watch(
+  () => useClaim().value?.step,
+  () => console.log(useClaim().value)
+);
 
 // watch(
 //   () => useClaim().value?.step,

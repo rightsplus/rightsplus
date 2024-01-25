@@ -32,9 +32,9 @@ const config: DefaultConfigOptions = {
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
         message: 'text-red-500 mb-1 text-xs',
         messages: 'list-none p-0 mt-1 mb-0',
-        outer: 'mb-4 formkit-disabled:opacity-50',
+        outer: 'formkit-disabled:opacity-50',
         prefixIcon: 'w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40',
-        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40'
+        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 hover:cursor-pointer hover:[&>svg]:fill-neutral-800 ',
       },
       'family:box': {
         decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-white bg-gradient-to-b from-transparent to-neutral-200 ring-1 ring-neutral-200 peer-checked:ring-primary-500 text-transparent peer-checked:text-primary-500',
@@ -84,13 +84,13 @@ const config: DefaultConfigOptions = {
       file: {
         fileItem: 'flex items-center text-neutral-800 mb-1 last:mb-0',
         fileItemIcon: 'w-4 mr-2 shrink-0',
-        fileList: 'shrink grow peer px-4 py-3 formkit-multiple:data-[has-multiple="true"]:mb-6',
-        fileName: 'break-all grow text-ellipsis',
-        fileRemove: 'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em]',
-        fileRemoveIcon: 'block text-base w-3 relative z-[2]',
-        inner: 'relative max-w-2xl cursor-pointer formkit-multiple:[&>button]:absolute',
+        fileList: 'shrink peer pl-4 py-3 formkit-multiple:data-[has-multiple="true"]:mb-6 min-w-0',
+        fileName: 'text-ellipsis leading-tight truncate overflow-hidden translate-y-2',
+        fileRemove: 'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em] flex items-center [&:hover_svg]:fill-red-500',
+        fileRemoveIcon: 'text-lg w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&_svg]:w-full [&_svg]:max-w-[1em] [&_svg]:max-h-[1em] [&_svg]:m-auto [&_svg]:fill-neutral-400 z-40',
+        inner: 'relative max-w-2xl cursor-pointer formkit-multiple:[&>button]:absolute h-14',
         input: 'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
-        noFiles: 'flex w-full items-center px-4 py-3 text-neutral-400',
+        noFiles: 'flex w-full items-center px-4 py-3 text-neutral-400 line-clamp-1 truncate translate-y-2',
         noFilesIcon: 'w-4 mr-2'
       },
       radio: {

@@ -6,7 +6,7 @@
         flight.iata
       }}</span>
       <span class="text-base leading-none">{{
-        useAirports()[flight.iata]?.city
+        city
       }}</span>
     </div>
     <div class="flex flex-col leading-none">
@@ -46,6 +46,9 @@ const props = defineProps<{
   flight?: FlightPhase;
   cancelled?: boolean;
 }>();
+const city = ref()
+const { locale } = useI18n();
+onMounted(() => getCities([props.flight?.iata], locale.value).then(([c]) => city.value = c));
 getHumanReadableWeather(props.flight).then((data) => {
   weather.value = data;
 });

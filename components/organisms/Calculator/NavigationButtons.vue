@@ -1,7 +1,7 @@
 <template>
   <div
     ref="stickyElement"
-    class="sticky rounded-b-3xl bg-white flex items-center justify-end ease-out bottom-0 mt-12 -m-4 p-4"
+    class="sticky rounded-b-3xl bg-white flex items-center justify-end ease-out bottom-0 mt-12 -m-4 p-4 -z-1"
     :class="{ 'shadow-2xl !rounded-b-none md:!rounded-3xl -mx-8 sm:-mx-16 md:-mx-20 lg:-mx-20 md:bottom-4 z-40': isStickyRelative, 'duration-150': ready }"
   >
     <Stepper

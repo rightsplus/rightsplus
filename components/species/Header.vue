@@ -1,4 +1,18 @@
 <template>
+  <!-- <div
+    v-if="isAdmin && useRouter().currentRoute.value.path !== '/admin'"
+    role="banner"
+    class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
+  >
+    <div class="p-3 flex items-center gap-3">
+      <span class="">Angeldet als Admin</span>
+      <NuxtLink
+        class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
+        to="/admin"
+        >Zum Dashboard</NuxtLink
+      >
+    </div>
+  </div> -->
   <header
     class="z-40 overflow-hidden absolute w-full text-neutral"
     :class="{
@@ -16,10 +30,10 @@
     <nav
       class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
       :class="{
-        'dark': useAppState()?.headerColor === 'white',
+        dark: useAppState()?.headerColor === 'white',
         'max-w-7xl': useRoute().path !== '/admin',
         'max-w-screen': useRoute().path === '/admin',
-        }"
+      }"
     >
       <TransitionGroup
         name="list"
@@ -78,7 +92,6 @@
 
 <script setup lang="ts">
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
-import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
 import { Database } from "~/types";
 interface Route {
@@ -95,7 +108,8 @@ const client = useSupabaseClient<Database>();
 
 const menuOpen = ref(false);
 const isAdmin =
-user.value?.email && (
+  user.value?.email &&
+  (
     await client
       .from("users")
       .select("role")
@@ -115,19 +129,12 @@ const links = computed((): Route[] => {
     type: "button",
   } as Route;
 
-  const status = isAdmin
-    ? {
-        name: "admin",
-        path: "/admin",
-        title: "Admin",
-        type: "button",
-      }
-    : ({
-        name: "status",
-        path: "/status",
-        title: "Meine Forderungen",
-        type: "button",
-      } as Route);
+  const status = {
+    name: "status",
+    path: "/status",
+    title: "Meine Forderungen",
+    type: "button",
+  } as Route;
 
   const routes = [
     {
@@ -136,21 +143,12 @@ const links = computed((): Route[] => {
       title: "Rechner",
     },
     {
-      name: "ueber-rights-plus",
-      path: "/ueber-rights-plus",
-      title: "Über RightsPlus",
-    },
-    {
-      name: "faq",
-      path: "/faq",
-      title: "FAQ",
-    },
-    {
       name: "rechte",
       path: "/deine-rechte",
       title: "Deine Rechte",
     },
-    user && (path === "/status" || path === "/admin") ? logout : status,
+    status,
+    user && (path === "/status" || path === "/admin") && logout,
   ] as Route[];
   return routes;
 });
@@ -161,7 +159,7 @@ const clickLink = (item: Route) => {
 };
 watch(
   () => menuOpen,
-  (value) => document.body.style.overflow = value ? "hidden" : "auto"
+  (value) => (document.body.style.overflow = value ? "hidden" : "auto")
 );
 </script>
 

@@ -23,6 +23,7 @@
 </template>
 <script setup lang="ts">
 import { useElementSize } from '@vueuse/core'
+import { DatePicker } from 'v-calendar';
 
 const calendar = ref(null)
 const { width } = useElementSize(calendar)

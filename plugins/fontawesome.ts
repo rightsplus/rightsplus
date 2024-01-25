@@ -66,7 +66,16 @@ import {
   faAt,
   faSearch,
   faArrowUp,
-  faCircleNotch
+  faCircleNotch,
+  faEarthEurope,
+  faPlaneCircleExclamation,
+  faMinusCircle,
+  faMinus,
+  faTrash,
+  faFile,
+  faImage,
+  faEye,
+  faEyeSlash
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -75,6 +84,7 @@ library.add(
   faArrowUp,
   faPlus,
   faPlusCircle,
+  faMinusCircle,
   faPlaneArrival,
   faPlaneDeparture,
   faPlane,
@@ -115,6 +125,8 @@ library.add(
   faBell,
   faClipboardCheck,
   faExclamationTriangle,
+  faPlaneCircleExclamation,
+  faPlaneCircleXmark,
   faPlaneSlash,
   faTimesCircle,
   faEuropeanUnion,
@@ -133,6 +145,7 @@ library.add(
   faSmog,
   faWind,
   faTrain,
+  faArrowsLeftRight,
   faArrowRightArrowLeft,
   faHand,
   faMemory,
@@ -141,7 +154,15 @@ library.add(
   faPhone,
   faAt,
   faSearch,
-  faCircleNotch
+  faCircleNotch,
+  faEarthEurope,
+  faMinus,
+  faPlus,
+  faTrash,
+  faFile,
+  faImage,
+  faEye,
+  faEyeSlash
 )
 
 config.autoAddCss = false

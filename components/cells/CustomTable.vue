@@ -1,4 +1,6 @@
 <template>
+
+{{selectedRow && clickedRow}}
   <DataTable
     :value="data"
     removableSort
@@ -89,7 +91,6 @@
       </template>
     </Column>
   </DataTable>
-
   <Popup
     :open="!!selectedRow && clickedRow"
     @closeOutside="clickedRow = false"
@@ -122,14 +123,13 @@
     <span v-if="selectedRow?.[0].item.flights.codeshared"
       >Durchgeführt von
       {{
-        JSON.parse(selectedRow?.[0].item.flights.codeshared || "").airline.name
+        JSON.parse(selectedRow?.[0].item.flights.codeshared || "").airline?.name
       }}</span
     >
   </Popup>
 </template>
 
 <script setup lang="ts">
-import Popup from "~/components/molecules/Popup.vue";
 defineProps<{
   data: any[];
 }>();
@@ -154,6 +154,7 @@ const getStatus = (status: string, delay: string) => {
 const selectedRow = ref(null);
 const clickedRow = ref(false);
 const rowSelect = (e) => {
+  console.log(e)
   if (e.type === "row") clickedRow.value = true;
 };
 const rowUnselect = (e) => {

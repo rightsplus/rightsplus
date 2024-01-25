@@ -78,8 +78,11 @@ watch(
 );
 </script>
 <style scoped>
-.algolia-result::v-deep(em) {
+.algolia-result::v-deep(em),
+.algolia-result::v-deep(mark) {
   font-style: normal;
   font-weight: bold;
+  background-color: transparent;
+  color: inherit;
 }
 </style>

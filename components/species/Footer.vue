@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/molecules/Icon.vue";
 import Logo from "~/assets/logo";
 const routes = ref([
   {

@@ -1,12 +1,7 @@
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-2xl sm:text-3xl font-bold">Deine Flugroute</h1>
-
-    <h3
-      class="flex justify-between items-center text-lg sm:text-xl font-medium"
-    >
-      <span class="text-gray-500">Hattest du Zwischenstopps?</span>
-    </h3>
+    <SectionHeader label="Hattest du Zwischenstopps?" />
     <!-- <div class="grid sm:grid-cols-2 gap-3">
       <ButtonLarge
         @click.prevent="submitHandler(false)"
@@ -32,7 +27,6 @@
     <div v-if="modelValue.airport.trip" class="relative -mb-5">
       <AirportInput
         label="Abflug"
-        placeholder="z.B. New York oder JFK"
         name="departure"
         id="departure"
         prefix-icon="plane-departure"
@@ -51,7 +45,6 @@
           v-if="modelValue.airport.trip.layover[i]"
           :id="`layover-${i}`"
           :label="`${i + 1}. Zwischenstopp`"
-          placeholder="z.B. Frankfurt oder FRA"
           name="layover"
           prefix-icon="plus"
           :modelValue="modelValue.airport.trip.layover[i]"
@@ -73,7 +66,6 @@
       <div>
         <AirportInput
           label="Ankunft"
-          placeholder="z.B. Tokyo oder NRT"
           name="arrival"
           id="arrival"
           prefix-icon="plane-arrival"
@@ -142,7 +134,6 @@
          * - not in EU (this is false if both airports are not EU or if not all airports are defined)
          * - layover is length > 0 and route is not defined
          */
-        !europeanUnion ||
         !!(
           modelValue.route &&
           routes &&
@@ -157,6 +148,7 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirportInput from "./Forms/AirportInput.vue";
 import ButtonLarge from "./ButtonLarge.vue";
+import SectionHeader from "./SectionHeader.vue";
 import NavigationButtons from "./NavigationButtons.vue";
 import { ClaimsForm, Airport } from "~~/types";
 import Callout from "~/components/molecules/Callout.vue";
@@ -177,15 +169,23 @@ watch(
   },
   { deep: true, immediate: true }
 )
-watch(
-  () => modelValue.airport.trip && modelValue.route,
-  () => {
-    const [departure, arrival] =
-      modelValue.route?.split("-").map((e) => useAirports(e)) || [];
 
-    modelValue.airport.departure = departure;
-    modelValue.airport.arrival = arrival;
-  },
+const airports = ref()
+onMounted(() => {
+  useAirports().then(e => airports.value = e)
+})
+const assignRoute = async () => {
+  const route = modelValue.route?.split("-") || [];
+  const [departure, arrival] = await Promise.all(route.map(e => useAirports(e)));
+
+  modelValue.airport.departure = departure;
+  modelValue.airport.arrival = arrival;
+};
+
+onMounted(assignRoute);
+watch(
+  () => [modelValue.airport.trip, modelValue.route].toString(),
+  assignRoute,
   { deep: true, immediate: true }
 );
 

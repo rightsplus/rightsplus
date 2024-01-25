@@ -4,7 +4,7 @@ import stripe from 'stripe'
 export default defineEventHandler(async (event) => {
 	const user = await serverSupabaseUser(event)
 	const client = serverSupabaseClient(event)
-	const isAdmin = (await client.from('users').select('role').eq('email', user?.email).single()).data?.role === 'admin'
+	const isAdmin = user?.email && (await client.from('users').select('role').eq('email', user.email).single()).data?.role === 'admin'
 
 	if (!isAdmin) throw createError({ statusCode: 401, message: "Unauthorized" })
 	const body = await readBody(event)

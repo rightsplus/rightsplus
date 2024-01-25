@@ -43,7 +43,7 @@
     <label :for="id || name" class="formkit-label" :data-has-value="modelValue && 'true'">{{ label }}</label>
     <Transition name="dropdown">
       <Dropdown
-        class="w-full mt-[1px] z-40"
+        class="w-full mt-[1px] z-50"
         v-if="inputFocused"
         :active="highlighted"
         :options="options"
@@ -91,12 +91,3 @@ function handleInput(input: DropdownItem | KeyboardEvent) {
   inputFocused.value = false
 }
 </script>
-
-<style>
-.formkit-suffix-icon:hover {
-  cursor: pointer;
-}
-.formkit-suffix-icon:hover svg {
-  fill: var(--color-gray-800);
-}
-</style>

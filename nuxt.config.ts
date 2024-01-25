@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
   },
   formkit: {
-    configFile: '~/formkit.config.ts',
+    configFile: './formkit.config.ts',
   },
   css: [
     '~/assets/css/main.scss',

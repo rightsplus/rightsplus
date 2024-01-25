@@ -3,7 +3,9 @@
     <div class="max-w-screen mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-12">
-          <h1 class="text-xl sm:text-2xl font-extrabold">Hallo {{data?.user.first_name}}!</h1>
+          <h1 class="text-xl sm:text-2xl font-extrabold">
+            Hallo {{ data?.user.first_name }}!
+          </h1>
         </div>
         <CustomTable :data="tableData" />
       </div>
@@ -21,6 +23,7 @@ import { Database, CasesTable } from "~~/types";
 
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("admin", async () => {
+  if (!currentUser.value?.email) return;
   const user = (
     await client
       .from("users")
@@ -47,7 +50,6 @@ const { data } = await useAsyncData("admin", async () => {
     cases,
   };
 });
-
 
 const date = (d: string) =>
   new Date(d).toLocaleDateString(useI18n().locale.value);

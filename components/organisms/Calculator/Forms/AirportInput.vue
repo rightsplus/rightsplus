@@ -1,14 +1,14 @@
 <template>
   <DropdownSearch
     :modelValue="convertName(modelValue)"
-    @update:modelValue="$emit('update:modelValue', useAirports()[$event?.value])"
+    @update:modelValue="$emit('update:modelValue', airports[$event?.value])"
     :label="label"
     :name="name"
     :id="id || name"
     :options="dropdownList"
     :prefix-icon="modelValue?.name?.includes('Rail') ? 'train' : prefixIcon"
     :suffix-icon="suffixIcon"
-    :placeholder="placeholder"
+    :placeholder="placeholder || fallbackPlaceholder"
     :errors="errors"
     :loading="loading"
     @query="findAirports"
@@ -35,7 +35,10 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["update:modelValue", "suffix-icon-click", "prefix-icon-click"]);
 
+const { t } = useI18n();
 emit("update:modelValue", props.modelValue)
+const airports = ref<Record<string, Airport>>({})
+onMounted(async () => airports.value = await useAirports())
 
 const { locale } = useI18n();
 const convertName = (value: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
@@ -85,13 +88,44 @@ function findAirports (query: string) {
       loading.value = false
     })
 }
-</script>
 
-<style>
-.formkit-suffix-icon:hover {
-  cursor: pointer;
-}
-.formkit-suffix-icon:hover svg {
-  fill: var(--color-gray-800);
-}
-</style>
+const fallbackPlaceholder = computed(() => {
+  const exampleAirtports = {
+    JFK: "New York",
+    BER: "Berlin",
+    FRA: "Frankfurt",
+    TLV: "Tel Aviv",
+    NRT: "Tokyo",
+    LHR: "London",
+    CDG: "Paris",
+    MUC: "Munich",
+    VIE: "Vienna",
+    AMS: "Amsterdam",
+    BCN: "Barcelona",
+    MAD: "Madrid",
+    MXP: "Milan",
+    ZRH: "Zurich",
+    ISL: "Istanbul",
+    SIN: "Singapore",
+    DXB: "Dubai",
+    BKK: "Bangkok",
+    HKG: "Hong Kong",
+    PEK: "Beijing",
+    PVG: "Shanghai",
+    ICN: "Seoul",
+    SYD: "Sydney",
+    LAX: "Los Angeles",
+    SFO: "San Francisco",
+    ORD: "Chicago",
+    YYZ: "Toronto",
+    YVR: "Vancouver",
+    YUL: "Montreal",
+    FCO: "Rome",
+  }
+
+  const randomIata = Object.keys(exampleAirtports)[Math.floor(Math.random() * Object.keys(exampleAirtports).length)] as keyof typeof exampleAirtports
+
+  return t('forExample', { value: `${exampleAirtports[randomIata]} ${t('or')} ${randomIata}` })
+
+})
+</script>

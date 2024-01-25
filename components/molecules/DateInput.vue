@@ -11,7 +11,7 @@
       :name="context.node.name"
       @blur="context.handlers.blur"
       @focus="context.handlers.focus"
-      class="formkit-input appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill autofill:ring-1 ring-blue-200 w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400"
+      class="formkit-input appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill autofill:ring-1 ring-primary-200 w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400"
     />
 
     <span

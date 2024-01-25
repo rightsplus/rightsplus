@@ -48,7 +48,6 @@
 <script lang="ts" setup>
 import ReviewCard from "@/components/cells/ReviewCard.vue";
 import { Review } from "@/types";
-import Popup from "~/components/molecules/Popup.vue";
 const { $state } = useNuxtApp();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;

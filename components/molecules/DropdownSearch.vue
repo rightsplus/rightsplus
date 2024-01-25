@@ -5,7 +5,7 @@
       type="text"
       :modelValue="modelValue"
       @update:modelValue="updateInput"
-      autocomplete="off"
+      :autocomplete="!showDropdown ? autocomplete : 'nope'"
       :label="label"
       :name="name"
       :id="id || name"
@@ -19,7 +19,7 @@
       @suffix-icon-click="$emit('suffix-icon-click')"
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleInput"
-      :floatingLabel="true"
+      floatingLabel
       :placeholder="placeholder"
       :classes="{
         outer: `!mb-0 ${!loading && !suffixIcon ? 'hidden-suffix [&_.formkit-suffix-icon]:hidden' : ''}`,
@@ -35,7 +35,7 @@
     />
     <Transition name="dropdown">
       <Dropdown
-        v-if="inputFocused && inputValue?.length && !errors?.length"
+        v-if="showDropdown"
         class="w-full z-50"
         :active="highlighted"
         :options="options"
@@ -59,6 +59,7 @@ const props = defineProps<{
   suffixIcon?: string;
   errors?: string[];
   loading?: boolean;
+  autocomplete?: string;
   options: DropdownItem[];
 }>();
 const emit = defineEmits([
@@ -71,6 +72,8 @@ const emit = defineEmits([
 const highlighted = ref(0);
 const inputFocused = ref(false);
 const inputValue = ref(props.modelValue);
+
+const showDropdown = computed(() => inputFocused.value && inputValue.value?.length && !props.errors?.length)
 
 function updateInput(input: string) {
   highlighted.value = 0;
@@ -97,12 +100,3 @@ function blur() {
   inputFocused.value = false;
 }
 </script>
-
-<style>
-.formkit-suffix-icon:hover {
-  cursor: pointer;
-}
-.formkit-suffix-icon:hover svg {
-  fill: var(--color-gray-800);
-}
-</style>

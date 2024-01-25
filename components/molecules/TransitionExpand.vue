@@ -5,7 +5,8 @@
     @enter="enter"
     @after-enter="afterEnter"
     @leave="leave"
-    :style="`--duration: ${duration}ms; --timing: ${timing}; --scale: ${scale};--opacity: ${opacity};`"
+    :style="`--duration: ${duration}ms; --timing: ${timing}; --scale: ${scale}; --opacity: ${opacity};`"
+    :class="props.class"
   >
     <div v-if="show && !keepAlive">
       <slot />
@@ -24,6 +25,7 @@ interface Props {
   duration?: number;
   timing?: string;
   keepAlive?: boolean;
+  class?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   opacity: "0",

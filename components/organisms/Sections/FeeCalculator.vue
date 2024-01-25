@@ -29,19 +29,6 @@
             :selected="distance === option.value"
           />
         </div>
-        <div class="grid gap-4 duration-500" :class="{'opacity-0': distance <= 3500}">
-          <FormKit
-            v-model="withinEU"
-            type="checkbox"
-            decorator-icon="check"
-            :required="true"
-            ><template #label
-              ><span class="text-sm leading-none">
-                Start <strong>und</strong> Landung innerhalb der EU</span
-              ></template
-            >
-          </FormKit>
-        </div>
       </div>
       <div class="flex gap-12 justify-between text-right">
         <div class="flex flex-col w-full sm:text-xl">
@@ -97,9 +84,8 @@ const distances = ref([
     value: 4000,
   },
 ]);
-const withinEU = ref(false);
 const compensation = computed(() =>
-  reimbursementByDistance(distance.value, withinEU.value)
+  reimbursementByDistance(distance.value)
 );
 
 const total = reactive({

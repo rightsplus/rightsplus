@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag?.inner || 'li'"
-    class="py-5 first:-mt-5 last:-mb-5 [&_em]:bg-primary-300 [&_em]:ring-2 [&_em]:ring-primary-300 [&_em]:rounded [&_em]:not-italic"
+    class="py-4 first:-mt-5 last:-mb-5 [&_em]:bg-primary-300 [&_em]:ring-2 [&_em]:ring-primary-300 [&_em]:rounded [&_em]:not-italic"
     :class="{
       'border-b last:border-none border-gray-100': border,
       [classes?.inner || '']: classes?.inner,
@@ -9,7 +9,7 @@
   >
     <component
       :is="tag?.title || 'div'"
-      class="flex gap-5 py-5 -my-5 justify-between cursor-pointer"
+      class="flex gap-5 py-4 -my-4 justify-between cursor-pointer"
       :class="{
         'text-xl font-bold': !classes?.title,
         [classes?.title || '']: classes?.title,
@@ -25,31 +25,33 @@
           ><FontAwesomeIcon
             class="duration-300"
             :class="active ? 'rotate-180' : ''"
-            icon="arrow-down"
+            icon="angle-down"
         /></ClientOnly>
       </div>
     </component>
-    <TransitionExpand
-      :show="modelValue?.includes(index)"
-      scale="1"
-      :duration="300"
-      keep-alive
-    >
-      <component
-        :is="tag?.content || 'div'"
-        :class="{
-          'text-lg mt-2': !classes?.content,
-          [classes?.content || '']: classes?.content,
-        }"
-        ><slot name="content"
-      /></component>
-    </TransitionExpand>
+    <div class="-mx-1">
+      <TransitionExpand
+        :show="modelValue?.includes(index)"
+        scale="1"
+        :duration="300"
+        keep-alive
+      >
+        <component
+          :is="tag?.content || 'div'"
+          :class="{
+            'text-lg mt-3 px-1': !classes?.content,
+            [classes?.content || '']: classes?.content,
+          }"
+          ><slot name="content"
+        /></component>
+      </TransitionExpand>
+    </div>
   </component>
 </template>
 
 <script setup lang="ts">
 import TransitionExpand from "@/components/molecules/TransitionExpand.vue";
-import { AccordionStructure }  from "./types";
+import { AccordionStructure } from "./types";
 const props = defineProps<{
   modelValue: (string | number)[];
   index: string | number;
@@ -63,11 +65,7 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 const active = computed(() => props.modelValue.includes(props.index));
 const open = () => {
-  if (
-    props.modelValue.length === 1 &&
-    active.value &&
-    props.collapsible
-  ) {
+  if (props.modelValue.length === 1 && active.value && props.collapsible) {
     emit("update:modelValue", []);
   } else {
     emit("update:modelValue", [props.index]);

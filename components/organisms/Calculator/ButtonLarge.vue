@@ -1,9 +1,9 @@
 <template>
   <button
-    class="flex text-left gap-5 items-center rounded-lg p-4 sm:p-5 border"
+    class="flex text-left gap-5 items-center rounded-lg p-4 sm:p-5 border border-transparent"
     :class="{
-      'bg-gray-700 text-white border-transparent': selected,
-      'bg-neutral-100 hover:bg-neutral-50 text-gray-800 border-neutral-200':
+      'bg-gray-700 text-white': selected,
+      'bg-neutral-100 hover:bg-neutral-50 text-gray-800 hover:border-neutral-100':
         !selected,
     }"
   >
