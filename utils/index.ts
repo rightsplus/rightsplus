@@ -6,6 +6,7 @@ import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/us
 import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
 import { State, airlines, airports } from "~~/store";
 import { euMember } from "is-european";
+import Compressor from "compressorjs";
 
 export const getAirlineLogo = (iata?: string, size = 100) => {
 	if (!iata) return;
@@ -327,7 +328,6 @@ export const getCityTranslation = (airport: Airport, locale = 'de', highlight = 
 }
 
 
-const Compressor = (await import("compressorjs")).default;
 export const compressImage = async (file: File, options?: Compressor.Options) => {
 	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => new Compressor(file, {
 		mimeType: 'image/webp',
