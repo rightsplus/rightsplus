@@ -4,7 +4,8 @@
       <Title>RightsPlus</Title>
     </Head>
     <Body class="antialiased text-gray-800 bg-neutral-200 text-lg">
-      <div class="flex flex-col">
+      <NuxtPage v-if="$route.path === '/declaration'" />
+      <div v-else class="flex flex-col">
         <Header class="w-full z-50" />
         <NuxtPage />
         <Footer class="w-full mt-auto" />

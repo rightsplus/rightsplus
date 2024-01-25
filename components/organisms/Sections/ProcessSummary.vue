@@ -20,7 +20,7 @@
       </div>
       <div class="bg-white p-5 sm:p-12 rounded-2xl">
         <ol class="flex flex-col gap-8">
-          <li
+        <li
             v-for="item in process"
             :key="item.title"
             class="flex gap-5 items-center"
