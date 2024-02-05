@@ -193,6 +193,7 @@ const sendEmail = async (to: any) => {
   const [passenger] = to.item.client.passengers;
   const data = {
     name: [passenger.firstName, passenger.lastName].join(" "),
+    firstName: passenger.firstName,
     address: passenger.address.street,
     postalCode: passenger.address.postalCode,
     city: passenger.address.city,

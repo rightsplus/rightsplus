@@ -1,24 +1,31 @@
 <template>
   <ETailwind>
     <EHtml>
-      <EHead />
-      <EPreview>
-        A fine-grained personal access token has been added to your account
-      </EPreview>
+      <EHead>
+        <EFont
+          font-family="Inter"
+          fallback-font-family="Verdana"
+          :web-font="{
+            url: 'https://fonts.gstatic.com/s/inter/v13/UcCo3FwrK3iLTcviYwYZ8UA3.woff2',
+            format: 'woff2',
+          }"
+          font-weight="normal"
+          font-style="normal"
+        />
+      </EHead>
+      <EPreview>Wir benötigen deine Unterschrift</EPreview>
       <EBody class="text-gray-800 bg-neutral-100">
-        <EContainer class="bg-white rounded-t-lg p-8 max-w-6xl">
+        <EContainer class="bg-white rounded-t-lg p-8 max-w-3xl">
           <EImg
             width="32"
             height="32"
-            src="https://rightsplus.up.railway.app/rights-plus-logo.png"
+            src="rights-plus-logo.png"
             alt="RightsPlus"
           />
           <EText class="text-3xl font-bold">
             Wir übernehmen ab hier das Steuer
           </EText>
-          <EText>
-            Hey {{ name }},
-          </EText>
+          <EText>Hey {{ firstName }},</EText>
           <EText>
             Um deinen Auftrag weiterzubearbeiten und alles glatt über die Bühne
             zu bringen, benötigen wir von dir eine Abtretungserklärung.
@@ -41,17 +48,16 @@
           >
           <EText>Mit besten Grüßen,</EText>
           <EText>Dein RightsPlus Team</EText>
-          <EText>
-            <ELink href="#"> Your security audit log </ELink>
-            ・
-            <ELink href="#"> Contact support </ELink>
-          </EText>
-
         </EContainer>
-        <EContainer class="bg-neutral-200 text-sm rounded-b-lg p-8 max-w-6xl flex justify-center">
+        <EContainer
+          class="bg-neutral-200 text-sm rounded-b-lg p-8 max-w-3xl flex flex-col items-center justify-center text-center"
+        >
           <EText>
-            RightsPlus GbR ・Zülpicher Platz 18 ・50674 Köln
+            <ELink href="#">Your security audit log</ELink>
+            ・
+            <ELink href="#">Contact support</ELink>
           </EText>
+          <EText>RightsPlus GbR ・ Zülpicher Platz 18 ・ 50674 Köln</EText>
         </EContainer>
       </EBody>
     </EHtml>
@@ -59,6 +65,6 @@
 </template>
 <script setup lang="ts">
 defineProps<{
-  name: string;
+  firstName: string;
 }>();
 </script>

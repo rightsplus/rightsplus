@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-4 gap-12 p-12 page">
     <div class="col-span-3 flex flex-col gap-12">
-      <h1 class="text-4xl font-bold">{{t('assignmentLetter.title')}}</h1>
+      <h1 class="text-4xl font-bold">{{ t("assignmentLetter.title") }}</h1>
       <p class="whitespace-pre-line hyphens-auto">
         {{
           t("assignmentLetter.main", {
@@ -13,7 +13,7 @@
             flightDate,
             departure,
             arrival,
-            payment
+            payment,
           })
         }}
       </p>
@@ -48,7 +48,6 @@
 </template>
 <script setup lang="ts">
 import Logo from "~/assets/logo";
-const { query } = useRoute();
 const { t } = useI18n();
 const {
   name,
@@ -60,7 +59,7 @@ const {
   departure,
   arrival,
   payment,
-  date
+  date,
 } = {
   name: "Max Mustermann",
   address: "Musterstraße 1",
@@ -71,13 +70,13 @@ const {
   departure: "MUC",
   arrival: "FRA",
   payment: "€ 250",
-  date: new Date().toLocaleDateString()
+  date: new Date().toLocaleDateString(),
 };
 const aside = [
   { label: "date", value: date },
   { label: "claimNumber", value: "RP71223456" },
   { value: "RightsPlus GbR\nSandeldamm 24\n63450 Hanau" },
-  { value: "info@rightsplus.de" }
+  { value: "info@rightsplus.de" },
 ];
 // const {
 //   name,
@@ -99,11 +98,9 @@ const aside = [
     @apply shadow-xl rounded mx-auto my-12;
   }
 }
-body {
-  @apply bg-white
-}
-header,
-footer {
-  display: none;
+@media print {
+  body {
+    background: white !important;
+  }
 }
 </style>
