@@ -16,44 +16,32 @@
           <EText class="text-3xl font-bold">
             Wir übernehmen ab hier das Steuer
           </EText>
-          <ESection class="p-5 border border-neutral-200 rounded">
-            <EText>
-              Hey <strong>{{name}}</strong>,
-            </EText>
-            <EText>
-              Um deinen Auftrag weiterzubearbeiten und alles glatt über die Bühne zu bringen, benötigen wir von dir eine Abtretungserklärung.
-            </EText>
-            <EText>
-              Eine Abtretungserklärung ist einfach eine schriftliche Bestätigung, dass du bestimmte Rechte oder Ansprüche an uns abtrittst. Nur so können wir in deinem Namen deine Rechte einfordern.
-            </EText>
-            <EText>
-              Bitte füll das beigefügte Formular aus und schicke es wieder so an uns zurück.
-            </EText>
-            <EText>
-              Falls du Fragen hast oder Hilfe benötigst, stehen wir dir natürlich zur Seite. Schreib uns einfach eine kurze Nachricht.
-            </EText>
-            <EText>
-  Wir danken dir schon mal im Voraus für deine Unterstützung!
-            </EText>
-            <EText>
-  
-Mit besten Grüßen,
-            </EText>
-            <EText>
-  
-
- 
-              Dein RightsPlus Team
-            </EText>
-
- 
-
-
-
- 
-
-
-
+          <EText>
+            Hey <strong>{{ name }}</strong
+            >,
+          </EText>
+          <EText>
+            Um deinen Auftrag weiterzubearbeiten und alles glatt über die Bühne
+            zu bringen, benötigen wir von dir eine Abtretungserklärung.
+          </EText>
+          <EText>
+            Eine Abtretungserklärung ist einfach eine schriftliche Bestätigung,
+            dass du bestimmte Rechte oder Ansprüche an uns abtrittst. Nur so
+            können wir in deinem Namen deine Rechte einfordern.
+          </EText>
+          <EText>
+            Bitte füll das beigefügte Formular aus und schicke es wieder so an
+            uns zurück.
+          </EText>
+          <EText>
+            Falls du Fragen hast oder Hilfe benötigst, stehen wir dir natürlich
+            zur Seite. Schreib uns einfach eine kurze Nachricht.
+          </EText>
+          <EText
+            >Wir danken dir schon mal im Voraus für deine Unterstützung!</EText
+          >
+          <EText>Mit besten Grüßen,</EText>
+          <EText> Dein RightsPlus Team </EText>
           <EText :style="links">
             <ELink href="#" :style="link"> Your security audit log </ELink>
             ・
@@ -71,12 +59,9 @@ Mit besten Grüßen,
 <script setup lang="ts">
 import type { CSSProperties } from "vue";
 
-defineProps({
-  username: {
-    type: String,
-    default: "John Doe",
-  },
-});
+defineProps<{
+  name: string;
+}>();
 
 const container = {
   width: "480px",
