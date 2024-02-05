@@ -13,24 +13,47 @@
             src="/rights-plus-logo.png"
             alt="RightsPlus"
           />
-          <EText :style="title">
-            <strong>@{{ username }}</strong
-            >, a personal access was created on your account.
+          <EText class="text-3xl font-bold">
+            Wir übernehmen ab hier das Steuer
           </EText>
-
-          <ESection :style="section">
-            <EText :style="text">
-              Hey <strong>{{ username }}</strong
-              >!
+          <ESection class="p-5 border border-neutral-200 rounded">
+            <EText>
+              Hey <strong>{{name}}</strong>,
             </EText>
-            <EText :style="text">
-              A fine-grained personal access token (<ELink href="#">
-                resend </ELink
-              >) was recently added to your account.
+            <EText>
+              Um deinen Auftrag weiterzubearbeiten und alles glatt über die Bühne zu bringen, benötigen wir von dir eine Abtretungserklärung.
+            </EText>
+            <EText>
+              Eine Abtretungserklärung ist einfach eine schriftliche Bestätigung, dass du bestimmte Rechte oder Ansprüche an uns abtrittst. Nur so können wir in deinem Namen deine Rechte einfordern.
+            </EText>
+            <EText>
+              Bitte füll das beigefügte Formular aus und schicke es wieder so an uns zurück.
+            </EText>
+            <EText>
+              Falls du Fragen hast oder Hilfe benötigst, stehen wir dir natürlich zur Seite. Schreib uns einfach eine kurze Nachricht.
+            </EText>
+            <EText>
+  Wir danken dir schon mal im Voraus für deine Unterstützung!
+            </EText>
+            <EText>
+  
+Mit besten Grüßen,
+            </EText>
+            <EText>
+  
+
+ 
+              Dein RightsPlus Team
             </EText>
 
-            <EButton href="#" :style="button"> View your token </EButton>
-          </ESection>
+ 
+
+
+
+ 
+
+
+
           <EText :style="links">
             <ELink href="#" :style="link"> Your security audit log </ELink>
             ・
@@ -59,18 +82,6 @@ const container = {
   width: "480px",
   margin: "0 auto",
   padding: "20px 0 48px",
-} as CSSProperties;
-
-const title = {
-  fontSize: "24px",
-  lineHeight: 1.25,
-} as CSSProperties;
-
-const section = {
-  padding: "24px",
-  border: "solid 1px #dedede",
-  borderRadius: "5px",
-  textAlign: "center",
 } as CSSProperties;
 
 const text = {
