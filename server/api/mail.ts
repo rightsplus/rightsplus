@@ -67,15 +67,10 @@ export default defineEventHandler(async (event) => {
 	console.log("the body", typeof body)
 
 	try {
-		console.log({ data: body.to, pdfRoute: body.pdfRoute })
 		const pdf = await generatePDF({ data: body.to, pdfRoute: body.pdfRoute })
-		console.log(pdf)
 		const { html: template } = await useCompiler('AssignmentLetter.vue', {
-			props: {
-				url: 'some-url.com',
-			}
+			props: body.to
 		})
-		console.log('template', template)
 
 		sendMail({
 			...body,

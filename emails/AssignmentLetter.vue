@@ -5,20 +5,19 @@
       <EPreview>
         A fine-grained personal access token has been added to your account
       </EPreview>
-      <EBody class="bg-white text-neytral-500">
-        <EContainer :style="container">
+      <EBody class="text-gray-800 bg-neutral-100">
+        <EContainer class="bg-white rounded-t-lg p-8 max-w-6xl">
           <EImg
             width="32"
             height="32"
-            src="/rights-plus-logo.png"
+            src="https://rightsplus.up.railway.app/rights-plus-logo.png"
             alt="RightsPlus"
           />
           <EText class="text-3xl font-bold">
             Wir übernehmen ab hier das Steuer
           </EText>
           <EText>
-            Hey <strong>{{ name }}</strong
-            >,
+            Hey {{ name }},
           </EText>
           <EText>
             Um deinen Auftrag weiterzubearbeiten und alles glatt über die Bühne
@@ -41,15 +40,17 @@
             >Wir danken dir schon mal im Voraus für deine Unterstützung!</EText
           >
           <EText>Mit besten Grüßen,</EText>
-          <EText> Dein RightsPlus Team </EText>
-          <EText :style="links">
-            <ELink href="#" :style="link"> Your security audit log </ELink>
+          <EText>Dein RightsPlus Team</EText>
+          <EText>
+            <ELink href="#"> Your security audit log </ELink>
             ・
-            <ELink href="#" :style="link"> Contact support </ELink>
+            <ELink href="#"> Contact support </ELink>
           </EText>
 
-          <EText :style="footer">
-            GitHub, Inc. ・88 Colin P Kelly Jr Street ・San Francisco, CA 94107
+        </EContainer>
+        <EContainer class="bg-neutral-200 text-sm rounded-b-lg p-8 max-w-6xl flex justify-center">
+          <EText>
+            RightsPlus GbR ・Zülpicher Platz 18 ・50674 Köln
           </EText>
         </EContainer>
       </EBody>
@@ -57,45 +58,7 @@
   </ETailwind>
 </template>
 <script setup lang="ts">
-import type { CSSProperties } from "vue";
-
 defineProps<{
   name: string;
 }>();
-
-const container = {
-  width: "480px",
-  margin: "0 auto",
-  padding: "20px 0 48px",
-} as CSSProperties;
-
-const text = {
-  margin: "0 0 10px 0",
-  textAlign: "left",
-} as CSSProperties;
-
-const button = {
-  fontSize: "14px",
-  backgroundColor: "#28a745",
-  color: "#fff",
-  borderRadius: "0.5em",
-  padding: "0.3em 0.6em",
-  textTransform: "uppercase",
-} as CSSProperties;
-
-const links = {
-  textAlign: "center",
-} as CSSProperties;
-
-const link = {
-  color: "#0366d6",
-  fontSize: "12px",
-} as CSSProperties;
-
-const footer = {
-  color: "#6a737d",
-  fontSize: "12px",
-  textAlign: "center",
-  marginTop: "60px",
-} as CSSProperties;
 </script>
