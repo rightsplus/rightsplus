@@ -28,8 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Mask, MaskaDetail, MaskInputOptions, vMaska } from "maska";
-import { FormKitFrameworkContext } from "@formkit/core";
+import { Mask, MaskaDetail, vMaska } from "maska";
+import type { MaskInputOptions } from "maska";
+import type { FormKitFrameworkContext } from "@formkit/core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 const { locale } = useI18n();

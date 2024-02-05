@@ -17,13 +17,14 @@ export interface PassengerDetails {
   isMinor?: boolean;
 }
 export interface ClaimsForm {
+  uuid?: string;
   airport: {
     departure: Airport;
     arrival: Airport;
     trip: {
-      departure: Airport;
-      arrival: Airport;
-      layover: Airport[];
+      departure?: Airport;
+      arrival?: Airport;
+      layover?: Airport[];
     }
   };
   route: string | null;
@@ -36,9 +37,9 @@ export interface ClaimsForm {
     reason: string | null;
     replacement: boolean | null;
     connectingFlight: boolean | null;
+    replacementFlight: Flight | null;
     other: string | null;
   };
-  step: number;
   client: {
     agreedToTerms: boolean;
     passengers: PassengerDetails[];
@@ -206,11 +207,17 @@ export interface AirlineAviationStack { // not yet used, but should be used when
   country_iso2: string;
 }
 export interface Airline {
-  name: string
-  nameCountry: string
-  country: string
-  iata: string
-  isEuMember: boolean
+    id: string;
+    iata: string;
+    name: string;
+    country: string;
+    isEuMember: boolean;
+    callsign: string;
+    hubCode: string;
+    dateFounded: string;
+    iataPrefixAccounting: string;
+    fleetSize: string;
+    type: string[];
 }
 
 /* Google Maps */
@@ -238,7 +245,7 @@ export interface UsersTable {
   iban: string;
   agreed_to_terms: boolean;
 }
-export interface CasesTable {
+export interface ClaimsTable {
   id: string;
   flight_number: string;
   passenger_count: number;
@@ -267,12 +274,12 @@ export interface Database {
         Insert: UsersTable
         Update: UsersTable
       }
-      cases: {
-        Row: CasesTable
-        Insert: CasesTable
-        Update: CasesTable
+      claims: {
+        Row: ClaimsTable
+        Insert: ClaimsTable
+        Update: ClaimsTable
       }
-      cases: {
+      flights: {
         Row: FlightsTable
         Insert: FlightsTable
         Update: FlightsTable

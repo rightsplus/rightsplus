@@ -88,18 +88,20 @@ span, label, p {
 
 
 [data-floating-label="true"] {
+  --left: 1em;
+  --top: 1.125em;
+  --right: 0.5em;
+  --scale: 1;
   .formkit-input {
     padding-top: 1.5em;
     padding-bottom: 0.5em;
+    padding-left: calc(var(--left) - 1px);
+    padding-right: calc(var(--right) - 1px);
     &::placeholder {
       opacity: 0;
     }
   }
   .formkit-label {
-    --top: 1.125em;
-    --left: 1em;
-    --right: 0.5em;
-    --scale: 1;
     pointer-events: none;
     padding: 0 !important;
     font-size: 0.875em !important;
@@ -143,21 +145,15 @@ span, label, p {
     --top: 0em;
   }
   &[data-prefix-icon="true"] {
-    .formkit-label {
-      --left: 2.8em;
-    }
+    --left: 2.9em;
     .formkit-input {
       margin-left: calc(-1.8em + 1px);
-      padding-left: 2.8em;
     }
   }
   &[data-suffix-icon="true"]:not(.hidden-suffix) {
-    .formkit-label {
-      --right: 2.8em;
-    }
+    --right: 2.9em;
     .formkit-input {
       margin-right: calc(-1.8em + 1px);
-      padding-right: 2.8em;
     }
   }
 }

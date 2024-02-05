@@ -5,7 +5,14 @@
     class="flex flex-col gap-4 bg-neutral-100 rounded-xl p-5 sm:px-8 sm:py-7 w-full hover:bg-white duration-300"
   >
     <div class="flex justify-between items-center leading-none gap-5">
-      <Stars :rating="review.rating" :label="size === 'large' ? `${review.rating} Sterne bei Google Maps` : undefined"/>
+      <Stars
+        :rating="review.rating"
+        :label="
+          size === 'large'
+            ? `${review.rating} Sterne bei Google Maps`
+            : undefined
+        "
+      />
       <span class="text-base font-medium leading-none text-gray-500 ml-auto">{{
         review.relative_time_description
       }}</span>
@@ -26,18 +33,20 @@
     <div
       class="flex items-center gap-x-3 gap-y-1 text-sm leading-none flex-wrap"
     >
-      <img v-if="size === 'large'" :src="review.profile_photo_url" class="w-8 h-8" />
+      <img
+        v-if="size === 'large'"
+        :src="review.profile_photo_url"
+        class="w-8 h-8"
+      />
       <span class="font-bold">{{ review.author_name.split(" ")[0] }}</span>
-      <ClientOnly
-        ><FontAwesomeIcon icon="check-circle" class="text-green-500"
-      /></ClientOnly>
+      <FontAwesomeIcon icon="check-circle" class="text-green-500" />
       <span>RightsPlus Kund:in</span>
     </div>
   </NuxtLink>
 </template>
 
 <script lang="ts" setup>
-import { Review } from "@/types";
+import type { Review } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Stars from "@/components/molecules/Stars.vue";
 defineProps<{

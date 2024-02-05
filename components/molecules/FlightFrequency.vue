@@ -15,7 +15,7 @@
             (dayTime === 'afternoon' && hour >= 12 && hour < 20) ||
             (dayTime === 'evening' && hour >= 20),
         }"
-        :style="`height: ${freq * 10 + 2}px`"
+        :style="`height: ${((freq / max) * 30 + 2)}px`"
         @click="
           freq &&
             $emit('select',
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Flight } from "@/types";
+import type { Flight } from "@/types";
 const props = defineProps<{
 	flights: Flight[]
   dayTime: string | null;
@@ -52,4 +52,5 @@ const frequency = computed(() =>
       flightsPerHour.value.filter((flight) => flight === index).length
   )
 );
+const max = computed(() => Math.max(...frequency.value));
 </script>

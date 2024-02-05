@@ -6,6 +6,7 @@
     :data-prefix-icon="(current?.icon || prefixIcon) && 'true'"
   >
     <button
+      ref="button"
       role="button"
       autocomplete="off"
       :label="label"
@@ -22,39 +23,55 @@
         inputFocused && options?.length
           ? 'rounded-b-none ring-1 ring-primary-500'
           : '',
-        modelValue ? 'active' : '',
+        modelValue ? 'active' : ''
       ]"
     >
-      <ClientOnly
-        ><FontAwesomeIcon
-          v-if="current?.icon || prefixIcon"
-          :icon="current?.icon || prefixIcon"
-          :class="[inputFocused && options?.length ? 'text-primary-600' : '']"
-          fixed-width
-      /></ClientOnly>
+      <FontAwesomeIcon
+        v-if="current?.icon || prefixIcon"
+        :icon="current?.icon || prefixIcon"
+        :class="[inputFocused && options?.length ? 'text-primary-600' : '']"
+        fixed-width
+      />
 
       <div
         class="text-ellipsis overflow-hidden whitespace-nowrap translate-y-2 w-full text-left"
-        ><Transition name="move-up"
+      >
+        <Transition name="move-up"
           ><div v-if="current">{{ current?.label }}</div></Transition
-        ></div
-      ><ClientOnly><FontAwesomeIcon icon="angle-down" /></ClientOnly>
+        >
+      </div>
+      <FontAwesomeIcon icon="angle-down" />
     </button>
-    <label :for="id || name" class="formkit-label" :data-has-value="modelValue && 'true'">{{ label }}</label>
-    <Transition name="dropdown">
-      <Dropdown
-        class="w-full mt-[1px] z-50"
-        v-if="inputFocused"
-        :active="highlighted"
-        :options="options"
-        @input="handleInput"
-      />
-    </Transition>
+    <label
+      :for="id || name"
+      class="formkit-label"
+      :data-has-value="modelValue && 'true'"
+      >{{ label }}</label
+    >
+    <Teleport to="body">
+      <div
+        class="absolute z-9999"
+        :style="
+          `width: ${position.width}px; top: ${position.top}px; left: ${position.left}px;`
+        "
+      >
+        <Transition name="dropdown">
+          <Dropdown
+            v-if="inputFocused"
+            class="w-full mt-[1px] z-50"
+            :active="highlighted"
+            :options="options"
+            @input="handleInput"
+          />
+        </Transition>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import Dropdown, { DropdownItem } from "~~/components/molecules/Dropdown.vue";
+import Dropdown from "~~/components/molecules/Dropdown.vue";
+import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 const props = defineProps<{
   modelValue: string | null | undefined;
   name: string;
@@ -69,25 +86,25 @@ const emit = defineEmits([
   "update:modelValue",
   "query",
   "suffix-icon-click",
-  "prefix-icon-click",
+  "prefix-icon-click"
 ]);
-
+const [button, position] = usePosition()
 const highlighted = ref(
-  props.options.findIndex((e) => e.value === props.modelValue) || 0
+  props.options.findIndex(e => e.value === props.modelValue) || 0
 );
 const inputFocused = ref(false);
 const current = computed(() => {
-  return props.options.find((e) => e.value === props.modelValue);
+  return props.options.find(e => e.value === props.modelValue);
 });
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
-function handleInput(input: KeyboardEvent): void
+function handleInput(input: KeyboardEvent): void;
 function handleInput(input: DropdownItem | KeyboardEvent) {
   const index = typeof input === "number" ? input : highlighted.value;
   highlighted.value = index;
   emit("update:modelValue", props.options[index].value);
   focusNext(true);
-  inputFocused.value = false
+  inputFocused.value = false;
 }
 </script>

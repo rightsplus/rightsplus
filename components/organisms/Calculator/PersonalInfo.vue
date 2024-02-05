@@ -31,47 +31,30 @@
           >
         </div>
       </div> -->
-      <Button
-        type="button"
-        class="bg-white text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
+      <button
+        class="border border-neutral-100 hover:bg-neutral-100 h-12 text-base rounded-lg flex gap-2 items-center justify-center"
         @click="() => addPassenger()"
-        >Passagier hinzufügen</Button
       >
+        <FontAwesomeIcon icon="plus" class="text-sm" />Passagier hinzufügen
+      </button>
     </div>
-    <NavigationButtons @previous="$emit('back')" @next="submitPassengers" />
   </div>
-
-  <Popup
-    :open="authOpen"
-    @closeOutside="authOpen = false"
-    class="max-h-[90vh] w-[initial]"
-  >
-    <Authentication
-      inPopup
-      @close="authOpen = false"
-      @success="authOpen = false"
-      @changeMode="signUpMode = $event"
-      :initialMode="passengerHasAccount ? 'signIn' : 'signUp'"
-      :initialEmail="modelValue.client.passengers[0]?.email"
-    />
-  </Popup>
 </template>
 
 <script lang="ts" setup>
 import InputStepper from "~~/components/molecules/InputStepper.vue";
 import PotentialClaims from "~~/components/cells/PotentialClaims.vue";
-import { Database, ClaimsForm, PassengerDetails } from "@/types";
-import NavigationButtons from "./NavigationButtons.vue";
-import ProviderButton from "~/components/molecules/ProviderButton.vue";
+import type { Database, ClaimsForm, PassengerDetails } from "@/types";
 import PassengerForm from "./Forms/PassengerForm.vue";
 import { uuid } from "vue-uuid";
 import { watchDebounced } from "@vueuse/core";
 import auth from "~/middleware/auth";
-import { generatePDF } from "~/composables/supabase";
+import { defaultClaim } from "@/store";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const client = useSupabaseClient<Database>();
 const user = useSupabaseUser();
-const password = ref("");
+const { userExists, submitFlight, submitClaim } = useSupabaseFunctions();
 const emit = defineEmits(["submit", "back"]);
 const authOpen = ref(false);
 const passengerHasAccount = ref(false);
@@ -84,8 +67,12 @@ const props = defineProps<{
 const active = ref<number[]>([0]);
 
 const passengerCount = ref(1);
-
-
+const router = useRouter();
+const successfulSignUp = () => {
+  authOpen.value = false;
+  router.push("/status");
+  Object.assign(props.modelValue, defaultClaim);
+};
 const addPassenger = (n = 1) => {
   if (!props.modelValue.client.passengers)
     props.modelValue.client.passengers = [];
@@ -96,13 +83,16 @@ const addPassenger = (n = 1) => {
       address: {
         street: "",
         postalCode: "",
-        city: "",
+        city: ""
       },
       email: "",
       iban: "",
-      bookingNumber: "",
+      bookingNumber: ""
     });
   });
+  if (n === 1) {
+    active.value = [props.modelValue.client.passengers.length - 1];
+  }
 };
 const removePassenger = (n = 1) => {
   if (!props.modelValue.client.passengers)
@@ -159,125 +149,23 @@ onMounted(() => {
 });
 watchDebounced(
   () => props.modelValue.client.passengers[0]?.email,
-  (email) => {
+  email => {
     if (!email) return;
-    userExists({ client, email }).then((exists) => {
+    userExists({ email }).then(exists => {
       passengerHasAccount.value = exists;
     });
   },
   {
     debounce: 300,
-    immediate: true,
+    immediate: true
   }
 );
-
-const submitPassengers = async () => {
-  try {
-    if (!props.modelValue.flight) return;
-    const result = await Promise.all(
-      props.modelValue.client.passengers.map(async (e) => {
-        if (!user.value) {
-          authOpen.value = true;
-          // client.auth.signInWithOtp({
-          //   email: e.email,
-          //   options: {
-          //     data: {
-          //       first_name: e.firstName,
-          //       last_name: e.lastName,
-          //     },
-          //   },
-          // });
-        }
-        // user
-        // return await handleUploadFile(e.boardingPass?.[0].file);
-        // client.auth.signInWithOtp({
-        //   email: e.email,
-        //   options: {
-        //     data: {
-        //       first_name: e.firstName,
-        //       last_name: e.lastName,
-        //     },
-        //   },
-        // });
-      })
-    );
-    console.log(result);
-
-    // const { data: signUpData, error: signUpError } =
-    //   await client.auth.signInWithOtp({
-    //     email: props.modelValue.client..email,
-    //     options: {
-    //       data: {
-    //         first_name: props.modelValue.client..firstName,
-    //         last_name: props.modelValue.client..lastName,
-
-    //       },
-    //     },
-    //   });
-
-    // console.log(signUpData, signUpError);
-    // if (signUpError) throw Error(signUpError.message);
-    if (!user.value) {
-      console.warn("User not logged in");
-      return;
-    }
-
-    const preparedFlight = {
-      number: props.modelValue.flight.flight.iata,
-      status: props.modelValue.flight.flight_status,
-      airline_iata: props.modelValue.flight.airline.iata,
-      airline: props.modelValue.flight.airline.name,
-      codeshared: props.modelValue.flight.flight.codeshared,
-      scheduled_departure: props.modelValue.flight.departure.scheduled,
-      actual_departure: props.modelValue.flight.departure.actual,
-      airport_departure: props.modelValue.flight.departure.iata,
-      scheduled_arrival: props.modelValue.flight.arrival.scheduled,
-      actual_arrival: props.modelValue.flight.arrival.actual,
-      delay_arrival: props.modelValue.flight.arrival.delay,
-      airport_arrival: props.modelValue.flight.arrival.iata,
-      data: props.modelValue.flight,
-      // arrival_delay: arrival_delay,
-    };
-    const { data: flightData, error: flightError } = await client
-      .from("flights")
-      .upsert([preparedFlight], { onConflict: "number" });
-
-    if (flightError) throw Error(flightError.message);
-
-    const preparedCase = {
-      email: user.value?.email,
-      passenger_count: props.modelValue.client.passengerCount,
-      flight_number: props.modelValue.flight.flight.iata,
-    };
-    const { data: caseData, error: caseError } = await client
-      .from("cases")
-      .upsert([preparedCase])
-      .select("*");
-
-    if (caseError) throw Error(caseError.message);
-
-    if (Object.keys(caseData).length) {
-      useRouter().push("/status");
-    }
-    // console.log(flightData, flightError);
-    // console.log(caseData, caseError);
-    // // }
-
-    // if (signUpError) throw signUpError;
-    // console.log("Check your email for the login link!");
-    // emit("submit");
-  } catch (error) {
-    console.log(error);
-  } finally {
-    // console.log("done!");
-  }
-};
 
 async function sendEmail() {
   console.log("send-email");
   try {
     const { data, error } = await client.functions.invoke("send-email", {
-      body: { to: "leonvogler@ok.de", name: "Leon Vogler" },
+      body: { to: "leonvogler@ok.de", name: "Leon Vogler" }
     });
     if (error) {
       console.error(error);
@@ -298,7 +186,7 @@ const handleUploadFile = async (file: File) => {
     convertSize: 0.5,
     quality: 0.8,
     maxWidth: 1080,
-    maxHeight: 1080,
+    maxHeight: 1080
   };
   console.log(file);
   const resizedFile = await compressImage(file, options);
@@ -309,7 +197,7 @@ const handleUploadFile = async (file: File) => {
     .from("client-files")
     .upload(filePath, resizedFile, {
       cacheControl: "3600",
-      upsert: false,
+      upsert: false
     });
   if (error) {
     console.error(error);

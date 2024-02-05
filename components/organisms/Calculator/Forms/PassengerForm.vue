@@ -56,32 +56,26 @@
             v-model="modelValue.lastName"
             outer-class="col-span-2"
           />
+          <FormKit
+            type="email"
+            :label="$t('email')"
+            v-model="modelValue.email"
+            @input="emit('update:modelValue', { ...modelValue, email: $event })"
+            outer-class="col-span-full"
+          />
+          <!-- <FormKit
+            type="tel"
+            :label="`${$t('phone')} (${$t('optional')})`"
+            v-model="modelValue.phone"
+            outer-class="col-span-2"
+          /> -->
           <AddressInput
             name="address"
             label="Adresse"
             placeholder="z.B. Haupstraße 1, 10115 Berlin"
             v-model="modelValue.address"
             class="col-span-full"
-          />
-          <FormKit
-            type="email"
-            :label="$t('email')"
-            v-model="modelValue.email"
-            @input="emit('update:modelValue', { ...modelValue, email: $event })"
-            outer-class="col-span-2"
-          />
-          <FormKit
-            type="tel"
-            :label="$t('phone')"
-            v-model="modelValue.phone"
-            outer-class="col-span-2"
-          />
-          <InputIBAN
-            :label="$t('iban')"
-            :name="$t('iban')"
-            v-model="modelValue.iban"
-            outer-class="col-span-full"
-          />
+            />
           <FormKit
             :label="$t('bookingNumber')"
             v-model="modelValue.bookingNumber"
@@ -102,6 +96,16 @@
             fileRemoveIcon="xmark"
             suffix-icon="image"
           />
+
+          <InputIBAN
+            :label="$t('iban')"
+            :name="$t('iban')"
+            v-model="modelValue.iban"
+            outer-class="col-span-full"
+          />
+          <!-- <div class="col-span-full  text-sm">Damit wir den Fall notfalls vor Gericht verteidigen können.</div> -->
+          <!-- <div class="col-span-full  text-sm">Damit wird dir das Geld auszahlen können.</div> -->
+
             <!-- :fileIcon="modelValue.boardingPass?.[0]?.file.type?.includes('image') ? 'image' : 'file'" -->
             <!-- @suffix-icon-click="
               (_, e) => {
@@ -123,8 +127,9 @@
 import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import AccordionItem from "../../Accordion/AccordionItem.vue";
 import AddressInput from "./AddressInput.vue";
-import { PassengerDetails } from "@/types";
-import { MaskInputOptions, vMaska } from "maska";
+import type { PassengerDetails } from "@/types";
+import type { MaskInputOptions } from "maska";
+import { vMaska } from "maska";
 const props = defineProps<{
   modelValue: PassengerDetails;
   index: number;

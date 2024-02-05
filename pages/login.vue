@@ -9,4 +9,9 @@ import Authentication from "@/components/core/Authentication.vue";
 definePageMeta({
   middleware: ["auth"],
 });
+const user = useSupabaseUser();
+const router = useRouter();
+watch(user, (val) => {
+  if (val) router.push("/status");
+});
 </script>

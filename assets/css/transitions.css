@@ -213,6 +213,25 @@
   opacity: 0;
   scale: 0.99;
 }
+.popup-enter-active,
+.popup-enter-active .content {
+  transition: 0.3s cubic-bezier(0, 0, 0, 1);
+  transition-property: opacity, scale;
+}
+.popup-leave-active,
+.popup-leave-active .content {
+  transition: 0.2s cubic-bezier(1, 0, 0, 0);
+  transition-property: opacity, scale;
+}
+
+.popup-enter-from,
+.popup-leave-to {
+  opacity: 0;
+}
+.popup-enter-from .content,
+.popup-leave-to .content {
+  scale: 0.95;
+}
 
 
 .new-list-move, /* apply transition to moving elements */

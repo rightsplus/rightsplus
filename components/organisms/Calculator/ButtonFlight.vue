@@ -1,14 +1,7 @@
 <template>
-  <button
-    class="flex gap-5 items-center rounded-lg py-3 px-5 @container border border-transparent"
-    :class="{
-      'bg-gray-700 text-white': selected,
-      'bg-neutral-100 hover:bg-neutral-50 text-gray-800 hover:border-neutral-100':
-        !selected,
-    }"
-    @click="emit('click', flight)"
-  >
-    <div
+  <button @click="emit('click', flight)">
+    <FlightCard :flight="flight" :selected="selected" is="button" />
+  <!-- <div
       class="w-14 h-14 hidden justify-center items-center bg-white rounded-full -ml-2 shrink-0 @md:flex"
     >
       <FontAwesomeIcon
@@ -89,8 +82,23 @@
     </div>
 
     <div
+      class="ml-auto"
+      v-if="flight.flight_status === 'otherFlight'"
+    >
+      <FormKit
+        @click.stop
+        :label="$t('flightNumber')"
+        v-model="flight.iata"
+        outer-class="text-left"
+        placeholder="z.B. FR789"
+        maxlength="20"
+        autocomplete="off"
+        v-maska:[options]
+      />
+    </div>
+    <div
       class="flex flex-col gap-1 items-center ml-auto"
-      v-if="flight.flight_status !== 'otherFlight'"
+      v-else
     >
       <span
         class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
@@ -103,11 +111,19 @@
         >{{ $t("cancelled") }}</span
       >
       <span
-        v-else-if="flight.arrival?.delay"
+        v-else-if="flight.arrival?.delay > 0"
         class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
         :class="selected ? 'text-red-400' : 'text-red-500'"
         >{{
           $t("delayed.by", { value: getDuration(flight.arrival?.delay) })
+        }}</span
+      >
+      <span
+        v-else-if="flight.arrival?.delay < 0"
+        class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
+        :class="selected ? 'text-green-400' : 'text-green-500'"
+        >{{
+          $t("early.by", { value: getDuration(flight.arrival?.delay * -1) })
         }}</span
       >
       <span
@@ -119,67 +135,18 @@
         :class="selected ? 'text-green-400' : 'text-green-600'"
         >{{ $t("onTime") }}</span
       >
-    </div>
+    </div> -->
   </button>
 </template>
 
 <script setup lang="ts">
-import { Flight } from "@/types";
+import type { Flight } from "@/types";
+import FlightCard from "~/components/cells/FlightCard.vue";
 
-const props = defineProps<{
-  selected: Flight | null;
+defineProps<{
   flight: Flight;
+  selected: boolean;
 }>();
 
 const emit = defineEmits(["click"]);
-const selected = computed(() => {
-  return props.selected?.flight?.iata === props.flight.flight.iata;
-});
-const iata = computed(() => {
-  return props.flight.flight.iata?.replace(/^(.{2})(.*)$/, "$1 $2");
-});
-const logoError = ref(false);
-const logo = computed(() => {
-  let iata =
-    props.flight.flight.codeshared?.airline_iata?.toUpperCase() ||
-    props.flight.airline?.iata;
-  return getAirlineLogo(iata, 80);
-});
-const date = (date: string) => {
-  return new Date(date).toLocaleDateString(useI18n().locale.value);
-};
-const departureCity = ref();
-const arrivalCity = ref();
-const { locale } = useI18n()
-
-watch(() => props.flight, () => {
-  getCities([props.flight.departure.iata, props.flight.arrival.iata], locale.value).then(([departure, arrival]) => {
-    departureCity.value = departure;
-    arrivalCity.value = arrival;
-  });
-}, {immediate: true, deep: true})
-const overNight = (flight: Flight) => {
-  const getTime = (date: string) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-  };
-  const timeDifferenceDays =
-    (getTime(flight.arrival.scheduled) - getTime(flight.departure.scheduled)) /
-    (1000 * 60 * 60 * 24);
-
-  return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
-};
-const time = (time: string) => {
-  return new Date(time).toLocaleTimeString(useI18n().locale.value, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-const ucfirst = (value: string) => {
-  // return value
-  return value?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-    letter.toUpperCase()
-  );
-};
 </script>

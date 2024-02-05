@@ -1,16 +1,17 @@
 <template>
   <div class="overflow-x-hidden">
+      <img
+        src="/images/samuel-t-XYJ2JZrj0kg-unsplash-2.jpg"
+        alt="Airport"
+        class="absolute inset-0 h-full w-full object-cover object-right -z-1"
+      />
     <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
     >
+      <!-- style="background-image: url('/images/samuel-t-XYJ2JZrj0kg-unsplash-2.jpg'); background-size: cover; background-position: center;" -->
       <!-- <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-white"
     > -->
-      <img
-        src="/airport-light-comp.jpg"
-        alt="Airport"
-        class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
-      />
       <!-- <video muted loop playsinline autoplay
         class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 grayscale brightness-110 opacity-70">
         <source src="https://www.united-internet.de/fileadmin/user_upload/united-innovation-united-success-united-internet.mp4">
@@ -18,9 +19,8 @@
       <div
         class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1"
       >
-        <div class="flex flex-col gap-12 lg:w-1/2">
-          <Dashboard />
-          <!-- <Dashboard class="shadow-xl shadow-white/60 from-white/10 to-white/70 bg-gradient-to-b bg-gradient rounded-3xl -m-5 p-5"/> -->
+        <div class="flex flex-col gap-12 lg:w-2/3 max-w-3xl">
+          <Dashboard class="" />
           <Transition name="fade">
             <div
               class="container bg-white rounded-3xl p-5 sm:p-12 shadow-2xl shadow-black/10"
@@ -28,7 +28,7 @@
             >
               <FlightByAirport
                 v-model="useClaim().value"
-                @submit="useClaim().value.step = useClaim().value.step || 0"
+                @submit="() => {}"
               /></div
           ></Transition>
         </div>
@@ -38,13 +38,13 @@
         class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10"
       >
         <Transition name="move-up">
-          <ScrollDown v-if="scrollDownReady" scrollTo="process-summary" />
+          <ScrollDown v-show="scrollDownReady" scrollTo="process-summary" />
         </Transition>
       </div>
     </section>
 
-    <Button @click="generate">Generate PDF</Button>
-    <ProcessSummary id="process-summary" />
+    <!-- <Button @click="generate">Generate PDF</Button> -->
+    <ProcessSummary id="process-summary" class="relative bg-white" />
     <YourRights />
     <CTASection />
     <Reasons />
@@ -64,7 +64,7 @@ import Reasons from "@/components/organisms/Sections/Reasons.vue";
 import Stats from "@/components/organisms/Sections/Stats.vue";
 import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
 import Reviews from "@/components/organisms/Sections/Reviews.vue";
-import { Database } from "~/types";
+import type { Database } from "@/types";
 const ready = ref(false);
 const scrollDownReady = ref(false);
 onMounted(() => {
@@ -74,11 +74,13 @@ onMounted(() => {
   }, 1000);
 });
 const client = useSupabaseClient<Database>();
+const { generatePDF } = useSupabaseFunctions();
 
 const generate = async () => {
-  const url = "https://en.wikipedia.org/wiki/Mac_(computer)"
-  generatePDF({ client, url }).then(console.log).catch(console.error);
-}
-
-
+  const pdfData = await generatePDF({
+    name: claim.value.client.passengers[0].firstName || "Leon",
+    to: "leonvogler@ok.de"
+  });
+  console.log(pdfData);
+};
 </script>

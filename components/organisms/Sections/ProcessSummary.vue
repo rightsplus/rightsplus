@@ -26,7 +26,7 @@
             class="flex gap-5 items-center"
             :class="item.color"
           >
-            <ClientOnly><FontAwesomeIcon :icon="item.icon" /></ClientOnly>
+            <FontAwesomeIcon :icon="item.icon" />
             <div class="flex flex-col gap-1 leading-none">
               <span class="text-base leading-none text-gray-500">{{
                 item.description

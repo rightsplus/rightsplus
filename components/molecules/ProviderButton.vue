@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Provider } from "@supabase/supabase-js";
+import type { Provider } from "@supabase/supabase-js";
 
 const { t } = useI18n();
 const props = defineProps<{

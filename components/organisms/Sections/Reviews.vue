@@ -9,9 +9,9 @@
             RightsPlus Kund·innen berichten
           </h1>
           <h2 class="text-lg sm:text-2xl font-medium text-gray-500">
-            Unsere Kund·innen sprechen für sich! Über 500 zufriedene Nutzer·innen
-            haben bereits auf die einfache und effektive Erstattung ihrer
-            Entschädigungsansprüche durch RightsPlus gesetzt.
+            Unsere Kund·innen sprechen für sich! Über 500 zufriedene
+            Nutzer·innen haben bereits auf die einfache und effektive Erstattung
+            ihrer Entschädigungsansprüche durch RightsPlus gesetzt.
           </h2>
         </div>
         <div
@@ -37,9 +37,8 @@
           target="_blank"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
           ><span>Weitere Bewertungen ansehen</span>
-          <ClientOnly
-            ><FontAwesomeIcon icon="arrow-right" class="text-sm" /></ClientOnly
-        ></NuxtLink>
+          <FontAwesomeIcon icon="arrow-right" class="text-sm"
+        /></NuxtLink>
       </div>
     </div>
   </section>
@@ -47,7 +46,7 @@
 
 <script lang="ts" setup>
 import ReviewCard from "@/components/cells/ReviewCard.vue";
-import { Review } from "@/types";
+import type { Review } from "@/types";
 const { $state } = useNuxtApp();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
@@ -64,26 +63,30 @@ const shuffle = (reviews?: Review[]) =>
 const activeReview = ref<Review | null>();
 const added = [
   {
-    "author_name": "Leon Vogler",
-    "author_url": "https://www.google.com/maps/contrib/108999170046068646837/reviews",
-    "language": "de",
-    "original_language": "de",
-    "profile_photo_url": "https://lh3.googleusercontent.com/a/AAcHTtdirEWToPJXhLRKZRcptoNNX1TCde9GVeSG6gBY4Q=w72-h72-p-rp-mo-br100",
-    "rating": 4,
-    "relative_time_description": "vor 3 Wochen",
-    "text": "Vielen Dank, hat alles super schnell und unkompliziert geklappt.",
-    "time": 1575290474,
-    "translated": false
-}
-]
-const entries = computed(() => shuffle([...added, ...useAppState().reviews.entries || []]));
+    author_name: "Leon Vogler",
+    author_url:
+      "https://www.google.com/maps/contrib/108999170046068646837/reviews",
+    language: "de",
+    original_language: "de",
+    profile_photo_url:
+      "https://lh3.googleusercontent.com/a/AAcHTtdirEWToPJXhLRKZRcptoNNX1TCde9GVeSG6gBY4Q=w72-h72-p-rp-mo-br100",
+    rating: 4,
+    relative_time_description: "vor 3 Wochen",
+    text: "Vielen Dank, hat alles super schnell und unkompliziert geklappt.",
+    time: 1575290474,
+    translated: false
+  }
+];
+const entries = computed(() =>
+  shuffle([...added, ...(useAppState().reviews.entries || [])])
+);
 useFetch<MapsResponseData>(request)
   .then(({ data }) => {
     if (!data.value?.result) return;
     useAppState().reviews = {
       entries: data.value?.result?.reviews,
-      url: data.value?.result?.url,
-    }
+      url: data.value?.result?.url
+    };
   })
-  .catch((e) => console.log(e));
+  .catch(e => console.log(e));
 </script>

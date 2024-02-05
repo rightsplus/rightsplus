@@ -19,12 +19,12 @@
 
 <script lang="ts" setup>
 import { countries } from "@/config/countries";
-import { Airport } from "@/types";
-import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
+import type { Airport } from "@/types";
+import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import DropdownSearch from "~~/components/molecules/DropdownSearch.vue";
 
 const props = defineProps<{
-  modelValue: Airport;
+  modelValue: Airport | undefined;
   name: string;
   label: string;
   placeholder?: string;

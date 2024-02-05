@@ -53,7 +53,7 @@ import {
   getWeather,
   isUnsafeToTakeoffOrLand,
 } from "@/utils";
-import { Airport, Flight } from "@/types";
+import type { Airport, Flight } from "@/types";
 import { euMember } from "is-european";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";

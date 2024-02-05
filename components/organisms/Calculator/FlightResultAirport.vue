@@ -36,9 +36,9 @@
 </template>
 
 <script setup lang="ts">
-import { Airport, Flight, FlightPhase } from "@/types";
+import type { Airport, Flight, FlightPhase } from "@/types";
 import Weather from "@/components/molecules/Weather.vue";
-import { WeatherResponse } from "~~/utils";
+import type { WeatherResponse } from "~~/utils";
 const weather = ref(null as null | Partial<WeatherResponse<number, string>>);
 
 const props = defineProps<{

@@ -1,13 +1,11 @@
 <template>
-
-{{selectedRow && clickedRow}}
   <DataTable
     :value="data"
     removableSort
     :pt="{
       wrapper: { class: 'rounded-xl' },
       bodyCell: { class: 'leading-none' },
-      paginator: { bottom: { class: 'border-b-0' } },
+      paginator: { bottom: { class: 'border-b-0' } }
     }"
     paginator
     :rows="10"
@@ -67,27 +65,27 @@
         {{
           new Date(data.created_at).toLocaleString({
             dateStyle: "short",
-            timeStyle: "short",
+            timeStyle: "short"
           })
         }}
       </template>
     </Column>
     <Column header="Aktion">
       <template #body="{ data }">
-      <div class="flex gap-2 font-medium">
-        <button
-          @click="send(data)"
-          class="text-neutral-600 bg-neutral-100 hover:bg-green-500 hover:text-white p-2 rounded"
-        >
-          {{ data.client_email }}
-        </button>
-        <!-- <button
+        <div class="flex gap-2 font-medium">
+          <button
+            @click="sendEmail(data)"
+            class="text-neutral-600 bg-neutral-100 hover:bg-green-500 hover:text-white p-2 rounded"
+          >
+            {{ data.client_email }}
+          </button>
+          <!-- <button
           @click="initiatePayout(data.client_email)"
           class="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
         >
           Payout
         </button> -->
-      </div>
+        </div>
       </template>
     </Column>
   </DataTable>
@@ -96,7 +94,9 @@
     @closeOutside="clickedRow = false"
     @close="clickedRow = false"
     class="p-12"
-    :title="`${selectedRow?.[0]?.airport_departure} → ${selectedRow?.[0]?.airport_arrival}`"
+    :title="
+      `${selectedRow?.[0]?.airport_departure} → ${selectedRow?.[0]?.airport_arrival}`
+    "
     ><template #pretitle>
       <span
         class="text-xs font-medium p-1 rounded"
@@ -133,7 +133,7 @@
 defineProps<{
   data: any[];
 }>();
-const mail = useMail();
+const { t } = useI18n()
 
 const getStatus = (status: string, delay: string) => {
   const newStatus =
@@ -142,22 +142,22 @@ const getStatus = (status: string, delay: string) => {
   const classes = {
     cancelled: "bg-red-100 text-red-600",
     delayed: "bg-yellow-100 text-yellow-700",
-    landed: "bg-green-100 text-green-600",
+    landed: "bg-green-100 text-green-600"
   }[newStatus];
 
   return {
     class: classes,
-    text: useI18n().t(newStatus),
-    value: newStatus,
+    text: t(newStatus),
+    value: newStatus
   };
 };
 const selectedRow = ref(null);
 const clickedRow = ref(false);
-const rowSelect = (e) => {
-  console.log(e)
+const rowSelect = e => {
+  console.log(e);
   if (e.type === "row") clickedRow.value = true;
 };
-const rowUnselect = (e) => {
+const rowUnselect = e => {
   clickedRow.value = false;
 };
 
@@ -170,8 +170,8 @@ async function initiatePayout(email: string) {
       body: JSON.stringify({
         amount: 10,
         currency: "usd",
-        email,
-      }),
+        email
+      })
     });
 
     if (response.ok) {
@@ -186,18 +186,33 @@ async function initiatePayout(email: string) {
     console.error(error); // Handle the error
   }
 }
-const send = async (to: any) => {
-  const response = await fetch("/api/mail", {
-    method: "POST",
-    headers: useRequestHeaders(["cookie"]),
-    body: JSON.stringify({
-      from: "info@rightsplus.de",
+const { send } = useSendMail();
+const file = ref();
+const sendEmail = async (to: any) => {
+  console.log(to);
+  const [passenger] = to.item.client.passengers;
+  const data = {
+    name: [passenger.firstName, passenger.lastName].join(" "),
+    address: passenger.address.street,
+    postalCode: passenger.address.postalCode,
+    city: passenger.address.city,
+    flightNumber: to.item.flight_number,
+    flightDate: to.item.flights.scheduled_arrival,
+    departure: to.item.flights.airport_departure,
+    arrival: to.item.flights.airport_arrival,
+    payment: "278,00 €",
+    date: new Date().toISOString()
+  };
+  try {
+    send({
       to: to.client_email,
-      name: to.client_name,
-      subject: "Incredible",
-      text: "This is an incredible test message",
-    }),
-  });
+      template: "assignmentLetter",
+      pdfRoute: "assignmentLetter",
+      data
+    }).then(e => e.json().then(console.log));
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
 <style>

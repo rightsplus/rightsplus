@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import gsap from "gsap";
-
+const { t, n } = useI18n();
 const status = computed(() => useFlightStatus(useClaim().value.flight));
 const noClaims = computed(() => {
   if (status.value.barred?.value) return "Verjährt";
@@ -86,13 +86,13 @@ const resultTiles = computed(() => {
     {
       name: 'distance',
       label: 'Distanz',
-      value: useI18n().n(getDistance(useClaim().value), 'km'),
+      value: n(getDistance(useClaim().value), 'km'),
       icon: 'route'
     },
     {
       name: 'status',
       label: 'Flugstatus',
-      value: useI18n().t(useClaim().value.disruption.type),
+      value: t(useClaim().value.disruption.type),
       icon: 'exclamation-triangle'
     },
     {

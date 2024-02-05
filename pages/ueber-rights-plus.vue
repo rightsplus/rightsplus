@@ -1,7 +1,7 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-gray-900 text-white">
     <img
-      src="/empty-airport.jpg"
+      src="/images/empty-airport.jpg"
       alt="Airport"
       class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1 top-8 md:top-6 lg:top-0"
     />

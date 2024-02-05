@@ -20,8 +20,12 @@ export default {
       code: 'de',
       file: 'de.json'
     },
+    {
+      code: 'en',
+      file: 'en.json'
+    },
   ],
   vueI18n: {
-    numberFormats: ['de', 'en'].reduce((a, v) => ({ ...a, [v]: format()}), {})
+    numberFormats: ['de', 'en-GB'].reduce((a, v) => ({ ...a, [v]: format()}), {})
   }
 }

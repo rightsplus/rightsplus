@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import Callout from "@/components/molecules/Callout.vue";
-import { ClaimsForm } from "~/types";
+import type { ClaimsForm } from "@/types";
 
 const props = defineProps<{
   status: ReturnType<typeof useFlightStatus>;

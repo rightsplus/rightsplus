@@ -1,7 +1,6 @@
-import { App } from 'vue'
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import { ClaimsForm, Flight, FlightPhase } from "~~/types";
+import type { ClaimsForm, Flight, FlightPhase } from "@/types";
 
 
 const circumstance = reactive({
@@ -37,7 +36,7 @@ export function isBarred(flight: Flight | string | null) {
 		console.warn("Missing scheduled date", typeof date)
 		return false
 	}
-	return new Date().getFullYear() - date.getFullYear() > 3 ? new Date(date.getFullYear() + 1, 0) : false
+	return new Date().getFullYear() - date.getFullYear() > 3 ? new Date(new Date().getFullYear() - 3, 0) : false
 }
 
 // legacy
@@ -88,15 +87,15 @@ export const getDistance = (claim: ClaimsForm | null) => {
 	return getAirportDistance(departure, arrival)
 }
 
-export const getEU = (flight: Flight | null) => {
-	if (!flight) return {
+export const getEU = async (flight: Flight | null) => {
+	if (!flight?.airline?.iata) return {
 		departure: false,
 		arrival: false,
 		airline: false,
 	}
-	const { departureAirport, arrivalAirport } = getAirports(flight)
+	const { departureAirport, arrivalAirport } = await getAirports(flight)
 
-	const airlineObject = useAirlines(flight.airline.iata)
+	const airlineObject = await useAirlines(flight.airline.iata)
 
 	const departure = euMember(departureAirport?.country_code || "")
 	const arrival = euMember(arrivalAirport?.country_code || "")
@@ -114,7 +113,8 @@ export const useFlightStatus = (flight: Flight | null) => {
 
 	const barred = isBarred(flight)
 	const delay = getDelay(flight?.arrival, 180)
-	const eu = getEU(flight)
+	// const eu = getEU(flight)
+	const eu = false
 	return {
 		barred: {
 			value: barred,
@@ -158,151 +158,162 @@ export const getFilteredFlights = ({ departure, arrival, date, custom }: {
 	return useAppState().flights?.filter(filterFlights)
 }
 
-export const useDisruption = (flight: Flight | null) => {
+export const useDisruption = (flight?: Flight | null) => {
 	const { t, locale } = useI18n()
+	try {
+		const arrivalAirport = computed(
+			() => flight ? useAirports()[flight?.arrival.iata] : {}
+		);
 
-	const arrivalAirport = computed(
-		() => useAirports()[flight?.arrival.iata || ""]
-	);
+		const format = new Intl.NumberFormat(locale.value);
+		const delayedDetails = [
+			{ value: "<3", preLabel: t("fewerThan").trim(), label: t("hours", 3) },
+			{ value: "3-4", label: t("hours", { n: format.formatRange(3, 4) }, 3) }, // bei +3500 km: Vergütung 50%
+			{ value: ">4", preLabel: t("moreThan").trim(), label: t("hours", 4) },
+		];
+		const cancelledDetails = [
+			{ value: "<7", preLabel: t("fewerThan").trim(), label: t("days", 7) },
+			{ value: "8-14", label: t("days", { n: format.formatRange(8, 14) }, 8) },
+			{ value: ">14", preLabel: t("moreThan").trim(), label: t("days", 14) },
+		];
+		const disruptions = [
+			{
+				value: "delayed",
+				label: t("disruptions.delayed.label"),
+				sublabel: t("disruptions.delayed.sublabel", { city: arrivalAirport.value?.city || t('itsDestination') }),
+				icon: "clock",
+			},
+			{
+				value: "cancelled",
+				label: t("disruptions.cancelled.label"),
+				sublabel: t("disruptions.cancelled.sublabel"),
+				icon: "arrow-right-arrow-left",
+			},
+			{
+				value: "noBoarding",
+				label: t("disruptions.noBoarding.label"),
+				sublabel: t("disruptions.noBoarding.sublabel"),
+				icon: "ban",
+			},
+			{ value: "other", label: t('other'), icon: "question" },
+		];
+		const noBoardingReasons = [
+			{
+				value: "missingOrInvalidTravelDocuments",
+				label: t('reasons.missingOrInvalidTravelDocuments.label'),
+				icon: "passport",
+				selfInflicted: true
+			},
+			{
+				value: "lateArrival",
+				label: t('reasons.lateArrival.label'),
+				icon: "clock",
+				selfInflicted: true
+			},
+			{
+				value: "overbooking",
+				label: t('reasons.overbooking.label'),
+				icon: "users",
+			},
+			{
+				value: "healthIssues",
+				label: t('reasons.healthIssues.label'),
+				icon: "heartbeat",
+				selfInflicted: true // @todo: check
+			},
+			{
+				value: "intoxication",
+				label: t('reasons.intoxication.label'),
+				icon: "beer",
+				selfInflicted: true
+			},
+			{
+				value: "securityConcerns",
+				label: t('reasons.securityConcerns.label'),
+				icon: "shield-alt",
+				selfInflicted: true
+			},
+			{
+				value: "behaviouralIssues",
+				label: t('reasons.behaviouralIssues.label'),
+				icon: "smoking",
+				selfInflicted: true
+			},
+			{
+				value: "technicalIssues",
+				label: t('reasons.technicalIssues.label'),
+				icon: "wrench",
+			},
+			{
+				value: "restrictedItems",
+				label: t('reasons.restrictedItems.label'),
+				icon: "gun",
+				selfInflicted: true
+			},
+			{
+				value: "restrictedDestinations",
+				label: t('reasons.restrictedDestinations.label'),
+				icon: "map-marker-alt",
+				selfInflicted: true // @todo: check
+			},
+			{
+				value: "other",
+				label: t('other'),
+				icon: "question",
+			},
+		];
+		const cancelledDelayedReasons = [
+			{
+				value: "dontRemember",
+				label: t('resons.dontRemember.label'),
+				icon: "question",
+			},
+			{
+				value: "technicalIssues",
+				label: t('reasons.technicalIssues.label'), icon: "cogs"
+			},
+			{ value: "weatherConditions", label: "Wetterbedingungen", icon: "cloud-sun" },
+			{
+				value: "lateArrivalOfAircraft",
+				label: t('reasons.lateArrivalOfAircraft.label'),
+				icon: "plane-arrival",
+			},
+			{ value: "crewIssues", label: t('resons.crewIssues.label'), icon: "users" },
+			{ value: "airportCongestion", label: t('resons.airportCongestion.label'), icon: "road" },
+			{ value: "securityIssues", label: t('resons.securityIssues.label'), icon: "shield-alt" },
+			{
+				value: "airTrafficControl",
+				label: t('reasons.airTrafficControl.label'),
+				icon: "plane-circle-exclamation",
+			},
+			{
+				value: "unexpectedIssues",
+				label: t('reasons.unexpectedIssues.label'),
+				icon: "exclamation-triangle",
+			},
+			{
+				value: "other",
+				label: t('other'),
+				icon: "question",
+			},
+		];
+		return {
+			delayedDetails,
+			cancelledDetails,
+			disruptions,
+			noBoardingReasons,
+			cancelledDelayedReasons,
+		}
+	} catch (error) {
+		console.error(error)
 
-	const format = new Intl.NumberFormat(locale.value);
-	const delayedDetails = [
-		{ value: "<3", preLabel: t("fewerThan").trim(), label: t("hours", 3) },
-		{ value: "3-4", label: t("hours", { n: format.formatRange(3, 4) }, 3) }, // bei +3500 km: Vergütung 50%
-		{ value: ">4", preLabel: t("moreThan").trim(), label: t("hours", 4) },
-	];
-	const cancelledDetails = [
-		{ value: "<7", preLabel: t("fewerThan").trim(), label: t("days", 7) },
-		{ value: "8-14", label: t("days", { n: format.formatRange(8, 14) }, 8) },
-		{ value: ">14", preLabel: t("moreThan").trim(), label: t("days", 14) },
-	];
-	const disruptions = [
-		{
-			value: "delayed",
-			label: t("disruptions.delayed.label"),
-			sublabel: t("disruptions.delayed.sublabel", { city: arrivalAirport.value?.city || t('itsDestination') }),
-			icon: "clock",
-		},
-		{
-			value: "cancelled",
-			label: t("disruptions.cancelled.label"),
-			sublabel: t("disruptions.cancelled.sublabel"),
-			icon: "arrow-right-arrow-left",
-		},
-		{
-			value: "noBoarding",
-			label: t("disruptions.noBoarding.label"),
-			sublabel: t("disruptions.noBoarding.sublabel"),
-			icon: "ban",
-		},
-		{ value: "other", label: t('other'), icon: "question" },
-	];
-	const noBoardingReasons = [
-		{
-			value: "missingOrInvalidTravelDocuments",
-			label: t('reasons.missingOrInvalidTravelDocuments.label'),
-			icon: "passport",
-			selfInflicted: true
-		},
-		{
-			value: "lateArrival",
-			label: t('reasons.lateArrival.label'),
-			icon: "clock",
-			selfInflicted: true
-		},
-		{
-			value: "overbooking",
-			label: t('reasons.overbooking.label'),
-			icon: "users",
-		},
-		{
-			value: "healthIssues",
-			label: t('reasons.healthIssues.label'),
-			icon: "heartbeat",
-			selfInflicted: true // @todo: check
-		},
-		{
-			value: "intoxication",
-			label: t('reasons.intoxication.label'),
-			icon: "beer",
-			selfInflicted: true
-		},
-		{
-			value: "securityConcerns",
-			label: t('reasons.securityConcerns.label'),
-			icon: "shield-alt",
-			selfInflicted: true
-		},
-		{
-			value: "behaviouralIssues",
-			label: t('reasons.behaviouralIssues.label'),
-			icon: "smoking",
-			selfInflicted: true
-		},
-		{
-			value: "technicalIssues",
-			label: t('reasons.technicalIssues.label'),
-			icon: "wrench",
-		},
-		{
-			value: "restrictedItems",
-			label: t('reasons.restrictedItems.label'),
-			icon: "gun",
-			selfInflicted: true
-		},
-		{
-			value: "restrictedDestinations",
-			label: t('reasons.restrictedDestinations.label'),
-			icon: "map-marker-alt",
-			selfInflicted: true // @todo: check
-		},
-		{
-			value: "other",
-			label: t('other'),
-			icon: "question",
-		},
-	];
-	const cancelledDelayedReasons = [
-		{
-			value: "dontRemember",
-			label: t('resons.dontRemember.label'),
-			icon: "question",
-		},
-		{
-			value: "technicalIssues",
-			label: t('reasons.technicalIssues.label'), icon: "cogs"
-		},
-		{ value: "weatherConditions", label: "Wetterbedingungen", icon: "cloud-sun" },
-		{
-			value: "lateArrivalOfAircraft",
-			label: t('reasons.lateArrivalOfAircraft.label'),
-			icon: "plane-arrival",
-		},
-		{ value: "crewIssues", label: t('resons.crewIssues.label'), icon: "users" },
-		{ value: "airportCongestion", label: t('resons.airportCongestion.label'), icon: "road" },
-		{ value: "securityIssues", label: t('resons.securityIssues.label'), icon: "shield-alt" },
-		{
-			value: "airTrafficControl",
-			label: t('reasons.airTrafficControl.label'),
-			icon: "plane-circle-exclamation",
-		},
-		{
-			value: "unexpectedIssues",
-			label: t('reasons.unexpectedIssues.label'),
-			icon: "exclamation-triangle",
-		},
-		{
-			value: "other",
-			label: t('other'),
-			icon: "question",
-		},
-	];
-	return {
-		delayedDetails,
-		cancelledDetails,
-		disruptions,
-		noBoardingReasons,
-		cancelledDelayedReasons,
+		return {
+			delayedDetails: [],
+			cancelledDetails: [],
+			disruptions: [],
+			noBoardingReasons: [],
+			cancelledDelayedReasons: [],
+		}
 	}
 }
 
@@ -366,6 +377,17 @@ export const fetchFlights = async ({ departure, arrival, date }: {
 		url.searchParams.append("arr_iata", arrival);
 		// url.searchParams.append('flight_date', date);
 
+		// const url = new URL("https://app.airhelp.com/api/flights/selector");
+
+		// url.searchParams.append('local_departure_date', new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-'));
+		// url.searchParams.append("departure_airport_code", departure);
+		// url.searchParams.append("arrival_airport_code", arrival);
+
+
+		const { fetchProxy } = useSupabaseFunctions()
+
+		console.log("fetching...", url.href);
+
 		const headers = new Headers();
 		headers.append("Content-Type", "application/json");
 		headers.append("Access-Control-Allow-Origin", "*");
@@ -375,25 +397,58 @@ export const fetchFlights = async ({ departure, arrival, date }: {
 			method: "GET",
 			headers: headers,
 		};
-
-		console.log("fetching...", url.href);
-		
 		// fetch("api/aviationstack-delayed.json")
 		// fetch("api/aviationstack-lax-jfk.json")
 
+		// const data: Flight[] = await (await fetch("aviationstack-delayed.json")).json()
+		// const { flights: data }: { flights: Flight[] } = await fetchProxy(url.href)
+		// const { flights: data }: { flights: Flight[] } = await (await fetch(url.href, requestOptions)).json()
 		const { data }: { data: Flight[] } = await (await fetch(url.href, requestOptions)).json()
+		console.log("fetched from api", data);
+
+		const transformAirHelp = (f) => {
+			return {
+				flight_date: f.local_departure_at,
+				flight_status: f.humanized_arrival_status,
+				departure: {
+					iata: departure,
+					delay: f.delay_mins,
+					scheduled: f.local_departure_at,
+					actual: f.local_actual_departure_at,
+				},
+				arrival: {
+					iata: arrival,
+					delay: f.delay_mins,
+					scheduled: f.local_arrival_at,
+					actual: f.local_actual_arrival_at,
+				},
+				airline: {
+					iata: f.airline_code,
+					name: f.airline_name,
+					codeshared: f.operating_airline_code,
+				},
+				flight: {
+					codeshared: {},
+					iata: `${f.airline_code}${f.flight_number}`,
+					number: f.flight_number,
+				},
+				aircraft: {},
+				life: {}
+			}
+		}
 
 		const uniqueFlights = data
 			? removeDuplicateFlights(
 				[...useAppState().flights, ...data].sort(sortByScheduled)
+				// [...useAppState().flights, ...data.map(transformAirHelp)].sort(sortByScheduled)
 			)
 			: [];
 
+		const airports = {
+			departure: await useAirports(departure),
+			arrival: await useAirports(arrival),
+		};
 		const flights = uniqueFlights?.map((flight) => {
-			const airports = {
-				departure: useAirports(flight.departure.iata),
-				arrival: useAirports(flight.arrival.iata),
-			};
 			return {
 				...flight,
 				...(airports.departure &&
@@ -412,5 +467,5 @@ export const fetchFlights = async ({ departure, arrival, date }: {
 }
 
 export const getCities = async (iataCodes: (string | undefined)[], locale?: string) => {
-  return (await Promise.all(iataCodes.map(e => useAirports(e)))).map(e => getCityTranslation(e, locale));
+	return (await Promise.all(iataCodes.map(e => useAirports(e)))).map(e => getCityTranslation(e, locale));
 };

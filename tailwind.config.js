@@ -17,6 +17,7 @@ const colors = {
   blue: sky,
   green: emerald,
   yellow,
+  orange,
   red,
   black,
   gray,
@@ -33,7 +34,6 @@ module.exports = {
     "./formkit.config.{js,ts}",
     "./nuxt.config.{js,ts}",
     "./app.vue",
-    "./node_modules/vue-tailwind-datepicker/**/*.js"
   ],
   tailwindcss: {
     viewer: true,

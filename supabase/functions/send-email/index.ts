@@ -1,5 +1,5 @@
-import { SMTPClient } from "denomailer"
 import { corsHeaders } from '../_shared/cors.ts'
+import { SMTPClient } from "denomailer"
 
 const smtp = new SMTPClient({
   connection: {
@@ -12,7 +12,6 @@ const smtp = new SMTPClient({
     },
   },
 })
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })

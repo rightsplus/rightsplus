@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import AccordionItem from "@/components/organisms/Accordion/AccordionItem.vue";
-import { AccordionStructure }  from "./types";
+import type { AccordionStructure }  from "./types";
 defineProps<{
   tag?: AccordionStructure;
   classes?: AccordionStructure;

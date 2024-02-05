@@ -1,72 +1,100 @@
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-    <ClientOnly
-      ><Transition mode="out-in" name="fade">
-        <div
-          v-if="useClaim().value"
-          class="lg:col-span-3 lg:col-start-2 bg-white rounded-2xl md:rounded-3xl p-4 md:p-12 w-full"
-          :style="`--height: ${containerHeight}px`"
-          ref="container"
-        >
-          <component
-            v-model="useClaim().value"
-            :is="activeStep?.component"
-            :title="activeStep?.title"
-            @submit="next"
-            @back="back"
-            @reset="reset"
-          /></div
-      ></Transition>
-    </ClientOnly>
+  <div class="w-full max-w-3xl mx-auto grid gap-5 mb-12">
+    <div class="flex justify-center items-center gap-2">
+      <CheckList
+        class="flex justify-center"
+        :items="['professionalExpertise', 'completeProcess', 'noRisk']"
+      />
 
-    <!-- <div class="flex flex-col gap-3">
-      <Transition mode="out-in" name="fade">
-        <div
-          v-if="useClaim().value.flight && useClaim().value.step > 1"
-          class="flex flex-col gap-2 bg-neutral-100 rounded-xl w-full p-4 px-5"
-          v-bind="$attrs"
-        >
-          <PotentialClaims />
-        </div>
-      </Transition>
-    </div> -->
+      <button
+        @click="useClaim().reset()"
+        class="text-sm text-neutral-500 hover:text-neutral-800 underline underline-offset-2 flex gap-2 items-center py-2 px-5 leading-none"
+      >
+        reset
+      </button>
+    </div>
+
+    <div
+      class="w-full max-w-3xl mx-auto bg-white rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 grid gap-5"
+    >
+      <ClientOnly>
+        <component
+          v-model="useClaim().value"
+          :is="step?.component"
+          :title="step?.title"/>
+        <ClaimsNavigation :nextLabel="nextLabel" @submit="submit"
+      /></ClientOnly>
+    </div>
   </div>
+
+  <Popup
+    :open="authOpen"
+    @closeOutside="authOpen = false"
+    class="max-h-[90vh] w-[initial]"
+  >
+    <Authentication
+      inPopup
+      @close="authOpen = false"
+      @success="successfulSignUp"
+      @changeMode="signUpMode = $event"
+      :initialMode="passengerHasAccount ? 'signIn' : 'signUp'"
+      :initialEmail="modelValue.client.passengers[0]?.email"
+    />
+  </Popup>
 </template>
 
 <script setup lang="ts">
-const containerHeight = ref(100);
-const activeStep = computed(() => useSteps()[useClaim().value?.step || 0]);
+import { next, prev, reset } from "@/composables/steps";
+import ClaimsNavigation from "@/components/organisms/Calculator/ClaimsNavigation.vue";
+const user = useSupabaseUser();
+const { userExists, submitFlight, submitClaim } = useSupabaseFunctions();
+const { steps, index, step } = useSteps();
+const authOpen = ref(false);
+const nextLabel = computed(() => {
+  if (index.value === steps.value.length - 1) return "Absenden";
+  return "Weiter";
+});
 
-const next = (e?: number) => {
-  useClaim().value.step = e ?? useClaim().value.step + 1;
-};
-const back = (e?: number) => {
-  useClaim().value.step = e ?? useClaim().value.step - 1;
-};
-const reset = (e?: number) => {
-  useClaim().value.step = e ?? 0;
-};
-watch(
-  () => useClaim().value?.step,
-  () => console.log(useClaim().value)
-);
+const { value: claim } = useClaim();
+const { send } = useSendMail()
 
-// watch(
-//   () => useClaim().value?.step,
-//   () => setTimeout(setHeight, 0)
-// );
-// const setHeight = () => {
-//   const childrenHeight = Math.min(
-//     window.innerHeight - 120,
-//     Math.max(
-//       100,
-//       ((this.$refs.container as HTMLElement)?.children[0]?.offsetHeight ||
-//         0) + 80
-//     )
-//   );
-//   this.containerHeight = (
-//     this.$refs.container as HTMLElement
-//   )?.children[0]?.offsetHeight;
-// }
+const submit = async () => {
+  try {
+    if (!claim.flight) return;
+    // const result = await Promise.all(
+    //   claim.client.passengers.map(async e => {
+    //     // return await handleUploadFile(e.boardingPass?.[0].file);
+    //   })
+    // );
+    // if (!user.value) {
+    //   authOpen.value = true;
+    //   console.warn("User not logged in");
+    //   return;
+    // }
+    try {
+      const response = await submitFlight(claim.flight);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    try {
+      const response = await submitClaim(claim);
+      const email = send({
+        to: claim.client.passengers[0].email,
+        subject: "Deine Anfrage wurde erfolgreich eingereicht",
+        text: "Deine Anfrage wurde erfolgreich eingereicht"
+      })
+      console.log(response, email);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    useRouter().push("/status");
+  } catch (error) {
+    console.log(error);
+  } finally {
+    // console.log("done!");
+  }
+};
 </script>
-<style scoped></style>

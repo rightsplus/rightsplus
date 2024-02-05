@@ -1,10 +1,11 @@
 import { Airline, AirlineAviationEdge, Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
 import weatherCodes from "~~/assets/weather-codes.json";
 import { countries } from "@/config/countries";
-import { DropdownItem } from "~~/components/molecules/Dropdown.vue";
+import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
-import { State, airlines, airports } from "~~/store";
+import { airlines, airports, claim } from "~~/store";
+import type { State } from "~~/store";
 import { euMember } from "is-european";
 import Compressor from "compressorjs";
 
@@ -300,23 +301,27 @@ export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query
 	return hits
 }
 export const queryAirlines = async (query?: string) => {
-	if (!query) return;
-	const hits = await fetch("api/airlines-aviation-edge.json")
-		.then((data) => data.json())
-		.then((data: AirlineAviationEdge[]) => data.reduce((acc, cur) => {
-			const airline = {
-				// ...cur,
-				name: cur.nameAirline,
-				nameCountry: cur.nameCountry,
-				country: cur.codeIso2Country,
-				iata: cur.codeIataAirline,
-				isEuMember: euMember(cur.codeIso2Country),
-			};
-			acc[cur.codeIataAirline] = airline
-			airlines.value[cur.codeIataAirline] = airline
-			return acc;
-		}, {} as Record<string, Airline>));
-	return hits
+	const hits = await fetch("/api/airlines.json")
+	const data = await hits.json()
+	airlines.value = data as Record<string, Airline>
+	return query ? data[query] : data
+	// console.log(data.filter(e => e.status === 'active' && e.iata_code).reduce((acc, cur) => {
+	// 	const airline = {
+	// 		id: cur.id,
+	// 		iata: cur.iata_code,
+	// 		name: cur.airline_name,
+	// 		country: cur.country_iso2,
+	// 		isEuMember: euMember(cur.country_iso2),
+	// 		callsign: cur.callsign,
+	// 		hubCode: cur.hub_code,
+	// 		dateFounded: cur.date_founded,
+	// 		iataPrefixAccounting: cur.iata_prefix_accounting,
+	// 		fleetSize: cur.fleet_size,
+	// 		type: cur.type?.split(', ') || [],
+	// 	};
+	// 	acc[cur.iata_code] = airline
+	// 	return acc;
+	// }, {} as Record<string, Airline>))
 }
 
 export const getCityTranslation = (airport: Airport, locale = 'de', highlight = false) => {

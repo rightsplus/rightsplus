@@ -24,7 +24,7 @@
     <BurgerIcon
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
-      class="absolute cursor-pointer right-5 top-4 sm:top-6 z-40 md:hidden"
+      class="absolute cursor-pointer right-5 sm:right-12 top-4 sm:top-6 z-40 md:hidden"
       :class="[useAppState()?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
@@ -35,6 +35,7 @@
         'max-w-screen': useRoute().path === '/admin',
       }"
     >
+    <!-- {{  useSteps().index }} -->
       <TransitionGroup
         name="list"
         tag="ul"
@@ -60,7 +61,7 @@
           </NuxtLink>
         </li>
         <li
-          v-for="(item, i) in links"
+          v-for="(item, i) in links.filter(Boolean)"
           :key="item.name"
           class="order-1 flex whitespace-nowrap"
           :class="{ 'button text-base': item.type === 'button' }"
@@ -93,7 +94,7 @@
 <script setup lang="ts">
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Logo from "~/assets/logo";
-import { Database } from "~/types";
+import type { Database } from "@/types";
 interface Route {
   name: string;
   path: string;
@@ -139,7 +140,7 @@ const links = computed((): Route[] => {
   const routes = [
     {
       name: "claims",
-      path: "/claims-calculator",
+      path: "/claims/new",
       title: "Rechner",
     },
     {

@@ -1,19 +1,22 @@
 <template>
-  <div class="w-full">
-  <span class="text-sm font-medium">{{ step + 1 }}. {{ steps[step].label }}</span>
-  <ol
-    class="flex w-full text-md font-medium text-center md:text-base gap-1 md:gap-2 py-2 overflow-x-auto -mx-3 px-3"
-  >
-    <div
-      v-for="({}, index) in steps"
-      @click="$emit('setStep', index)"
-      class="w-full max-w-[50px] h-2 rounded-full cursor-pointer"
-      :class="{
-        'bg-primary-400 hover:bg-primary-500': index <= step,
-        'bg-neutral-200 hover:bg-neutral-300': index > step,
-      }"
-    />
-    <!-- <Step
+  <div>
+    <span class="text-sm font-medium"
+      >{{ step + 1 }}. {{ steps[step].label }}</span
+    >
+    <ol
+      class="flex w-full text-md font-medium text-center md:text-base gap-1 md:gap-2 py-2 -mx-3 px-3"
+    >
+      <div
+        v-for="({ completed }, index) in steps"
+        @click="$emit('setStep', index)"
+        class="w-full max-w-[50px] h-2 rounded-full cursor-pointer"
+        :class="{
+          'bg-primary-400 hover:bg-primary-500': index <= step,
+          'bg-neutral-200 hover:bg-neutral-300': index > step,
+          'pointer-events-none opacity-50': claimProccess.completed < index - 2
+        }"
+      />
+      <!-- <Step
       v-for="({ label }, index) in steps"
       :key="label"
       :label="label"
@@ -22,15 +25,12 @@
       @setStep="$emit('setStep', index)"
       class="min-w-[60px]"
     /> -->
-  </ol>
-</div>
+    </ol>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import Step from './Step.vue'
-interface Step {
-  label: string;
-}
+import type { Step } from "@/composables/steps";
 defineProps<{
   step: number;
   steps: Step[];
@@ -38,4 +38,6 @@ defineProps<{
 defineEmits<{
   (event: "setStep", step: number): void;
 }>();
+
+const claimProccess = useProcessClaim()
 </script>

@@ -5,7 +5,7 @@
     ref="container"
   >
     <div class="flex flex-col gap-3">
-      <h2 class="text-2xl sm:text-3xl font-bold">Flug auswählen</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold">{{ title }}</h2>
     </div>
     <AccordionItem
       index="date"
@@ -67,6 +67,7 @@
         finden.
         <!-- <FormKit type="button">Mit Flugnummer finden</FormKit> -->
       </Callout>
+      <Callout v-if="loading" class="justify-center">Lädt ... </Callout>
       <div
         v-else-if="!isBarred(modelValue.flight_date) && filteredFlights.length"
         class="w-full flex flex-col gap-3"
@@ -80,7 +81,7 @@
           :classes="{
             content: 'mt-5',
             title:
-              'w-full flex justify-between items-center text-base sm:text-lg md:text-xl leading-tight font-medium',
+              'w-full flex justify-between items-center text-base sm:text-lg md:text-xl leading-tight font-medium'
           }"
           :collapsible="false"
         >
@@ -105,10 +106,7 @@
             </SectionHeader>
           </template>
           <template #content>
-            <Callout v-if="loading" class="justify-center"
-              >Loading ...
-            </Callout>
-            <div v-else class="flex flex-col gap-5">
+            <div v-if="!loading" class="flex flex-col gap-5">
               <FlightList
                 :flights="filteredFlights"
                 :modelValue="modelValue.flight"
@@ -128,25 +126,15 @@
         </AccordionItem>
       </div>
     </div>
-    <NavigationButtons
-      @previous="$emit('back')"
-      @next="$emit('submit')"
-      :nextDisabled="
-        !!isBarred(modelValue.flight_date) ||
-        !modelValue.flight ||
-        !filteredFlights.length
-      "
-    />
   </div>
 </template>
 <script setup lang="ts">
 import SectionHeader from "./SectionHeader.vue";
 import FlightList from "./FlightList.vue";
-import { ClaimsForm, Flight } from "@/types";
-import NavigationButtons from "./NavigationButtons.vue";
+import type { ClaimsForm, Flight } from "@/types";
 import InputDate from "@/components/molecules/InputDate.vue";
 import Callout from "@/components/molecules/Callout.vue";
-import { filterFlightByEU, get24HTime } from "@/utils";
+import { get24HTime } from "@/utils";
 import AccordionItem from "../Accordion/AccordionItem.vue";
 import { useElementSize } from "@vueuse/core";
 
@@ -154,11 +142,12 @@ const container = ref(null as HTMLElement | null);
 
 const props = defineProps<{
   modelValue: ClaimsForm;
+  title: string;
 }>();
 const europeanUnion = computed(() =>
   Object.values(
     useFlightStatus(props.modelValue.flight).europeanUnion.value
-  ).every((e) => !e)
+  ).every(e => !e)
 );
 defineEmits(["back", "submit"]);
 const loading = ref(true);
@@ -178,14 +167,17 @@ watch(
   () => props.modelValue.flight_date || props.modelValue.airport,
   () => {
     const { departure, arrival } = props.modelValue.airport;
-    getCities([departure?.iata, arrival?.iata], locale.value).then(([departure, arrival]) => {
-      departureCity.value = departure;
-      arrivalCity.value = arrival;
-    });
+    getCities([departure?.iata, arrival?.iata], locale.value).then(
+      ([departure, arrival]) => {
+        departureCity.value = departure;
+        arrivalCity.value = arrival;
+      }
+    );
+    loading.value = true
     fetchFlights({
       departure: departure?.iata,
       arrival: arrival?.iata,
-      date: props.modelValue.flight_date,
+      date: props.modelValue.flight_date
     })
       .catch(() => (error.value = true))
       .finally(() => (loading.value = false));
@@ -196,11 +188,18 @@ watch(
 const filteredFlights = computed(() => {
   if (!props.modelValue.route) return [];
   const { departure, arrival } = props.modelValue.airport;
-  return getFilteredFlights({
+  const filtered =  getFilteredFlights({
     departure: departure?.iata,
     arrival: arrival?.iata,
-    date: props.modelValue.flight_date,
+    date: props.modelValue.flight_date
   });
+  return filtered;
+});
+
+watch(() => filteredFlights.value, (val) => {
+  if (!val.find(e => e.flight.iata === props.modelValue.flight?.flight.iata)) {
+    props.modelValue.flight = null
+  }
 });
 
 const logoError = ref(false);
@@ -214,19 +213,17 @@ const logo = computed(() => {
 const { width } = useElementSize(container);
 const flightDate = computed(() => {
   const date = new Date(props.modelValue.flight_date);
-  const locale = useI18n().locale.value;
   const format = {
     weekday: width.value > 480 ? "long" : undefined,
     year: "numeric",
     month: "long",
-    day: "numeric",
+    day: "numeric"
   } as const;
-  return date.toLocaleDateString(locale, format);
+  return date.toLocaleDateString(locale.value, format);
 });
 const departureTime = computed(() => {
   const date = new Date(props.modelValue.flight?.departure.scheduled || "");
-  const locale = useI18n().locale.value;
   const format = { hour: "2-digit", minute: "2-digit" } as const;
-  return date.toLocaleTimeString(locale, format);
+  return date.toLocaleTimeString(locale.value, format);
 });
 </script>

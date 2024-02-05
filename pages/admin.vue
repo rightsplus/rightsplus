@@ -15,11 +15,9 @@
 
 <script setup lang="ts">
 import CustomTable from "@/components/cells/CustomTable.vue";
-import { UsersTable } from "~~/types";
-import { FlightsTable } from "~~/types";
+import type { UsersTable, FlightsTable, Database, ClaimsTable } from "@/types";
 
 const currentUser = useSupabaseUser();
-import { Database, CasesTable } from "~~/types";
 
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("admin", async () => {
@@ -32,22 +30,22 @@ const { data } = await useAsyncData("admin", async () => {
       .single()
   ).data;
 
-  const cases =
+  const claims =
     user?.role === "admin"
       ? ((
-          await client.from("cases").select(`
+          await client.from("claims").select(`
         *,
         users ( * ),
         flights ( * )
       `)
-        ).data as (CasesTable & { users: UsersTable } & {
+        ).data as (ClaimsTable & { users: UsersTable } & {
           flights: FlightsTable;
         })[])
       : [];
-  // console.log(user, cases);
+  // console.log(user, claims);
   return {
     user,
-    cases,
+    claims,
   };
 });
 
@@ -60,7 +58,7 @@ const time = (d: string) =>
   });
 const logo = getAirlineLogo || (() => "");
 const tableData = computed(() => {
-  return data.value?.cases?.map((item) => {
+  return data.value?.claims?.map((item) => {
     return {
       status: item.flights.status,
       delay: item.flights.delay_arrival,

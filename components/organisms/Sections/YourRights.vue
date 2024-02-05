@@ -1,7 +1,7 @@
 <template>
   <section class="py-12 md:py-24 bg-neutral-200 relative">
     <img
-      src="/airport-light-comp.jpg"
+      src="/images/airport-light-comp.jpg"
       alt="Airport"
       class="absolute inset-0 h-full max-h-screen w-full object-cover object-right -z-1 hidden lg:block"
     />
@@ -24,9 +24,7 @@
             class="flex gap-5 items-center"
             :class="{ 'text-gray-500': item.exception }"
           >
-            <ClientOnly
-              ><FontAwesomeIcon :icon="item.icon" :class="item.color"
-            /></ClientOnly>
+            <FontAwesomeIcon :icon="item.icon" :class="item.color" />
             <span class="flex flex-col gap-1 leading-none font-medium">{{
               item.title
             }}</span>
@@ -42,31 +40,31 @@ const process = [
     icon: "plane-circle-xmark",
     color: "text-green-600",
     title:
-      "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
+      "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab"
   },
   {
     icon: "clock",
     color: "text-green-600",
     title:
-      "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
+      "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)"
   },
   {
     icon: "globe-europe",
     color: "text-green-600",
     title:
-      "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
+      "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein"
   },
   {
     icon: "calendar",
     color: "text-green-600",
-    title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
+    title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden"
   },
   {
     icon: "meteor",
     color: "text-gray-500",
     title:
       "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
-    exception: true,
-  },
+    exception: true
+  }
 ];
 </script>

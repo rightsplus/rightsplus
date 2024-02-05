@@ -4,9 +4,9 @@
     :class="[
       {
         '!ring-red-500': isFocused && modelValue && !IBAN.isValid(modelValue),
-        '!ring-green-500': isFocused && modelValue && IBAN.isValid(modelValue),
+        '!ring-green-500': isFocused && modelValue && IBAN.isValid(modelValue)
       },
-      outerClass,
+      outerClass
     ]"
     data-floating-label="true"
     :data-suffix-icon="suffixIcon && 'true'"
@@ -45,16 +45,16 @@
           ? 'Diese IBAN scheint korrekt zu sein'
           : 'Irgendetwas stimmt nicht mit deiner IBAN'
       "
-      ><ClientOnly
-        ><FontAwesomeIcon
-          :icon="valid ? 'check-circle' : 'times-circle'"
-          :class="valid ? 'text-green-500' : 'text-red-500'" /></ClientOnly
-    ></label>
+      ><FontAwesomeIcon
+        :icon="valid ? 'check-circle' : 'times-circle'"
+        :class="valid ? 'text-green-500' : 'text-red-500'"
+    /></label>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { MaskInputOptions, vMaska } from "maska";
+import type { MaskInputOptions } from "maska";
+import { vMaska } from "maska";
 import IBAN from "iban";
 const props = defineProps<{
   modelValue: string;
@@ -64,9 +64,9 @@ const props = defineProps<{
 }>();
 const options: MaskInputOptions = reactive({
   tokens: {
-    "@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() },
+    "@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() }
   },
-  mask: (value) => maskByCountry(value).mask,
+  mask: value => maskByCountry(value).mask
 });
 const isFocused = ref(false);
 const countryError = ref(false);
@@ -84,7 +84,7 @@ const maskByCountry = (str: string, country = "DE") => {
       countryCode
     ),
     example: IBAN.printFormat(example),
-    length: example.length,
+    length: example.length
   };
 };
 

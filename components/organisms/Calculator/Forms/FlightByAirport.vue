@@ -26,35 +26,25 @@
       label="Jetzt Entschädigung berechnen!"
       outer-class="!mb-0"
     />
-  <div class="flex flex-wrap mt-6 gap-y-2 gap-x-4 leading-none text-sm text-neutral-500">
-  <div class="flex items-center gap-2">
-    <ClientOnly><FontAwesomeIcon icon="circle-check" class="text-green-500" /></ClientOnly>
-    <span>Fachliche Expertise</span>
-  </div>
-  <div class="flex items-center gap-2">
-    <ClientOnly><FontAwesomeIcon icon="circle-check" class="text-green-500" /></ClientOnly>
-    <span>Gesamte Abwicklung</span>
-  </div>
-  <div class="flex items-center gap-2">
-    <ClientOnly><FontAwesomeIcon icon="circle-check" class="text-green-500" /></ClientOnly>
-    <span>Kein Risiko</span>
-  </div>
-  </div>
+    <CheckList
+      class="mt-6"
+      :items="['professionalExpertise', 'completeProcess', 'noRisk']"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { FormKit } from "@formkit/vue";
 import AirportInput from "./AirportInput.vue";
-import { ClaimsForm } from "~~/types";
+import type { ClaimsForm } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-const props = defineProps<{ modelValue: ClaimsForm }>()
+const props = defineProps<{ modelValue: ClaimsForm }>();
 const emit = defineEmits(["submit"]);
 const start = () => {
-  useRouter().push("/claims-calculator");
-  props.modelValue.step = 0
-  emit('submit')
-}
+  useRouter().push("/claims/new");
+  useSteps().index.value = 0;
+  emit("submit");
+};
 </script>
 <style scoped>
 .double {

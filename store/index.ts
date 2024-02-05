@@ -15,7 +15,7 @@ export interface State {
   log: (message: string) => void;
 }
 
-const defaultClaim = {
+export const defaultClaim = {
   airport: {
     departure: {} as Airport,
     arrival: {} as Airport,
@@ -34,9 +34,11 @@ const defaultClaim = {
       firstName: '',
       lastName: '',
       email: '',
-      address: '',
-      postalCode: '',
-      city: '',
+      address: {
+        street: '',
+        postalCode: '',
+        city: '',
+      },
       iban: '',
     }],
     agreedToTerms: false,
@@ -49,11 +51,10 @@ const defaultClaim = {
     replacement: null,
     connectingFlight: null,
   },
-  step: 0,
-  steps: [],
 } as ClaimsForm
 export const claim = reactive({
-  value: defaultClaim
+  value: defaultClaim,
+  reset: () => claim.value = defaultClaim,
 })
 export const state = reactive({
   routes: {} as Record<string, Route>,

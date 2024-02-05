@@ -20,10 +20,13 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@formkit/nuxt',
     '@nuxtjs/supabase',
-    'nuxt-mail',
+    // '@vue-email/nuxt'
   ],
   build: {
-    transpile: ["primevue"]
+    transpile: [
+      "primevue",
+      "@fortawesome/vue-fontawesome"
+    ]
   },
   nitro: {
     compressPublicAssets: true,
@@ -48,6 +51,10 @@ export default defineNuxtConfig({
     server: process.env.NODE_ENV === 'development',
     client: process.env.NODE_ENV === 'development',
   },
+  vueEmail: {
+    baseUrl: 'https://rightsplus.up.railway.app/',
+    autoImport: true,
+  },
   runtimeConfig: {
     public: {
       stripe: {
@@ -66,7 +73,6 @@ export default defineNuxtConfig({
     },
   },
   pwa,
-  mail,
   buildModules: [
     '@nuxtjs/pwa',
   ],

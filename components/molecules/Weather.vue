@@ -5,15 +5,11 @@
         v-if="code !== null && weatherIconMap[code]"
         :class="getColor(weatherIconMap[code])"
       >
-        <ClientOnly
-          ><FontAwesomeIcon :icon="weatherIconMap[code]"
-        /></ClientOnly>
+        <FontAwesomeIcon :icon="weatherIconMap[code]" />
       </div>
       <span class="font-bold">{{ $n(temperature, "celsius") }}</span>
     </div>
-    <span class="gap-2 items-center text-xs"
-      >{{ $n(wind || 0) }} km/h</span
-    >
+    <span class="gap-2 items-center text-xs">{{ $n(wind || 0) }} km/h</span>
   </div>
 </template>
 
@@ -86,7 +82,7 @@ const weatherIconMap = [
   "smog",
   "smog",
   "smog",
-  "smog",
+  "smog"
 ];
 </script>
 
