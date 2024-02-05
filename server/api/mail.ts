@@ -1,10 +1,18 @@
 import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
 import nodemailer from 'nodemailer'
-import { assignmentLetter } from './templates'
 import { generatePDF as generate } from "@/pdf/pdfGenerator";
 import { useCompiler } from '#vue-email'
 
-type SendMailProps = { from: string; to: string; subject: string; text: string; name: string; template: string, pdf: Buffer }
+type SendMailProps = {
+	from: string;
+	to: string;
+	subject: string;
+	text: string;
+	name: string;
+	template: string;
+	pdf: Buffer
+}
+
 const sendMail = async (props: SendMailProps) => {
 	const transporter = nodemailer.createTransport({
 		host: "smtp.gmail.com",
@@ -17,7 +25,7 @@ const sendMail = async (props: SendMailProps) => {
 	})
 
 	try {
-		// console.log('props', from, to, subject, text, name)
+		// console.log('props', props)
 		// console.log('transporter', transporter)
 		transporter.sendMail({
 			from: process.env.SMTP_USER,
@@ -54,19 +62,26 @@ export default defineEventHandler(async (event) => {
 	const isAdmin = user?.email && (await client.from('users').select('role').eq('email', user.email).single()).data?.role === 'admin'
 
 	if (!isAdmin) throw createError({ statusCode: 401, message: "Unauthorized" })
-	const body = await readBody(event)
+	const body = JSON.parse(await readBody(event))
 
-	console.log(body)
+	console.log("the body", typeof body)
 
 	try {
+		console.log({ data: body.to, pdfRoute: body.pdfRoute })
 		const pdf = await generatePDF({ data: body.to, pdfRoute: body.pdfRoute })
-		const template = await useCompiler('AssignmentLetter.vue', {
+		console.log(pdf)
+		const { html: template } = await useCompiler('AssignmentLetter.vue', {
 			props: {
 				url: 'some-url.com',
 			}
 		})
+		console.log('template', template)
 
-		sendMail({ ...body, pdf, template })
+		sendMail({
+			...body,
+			pdf,
+			template
+		})
 		return {
 			statusCode: 200,
 			body: JSON.stringify({ message: 'Payout successful' })

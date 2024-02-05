@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-12 p-12 bg-white page">
+  <div class="grid grid-cols-4 gap-12 p-12 page">
     <div class="col-span-3 flex flex-col gap-12">
       <h1 class="text-4xl font-bold">{{t('assignmentLetter.title')}}</h1>
       <p class="whitespace-pre-line hyphens-auto">
@@ -98,6 +98,9 @@ const aside = [
     height: 297mm;
     @apply shadow-xl rounded mx-auto my-12;
   }
+}
+body {
+  @apply bg-white
 }
 header,
 footer {

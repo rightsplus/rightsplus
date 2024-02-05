@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@formkit/nuxt',
     '@nuxtjs/supabase',
-    // '@vue-email/nuxt'
+    '@vue-email/nuxt'
   ],
   build: {
     transpile: [
