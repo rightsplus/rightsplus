@@ -75,7 +75,7 @@ const routes = computed(() => [
     title: t("ourService"),
     links: [
       {
-        name: "claims/new",
+        name: "claim/new",
         title: t("calculateYourClaim")
       },
 
@@ -97,7 +97,7 @@ const routes = computed(() => [
         title: t("privacy")
       },
       {
-        name: "term-and-conditions",
+        name: "terms-and-conditions",
         title: t('termsAndConditions')
       },
       {
@@ -109,6 +109,11 @@ const routes = computed(() => [
   {
     title: t("about").trim(),
     links: [
+      {
+        link: "blog",
+        name: "blog",
+        title: t("blog")
+      },
       {
         link: "team",
         name: "team",

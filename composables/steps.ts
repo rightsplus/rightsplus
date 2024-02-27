@@ -1,47 +1,39 @@
-import ConnectingFlights from "~/components/organisms/Calculator/ConnectingFlights.vue";
-import PersonalInfo from "~/components/organisms/Calculator/PersonalInfo.vue";
-import SelectFlight from "~/components/organisms/Calculator/SelectFlight.vue";
-import SelectReason from "~/components/organisms/Calculator/SelectReason.vue";
+import StepItinerary from "~/components/organisms/Calculator/StepItinerary.vue";
+import StepDisruption from "~/components/organisms/Calculator/StepDisruption.vue";
+import StepPassengers from "~/components/organisms/Calculator/StepPassengers.vue";
+import StepCompleteSubmission from "~/components/organisms/Calculator/StepCompleteSubmission.vue";
 import { claim } from "~/store";
 import type { Airline, ClaimsForm } from "@/types";
 import nuxtStorage from 'nuxt-storage';
 import { euMember } from "is-european";
 
 export interface Step {
-  label: string,
-  title: string,
-  component: Component,
+  label: string;
+  component: Component;
+  emit?: string;
 }
 const index = ref(0)
 const steps = computed<Step[]>(() => {
-  const { airport, route, flight_date, flight, disruption, client } = claim.value as ClaimsForm
-  const routes = generateRoutes(airport.trip)
+  const { airport } = claim.value as ClaimsForm
 
   return [
     {
-      label: "Strecke",
-      title: "Wohin bist du geflogen?",
-      component: ConnectingFlights,
+      label: "Angaben zum Flug",
+      component: StepItinerary,
     },
     {
-      label: "Flug",
-      title: "Flug wählen",
-      component: SelectFlight,
+      label: "Beschreibung des Vorfalls",
+      component: StepDisruption,
     },
     {
-      label: "Grund",
-      title: "Was ist schief gelaufen?",
-      component: SelectReason,
+      label: "Angaben zu den Passagieren",
+      component: StepPassengers,
+      emit: "submit",
     },
     {
-      label: "Passagiere",
-      title: "Wer ist mitgeflogen?",
-      component: PersonalInfo,
+      label: "Vervollständigung",
+      component: StepCompleteSubmission
     },
-    // {
-    //   label: "Results",
-    //   component: Results
-    // },
   ]
 })
 const minmax = (value: number) => {

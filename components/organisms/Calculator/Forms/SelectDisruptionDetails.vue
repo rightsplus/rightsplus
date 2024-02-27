@@ -9,7 +9,7 @@
     <SectionSubHeader
       :label="
         modelValue.disruption.type === 'cancelled'
-          ? `Wann wurdest du darüber informiert?`
+          ? `Wann wurdest du von der Fluggesellschaft über die Annullierung informiert?`
           : `Wie groß war die Verspätung bei deiner Ankunft?`
       "
     />

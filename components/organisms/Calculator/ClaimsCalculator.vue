@@ -21,12 +21,65 @@
         <component
           v-model="useClaim().value"
           :is="step?.component"
-          :title="step?.title"/>
-        <ClaimsNavigation :nextLabel="nextLabel" @submit="submit"
+          :title="step?.title" />
+        <ClaimsNavigation @submit="submit"
       /></ClientOnly>
     </div>
   </div>
 
+  <Popup
+    :open="signatureOpen"
+    @closeOutside="signatureOpen = false"
+    class="max-h-[90vh] p-12"
+    title="Unterschrift"
+  >
+    <SignaturePad
+      @update="updateSignature"
+      :name="
+        [
+          claim.client.passengers[0].firstName,
+          claim.client.passengers[0].lastName,
+        ].join(' ')
+      "
+    />
+
+    <div class="flex gap-2 items-center mt-5">
+      <i18n-t
+        keypath="accountAcceptTerms.assignmentAgreement"
+        tag="label"
+        for="terms"
+        class="text-sm mb-1 [&>a]:text-primary-500 [&>a:hover]:underline"
+      >
+        <NuxtLink class="font-medium" to="terms-and-conditions">{{
+          $t("privacyPolicy")
+        }}</NuxtLink>
+        <NuxtLink class="font-medium" to="pricelist">{{
+          $t("pricelist")
+        }}</NuxtLink>
+        <NuxtLink class="font-medium" to="assignment-agreement">{{
+          $t("assignmentAgreement")
+        }}</NuxtLink>
+      </i18n-t>
+    </div>
+    <div class="flex gap-5 justify-end text-base mt-12">
+      <button
+        type="button"
+        class="text-gray-500 hover:text-gray-800 underline underline-offset-2 flex gap-2 items-center py-2 px-5 leading-none min-w-[auto]"
+        @click="
+          signatureOpen = false;
+          signature = undefined;
+        "
+      >
+        Abbrechen
+      </button>
+      <FormKit
+        type="button"
+        :disabled="!signature"
+        @click="confirmSignature"
+        label="Unterschreiben"
+      />
+    </div>
+  </Popup>
   <Popup
     :open="authOpen"
     @closeOutside="authOpen = false"
@@ -38,39 +91,49 @@
       @success="successfulSignUp"
       @changeMode="signUpMode = $event"
       :initialMode="passengerHasAccount ? 'signIn' : 'signUp'"
-      :initialEmail="modelValue.client.passengers[0]?.email"
+      :initialEmail="claim.client.passengers[0]?.email"
     />
   </Popup>
 </template>
 
 <script setup lang="ts">
-import { next, prev, reset } from "@/composables/steps";
 import ClaimsNavigation from "@/components/organisms/Calculator/ClaimsNavigation.vue";
+import SignaturePad from "@/components/molecules/SignaturePad.vue";
+import { watchDebounced } from "@vueuse/core";
+import { next } from "@/composables/steps";
 const user = useSupabaseUser();
-const { userExists, submitFlight, submitClaim } = useSupabaseFunctions();
+const client = useSupabaseClient();
+const { auth } = useSupabaseAuthClient();
+const { userExists, submitFlight, submitClaim, handleUploadFile } =
+  useSupabaseFunctions();
 const { steps, index, step } = useSteps();
+const { value: claim, reset: resetClaim } = useClaim();
+const { send } = useSendMail();
+const { t } = useI18n();
+const router = useRouter();
+
 const authOpen = ref(false);
-const nextLabel = computed(() => {
-  if (index.value === steps.value.length - 1) return "Absenden";
-  return "Weiter";
-});
+const signatureOpen = ref(false);
+const signature = ref<string>();
+const signUpMode = ref<"signIn" | "signUp">();
 
-const { value: claim } = useClaim();
-const { send } = useSendMail()
+const passengerHasAccount = ref(false);
 
+const updateSignature = (val?: string) => {
+  signature.value = val;
+};
+const confirmSignature = async () => {
+  if (!signature.value) return;
+  signatureOpen.value = false;
+  submit();
+};
 const submit = async () => {
   try {
     if (!claim.flight) return;
-    // const result = await Promise.all(
-    //   claim.client.passengers.map(async e => {
-    //     // return await handleUploadFile(e.boardingPass?.[0].file);
-    //   })
-    // );
-    // if (!user.value) {
-    //   authOpen.value = true;
-    //   console.warn("User not logged in");
-    //   return;
-    // }
+    if (!signature.value) {
+      signatureOpen.value = true;
+      return;
+    }
     try {
       const response = await submitFlight(claim.flight);
       console.log(response);
@@ -78,23 +141,120 @@ const submit = async () => {
       console.log(error);
       return;
     }
+
+    // if (!user.value) {
+    //   console.log("User not logged in");
+    //   if (passengerHasAccount.value) {
+    //     const session = await auth.signInWithOtp({
+    //       email: passenger.email,
+    //     });
+    //     console.log(session);
+    //   } else {
+    //     const session = await auth.signUp({
+    //       email: passenger.email,
+    //       password: uuid.v4(),
+    //     });
+    //     console.log(session);
+    //   }
+    // }
+    let claimResponse;
     try {
-      const response = await submitClaim(claim);
-      const email = send({
-        to: claim.client.passengers[0].email,
-        subject: "Deine Anfrage wurde erfolgreich eingereicht",
-        text: "Deine Anfrage wurde erfolgreich eingereicht"
-      })
-      console.log(response, email);
+      claimResponse = await submitClaim(claim);
+      // const [passenger] = claim.client.passengers;
+      // const data = {
+      //   name: [passenger.firstName, passenger.lastName].join(" "),
+      //   firstName: passenger.firstName,
+      //   address: passenger.address.street,
+      //   postalCode: passenger.address.postalCode,
+      //   city: passenger.address.city,
+      //   flightNumber: claim.flight.flight.iata,
+      //   flightDate: claim.flight.flight_date,
+      //   departure: claim.flight.departure.iata,
+      //   arrival: claim.flight.arrival.iata,
+      //   date: new Date().toISOString(),
+      // };
+      // const email = send({
+      //   to: claim.client.passengers[0].email,
+      //   subject: "Deine Anfrage wurde erfolgreich eingereicht",
+      //   template: "AssignmentLetter.vue",
+      //   pdf: {
+      //     template: "assignment-letter",
+      //     fileName: [
+      //       t("assignmentLetter"),
+      //       claim.client.passengers[0].lastName,
+      //     ].join("-"),
+      //   },
+      //   data,
+      // });
     } catch (error) {
       console.log(error);
       return;
     }
-    useRouter().push("/status");
+
+    if (!claimResponse?.id) return;
+    claim.id = claimResponse.id;
+    const storageFolderClaim = formatClaimId(claimResponse.id, false);
+    try {
+      claim.client.passengers.forEach((e) => {
+        const { file } = e.boardingPass?.[0] || {};
+        if (file) {
+          handleUploadFile(
+            file,
+            [storageFolderClaim, "boarding-pass", e.lastName].join("/")
+          );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    // const fileName = `${uuid.v4()}.svg`;
+    try {
+      if (!signature.value) {
+        console.log(signature);
+        return;
+      }
+      const signatureSVG = new Blob([signature.value], {
+        type: "image/svg+xml",
+      });
+      const filePath = [storageFolderClaim, "signature.svg"].join("/");
+      const { data, error } = await client.storage
+        .from("client-files")
+        .upload(filePath, signatureSVG, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    // next();
+    useRouter().push(
+      `/claim/${storageFolderClaim}?b=${claim.client.bookingNumber}`
+    );
   } catch (error) {
     console.log(error);
   } finally {
-    // console.log("done!");
+    signature.value = undefined;
   }
 };
+const successfulSignUp = () => {
+  authOpen.value = false;
+  router.push("/claim");
+  resetClaim();
+};
+watchDebounced(
+  () => claim.client.passengers[0]?.email,
+  (email) => {
+    if (!email) return;
+    userExists({ email }).then((exists) => {
+      passengerHasAccount.value = exists;
+    });
+  },
+  {
+    debounce: 300,
+    immediate: true,
+  }
+);
 </script>

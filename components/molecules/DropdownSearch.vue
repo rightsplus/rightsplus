@@ -1,11 +1,11 @@
 <template>
-  <div class="relative mb-5">
+  <div class="relative mb-5" ref="container">
     <FormKit
       ref="input"
       type="text"
       :modelValue="modelValue"
       @update:modelValue="updateInput"
-      :autocomplete="!showDropdown ? autocomplete : 'nope'"
+      :autocomplete="!showDropdown ? autocomplete : 'one-time-code'"
       :label="label"
       :name="name"
       :id="id || name"
@@ -19,6 +19,7 @@
       @suffix-icon-click="$emit('suffix-icon-click')"
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleInput"
+      @keydown.escape.prevent="blur"
       floatingLabel
       :placeholder="placeholder"
       :classes="{
@@ -36,23 +37,24 @@
             : ''
         } ${
           loading ? '[&_.formkit-suffix-icon_svg]:animate-spin' : ''
-        } max-w-full duration-75 !mb-0`
+        } max-w-full duration-75 !mb-0`,
       }"
     />
-    <Transition name="dropdown">
-      <Dropdown
-        v-if="showDropdown"
-        class="w-full z-50"
-        :active="highlighted"
-        :options="options"
-        @input="handleInput"
-      />
-    </Transition>
+    <Dropdown
+      class="w-full z-50"
+      :active="highlighted"
+      :options="options"
+      :show="!!showDropdown"
+      :style="position"
+      @input="handleInput"
+      teleport
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { FormKit } from "@formkit/vue";
+import type { FormKitFrameworkContext } from "@formkit/core";
 import Dropdown from "~~/components/molecules/Dropdown.vue";
 import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 const props = defineProps<{
@@ -73,28 +75,45 @@ const emit = defineEmits([
   "update:modelValue",
   "query",
   "suffix-icon-click",
-  "prefix-icon-click"
+  "prefix-icon-click",
 ]);
 const highlighted = ref(0);
+const input = ref<FormKitFrameworkContext | null>(null);
+const [container, position] = usePosition()
 const inputFocused = ref(false);
 const inputValue = ref(props.modelValue);
 
-const showDropdown = computed(
-  () => inputFocused.value && inputValue.value?.length && !props.errors?.length
-);
+const showDropdown = computed(() => {
+  return (
+    inputFocused.value && inputValue.value?.length && !props.errors?.length
+  );
+});
 
-function updateInput(input: string) {
+watch(showDropdown, (open) => {
+  if (!open) return;
+  const value = props.modelValue.match(/\(([^)]+)\)/)?.[1];
+  const index = props.options.findIndex((option) => option.value === value);
+  if (index > -1) highlighted.value = index;
+});
+
+function updateInput(value: string) {
   highlighted.value = 0;
-  inputValue.value = input;
-  if (!input.length) emit("update:modelValue", "");
-  if (input !== props.modelValue) emit("query", input);
+  inputValue.value = value;
+  if (!value.length) emit("update:modelValue", "");
+  if (value !== props.modelValue) emit("query", value);
 }
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
-function handleInput(input: DropdownItem) {
-  const index = typeof input === "number" ? input : highlighted.value;
-  emit("update:modelValue", props.options[index]);
+function handleInput(value?: DropdownItem) {
+  console.log('handlingInpu', value)
+  const index = typeof value === "number" ? value : highlighted.value;
+  if (props.options[index]) emit("update:modelValue", props.options[index]);
+  if (input.value?.node) {
+    input.value.node.context?.handlers.DOMInput({
+      target: { value: props.modelValue },
+    });
+  }
   focusNext(true);
 }
 function focus() {

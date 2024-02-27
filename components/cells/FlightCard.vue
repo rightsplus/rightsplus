@@ -73,11 +73,11 @@
         ><span
           >{{ flight.airline?.name
           }}<span
-            v-if="flight.flight.codeshared?.airline_name"
+            v-if="flight.flight?.codeshared?.airline_name"
             class="opacity-50"
           >
             operated by
-            {{ ucfirst(flight.flight.codeshared?.airline_name) }}</span
+            {{ ucfirst(flight.flight?.codeshared?.airline_name) }}</span
           ></span
         ></span
       >
@@ -139,7 +139,7 @@ const iata = computed(() => {
 const logoError = ref(false);
 const logo = computed(() => {
   let iata =
-    props.flight.flight.codeshared?.airline_iata?.toUpperCase() ||
+    props.flight.flight?.codeshared?.airline_iata?.toUpperCase() ||
     props.flight.airline?.iata;
   return getAirlineLogo(iata, 80);
 });

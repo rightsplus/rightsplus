@@ -7,6 +7,7 @@ export const useSupabaseFunctions = () => {
 	const user = useSupabaseUser()
 
 	const fetchProxy = async (url: string, options?: RequestInit) => {
+		console.log('fetchProxy', url, options)
 		const { data, error } = await client.functions.invoke("proxy", {
 			body: { url, options },
 		})
@@ -28,17 +29,48 @@ export const useSupabaseFunctions = () => {
 		return data as boolean;
 	}
 
-	const generatePDF = async ({ name, to }: {
-		to: string; name: string
-	}) => {
-		const { data, error } = await client.functions.invoke("generate-pdf", {
-			body: { name, to },
-		})
-		if (error) {
-			throw error;
+	const submitPassenger = async (flight: Flight) => {
+		try {
+			const { data, error } = await client
+				.from("flights")
+				.upsert([preparedFlight], { onConflict: "number" })
+				.select()
+			if (error) throw error
+			return data
+		} catch (error) {
+			throw error
 		}
-		return data as Buffer;
 	}
+
+	const handleUploadFile = async (file: File, folder?: string) => {
+		if (!file) {
+			return "";
+		}
+		const options = {
+			convertSize: 0.5,
+			quality: 0.8,
+			maxWidth: 1080,
+			maxHeight: 1080,
+		};
+
+		const resizedFile = await compressImage(file, options);
+		const fileExt = resizedFile.name.split(".").pop();
+		const fileName = `${uuid()}.${fileExt}`;
+		const filePath = [folder, fileName].filter(Boolean).join("/");
+		const { data, error } = await client.storage
+			.from("client-files")
+			.upload(filePath, resizedFile, {
+				cacheControl: "3600",
+				upsert: false,
+			});
+		if (error) {
+			console.error(error);
+			throw error;
+		} else {
+			console.log(data);
+			return data.path;
+		}
+	};
 	const submitFlight = async (flight: Flight) => {
 		const preparedFlight = {
 			number: flight.flight.iata,
@@ -72,14 +104,14 @@ export const useSupabaseFunctions = () => {
 			user_id: user?.value?.id,
 			email: claim.client.passengers[0].email,
 			flight_number: claim.flight?.flight.iata,
+			booking_number: claim.client.bookingNumber,
 			client: claim.client,
 			disruption: claim.disruption,
-			uuid: claim.uuid
 		};
 		try {
 			const { data, error } = await client
 				.from("claims")
-				.upsert([preparedClaim], { onConflict: "uuid" })
+				.upsert([preparedClaim], { onConflict: "booking_number" })
 				.select()
 				.single()
 			if (error) throw error
@@ -91,7 +123,7 @@ export const useSupabaseFunctions = () => {
 	}
 	return {
 		userExists,
-		generatePDF,
+		handleUploadFile,
 		submitFlight,
 		submitClaim,
 		fetchProxy

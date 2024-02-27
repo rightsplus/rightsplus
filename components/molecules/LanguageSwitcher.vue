@@ -3,7 +3,7 @@
     @click="isOpen = true"
     class="flex gap-2 hover:bg-gray-700 p-3 pr-5 rounded-xl"
   >
-      <span class="text-base">{{
+      <span class="text-base min-w-[auto]">{{
         locale.split("-")[0].toLocaleUpperCase()
       }}</span>
     <span

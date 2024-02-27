@@ -1,9 +1,12 @@
 <template>
-  <div class="grid sm:grid-cols-2 max-w-full md:max-w-3xl w-full" v-if="user">
+  <div
+    class="grid sm:grid-cols-2 max-w-full md:max-w-3xl w-full mx-auto"
+    v-if="user"
+  >
     Welcome {{ user.user_metadata.full_name }}
   </div>
   <div
-    class="grid sm:grid-cols-2 max-w-full md:max-w-3xl w-full items-center"
+    class="grid sm:grid-cols-2 max-w-full md:max-w-3xl w-full items-center mx-auto"
     :class="!inPopup && 'gap-5 md:gap-10'"
     v-else
   >
@@ -59,10 +62,12 @@ const setLoading = (val: boolean, provider?: Provider) =>
   Object.assign(loading.value, { [provider || "email"]: val });
 const signIn = async ({
   form,
-  provider
+  provider,
+  redirectTo,
 }: {
   form: { email: string; password: string };
   provider?: Provider;
+  redirectTo?: string;
 }) => {
   setLoading(true, provider);
 
@@ -71,28 +76,33 @@ const signIn = async ({
   if (provider) {
     res = await client.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: "/faq" }
+      options: { redirectTo },
     });
   } else if (password) {
     res = await client.auth.signInWithPassword({
       email,
-      password
+      password,
     });
   } else {
     res = await client.auth.signInWithOtp({ email });
   }
   setLoading(false, provider);
   console.log(user.value, res);
+  navigateTo(redirectTo);
   if (user.value) emit("success", provider);
   else console.log("no user");
 };
 const signUp = async ({
   form,
-  provider
+  provider,
+  redirectTo,
 }: {
   form: { email: string; password: string };
   provider?: Provider;
+  redirectTo?: string;
 }) => {
+  // console.log(form, provider, redirectTo);
+  // return 
   const { email, password } = form || {};
   setLoading(true, provider);
   let res;
@@ -100,14 +110,15 @@ const signUp = async ({
     if (provider) {
       res = await client.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: "/" }
+        options: { redirectTo },
       });
     } else if (email && password) {
       res = await client.auth.signUp({
         email,
-        password
+        password,
       });
     }
+    console.log(res)
     setLoading(false, provider);
 
     if (user.value) emit("success", provider);
@@ -117,11 +128,7 @@ const signUp = async ({
   }
 };
 
-const resetPassword = async ({
-  email
-}: {
-  email: string
-}) => {
+const resetPassword = async ({ email }: { email: string }) => {
   const { data, error } = await client.auth.resetPasswordForEmail(email);
 };
 

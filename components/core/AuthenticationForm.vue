@@ -65,7 +65,7 @@
             @click="submitForm"
             :suffix-icon="loading.email ? 'circle-notch' : ' '"
             :classes="{
-              outer: loading.email ? '[&_.formkit-icon_svg]:animate-spin' : ''
+              outer: loading.email ? '[&_.formkit-icon_svg]:animate-spin' : '',
             }"
             >{{ $t(mode) }}</FormKit
           >
@@ -123,7 +123,7 @@ const loading = ref({} as Record<Provider | "email", boolean>);
 const form = ref({
   email: props.initialEmail || "",
   password: "",
-  terms: false
+  terms: false,
 });
 
 const handleTogglePassword = (node, e) => {
@@ -132,15 +132,18 @@ const handleTogglePassword = (node, e) => {
 };
 const formRef = ref(null);
 const submitButton = ref(null);
+const route = useRoute();
 
-const submitForm = (e, node) => {
+const submitForm = () => {
   emit("submit", {
-    form: form.value
+    form: form.value,
+    redirectTo: route.query.redirect,
   });
 };
 const submitProvider = async (provider?: Provider) => {
   emit("submit", {
-    provider
+    provider,
+    redirectTo: route.query.redirect,
   });
 };
 </script>

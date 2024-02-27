@@ -12,6 +12,6 @@ definePageMeta({
 const user = useSupabaseUser();
 const router = useRouter();
 watch(user, (val) => {
-  if (val) router.push("/status");
+  if (val) router.push("/claim");
 });
 </script>

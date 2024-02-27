@@ -1,7 +1,7 @@
 <template>
   <div
     :class="outerClass"
-    class="flex items-center bg-neutral-100 rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500"
+    class="flex items-center bg-neutral-100 rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500 shrink-0"
   >
     <button
       class="w-14 h-14 shrink-0 hover:bg-neutral-50 text-sm focus-visible:outline-0 focus-visible:ring-primary-500 rounded-l-lg z-10"

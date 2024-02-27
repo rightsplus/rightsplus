@@ -54,6 +54,7 @@ export default defineNuxtConfig({
   vueEmail: {
     baseUrl: 'https://rightsplus.up.railway.app/',
     autoImport: true,
+    i18n: i18n.vueEmail,
   },
   runtimeConfig: {
     public: {
@@ -66,6 +67,10 @@ export default defineNuxtConfig({
       },
       flight: {
         aviationstack: process.env.AVIATIONSTACK_KEY,
+        cirium: {
+          appId: process.env.CIRIUM_APP_ID,
+          appKey: process.env.CIRIUM_APP_KEY
+        },
         flighlabs: process.env.FLIGHTLABS_KEY,
         key: process.env.APP_KEY,
         appId: process.env.APP_ID

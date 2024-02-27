@@ -1,26 +1,26 @@
 <template>
-  <!-- <div
-    v-if="isAdmin && useRouter().currentRoute.value.path !== '/admin'"
-    role="banner"
-    class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
-  >
-    <div class="p-3 flex items-center gap-3">
-      <span class="">Angeldet als Admin</span>
-      <NuxtLink
-        class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
-        to="/admin"
-        >Zum Dashboard</NuxtLink
-      >
-    </div>
-  </div> -->
   <header
-    class="z-40 overflow-hidden absolute w-full text-neutral"
+    class="z-40 w-full text-neutral"
     :class="{
       open: menuOpen,
     }"
     @click.self="menuOpen = false"
     :style="`--total: ${links.length}`"
   >
+    <div
+      v-if="isAdmin && useRouter().currentRoute.value.path !== '/admin'"
+      role="banner"
+      class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
+    >
+      <div class="p-3 flex items-center gap-3">
+        <span class="">Angeldet als Admin</span>
+        <NuxtLink
+          class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
+          to="/admin"
+          >Zum Dashboard</NuxtLink
+        >
+      </div>
+    </div>
     <BurgerIcon
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
@@ -35,7 +35,7 @@
         'max-w-screen': useRoute().path === '/admin',
       }"
     >
-    <!-- {{  useSteps().index }} -->
+      <!-- {{  useSteps().index }} -->
       <TransitionGroup
         name="list"
         tag="ul"
@@ -61,10 +61,13 @@
           </NuxtLink>
         </li>
         <li
-          v-for="(item, i) in links.filter(Boolean)"
+          v-for="(item, i) in links"
           :key="item.name"
           class="order-1 flex whitespace-nowrap"
-          :class="{ 'button text-base': item.type === 'button' }"
+          :class="{
+            'button text-base': item.type === 'button',
+            '!hidden': item.hidden,
+          }"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
           :style="{
             '--k': `${i}`,
@@ -72,7 +75,7 @@
         >
           <NuxtLink
             :to="item.path"
-            class="flex gap-3 items-center py-3 leading-none cursor-pointer"
+            class="flex gap-3 items-center py-3 leading-none cursor-pointer group"
             exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
@@ -80,10 +83,17 @@
                 item.type === 'button',
               'hover:text-gray-500 ': item.type !== 'button',
               'text-white drop-shadow': $state?.headerColor === 'white',
+              'bg-red-500 hover:bg-red-600 active:bg-red-700': item.critical,
             }"
             @click="clickLink(item)"
           >
             <span v-if="item.title">{{ item.title }}</span>
+            <FontAwesomeIcon
+              v-if="item.icon"
+              :icon="item.icon"
+              fixed-width
+              class="duration-100 group-hover:scale-105 group-active:scale-95"
+            />
           </NuxtLink>
         </li>
       </TransitionGroup>
@@ -95,6 +105,7 @@
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Logo from "~/assets/logo";
 import type { Database } from "@/types";
+const { auth } = useSupabaseAuthClient();
 interface Route {
   name: string;
   path: string;
@@ -118,41 +129,35 @@ const isAdmin =
       .single()
   ).data?.role === "admin";
 
-const links = computed((): Route[] => {
-  const { path } = useRouter().currentRoute.value;
-  const logout = {
-    name: "status",
-    onClick: () => {
-      client.auth.signOut();
-      navigateTo("/");
-    },
-    title: "Ausloggen",
-    type: "button",
-  } as Route;
-
-  const status = {
-    name: "status",
-    path: "/status",
-    title: "Meine Forderungen",
-    type: "button",
-  } as Route;
-
-  const routes = [
-    {
-      name: "claims",
-      path: "/claims/new",
-      title: "Rechner",
-    },
-    {
-      name: "rechte",
-      path: "/deine-rechte",
-      title: "Deine Rechte",
-    },
-    status,
-    user && (path === "/status" || path === "/admin") && logout,
-  ] as Route[];
-  return routes;
-});
+const links = computed(
+  () =>
+    [
+      {
+        name: "claims",
+        path: "/claim/new",
+        title: "Rechner",
+      },
+      {
+        name: "rechte",
+        path: "/deine-rechte",
+        title: "Deine Rechte",
+      },
+      {
+        name: "status",
+        path: "/status",
+        title: "Meine Forderungen",
+        type: "button",
+      },
+      {
+        name: "signOut",
+        onClick: () => auth.signOut(),
+        type: "button",
+        icon: "door-open",
+        critical: true,
+        hidden: !user.value,
+      },
+    ].filter(Boolean) as Route[]
+);
 
 const clickLink = (item: Route) => {
   item.onClick?.();
@@ -191,6 +196,7 @@ watch(
 @media (max-width: 767px) {
   header {
     height: 100vh;
+    position: absolute;
     transition-duration: 500ms;
     pointer-events: none;
     & > * {
@@ -216,6 +222,7 @@ watch(
         li:not(.order-0) {
           /* color: white; */
           margin-left: 49px;
+          margin-right: auto;
           display: block;
           opacity: 0;
           transform: scale(0.9);
@@ -224,13 +231,15 @@ watch(
           transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
           transition-property: opacity, transform;
           transition-delay: 0ms;
-          margin-right: auto;
         }
         li.button {
           margin-top: 150px;
           transition-duration: 1500ms;
           transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
           transform: scale(0.9) translateY(150px);
+          & + li.button {
+            margin-top: 10px;
+          }
         }
       }
     }
@@ -258,6 +267,11 @@ watch(
             transition-timing-function: cubic-bezier(0, 1, 0, 1);
             @media screen and (orientation: landscape) {
               margin-top: 10vh;
+            }
+          }
+          li.button + li.button {
+            @media screen and (orientation: landscape) {
+              margin-top: 0;
             }
           }
         }

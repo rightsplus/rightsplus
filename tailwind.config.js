@@ -49,6 +49,8 @@ module.exports = {
         autofill: `inset 0 0 0 2em ${colors.blue['100']}`,
       },
       fontSize: {
+        '3xs': '.5rem',
+        '2xs': '.625rem',
         '10xl': '160px',
         '11xl': '176px',
         '12xl': '192px',

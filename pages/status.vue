@@ -48,20 +48,18 @@ import AccordionItem from "~/components/organisms/Accordion/AccordionItem.vue";
 import FlightResult from "~~/components/organisms/Calculator/FlightResult.vue";
 import type { ClaimsForm, Database } from "@/types";
 definePageMeta({
-  middleware: ["auth"]
+  middleware: ["auth"],
 });
 const user = useSupabaseUser();
 const active = ref<string[]>([]);
 
 const client = useSupabaseClient<Database>();
-const claims = ref(
-  null as
-    | null
-    | {
-        id: string;
-        data: ClaimsForm;
-      }[]
-);
+const claims = ref<
+  {
+    id: string;
+    data: ClaimsForm;
+  }[]
+>([]);
 useAsyncData("claims", async () => {
   if (!user.value?.email) return;
   const { data, error } = await client
