@@ -1,3 +1,5 @@
+import { locales } from "./i18n";
+
 export type LocaleObject = {
 	code: string;
 	name: string;
@@ -14,22 +16,6 @@ const format = () => ({
 	percent: { style: 'percent', maximumFractionDigits: 2 },
 	currency: { style: 'currency', currency: 'EUR' },
 })
-
-const locales: LocaleObject[] = [
-	{
-		code: 'de',
-		iso: 'de-DE',
-		name: 'Deutsch',
-		file: 'de.json',
-	},
-	{
-		code: 'en',
-		iso: 'en-GB',
-		name: 'English',
-		file: 'en.json',
-	},
-]
 export default defineI18nConfig(() => ({
-	locales,
-	numberFormats: locales.reduce((a, { code, iso }) => ({ ...a, [code]: format() }), {}),
+	numberFormats: locales.reduce((a, { code }) => ({ ...a, [code]: format() }), {}),
 }))
