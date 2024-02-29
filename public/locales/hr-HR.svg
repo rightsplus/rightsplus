@@ -1,0 +1,38 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_18555)">
+<rect x="2.00983" y="7.33496" width="16" height="5.33" fill="#F5F5F5"/>
+<rect x="2.00482" y="1.99005" width="16" height="5.33" fill="#EA580C"/>
+<rect x="2.00983" y="12.6649" width="16" height="5.33" fill="#1E40AF"/>
+<circle cx="7.5" cy="6.495" r="0.5" fill="#7DD3FC"/>
+<circle cx="8.7049" cy="5.89001" r="0.5" fill="#1E40AF"/>
+<circle cx="11.3049" cy="5.89001" r="0.5" fill="#1E40AF"/>
+<circle cx="12.5" cy="6.495" r="0.5" fill="#7DD3FC"/>
+<circle cx="10.0049" cy="5.69" r="0.5" fill="#7DD3FC"/>
+<path d="M7.5 7.82501C7.5 7.54887 7.72386 7.32501 8 7.32501L12 7.32501C12.2761 7.32501 12.5 7.54887 12.5 7.82501V10.825C12.5 12.2057 11.3807 13.325 10 13.325C8.61929 13.325 7.5 12.2057 7.5 10.825V7.82501Z" fill="#EA580C"/>
+<mask id="mask0_1_18555" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="7" y="7" width="6" height="7">
+<rect x="8.5" y="7.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="8.5" y="9.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="8.5" y="11.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="7.5" y="8.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="7.5" y="10.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="7.5" y="12.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="10.5" y="7.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="10.5" y="9.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="10.5" y="11.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="11.5" y="8.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="11.5" y="10.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="11.5" y="12.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="9.5" y="8.32501" width="1" height="1" fill="#F9F8F7"/>
+<rect x="9.5" y="10.325" width="1" height="1" fill="#F9F8F7"/>
+<rect x="9.5" y="12.325" width="1" height="1" fill="#F9F8F7"/>
+</mask>
+<g mask="url(#mask0_1_18555)">
+<path d="M7.5 7.82501C7.5 7.54887 7.72386 7.32501 8 7.32501L12 7.32501C12.2761 7.32501 12.5 7.54887 12.5 7.82501V10.825C12.5 12.2057 11.3807 13.325 10 13.325C8.61929 13.325 7.5 12.2057 7.5 10.825V7.82501Z" fill="#F5F5F5"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_1_18555">
+<rect x="18.0049" y="17.995" width="16" height="16" rx="8" transform="rotate(180 18.0049 17.995)" fill="white"/>
+</clipPath>
+</defs>
+</svg>

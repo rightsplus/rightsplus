@@ -1,0 +1,23 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_14283)">
+<path d="M18 17.9999V2.00002H2V17.9999H18Z" fill="#15803D"/>
+<path d="M10 17.9999V2.00002M18 9.99995H2" stroke="#262626"/>
+<path d="M9 17.9999V2.00002M18 8.99995H2" stroke="#FACC15"/>
+<path d="M11 17.9999V2.00002M18 10.9999H2" stroke="#F5F5F5"/>
+<circle cx="10" cy="10" r="3" fill="#EA580C"/>
+<circle cx="10" cy="8" r="0.5" fill="#16A34A"/>
+<circle cx="10" cy="12" r="0.5" fill="#16A34A"/>
+<circle cx="11.4142" cy="8.58577" r="0.5" transform="rotate(45 11.4142 8.58577)" fill="#16A34A"/>
+<circle cx="8.58582" cy="11.4142" r="0.5" transform="rotate(45 8.58582 11.4142)" fill="#16A34A"/>
+<circle cx="12" cy="10" r="0.5" transform="rotate(90 12 10)" fill="#16A34A"/>
+<circle cx="8" cy="10" r="0.5" transform="rotate(90 8 10)" fill="#16A34A"/>
+<circle cx="11.4142" cy="11.4142" r="0.5" transform="rotate(135 11.4142 11.4142)" fill="#16A34A"/>
+<circle cx="8.58574" cy="8.58582" r="0.5" transform="rotate(135 8.58574 8.58582)" fill="#16A34A"/>
+<path d="M10 9.5V10.5" stroke="#16A34A" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_1_14283">
+<rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>

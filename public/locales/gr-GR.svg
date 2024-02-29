@@ -1,0 +1,23 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_18540)">
+<path d="M18 17.9999V2.00002H2V17.9999H18Z" fill="#1E40AF"/>
+<path d="M18 17.9999L2 2.00002M2 17.9999L18 2.00002" stroke="#F5F5F5" stroke-width="3"/>
+<path d="M18 17.9999L2 2.00002M2 17.9999L18 2.00002" stroke="#0284C7" stroke-width="1.5"/>
+<path d="M10 17.9999V2.00002M18 9.99995H2" stroke="#F5F5F5" stroke-width="3.5"/>
+<path d="M10 17.9999V2.00002M18 9.99995H2" stroke="#0284C7" stroke-width="2"/>
+<path d="M18 17.9999V2.00002H2V17.9999H18Z" fill="#F5F5F5"/>
+<rect x="2" y="2" width="16" height="1.77778" fill="#0284C7"/>
+<rect x="2" y="5.55554" width="16" height="1.77778" fill="#0284C7"/>
+<rect x="2" y="9.11108" width="16" height="1.77778" fill="#0284C7"/>
+<rect x="2" y="12.6667" width="16" height="1.77778" fill="#0284C7"/>
+<rect x="2" y="16.2222" width="16" height="1.77778" fill="#0284C7"/>
+<path d="M10 10.0001V2.00006H2V10.0001H10Z" fill="#0284C7"/>
+<rect x="2" y="5.56" width="8" height="1.78" fill="#F5F5F5"/>
+<rect x="6.78003" y="2" width="9" height="1.78" transform="rotate(90 6.78003 2)" fill="#F5F5F5"/>
+</g>
+<defs>
+<clipPath id="clip0_1_18540">
+<rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>

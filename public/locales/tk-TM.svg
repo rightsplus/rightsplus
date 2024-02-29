@@ -1,0 +1,26 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_14573)">
+<rect x="18" y="18" width="16" height="16" transform="rotate(180 18 18)" fill="#15803D"/>
+<rect x="4" y="2.00003" width="4" height="16" fill="#C2410C"/>
+<rect x="6.00006" y="3.35361" width="1.91425" height="1.91425" transform="rotate(-135 6.00006 3.35361)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6.00006" y="13.3536" width="1.91425" height="1.91425" transform="rotate(-135 6.00006 13.3536)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6.00006" y="5.35361" width="1.91425" height="1.91425" transform="rotate(-135 6.00006 5.35361)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6" y="9.35361" width="1.91425" height="1.91425" transform="rotate(-135 6 9.35361)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6" y="19.3536" width="1.91425" height="1.91425" transform="rotate(-135 6 19.3536)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6" y="7.35361" width="1.91425" height="1.91425" transform="rotate(-135 6 7.35361)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6" y="15.3536" width="1.91425" height="1.91425" transform="rotate(-135 6 15.3536)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6" y="17.3536" width="1.91425" height="1.91425" transform="rotate(-135 6 17.3536)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<rect x="6.00006" y="11.3536" width="1.91425" height="1.91425" transform="rotate(-135 6.00006 11.3536)" stroke="#FACC15" stroke-width="0.5" stroke-linejoin="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M14.8663 5.86636C14.7804 5.78043 14.6514 5.89263 14.6991 6.00438C15.1693 7.10456 14.9556 8.42733 14.0578 9.32511C13.16 10.2229 11.8372 10.4367 10.737 9.96648C10.6252 9.9187 10.513 10.0477 10.599 10.1337C11.7773 11.3121 13.6879 11.3121 14.8663 10.1337C16.0447 8.95531 16.0447 7.04476 14.8663 5.86636Z" fill="#F5F5F5"/>
+<circle cx="9.70711" cy="6.82843" r="0.5" transform="rotate(-45 9.70711 6.82843)" fill="#F5F5F5"/>
+<circle cx="11.1214" cy="8.24265" r="0.5" transform="rotate(-45 11.1214 8.24265)" fill="#F5F5F5"/>
+<circle cx="11.4783" cy="6.47141" r="0.5" transform="rotate(-45 11.4783 6.47141)" fill="#F5F5F5"/>
+<circle cx="11.8284" cy="4.70709" r="0.5" transform="rotate(-45 11.8284 4.70709)" fill="#F5F5F5"/>
+<circle cx="13.2426" cy="6.12131" r="0.5" transform="rotate(-45 13.2426 6.12131)" fill="#F5F5F5"/>
+</g>
+<defs>
+<clipPath id="clip0_1_14573">
+<rect x="2.00488" y="17.995" width="16" height="16" rx="8" transform="rotate(-90 2.00488 17.995)" fill="white"/>
+</clipPath>
+</defs>
+</svg>

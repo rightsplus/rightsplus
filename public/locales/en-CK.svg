@@ -1,0 +1,32 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_15068)">
+<rect x="2" y="2" width="16" height="16" fill="#1E40AF"/>
+<g clip-path="url(#clip1_1_15068)">
+<rect width="8" height="8" transform="translate(2 2)" fill="#1E40AF"/>
+<path d="M10 9.99994L2 2.00001M2 9.99994L10 2.00001" stroke="#F5F5F5" stroke-width="1.5"/>
+<path d="M10 9.99994L2 2.00001M2 9.99994L10 2.00001" stroke="#C2410C" stroke-width="0.75"/>
+<path d="M6 9.99994V2.00001M10 5.99997H2" stroke="#F5F5F5" stroke-width="2"/>
+<path d="M6 9.99994V2.00001M10 5.99997H2" stroke="#C2410C"/>
+</g>
+<ellipse cx="11.5054" cy="10.0054" rx="0.505435" ry="0.505435" fill="#F5F5F5"/>
+<ellipse cx="16.5054" cy="10.0054" rx="0.505435" ry="0.505435" fill="#F5F5F5"/>
+<ellipse cx="14.0054" cy="7.50543" rx="0.505435" ry="0.505435" transform="rotate(90 14.0054 7.50543)" fill="#F5F5F5"/>
+<ellipse cx="14.0054" cy="12.5054" rx="0.505435" ry="0.505435" transform="rotate(90 14.0054 12.5054)" fill="#F5F5F5"/>
+<ellipse cx="16.1705" cy="8.75543" rx="0.505435" ry="0.505435" transform="rotate(150 16.1705 8.75543)" fill="#F5F5F5"/>
+<ellipse cx="11.8404" cy="11.2554" rx="0.505435" ry="0.505435" transform="rotate(150 11.8404 11.2554)" fill="#F5F5F5"/>
+<ellipse cx="12.7554" cy="12.1705" rx="0.505435" ry="0.505435" transform="rotate(-60 12.7554 12.1705)" fill="#F5F5F5"/>
+<ellipse cx="15.2554" cy="7.84039" rx="0.505435" ry="0.505435" transform="rotate(-60 15.2554 7.84039)" fill="#F5F5F5"/>
+<ellipse cx="11.8403" cy="8.75547" rx="0.505435" ry="0.505435" transform="rotate(30 11.8403 8.75547)" fill="#F5F5F5"/>
+<ellipse cx="16.1705" cy="11.2555" rx="0.505435" ry="0.505435" transform="rotate(30 16.1705 11.2555)" fill="#F5F5F5"/>
+<ellipse cx="12.7554" cy="7.8404" rx="0.505435" ry="0.505435" transform="rotate(60 12.7554 7.8404)" fill="#F5F5F5"/>
+<ellipse cx="15.2554" cy="12.1705" rx="0.505435" ry="0.505435" transform="rotate(60 15.2554 12.1705)" fill="#F5F5F5"/>
+</g>
+<defs>
+<clipPath id="clip0_1_15068">
+<rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
+</clipPath>
+<clipPath id="clip1_1_15068">
+<rect width="8" height="8" fill="white" transform="translate(2 2)"/>
+</clipPath>
+</defs>
+</svg>

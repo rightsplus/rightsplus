@@ -1,0 +1,25 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_13926)">
+<rect x="2" y="2" width="16" height="16" fill="#EA580C"/>
+<path d="M10 11L10 14" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M7.50488 8.495C7.50488 7.94271 7.9526 7.495 8.50488 7.495H11.5049C12.0572 7.495 12.5049 7.94271 12.5049 8.495V10.495C12.5049 11.5996 11.6095 12.495 10.5049 12.495H9.50488C8.40031 12.495 7.50488 11.5996 7.50488 10.495V8.495Z" fill="#262626"/>
+<path d="M14 6.48999L11 7.995" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M14 7.995L11 9.5" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M14 9.48999L11 10.495" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M14 10.995L11 11.24" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M14 13V13C12.5492 13 11.1709 12.3661 10.2268 11.2646L10 11" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 6.48999L9 7.99499" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 7.995L9 9.5" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 9.48999L9 10.495" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 10.995L9 11.24" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 13V13C7.45076 13 8.82909 12.3661 9.77324 11.2646L10 11" stroke="#262626" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M8 5.495L8.28305 5.49641C8.71163 5.49856 9.09119 5.77358 9.22672 6.18017L10 8.5" stroke="#262626" stroke-linecap="round"/>
+<path d="M12 5.495L11.717 5.49641C11.2884 5.49856 10.9088 5.77358 10.7733 6.18017L10 8.5" stroke="#262626" stroke-linecap="round"/>
+<rect width="1.73205" height="1.73205" rx="0.5" transform="matrix(0.57735 -0.816497 0.57735 0.816497 9 13.915)" fill="#262626"/>
+</g>
+<defs>
+<clipPath id="clip0_1_13926">
+<rect x="18.0049" y="17.995" width="16" height="16" rx="8" transform="rotate(180 18.0049 17.995)" fill="white"/>
+</clipPath>
+</defs>
+</svg>

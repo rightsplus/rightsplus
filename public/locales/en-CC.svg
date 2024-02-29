@@ -1,0 +1,17 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_15000)">
+<rect x="18.0098" y="17.99" width="16" height="16" transform="rotate(180 18.0098 17.99)" fill="#16A34A"/>
+<ellipse cx="15.0049" cy="9.995" rx="0.5" ry="0.5" transform="rotate(90 15.0049 9.995)" fill="#FACC15"/>
+<ellipse cx="14.5098" cy="7.5" rx="0.5" ry="0.5" transform="rotate(90 14.5098 7.5)" fill="#FACC15"/>
+<ellipse cx="16.0049" cy="8.995" rx="0.5" ry="0.5" transform="rotate(90 16.0049 8.995)" fill="#FACC15"/>
+<ellipse cx="13.0049" cy="9.5" rx="0.5" ry="0.5" transform="rotate(90 13.0049 9.5)" fill="#FACC15"/>
+<ellipse cx="15.0049" cy="12.5" rx="0.5" ry="0.5" transform="rotate(90 15.0049 12.5)" fill="#FACC15"/>
+<circle cx="6.5" cy="6.5" r="1.5" fill="#FACC15"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.07687 9.99998C9.07687 10.8497 9.76566 11.5384 10.6153 11.5384C10.7691 11.5384 10.9199 11.783 10.7783 11.8429C10.5391 11.9441 10.276 12 9.99996 12C8.89539 12 7.99996 11.1046 7.99996 10C7.99996 8.89543 8.89539 8 9.99996 8C10.276 8 10.5391 8.05594 10.7783 8.15711C10.9199 8.21698 10.7691 8.46152 10.6153 8.46152C9.76566 8.46152 9.07687 9.15032 9.07687 9.99998Z" fill="#FACC15"/>
+</g>
+<defs>
+<clipPath id="clip0_1_15000">
+<rect x="2.00488" y="1.995" width="16" height="16" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>

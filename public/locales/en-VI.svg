@@ -1,0 +1,24 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="2" y="2" width="16" height="16" rx="8" fill="#F5F5F5"/>
+<path d="M9.76301 8.46051L7.71115 8.11853C7.41348 8.06891 7.29641 7.70359 7.50979 7.49021C7.71933 7.28067 7.61078 6.92216 7.32021 6.86404L4.33475 6.26695C3.88607 6.17721 3.57221 6.69936 3.86195 7.0535L6.37289 10.1224C7.01242 10.9041 8.14067 11.0729 8.98098 10.5127C8.99338 10.5044 9.00795 10.5 9.02286 10.5H10.9771C10.992 10.5 11.0066 10.5044 11.019 10.5127C11.8593 11.0729 12.9876 10.9041 13.6271 10.1224L16.138 7.0535C16.4278 6.69936 16.1139 6.17721 15.6653 6.26695L12.6798 6.86404C12.3892 6.92216 12.2807 7.28067 12.4902 7.49021C12.7036 7.70359 12.5865 8.06891 12.2889 8.11853L10.237 8.46051C10.0801 8.48666 9.91992 8.48666 9.76301 8.46051Z" fill="#EAB308"/>
+<path d="M6 11L7.5 14" stroke="#16A34A" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6 11L6.5 12" stroke="#16A34A" stroke-width="1.25" stroke-linecap="round"/>
+<path d="M14.0559 11.012L12.4483 13.9557" stroke="#0284C7" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M16 10V12" stroke="#0284C7" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M3 10L3.75 12L4.5 10" stroke="#0284C7" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.5 13V13C13.0013 13 12.5275 12.7821 12.2029 12.4034L11 11" stroke="#EAB308" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M6.5 13V13C6.9987 13 7.4725 12.7821 7.79705 12.4034L9 11" stroke="#EAB308" stroke-width="0.75" stroke-linecap="round"/>
+<path d="M9 6.995V6.995C9.36983 6.62701 10 6.88896 10 7.41068V10" stroke="#EAB308" stroke-linecap="round"/>
+<rect width="3.20158" height="3.20156" rx="0.5" transform="matrix(0.624698 -0.780867 0.624698 0.780867 8.00012 13.5)" fill="#EAB308"/>
+<mask id="mask0_3_2696" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8" y="7" width="4" height="6">
+<path d="M8 8.09403C8 7.87482 8.26504 7.76504 8.42004 7.92004C8.74034 8.24034 9.25966 8.24034 9.57996 7.92004L9.78787 7.71213C9.90503 7.59497 10.095 7.59497 10.2121 7.71213L10.42 7.92004C10.7403 8.24034 11.2597 8.24034 11.58 7.92004C11.735 7.76504 12 7.87482 12 8.09403L12 11C12 12.1046 11.1046 13 10 13C8.89543 13 8 12.1046 8 11L8 8.09403Z" fill="#F5F5F5"/>
+</mask>
+<g mask="url(#mask0_3_2696)">
+<rect x="8" y="7" width="4" height="6" fill="#F5F5F5"/>
+<path d="M8.49927 9.5V11.5V13.5" stroke="#C2410C" stroke-width="0.5"/>
+<path d="M9.49927 9.5V11.5V13.5" stroke="#C2410C" stroke-width="0.5"/>
+<path d="M10.4993 9.5V11.5V13.5" stroke="#C2410C" stroke-width="0.5"/>
+<path d="M11.4993 9.5V11.5V13.5" stroke="#C2410C" stroke-width="0.5"/>
+<rect x="8" y="7" width="4" height="2.5" fill="#1E40AF"/>
+</g>
+</svg>

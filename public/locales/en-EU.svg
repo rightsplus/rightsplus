@@ -1,22 +1,15 @@
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_1219_92)">
-<rect x="2" y="2" width="16" height="16" fill="#354CA1"/>
-<ellipse cx="10" cy="5" rx="0.75" ry="0.75" fill="#FFD061"/>
-<ellipse cx="10" cy="15" rx="0.75" ry="0.75" fill="#FFD061"/>
-<ellipse cx="15" cy="10" rx="0.75" ry="0.75" transform="rotate(90 15 10)" fill="#FFD061"/>
-<ellipse cx="5.00002" cy="10" rx="0.75" ry="0.75" transform="rotate(90 5.00002 10)" fill="#FFD061"/>
-<ellipse cx="12.5" cy="5.66984" rx="0.75" ry="0.75" transform="rotate(30 12.5 5.66984)" fill="#FFD061"/>
-<ellipse cx="7.49999" cy="14.3301" rx="0.75" ry="0.75" transform="rotate(30 7.49999 14.3301)" fill="#FFD061"/>
-<ellipse cx="14.3301" cy="12.5" rx="0.75" ry="0.75" transform="rotate(120 14.3301 12.5)" fill="#FFD061"/>
-<ellipse cx="5.66989" cy="7.49998" rx="0.75" ry="0.75" transform="rotate(120 5.66989 7.49998)" fill="#FFD061"/>
-<ellipse cx="14.3301" cy="7.49998" rx="0.75" ry="0.75" transform="rotate(60 14.3301 7.49998)" fill="#FFD061"/>
-<ellipse cx="5.66986" cy="12.5" rx="0.75" ry="0.75" transform="rotate(60 5.66986 12.5)" fill="#FFD061"/>
-<ellipse cx="12.5" cy="14.3301" rx="0.75" ry="0.75" transform="rotate(150 12.5 14.3301)" fill="#FFD061"/>
-<ellipse cx="7.50002" cy="5.66988" rx="0.75" ry="0.75" transform="rotate(150 7.50002 5.66988)" fill="#FFD061"/>
-</g>
-<defs>
-<clipPath id="clip0_1219_92">
-<rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
-</clipPath>
-</defs>
+<rect x="2" y="2" width="16" height="16" rx="8" fill="#1E40AF"/>
+<ellipse cx="10" cy="5" rx="0.75" ry="0.75" fill="#FACC15"/>
+<ellipse cx="10" cy="15" rx="0.75" ry="0.75" fill="#FACC15"/>
+<ellipse cx="15" cy="10" rx="0.75" ry="0.75" transform="rotate(90 15 10)" fill="#FACC15"/>
+<ellipse cx="5" cy="10" rx="0.75" ry="0.75" transform="rotate(90 5 10)" fill="#FACC15"/>
+<ellipse cx="12.5" cy="5.66984" rx="0.75" ry="0.75" transform="rotate(30 12.5 5.66984)" fill="#FACC15"/>
+<ellipse cx="7.49998" cy="14.3301" rx="0.75" ry="0.75" transform="rotate(30 7.49998 14.3301)" fill="#FACC15"/>
+<ellipse cx="14.3301" cy="12.5" rx="0.75" ry="0.75" transform="rotate(120 14.3301 12.5)" fill="#FACC15"/>
+<ellipse cx="5.66982" cy="7.49998" rx="0.75" ry="0.75" transform="rotate(120 5.66982 7.49998)" fill="#FACC15"/>
+<ellipse cx="14.3301" cy="7.49998" rx="0.75" ry="0.75" transform="rotate(60 14.3301 7.49998)" fill="#FACC15"/>
+<ellipse cx="5.66982" cy="12.5" rx="0.75" ry="0.75" transform="rotate(60 5.66982 12.5)" fill="#FACC15"/>
+<ellipse cx="12.5" cy="14.3301" rx="0.75" ry="0.75" transform="rotate(150 12.5 14.3301)" fill="#FACC15"/>
+<ellipse cx="7.50002" cy="5.66988" rx="0.75" ry="0.75" transform="rotate(150 7.50002 5.66988)" fill="#FACC15"/>
 </svg>

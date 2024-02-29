@@ -1,14 +1,14 @@
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_760_68)">
-<rect x="2" y="2" width="16" height="16" fill="#E6573A"/>
-<rect x="2" y="6" width="16" height="8" fill="#FFD061"/>
-<path d="M5 8.5H8V10.5C8 11.3284 7.32843 12 6.5 12C5.67157 12 5 11.3284 5 10.5V8.5Z" fill="#E6573A"/>
-<circle cx="5.5" cy="8.5" r="0.5" fill="#E6573A"/>
-<circle cx="6.5" cy="8.5" r="0.5" fill="#E6573A"/>
-<circle cx="7.5" cy="8.5" r="0.5" fill="#E6573A"/>
+<g clip-path="url(#clip0_1_18539)">
+<rect x="2" y="2" width="16" height="16" fill="#EA580C"/>
+<rect x="2" y="6" width="16" height="8" fill="#FACC15"/>
+<path d="M5 9.3C5 9.13431 5.13431 9 5.3 9H7.7C7.86569 9 8 9.13431 8 9.3V10.5C8 11.3284 7.32843 12 6.5 12C5.67157 12 5 11.3284 5 10.5V9.3Z" fill="#EA580C"/>
+<path d="M4.25 8.5V11.5" stroke="#A16207" stroke-width="0.5" stroke-linecap="round"/>
+<path d="M8.75 8.5V11.5" stroke="#A16207" stroke-width="0.5" stroke-linecap="round"/>
+<path d="M7.34 8.38C7.28334 8.45554 7.19443 8.5 7.1 8.5L5.9 8.5C5.80557 8.5 5.71666 8.45554 5.66 8.38L5.36 7.98C5.21167 7.78223 5.35279 7.5 5.6 7.5L7.4 7.5C7.64721 7.5 7.78833 7.78223 7.64 7.98L7.34 8.38Z" fill="#EA580C"/>
 </g>
 <defs>
-<clipPath id="clip0_760_68">
+<clipPath id="clip0_1_18539">
 <rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
 </clipPath>
 </defs>

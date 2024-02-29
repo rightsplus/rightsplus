@@ -1,15 +1,20 @@
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_760_85)">
-<rect x="2" y="2" width="16" height="16" fill="#E6573A"/>
-<rect x="8" y="2" width="16" height="6" transform="rotate(90 8 2)" fill="#49964E"/>
-<rect x="5" y="7" width="6" height="6" rx="3" fill="#FFD061"/>
-<mask id="path-5-inside-1_760_85" fill="white">
-<path d="M6.5 8.75C6.5 8.47386 6.72386 8.25 7 8.25H9C9.27614 8.25 9.5 8.47386 9.5 8.75V10.5C9.5 11.3284 8.82843 12 8 12C7.17157 12 6.5 11.3284 6.5 10.5V8.75Z"/>
+<g clip-path="url(#clip0_1_18551)">
+<rect x="2" y="2" width="16" height="16" fill="#EA580C"/>
+<rect x="8" y="2" width="16" height="6" transform="rotate(90 8 2)" fill="#16A34A"/>
+<rect x="5" y="7" width="6" height="6" rx="3" fill="#FACC15"/>
+<mask id="path-5-inside-1_1_18551" fill="white">
+<path d="M6 8.5C6 8.22386 6.22386 8 6.5 8H9.5C9.77614 8 10 8.22386 10 8.5V10.5C10 11.6046 9.10457 12.5 8 12.5C6.89543 12.5 6 11.6046 6 10.5V8.5Z"/>
 </mask>
-<path d="M6.5 8.75C6.5 8.47386 6.72386 8.25 7 8.25H9C9.27614 8.25 9.5 8.47386 9.5 8.75V10.5C9.5 11.3284 8.82843 12 8 12C7.17157 12 6.5 11.3284 6.5 10.5V8.75Z" fill="#F9F8F7" stroke="#E6573A" stroke-width="2" mask="url(#path-5-inside-1_760_85)"/>
+<path d="M6 8.5C6 8.22386 6.22386 8 6.5 8H9.5C9.77614 8 10 8.22386 10 8.5V10.5C10 11.6046 9.10457 12.5 8 12.5C6.89543 12.5 6 11.6046 6 10.5V8.5Z" fill="#F5F5F5" stroke="#EA580C" stroke-width="1.5" mask="url(#path-5-inside-1_1_18551)"/>
+<path d="M8 8.5V12M6.5 10H9.5" stroke="#0284C7" stroke-width="0.75" stroke-linecap="round"/>
+<mask id="path-7-inside-2_1_18551" fill="white">
+<path d="M6 8.5C6 8.22386 6.22386 8 6.5 8H9.5C9.77614 8 10 8.22386 10 8.5V10.5C10 11.6046 9.10457 12.5 8 12.5C6.89543 12.5 6 11.6046 6 10.5V8.5Z"/>
+</mask>
+<path d="M6 8.5C6 8.22386 6.22386 8 6.5 8H9.5C9.77614 8 10 8.22386 10 8.5V10.5C10 11.6046 9.10457 12.5 8 12.5C6.89543 12.5 6 11.6046 6 10.5V8.5Z" stroke="#EA580C" stroke-width="1.5" mask="url(#path-7-inside-2_1_18551)"/>
 </g>
 <defs>
-<clipPath id="clip0_760_85">
+<clipPath id="clip0_1_18551">
 <rect x="2" y="2" width="16" height="16" rx="8" fill="white"/>
 </clipPath>
 </defs>

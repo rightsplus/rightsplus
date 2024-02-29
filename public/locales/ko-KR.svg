@@ -1,0 +1,30 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_14843)">
+<rect x="18.0098" y="17.99" width="16" height="16" transform="rotate(180 18.0098 17.99)" fill="#F5F5F5"/>
+<ellipse cx="10" cy="10" rx="3" ry="3" transform="rotate(-180 10 10)" fill="#EA580C"/>
+<path d="M7 10C9 10 11 10 13 10C13 11.6569 11.6569 13 10 13C8.34315 13 7 11.6569 7 10Z" fill="#0369A1"/>
+<ellipse cx="8.5" cy="9.995" rx="1.5" ry="1.5" transform="rotate(-180 8.5 9.995)" fill="#EA580C"/>
+<ellipse cx="11.5" cy="9.995" rx="1.5" ry="1.5" transform="rotate(-180 11.5 9.995)" fill="#0369A1"/>
+<mask id="path-7-inside-1_1_14843" fill="white">
+<rect x="13.0118" y="5.22275" width="2.5" height="1.5" rx="0.5" transform="rotate(45 13.0118 5.22275)"/>
+</mask>
+<rect x="13.0118" y="5.22275" width="2.5" height="1.5" rx="0.5" transform="rotate(45 13.0118 5.22275)" fill="#525252" stroke="#525252" stroke-width="1.5" mask="url(#path-7-inside-1_1_14843)"/>
+<mask id="path-8-inside-2_1_14843" fill="white">
+<rect x="6.29077" y="11.9438" width="2.5" height="1.5" rx="0.5" transform="rotate(45 6.29077 11.9438)"/>
+</mask>
+<rect x="6.29077" y="11.9438" width="2.5" height="1.5" rx="0.5" transform="rotate(45 6.29077 11.9438)" fill="#525252" stroke="#525252" stroke-width="1.5" mask="url(#path-8-inside-2_1_14843)"/>
+<mask id="path-9-inside-3_1_14843" fill="white">
+<rect x="14.7797" y="13.0045" width="2.5" height="1.5" rx="0.5" transform="rotate(135 14.7797 13.0045)"/>
+</mask>
+<rect x="14.7797" y="13.0045" width="2.5" height="1.5" rx="0.5" transform="rotate(135 14.7797 13.0045)" fill="#525252" stroke="#525252" stroke-width="1.5" mask="url(#path-9-inside-3_1_14843)"/>
+<mask id="path-10-inside-4_1_14843" fill="white">
+<rect x="8.05859" y="6.28342" width="2.5" height="1.5" rx="0.5" transform="rotate(135 8.05859 6.28342)"/>
+</mask>
+<rect x="8.05859" y="6.28342" width="2.5" height="1.5" rx="0.5" transform="rotate(135 8.05859 6.28342)" fill="#525252" stroke="#525252" stroke-width="1.5" mask="url(#path-10-inside-4_1_14843)"/>
+</g>
+<defs>
+<clipPath id="clip0_1_14843">
+<rect x="2.00488" y="1.995" width="16" height="16" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>

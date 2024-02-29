@@ -1,0 +1,18 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_14597)">
+<rect x="2" y="2" width="16" height="16" fill="#F5F5F5"/>
+<rect x="1.625" y="0.619995" width="16.75" height="7.08" fill="#0284C7" stroke="#EA580C" stroke-width="0.75"/>
+<rect x="2" y="12.665" width="16" height="6.33" fill="#16A34A" stroke="#EA580C" stroke-width="0.75"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.95132 6.22833C8.06792 6.22833 8.0812 6.06968 7.98188 6.00861C7.55579 5.74659 7.27166 5.27606 7.27166 4.73917C7.27166 4.20227 7.55579 3.73174 7.98188 3.46973C8.0812 3.40865 8.06792 3.25 7.95132 3.25C7.12888 3.25 6.46216 3.91672 6.46216 4.73917C6.46216 5.56161 7.12888 6.22833 7.95132 6.22833Z" fill="#F5F5F5"/>
+<circle cx="12.5" cy="4.00488" r="0.5" transform="rotate(90 12.5 4.00488)" fill="#F5F5F5"/>
+<circle cx="11" cy="4.00488" r="0.5" transform="rotate(90 11 4.00488)" fill="#F5F5F5"/>
+<circle cx="12.5" cy="5.5" r="0.5" transform="rotate(90 12.5 5.5)" fill="#F5F5F5"/>
+<circle cx="11" cy="5.5" r="0.5" transform="rotate(90 11 5.5)" fill="#F5F5F5"/>
+<circle cx="9.5" cy="5.5" r="0.5" transform="rotate(90 9.5 5.5)" fill="#F5F5F5"/>
+<defs>
+<clipPath id="clip0_1_14597">
+<rect x="18.0049" y="17.995" width="16" height="16" rx="8" transform="rotate(180 18.0049 17.995)" fill="white"/>
+</clipPath>
+</defs>
+</svg>
