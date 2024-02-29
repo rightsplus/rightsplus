@@ -1,16 +1,5 @@
 <template>
-  <div class="min-h-screen pt-36 pb-8 bg-neutral-200">
-    <div class="max-w-screen mx-auto px-5 sm:px-12 h-full relative z-1">
-      <div class="flex flex-col gap-12 leading-0 h-full">
-        <div class="flex flex-col gap-12">
-          <h1 class="text-xl sm:text-2xl font-extrabold">
-            Hallo {{ data?.user.first_name }}!
-          </h1>
-        </div>
-        <CustomTable :data="tableData" />
-      </div>
-    </div>
-  </div>
+  <CustomTable :data="tableData" />
 </template>
 
 <script setup lang="ts">
@@ -22,27 +11,24 @@ const currentUser = useSupabaseUser();
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("admin", async () => {
   if (!currentUser.value?.email) return;
-  const user = (
-    await client
-      .from("users")
-      .select("role, first_name")
-      .eq("email", currentUser.value?.email)
-      .single()
-  ).data;
 
-  const claims =
-    user?.role === "admin"
-      ? ((
-          await client.from("claims").select(`
+  const { data: user } = await client
+    .from("users")
+    .select("role, first_name")
+    .eq("email", currentUser.value?.email)
+    .single();
+
+  if (user?.role !== "admin") {
+    return {
+      user,
+      claims: [],
+    };
+  }
+  const { data: claims, error } = await client.from("claims").select(`
         *,
         users ( * ),
         flights ( * )
-      `)
-        ).data as (ClaimsTable & { users: UsersTable } & {
-          flights: FlightsTable;
-        })[])
-      : [];
-  // console.log(user, claims);
+      `);
   return {
     user,
     claims,
@@ -58,23 +44,25 @@ const time = (d: string) =>
   });
 const logo = getAirlineLogo || (() => "");
 const tableData = computed(() => {
+  console.log(data.value);
   return data.value?.claims?.map((item) => {
     return {
-      status: item.flights.status,
-      delay: item.flights.delay_arrival,
+      status: item.flights?.status,
+      booking_number: item?.booking_number,
+      delay: item.flights?.delay_arrival,
       caseId: item.id,
       flight: {
-        logo: logo(item.flights.airline_iata),
-        airline: item.flights.airline,
+        logo: logo(item.flights?.airline_iata),
+        airline: item.flights?.airline,
         number: item.flight_number,
       },
-      date_departure: time(item.flights.scheduled_time_departure),
-      date_arrival: time(item.flights.scheduled_time_arrival),
-      airport_departure: item.flights.airport_departure,
-      airport_arrival: item.flights.airport_arrival,
+      date_departure: time(item.flights?.scheduled_time_departure),
+      date_arrival: time(item.flights?.scheduled_time_arrival),
+      airport_departure: item.flights?.airport_departure,
+      airport_arrival: item.flights?.airport_arrival,
       // reason: item.data.reason,
-      client_name: item.users.first_name + " " + item.users.last_name,
-      client_email: item.users?.email,
+      client_name: item.users?.first_name + " " + item.users?.last_name,
+      client_email: item.client.passengers?.[0]?.email,
       // // client_iban: item.data.client?.iban,
       // airport_departure: item.data?.airport?.departure?.name,
       // airport_arrival: item.data?.airport?.arrival?.name,
@@ -87,6 +75,7 @@ const tableData = computed(() => {
 
 definePageMeta({
   middleware: ["auth"],
+  layout: "admin"
 });
 // watchEffect(() => {
 //   if (!isAdmin.value) navigateTo("/login");

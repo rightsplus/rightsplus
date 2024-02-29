@@ -3,19 +3,14 @@ import nodemailer from 'nodemailer'
 import { generatePDF as generate } from "@/pdf/pdfGenerator";
 import { useCompiler } from '#vue-email'
 
-type SendMailProps = {
-	from: string;
-	to: string;
-	subject: string;
-	text: string;
-	name: string;
-	template: string;
-	pdf: Buffer
+type SendMailProps = SendPDFMailProps & {
+	html?: string;
+	pdfBuffer?: Buffer;
 }
-
 const sendMail = async (props: SendMailProps) => {
+	console.log(props)
 	const transporter = nodemailer.createTransport({
-		host: "smtp.gmail.com",
+		host: process.env.SMTP_HOST,
 		secure: true, // upgrade later with STARTTLS
 		port: 465,
 		auth: {
@@ -25,62 +20,57 @@ const sendMail = async (props: SendMailProps) => {
 	})
 
 	try {
-		// console.log('props', props)
-		// console.log('transporter', transporter)
 		transporter.sendMail({
-			from: process.env.SMTP_USER,
+			from: `"Joachim von RightsPlus" ${process.env.SMTP_USER}`,
 			to: props.to,
 			subject: props.subject,
-			html: props.template,
-			attachments: [
+			html: props.html || props.text,
+			attachments: props.pdf && props.pdfBuffer ? [
 				{
-					filename: 'assignment.pdf',
-					content: props.pdf,
+					filename: `${props.pdf.fileName}.pdf`,
+					content: props.pdfBuffer,
 				},
-			],
+			] : [],
 		})
 	} catch (error) {
 		console.log('error', error)
 	}
 }
 
-const generatePDF = async ({ data, pdfRoute }: {
-	data: Record<string, string | number>
-	pdfRoute: string
-}) => {
-	const url = new URL(`http://localhost:3000/pdf/${pdfRoute}`)
-	Object.entries(data).forEach(([key, value]) => {
+const generatePDF = async ({ data, pdf }: SendPDFMailProps) => {
+	if (!pdf) return
+	const base = process.env.NODE_ENV === 'production' ? 'https://rightsplus.up.railway.app' : 'http://localhost:3000'
+	const url = new URL(`${base}/pdf/${pdf.template}`)
+	Object.entries(data || {}).forEach(([key, value]) => {
 		url.searchParams.append(key, value.toString());
 	});
+	console.log(url.href)
 
-	return await generate(url.toJSON())
+	return await generate(url.href)
 }
 
 export default defineEventHandler(async (event) => {
-	const user = await serverSupabaseUser(event)
-	const client = serverSupabaseClient(event)
-	const isAdmin = user?.email && (await client.from('users').select('role').eq('email', user.email).single()).data?.role === 'admin'
+	// const client = serverSupabaseClient(event)
+	// const isAdmin = user?.email && (await client.from('users').select('role').eq('email', user.email).single()).data?.role === 'admin'
 
-	if (!isAdmin) throw createError({ statusCode: 401, message: "Unauthorized" })
-	const body = JSON.parse(await readBody(event))
-
-	console.log("the body", typeof body)
 
 	try {
-		console.log(body)
-		const pdf = await generatePDF({ data: body.to, pdfRoute: body.pdfRoute })
-		const { html: template } = await useCompiler('AssignmentLetter.vue', {
-			props: body.data
+		const user = await serverSupabaseUser(event)
+		if (!user?.email) throw createError({ statusCode: 401, message: "Unauthorized" })
+		const body = JSON.parse(await readBody(event)) as SendPDFMailProps
+
+		const pdfBuffer = await generatePDF(body)
+		const html = body.template ? (await useCompiler(body.template, { props: body.data })).html : undefined
+
+		await sendMail({
+			...body,
+			pdfBuffer,
+			html
 		})
 
-		sendMail({
-			...body,
-			pdf,
-			template
-		})
 		return {
 			statusCode: 200,
-			body: JSON.stringify({ message: 'Payout successful' })
+			body: { message: 'Email sent successfully' }
 		}
 	} catch (error) {
 		return error

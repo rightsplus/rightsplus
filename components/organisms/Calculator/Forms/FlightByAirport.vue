@@ -41,7 +41,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const props = defineProps<{ modelValue: ClaimsForm }>();
 const emit = defineEmits(["submit"]);
 const start = () => {
-  useRouter().push("/claims/new");
+  useRouter().push("/claim/new");
   useSteps().index.value = 0;
   emit("submit");
 };

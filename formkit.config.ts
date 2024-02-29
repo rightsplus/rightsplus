@@ -32,7 +32,7 @@ const config: DefaultConfigOptions = {
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
         message: 'text-red-500 mb-1 text-xs',
         messages: 'list-none p-0 mt-1 mb-0',
-        outer: 'formkit-disabled:opacity-50',
+        outer: 'formkit-disabled:opacity-50 min-w-[auto]',
         prefixIcon: 'w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40',
         suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 hover:cursor-pointer hover:[&>svg]:fill-neutral-800 ',
       },
@@ -82,11 +82,11 @@ const config: DefaultConfigOptions = {
         suffixIcon: 'min-w-[2.5em] pr-0 pl-0 m-auto'
       },
       file: {
-        fileItem: 'flex items-center text-neutral-800 mb-1 last:mb-0',
+        fileItem: 'flex items-center justify-between text-neutral-800 mb-1 last:mb-0',
         fileItemIcon: 'w-4 mr-2 shrink-0',
-        fileList: 'shrink peer pl-4 py-3 formkit-multiple:data-[has-multiple="true"]:mb-6 min-w-0',
+        fileList: 'shrink peer pl-4 py-3 formkit-multiple:data-[has-multiple="true"]:mb-6 min-w-0 w-full',
         fileName: 'text-ellipsis leading-tight truncate overflow-hidden translate-y-2',
-        fileRemove: 'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em] flex items-center [&:hover_svg]:fill-red-500',
+        fileRemove: 'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em] flex items-center [&:hover_svg]:fill-red-500 ml-auto',
         fileRemoveIcon: 'text-lg w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&_svg]:w-full [&_svg]:max-w-[1em] [&_svg]:max-h-[1em] [&_svg]:m-auto [&_svg]:fill-neutral-400 z-40',
         inner: 'relative max-w-2xl cursor-pointer formkit-multiple:[&>button]:absolute h-14',
         input: 'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',

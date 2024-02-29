@@ -1,5 +1,5 @@
 <template>
-	<button class="p-5" :class="{active}" :aria-label="$t('open.mainmenu')" />
+	<button class="p-5" :class="{active}" :aria-label="$t('open.mainmenu')" :tabindex="-1"/>
 </template>
 
 <script lang="ts">

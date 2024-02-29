@@ -12,12 +12,11 @@ export interface PassengerDetails {
   email: string;
   iban: string;
   phone?: string;
-  bookingNumber: string;
   boardingPass?: Files;
   isMinor?: boolean;
 }
 export interface ClaimsForm {
-  uuid?: string;
+  id?: number;
   airport: {
     departure: Airport;
     arrival: Airport;
@@ -42,6 +41,7 @@ export interface ClaimsForm {
   };
   client: {
     agreedToTerms: boolean;
+    bookingNumber: string;
     passengers: PassengerDetails[];
   }
 }

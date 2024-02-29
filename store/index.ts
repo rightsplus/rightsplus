@@ -54,7 +54,10 @@ export const defaultClaim = {
 } as ClaimsForm
 export const claim = reactive({
   value: defaultClaim,
-  reset: () => claim.value = defaultClaim,
+  reset: () => {
+    console.log('resetting claim')
+    claim.value = defaultClaim
+  }
 })
 export const state = reactive({
   routes: {} as Record<string, Route>,

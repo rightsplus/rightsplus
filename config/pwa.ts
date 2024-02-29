@@ -5,4 +5,4 @@ export default {
 		theme_color: '#f97316',
 		short_name: 'RightsPlus'
 	}
-}
+} as const

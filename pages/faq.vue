@@ -29,7 +29,7 @@
               @update:modelValue="filter = $event"
             />
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-12">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-12 [&_em]:bg-primary-300 [&_em]:ring-2 [&_em]:ring-primary-300 [&_em]:rounded [&_em]:not-italic">
             <Accordion
               :items="qa"
               itemKey="name"

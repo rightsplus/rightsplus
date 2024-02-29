@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 pt-0 bg-neutral-50 rounded-xl w-full group">
+  <div class="p-5 pt-0 bg-neutral-50 rounded-xl w-full group @container">
     <div id="geocoder"></div>
     <pre id="result"></pre>
     <AccordionItem
@@ -7,7 +7,7 @@
       :modelValue="open"
       @update:modelValue="emit('setOpen', $event)"
       :tag="{ outer: 'div', inner: 'div', title: 'h3' }"
-      collapsible
+      :collapsible="false"
       v-if="modelValue"
     >
       <template #title>
@@ -48,19 +48,32 @@
             type="text"
             :label="$t('firstName')"
             v-model="modelValue.firstName"
-            outer-class="col-span-2"
+            outer-class="col-span-full @sm:col-span-2"
           />
           <FormKit
             type="text"
             :label="$t('lastName')"
             v-model="modelValue.lastName"
-            outer-class="col-span-2"
+            outer-class="col-span-full @sm:col-span-2"
           />
+          <span
+            class="formkit-help text-xs text-neutral-500 leading-tight col-span-full @sm:!-mt-4"
+            >Stelle sicher, dass die Angabe mit dem Namen auf deiner Bordkarte
+            übereinstimmt.</span
+          >
           <FormKit
             type="email"
             :label="$t('email')"
             v-model="modelValue.email"
             @input="emit('update:modelValue', { ...modelValue, email: $event })"
+            help="Keine Sorge, wir schicken dir nicht ungefragt Werbung."
+            outer-class="col-span-full"
+          />
+          <InputIBAN
+            :label="$t('iban')"
+            :name="$t('iban')"
+            v-model="modelValue.iban"
+            help="Damit wird dir deinen Anspruch an dich auszahlen können."
             outer-class="col-span-full"
           />
           <!-- <FormKit
@@ -75,39 +88,25 @@
             placeholder="z.B. Haupstraße 1, 10115 Berlin"
             v-model="modelValue.address"
             class="col-span-full"
-            />
-          <FormKit
-            :label="$t('bookingNumber')"
-            v-model="modelValue.bookingNumber"
-            outer-class="col-span-2"
-            placeholder="z.B. XY789"
-            maxlength="20"
-            v-maska:[options]
           />
           <FormKit
             type="file"
             accept="image/*, application/pdf"
             :label="$t('boardingPass')"
             v-model="modelValue.boardingPass"
-            outer-class="col-span-2"
+            outer-class="col-span-full"
             placeholder="z.B. XY789"
             ref="fileInput"
             :fileIcon="'image'"
             fileRemoveIcon="xmark"
-            suffix-icon="image"
+            :multiple="false"
           />
 
-          <InputIBAN
-            :label="$t('iban')"
-            :name="$t('iban')"
-            v-model="modelValue.iban"
-            outer-class="col-span-full"
-          />
           <!-- <div class="col-span-full  text-sm">Damit wir den Fall notfalls vor Gericht verteidigen können.</div> -->
           <!-- <div class="col-span-full  text-sm">Damit wird dir das Geld auszahlen können.</div> -->
 
-            <!-- :fileIcon="modelValue.boardingPass?.[0]?.file.type?.includes('image') ? 'image' : 'file'" -->
-            <!-- @suffix-icon-click="
+          <!-- :fileIcon="modelValue.boardingPass?.[0]?.file.type?.includes('image') ? 'image' : 'file'" -->
+          <!-- @suffix-icon-click="
               (_, e) => {
                 console.log(modelValue.boardingPass)
                 if (!Object.keys(modelValue.boardingPass || {}).length) {
@@ -128,8 +127,7 @@ import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import AccordionItem from "../../Accordion/AccordionItem.vue";
 import AddressInput from "./AddressInput.vue";
 import type { PassengerDetails } from "@/types";
-import type { MaskInputOptions } from "maska";
-import { vMaska } from "maska";
+import SignaturePad from "~~/components/molecules/SignaturePad.vue";
 const props = defineProps<{
   modelValue: PassengerDetails;
   index: number;
@@ -169,15 +167,4 @@ const name = computed(() => {
 const passenger = (index: number) => {
   return index === 0 ? "Deine Angaben" : `${index + 1}. Passagier`;
 };
-
-const options: MaskInputOptions = reactive({
-  tokens: {
-    "@": {
-      pattern: /[a-zA-Z0-9]/,
-      transform: (chr: string) => chr.toUpperCase(),
-      repeated: true,
-    },
-  },
-  mask: () => "@",
-});
 </script>

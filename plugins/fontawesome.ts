@@ -77,7 +77,10 @@ import {
   faEye,
   faEyeSlash,
   faSpinner,
-  faUser
+  faUser,
+  faDoorOpen,
+  faEraser,
+  faSignature
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -166,7 +169,10 @@ library.add(
   faEye,
   faEyeSlash,
   faSpinner,
-  faUser
+  faUser,
+  faDoorOpen,
+  faEraser,
+  faSignature
 )
 
 config.autoAddCss = false

@@ -73,14 +73,4 @@ onMounted(() => {
     scrollDownReady.value = true;
   }, 1000);
 });
-const client = useSupabaseClient<Database>();
-const { generatePDF } = useSupabaseFunctions();
-
-const generate = async () => {
-  const pdfData = await generatePDF({
-    name: claim.value.client.passengers[0].firstName || "Leon",
-    to: "leonvogler@ok.de"
-  });
-  console.log(pdfData);
-};
 </script>

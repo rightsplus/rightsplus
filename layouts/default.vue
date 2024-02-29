@@ -1,16 +1,14 @@
 <template>
-  <main class="relative min-h-screen w-full z-40">
-    <h1 v-if="$slots.title" class="font-bold text-left text-4xl sm:text-6xl mb-10">
-      <slot name="title" />
-    </h1>
-    <slot />
-  </main>
+  <div class="flex flex-col">
+    <Header class="w-full z-50 absolute" />
+    <main>
+      <slot />
+    </main>
+    <Footer class="w-full mt-auto" />
+  </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-
-});
+<script lang="ts" setup>
+import Header from "@/components/species/Header.vue";
+import Footer from "@/components/species/Footer.vue";
 </script>
-
-<style scoped></style>

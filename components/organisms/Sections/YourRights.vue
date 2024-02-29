@@ -24,7 +24,7 @@
             class="flex gap-5 items-center"
             :class="{ 'text-gray-500': item.exception }"
           >
-            <FontAwesomeIcon :icon="item.icon" :class="item.color" />
+            <FontAwesomeIcon :icon="item.icon" class="shrink-0" :class="item.color" />
             <span class="flex flex-col gap-1 leading-none font-medium">{{
               item.title
             }}</span>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex">
+    <div class="flex gap-0.5">
       <FontAwesomeIcon
         v-for="n in stars"
         :key="n"

@@ -1,6 +1,5 @@
 import i18n from './config/i18n'
 import postcss from './config/postcss'
-import mail from './config/mail'
 import pwa from './config/pwa'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -22,10 +21,14 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@vue-email/nuxt'
   ],
+  buildModules: [
+    '@nuxtjs/pwa',
+  ],
   build: {
     transpile: [
       "primevue",
-      "@fortawesome/vue-fontawesome"
+      "@fortawesome/vue-fontawesome",
+      'vue-i18n'
     ]
   },
   nitro: {
@@ -45,6 +48,7 @@ export default defineNuxtConfig({
     '~/components',
     '~/components/core',
   ],
+  pwa,
   i18n,
   postcss,
   sourcemap: {
@@ -66,14 +70,14 @@ export default defineNuxtConfig({
       },
       flight: {
         aviationstack: process.env.AVIATIONSTACK_KEY,
+        cirium: {
+          appId: process.env.CIRIUM_APP_ID,
+          appKey: process.env.CIRIUM_APP_KEY
+        },
         flighlabs: process.env.FLIGHTLABS_KEY,
         key: process.env.APP_KEY,
         appId: process.env.APP_ID
       }
     },
   },
-  pwa,
-  buildModules: [
-    '@nuxtjs/pwa',
-  ],
 })

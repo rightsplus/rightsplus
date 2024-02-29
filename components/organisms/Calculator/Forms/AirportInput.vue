@@ -41,7 +41,7 @@ const airports = ref<Record<string, Airport>>({})
 onMounted(async () => airports.value = await useAirports())
 
 const { locale } = useI18n();
-const convertName = (value: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
+const convertName = (value?: Airport) => value?.name ? `${value?.name} (${value?.iata})` : ''
 const dropdownList = ref<DropdownItem[]>([])
 const loading = ref(false)
 const loadingTimeout = ref<undefined | ReturnType<typeof setTimeout>>()

@@ -8,6 +8,10 @@ import { airlines, airports, claim } from "~~/store";
 import type { State } from "~~/store";
 import { euMember } from "is-european";
 import Compressor from "compressorjs";
+import SignaturePad from "signature_pad";
+import { uuid as vueUuid } from "vue-uuid";
+
+export const uuid = () => vueUuid.v4()
 
 export const getAirlineLogo = (iata?: string, size = 100) => {
 	if (!iata) return;
@@ -260,7 +264,11 @@ export const focusNext = (select = false, active = document.activeElement as HTM
 	// Focus on the next input element
 	if (nextElement) {
 		nextElement.focus();
-		if (select && typeof nextElement.select === 'function') nextElement.select();
+		if (select && typeof nextElement.select === 'function') {
+			nextElement.select();
+		} else {
+			active.blur()
+		}
 	} else {
 		active.blur()
 	}
@@ -345,4 +353,82 @@ export const compressImage = async (file: File, options?: Compressor.Options) =>
 export const handleFormKitIconClick = (e: MouseEvent) => {
 	const input = (e.target as Element).closest('.formkit-inner')?.querySelector('input')
 	input?.click()
+}
+
+export const formatClaimId = (id: number | string, prependHash = true) => {
+	if (!id) return ""
+	const base = 10 // 10
+	const length = 7
+	const paddedId = id.toString(base).toUpperCase().padStart(length, '0')
+	if (prependHash) return '#' + paddedId
+	return paddedId
+	// const decoded = parseInt(encoded.slice(1), base)
+}
+
+export function cropSignatureCanvasSVG(svgString: string, toBase64 = false, p = 5,) {
+	const tempContainer = document.createElement('div');
+	tempContainer.innerHTML = svgString;
+	const svgElement = tempContainer.firstChild! as SVGGraphicsElement;
+	document.body.appendChild(svgElement);
+	const { x, y, width, height } = svgElement.getBBox();
+	svgElement.setAttribute('viewBox', [x - p, y - p, width + p * 2, height + p * 2].join(' '));
+	const modifiedSvgString = new XMLSerializer().serializeToString(svgElement);
+	document.body.removeChild(svgElement);
+	if (toBase64) {
+		return 'data:image/svg+xml;base64,' + btoa(modifiedSvgString);
+	}
+	return modifiedSvgString;
+}
+
+/**
+ * Crop signature canvas to only contain the signature and no whitespace.
+ *
+ * @since 1.0.0
+ */
+export const cropSignatureCanvas = (canvas: HTMLCanvasElement) => {
+
+	// First duplicate the canvas to not alter the original
+	const croppedCanvas = document.createElement('canvas'),
+		croppedCtx = croppedCanvas.getContext('2d');
+
+	if (!croppedCtx) return
+	croppedCanvas.width = canvas.width;
+	croppedCanvas.height = canvas.height;
+	croppedCtx.drawImage(canvas, 0, 0);
+
+	// Next do the actual cropping
+	let w = croppedCanvas.width,
+		h = croppedCanvas.height,
+		x: number,
+		y: number,
+		index: number;
+
+	const pix = { x: [] as number[], y: [] as number[] },
+		imageData = croppedCtx.getImageData(0, 0, croppedCanvas.width, croppedCanvas.height);
+
+	if (!imageData) return
+
+	for (y = 0; y < h; y++) {
+		for (x = 0; x < w; x++) {
+			index = (y * w + x) * 4;
+			if (imageData.data[index + 3] > 0) {
+				pix.x.push(x);
+				pix.y.push(y);
+
+			}
+		}
+	}
+	pix.x.sort(function (a, b) { return a - b });
+	pix.y.sort(function (a, b) { return a - b });
+	var n = pix.x.length - 1;
+
+	w = pix.x[n] - pix.x[0];
+	h = pix.y[n] - pix.y[0];
+	var cut = croppedCtx.getImageData(pix.x[0], pix.y[0], w, h);
+
+	croppedCanvas.width = w;
+	croppedCanvas.height = h;
+	croppedCtx.putImageData(cut, 0, 0);
+
+	return croppedCanvas;
 }

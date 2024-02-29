@@ -23,7 +23,7 @@
         inputFocused && options?.length
           ? 'rounded-b-none ring-1 ring-primary-500'
           : '',
-        modelValue ? 'active' : ''
+        modelValue ? 'active' : '',
       ]"
     >
       <FontAwesomeIcon
@@ -48,24 +48,15 @@
       :data-has-value="modelValue && 'true'"
       >{{ label }}</label
     >
-    <Teleport to="body">
-      <div
-        class="absolute z-9999"
-        :style="
-          `width: ${position.width}px; top: ${position.top}px; left: ${position.left}px;`
-        "
-      >
-        <Transition name="dropdown">
-          <Dropdown
-            v-if="inputFocused"
-            class="w-full mt-[1px] z-50"
-            :active="highlighted"
-            :options="options"
-            @input="handleInput"
-          />
-        </Transition>
-      </div>
-    </Teleport>
+    <Dropdown
+      class="w-full mt-[1px] z-50"
+      :show="inputFocused"
+      :style="position"
+      :active="highlighted"
+      :options="options"
+      @input="handleInput"
+      teleport
+    />
   </div>
 </template>
 
@@ -86,15 +77,15 @@ const emit = defineEmits([
   "update:modelValue",
   "query",
   "suffix-icon-click",
-  "prefix-icon-click"
+  "prefix-icon-click",
 ]);
-const [button, position] = usePosition()
+const [ button, position] = usePosition();
 const highlighted = ref(
-  props.options.findIndex(e => e.value === props.modelValue) || 0
+  props.options.findIndex((e) => e.value === props.modelValue) || 0
 );
 const inputFocused = ref(false);
 const current = computed(() => {
-  return props.options.find(e => e.value === props.modelValue);
+  return props.options.find((e) => e.value === props.modelValue);
 });
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);

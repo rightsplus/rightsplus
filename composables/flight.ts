@@ -53,7 +53,7 @@ export const getDelay = (flightPhase?: FlightPhase, limit?: number) => {
 	const { delay } = flightPhase
 
 	if (!limit) return delay
-	return delay > limit ? delay : 0
+	return delay >= limit ? delay : 0
 }
 
 export const isExtraordinaryCircumstance = async (flight: Flight | null) => {
@@ -339,18 +339,22 @@ export const removeDuplicateFlights = (flights: Flight[]) => {
 };
 
 const queries = ref([] as string[]);
-export const fetchFlights = async ({ departure, arrival, date }: {
+export const fetchFlights = async ({ departure, arrival, date, locale }: {
 	departure: string,
 	arrival: string,
 	date: string,
+	locale?: string,
 }) => {
-	const { aviationstack } = useRuntimeConfig().public.flight;
+	const { aviationstack, cirium } = useRuntimeConfig().public.flight;
+
 	try {
 		if (
 			!date ||
 			!departure ||
 			!arrival
 		) {
+			console.warn("Missing date, departure or arrival");
+			return
 		}
 
 		const fetched = useAppState().flights.find(
@@ -369,78 +373,92 @@ export const fetchFlights = async ({ departure, arrival, date }: {
 		}
 		queries.value.push(query);
 		// Create a URL instance with the desired URL string
-		const proxy =
-			process.env.NODE_ENV === "development" ? "https://cors-anywhere.herokuapp.com/" : "";
-		const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
-		url.searchParams.append("access_key", aviationstack);
-		url.searchParams.append("dep_iata", departure);
-		url.searchParams.append("arr_iata", arrival);
+		// const proxy =
+		// 	process.env.NODE_ENV === "development" ? "https://cors-anywhere.herokuapp.com/" : "";
+		// const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
+		// url.searchParams.append("access_key", aviationstack);
+		// url.searchParams.append("dep_iata", departure);
+		// url.searchParams.append("arr_iata", arrival);
 		// url.searchParams.append('flight_date', date);
 
 		// const url = new URL("https://app.airhelp.com/api/flights/selector");
-
 		// url.searchParams.append('local_departure_date', new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-'));
 		// url.searchParams.append("departure_airport_code", departure);
 		// url.searchParams.append("arrival_airport_code", arrival);
-
-
+		const [year, month, day] = date.split("-")
+		const url = new URL(`https://api.flightstats.com/flex/flightstatus/historical/rest/v3/json/route/status/${departure}/${arrival}/dep/${year}/${month}/${day}`);
+		url.searchParams.append('extendedOptions', ['excludeAppendix', locale && `languageCode:${locale}`].filter(Boolean).join(','));
 		const { fetchProxy } = useSupabaseFunctions()
+
 
 		console.log("fetching...", url.href);
 
-		const headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Access-Control-Allow-Origin", "*");
-		headers.append("X-Requested-With", "XMLHttpRequest");
+		// const headers = new Headers();
+		// headers.append("Content-Type", "application/json");
+		// headers.append("Access-Control-Allow-Origin", "*");
+		// headers.append("X-Requested-With", "XMLHttpRequest");
 
-		const requestOptions = {
-			method: "GET",
-			headers: headers,
-		};
-		// fetch("api/aviationstack-delayed.json")
+		// const requestOptions = {
+		// 	method: "GET",
+		// 	headers: headers,
+		// };
 		// fetch("api/aviationstack-lax-jfk.json")
-
-		// const data: Flight[] = await (await fetch("aviationstack-delayed.json")).json()
+		
 		// const { flights: data }: { flights: Flight[] } = await fetchProxy(url.href)
 		// const { flights: data }: { flights: Flight[] } = await (await fetch(url.href, requestOptions)).json()
-		const { data }: { data: Flight[] } = await (await fetch(url.href, requestOptions)).json()
+		// const { data }: { data: Flight[] } = await (await fetch(url.href, requestOptions)).json()
+
+		//cirium
+		const data: Flight[] = await (await fetch("/api/flights.json")).json()
+		// const { flightStatuses: data }: { flightStatuses: Flight[] } = await fetchProxy(url.href)
+		console.log(await (await fetch("/api/flights.json")).json())
 		console.log("fetched from api", data);
 
-		const transformAirHelp = (f) => {
+		const flightStatuses = {
+			A: "active",
+			C: "cancelled",
+			D: "diverted",
+			DN: "dataNeeded",
+			L: "landed",
+			NO: "notOperational",
+			R: "redirected",
+			S: "scheduled",
+			U: "unknown",
+		}
+		const transformCirium = (f) => {
 			return {
-				flight_date: f.local_departure_at,
-				flight_status: f.humanized_arrival_status,
+				flight_date: f.departureDate.dateLocal,
+				flight_status: flightStatuses[f.status as keyof typeof flightStatuses],
 				departure: {
 					iata: departure,
-					delay: f.delay_mins,
-					scheduled: f.local_departure_at,
-					actual: f.local_actual_departure_at,
+					delay: f.delays.departureGateDelayMinutes,
+					scheduled: f.operationalTimes.scheduledGateDeparture.dateLocal,
+					actual: f.operationalTimes.actualGateDeparture?.dateLocal,
 				},
 				arrival: {
 					iata: arrival,
-					delay: f.delay_mins,
-					scheduled: f.local_arrival_at,
-					actual: f.local_actual_arrival_at,
+					delay: f.delays.arrivalGateDelayMinutes,
+					scheduled: f.operationalTimes.scheduledGateArrival.dateLocal,
+					actual: f.operationalTimes.actualGateArrival?.dateLocal,
 				},
 				airline: {
-					iata: f.airline_code,
-					name: f.airline_name,
-					codeshared: f.operating_airline_code,
+					iata: f.carrierFsCode,
+					name: f.carrierFsCode,
+					codeshared: f.operatingCarrierFsCode,
 				},
 				flight: {
 					codeshared: {},
-					iata: `${f.airline_code}${f.flight_number}`,
-					number: f.flight_number,
+					iata: `${f.carrierFsCode}${f.flightNumber}`,
+					number: f.flightNumber,
 				},
-				aircraft: {},
-				life: {}
 			}
 		}
 
+
 		const uniqueFlights = data
 			? removeDuplicateFlights(
-				[...useAppState().flights, ...data].sort(sortByScheduled)
-				// [...useAppState().flights, ...data.map(transformAirHelp)].sort(sortByScheduled)
+				// [...useAppState().flights, ...data].sort(sortByScheduled)
+				[...useAppState().flights, ...data.map(transformCirium)].sort(sortByScheduled)
 			)
 			: [];
 
@@ -462,6 +480,7 @@ export const fetchFlights = async ({ departure, arrival, date }: {
 		});
 		useAppState().flights = flights;
 	} catch (error) {
+		console.log("error", error);
 		throw error
 	}
 }

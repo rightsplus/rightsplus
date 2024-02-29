@@ -1,9 +1,9 @@
 <template>
   <section class="py-24 bg-grey-200 relative">
-    <div class="grid gap-12 mx-auto px-5 sm:px-12 relative z-1">
+    <div class="grid gap-12 mx-auto px-5 md:px-12 relative z-1">
       <div class="flex flex-col gap-12 leading-0">
         <div
-          class="flex flex-col gap-5 text-center sm:max-w-3xl mx-auto box-content"
+          class="flex flex-col gap-5 text-center md:max-w-3xl mx-auto box-content"
         >
           <h1 class="text-2xl sm:text-5xl font-bold">
             RightsPlus Kund·innen berichten
@@ -15,14 +15,14 @@
           </h2>
         </div>
         <div
-          class="flex overflow-x-scroll w-screen max-w-screen sm:w-full sm:max-w-full -m-5 p-5 sm:m-0 sm:p-0 sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          class="flex overflow-x-auto w-screen max-w-screen md:w-full md:max-w-full -m-5 p-5 md:m-0 md:p-0 md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5"
         >
           <ReviewCard
             v-for="review in entries"
             :key="review.author_name"
             :review="review"
             @click="activeReview = review"
-            class="shrink-0 max-w-[80vw] sm:max-w-none cursor-pointer"
+            class="shrink-0 max-w-[80vw] md:max-w-none lg:max-xl:[&:nth-child(n+4)]:hidden cursor-pointer"
           />
         </div>
         <Popup :open="!!activeReview" @closeOutside="activeReview = null"
@@ -51,6 +51,7 @@ const { $state } = useNuxtApp();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
 const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review,url&language=${locale.value}`;
+const { fetchProxy } = useSupabaseFunctions()
 
 interface MapsResponseData {
   result: {
@@ -80,13 +81,15 @@ const added = [
 const entries = computed(() =>
   shuffle([...added, ...(useAppState().reviews.entries || [])])
 );
-useFetch<MapsResponseData>(request)
-  .then(({ data }) => {
-    if (!data.value?.result) return;
+onMounted(() => {
+  fetchProxy(request)
+  .then(({result}) => {
+    if (!result?.reviews?.length) return;
     useAppState().reviews = {
-      entries: data.value?.result?.reviews,
-      url: data.value?.result?.url
+      entries: result?.reviews,
+      url: result?.url
     };
   })
   .catch(e => console.log(e));
+})
 </script>

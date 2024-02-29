@@ -153,7 +153,7 @@ const filteredDayTimeButtons = computed(() =>
 );
 
 watch(
-  () => filteredDayTimeButtons.value,
+  filteredDayTimeButtons,
   () => {
     if (!dayTime.value) return;
     if (

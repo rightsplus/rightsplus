@@ -13,9 +13,10 @@
             : undefined
         "
       />
-      <span class="text-base font-medium leading-none text-gray-500 ml-auto">{{
-        review.relative_time_description
-      }}</span>
+      <span
+        class="text-xs sm:text-sm sm:leading-none font-medium leading-none text-gray-500 ml-auto"
+        >{{ review.relative_time_description }}</span
+      >
       <button
         v-if="$attrs.onClose"
         class="h-12 w-12 min-w-[48px] md:h-16 md:w-16 md:min-w-[48px] items-center justify-center -m-3 md:-m-5 text-stone-400 hover:text-primary-500 rounded-xl"
@@ -30,14 +31,11 @@
     >
       {{ review.text }}
     </p>
+
     <div
       class="flex items-center gap-x-3 gap-y-1 text-sm leading-none flex-wrap"
     >
-      <img
-        v-if="size === 'large'"
-        :src="review.profile_photo_url"
-        class="w-8 h-8"
-      />
+      <img v-if="size === 'large'" :src="avatar" class="w-8 h-8" />
       <span class="font-bold">{{ review.author_name.split(" ")[0] }}</span>
       <FontAwesomeIcon icon="check-circle" class="text-green-500" />
       <span>RightsPlus Kund:in</span>
@@ -49,11 +47,18 @@
 import type { Review } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Stars from "@/components/molecules/Stars.vue";
-defineProps<{
+
+const props = defineProps<{
   review: Review;
   link?: string;
   size?: "small" | "medium" | "large";
 }>();
+const avatar = ref<string>();
+onMounted(() => {
+  useLazyFetch(props.review.profile_photo_url).then(({ data }) => {
+    avatar.value = URL.createObjectURL(data.value as Blob);
+  });
+});
 </script>
 
 <style scoped></style>

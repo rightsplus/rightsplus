@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <span class="text-sm font-medium"
+  <div class="">
+    <span class="text-sm font-medium leading-none"
       >{{ step + 1 }}. {{ steps[step].label }}</span
     >
     <ol
       class="flex w-full text-md font-medium text-center md:text-base gap-1 md:gap-2 py-2 -mx-3 px-3"
     >
       <div
-        v-for="({ completed }, index) in steps"
+        v-for="(_, index) in steps"
         @click="$emit('setStep', index)"
         class="w-full max-w-[50px] h-2 rounded-full cursor-pointer"
         :class="{
           'bg-primary-400 hover:bg-primary-500': index <= step,
           'bg-neutral-200 hover:bg-neutral-300': index > step,
-          'pointer-events-none opacity-50': claimProccess.completed < index - 2
+          'pointer-events-none opacity-50': claimProccess.completed < index - 1
         }"
       />
       <!-- <Step

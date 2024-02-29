@@ -89,7 +89,6 @@ export const useProcessClaim = () => {
       response.message = "Wähle eine Route."
       return response
     }
-    response.completed = 0
 
     // FLIGHT
     if (!flight) {
@@ -106,7 +105,7 @@ export const useProcessClaim = () => {
       response.message = "Sowohl der Startflughafen als auch der Sitz der Fluggesellschaft befinden sich außerhalb der EU."
       return response
     }
-    response.completed = 1
+    response.completed = 0
 
     // DISRUPTION
     if (!disruption || !disruption.type) {
@@ -171,14 +170,18 @@ export const useProcessClaim = () => {
       response.sectionComplete = 1
       return response
     }
-    response.completed = 2
+    response.completed = 1
 
     // PASSENGERS
     if (!client.passengers.every(passenger => passenger.firstName && passenger.lastName && passenger.email)) {
       response.message = "Bitte alle Felder ausfüllen."
       return response
     }
-    response.completed = 3
+    // if (!client.agreedToTerms) {
+    //   response.message = "Bitte stimme unseren Nutzungsbedingungen zu."
+    //   return response
+    // }
+    response.completed = 2
     return response
   }
   onMounted(() => useAirlines().then(processClaim))

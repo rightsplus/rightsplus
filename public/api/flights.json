@@ -1,0 +1,478 @@
+[
+	{
+			"flightId": 1233924034,
+			"carrierFsCode": "MAY",
+			"operatingCarrierFsCode": "MAY",
+			"primaryCarrierFsCode": "FR",
+			"flightNumber": "162",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T05:15:00.000Z",
+					"dateLocal": "2024-02-01T06:15:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T06:40:00.000Z",
+					"dateLocal": "2024-02-01T07:40:00.000"
+			},
+			"status": "L",
+			"schedule": {
+					"flightType": "J",
+					"serviceClasses": "Y",
+					"restrictions": "F",
+					"uplines": [],
+					"downlines": []
+			},
+			"operationalTimes": {
+					"publishedDeparture": {
+							"dateUtc": "2024-02-01T05:15:00.000Z",
+							"dateLocal": "2024-02-01T06:15:00.000"
+					},
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T05:15:00.000Z",
+							"dateLocal": "2024-02-01T06:15:00.000"
+					},
+					"estimatedGateDeparture": {
+							"dateUtc": "2024-02-01T05:02:00.000Z",
+							"dateLocal": "2024-02-01T06:02:00.000"
+					},
+					"actualGateDeparture": {
+							"dateUtc": "2024-02-01T05:02:00.000Z",
+							"dateLocal": "2024-02-01T06:02:00.000"
+					},
+					"estimatedRunwayDeparture": {
+							"dateUtc": "2024-02-01T05:10:00.000Z",
+							"dateLocal": "2024-02-01T06:10:00.000"
+					},
+					"actualRunwayDeparture": {
+							"dateUtc": "2024-02-01T05:10:00.000Z",
+							"dateLocal": "2024-02-01T06:10:00.000"
+					},
+					"publishedArrival": {
+							"dateUtc": "2024-02-01T06:40:00.000Z",
+							"dateLocal": "2024-02-01T07:40:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T06:40:00.000Z",
+							"dateLocal": "2024-02-01T07:40:00.000"
+					},
+					"estimatedGateArrival": {
+							"dateUtc": "2024-02-01T06:20:00.000Z",
+							"dateLocal": "2024-02-01T07:20:00.000"
+					},
+					"actualGateArrival": {
+							"dateUtc": "2024-02-01T06:20:00.000Z",
+							"dateLocal": "2024-02-01T07:20:00.000"
+					},
+					"estimatedRunwayArrival": {
+							"dateUtc": "2024-02-01T06:17:00.000Z",
+							"dateLocal": "2024-02-01T07:17:00.000"
+					},
+					"actualRunwayArrival": {
+							"dateUtc": "2024-02-01T06:17:00.000Z",
+							"dateLocal": "2024-02-01T07:17:00.000"
+					}
+			},
+			"codeshares": [
+					{
+							"fsCode": "FR",
+							"flightNumber": "162",
+							"relationship": "S"
+					}
+			],
+			"delays": {},
+			"flightDurations": {
+					"scheduledBlockMinutes": 85,
+					"blockMinutes": 78,
+					"airMinutes": 67,
+					"taxiOutMinutes": 8,
+					"taxiInMinutes": 3
+			},
+			"airportResources": {},
+			"flightEquipment": {
+					"scheduledEquipmentIataCode": "73H",
+					"actualEquipmentIataCode": "7M8",
+					"tailNumber": "9H-VVE",
+					"fleetAircraftId": 289062
+			},
+			"irregularOperations": []
+	},
+	{
+			"flightId": 1233959390,
+			"carrierFsCode": "SN",
+			"operatingCarrierFsCode": "SN",
+			"primaryCarrierFsCode": "SN",
+			"flightNumber": "2592",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T06:10:00.000Z",
+					"dateLocal": "2024-02-01T07:10:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T07:45:00.000Z",
+					"dateLocal": "2024-02-01T08:45:00.000"
+			},
+			"status": "C",
+			"schedule": {
+					"flightType": "J",
+					"serviceClasses": "FJY",
+					"restrictions": "",
+					"uplines": [],
+					"downlines": []
+			},
+			"operationalTimes": {
+					"publishedDeparture": {
+							"dateUtc": "2024-02-01T06:10:00.000Z",
+							"dateLocal": "2024-02-01T07:10:00.000"
+					},
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T06:10:00.000Z",
+							"dateLocal": "2024-02-01T07:10:00.000"
+					},
+					"publishedArrival": {
+							"dateUtc": "2024-02-01T07:45:00.000Z",
+							"dateLocal": "2024-02-01T08:45:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T07:45:00.000Z",
+							"dateLocal": "2024-02-01T08:45:00.000"
+					}
+			},
+			"codeshares": [
+					{
+							"fsCode": "EY",
+							"flightNumber": "7227",
+							"relationship": "L"
+					},
+					{
+							"fsCode": "HU",
+							"flightNumber": "8552",
+							"relationship": "L"
+					},
+					{
+							"fsCode": "TP",
+							"flightNumber": "7491",
+							"relationship": "L"
+					},
+					{
+							"fsCode": "UA",
+							"flightNumber": "9920",
+							"relationship": "L"
+					}
+			],
+			"delays": {},
+			"flightDurations": {
+					"scheduledBlockMinutes": 95
+			},
+			"airportResources": {
+					"departureTerminal": "1",
+					"arrivalGate": "A40"
+			},
+			"flightEquipment": {
+					"scheduledEquipmentIataCode": "320",
+					"actualEquipmentIataCode": "32A",
+					"tailNumber": "OO-SNH",
+					"fleetAircraftId": 7103
+			},
+			"irregularOperations": [
+					{
+							"type": "CANCELLATION",
+							"dateUtc": "2024-01-31T08:53:07.635Z"
+					}
+			]
+	},
+	{
+			"flightId": 1234376617,
+			"carrierFsCode": "SN",
+			"operatingCarrierFsCode": "SN",
+			"primaryCarrierFsCode": "SN",
+			"flightNumber": "9910",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T10:55:00.000Z",
+					"dateLocal": "2024-02-01T11:55:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T12:20:00.000Z",
+					"dateLocal": "2024-02-01T13:20:00.000"
+			},
+			"status": "L",
+			"schedule": {
+					"flightType": "J"
+			},
+			"operationalTimes": {
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T10:55:00.000Z",
+							"dateLocal": "2024-02-01T11:55:00.000"
+					},
+					"estimatedGateDeparture": {
+							"dateUtc": "2024-02-01T10:41:00.000Z",
+							"dateLocal": "2024-02-01T11:41:00.000"
+					},
+					"actualGateDeparture": {
+							"dateUtc": "2024-02-01T10:41:00.000Z",
+							"dateLocal": "2024-02-01T11:41:00.000"
+					},
+					"estimatedRunwayDeparture": {
+							"dateUtc": "2024-02-01T10:49:00.000Z",
+							"dateLocal": "2024-02-01T11:49:00.000"
+					},
+					"actualRunwayDeparture": {
+							"dateUtc": "2024-02-01T10:49:00.000Z",
+							"dateLocal": "2024-02-01T11:49:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T12:20:00.000Z",
+							"dateLocal": "2024-02-01T13:20:00.000"
+					},
+					"estimatedGateArrival": {
+							"dateUtc": "2024-02-01T11:54:00.000Z",
+							"dateLocal": "2024-02-01T12:54:00.000"
+					},
+					"actualGateArrival": {
+							"dateUtc": "2024-02-01T11:54:00.000Z",
+							"dateLocal": "2024-02-01T12:54:00.000"
+					},
+					"estimatedRunwayArrival": {
+							"dateUtc": "2024-02-01T11:48:00.000Z",
+							"dateLocal": "2024-02-01T12:48:00.000"
+					},
+					"actualRunwayArrival": {
+							"dateUtc": "2024-02-01T11:48:00.000Z",
+							"dateLocal": "2024-02-01T12:48:00.000"
+					}
+			},
+			"codeshares": [],
+			"delays": {},
+			"flightDurations": {
+					"scheduledBlockMinutes": 85,
+					"blockMinutes": 73,
+					"airMinutes": 59,
+					"taxiOutMinutes": 8,
+					"taxiInMinutes": 6
+			},
+			"airportResources": {
+					"arrivalGate": "A47"
+			},
+			"flightEquipment": {
+					"actualEquipmentIataCode": "320",
+					"tailNumber": "OO-SNN",
+					"fleetAircraftId": 9745
+			},
+			"irregularOperations": []
+	},
+	{
+			"flightId": 1233959393,
+			"carrierFsCode": "SN",
+			"operatingCarrierFsCode": "SN",
+			"primaryCarrierFsCode": "SN",
+			"flightNumber": "2582",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T10:55:00.000Z",
+					"dateLocal": "2024-02-01T11:55:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T12:20:00.000Z",
+					"dateLocal": "2024-02-01T13:20:00.000"
+			},
+			"status": "C",
+			"schedule": {
+					"flightType": "J",
+					"serviceClasses": "FJY",
+					"restrictions": "",
+					"uplines": [],
+					"downlines": []
+			},
+			"operationalTimes": {
+					"publishedDeparture": {
+							"dateUtc": "2024-02-01T10:55:00.000Z",
+							"dateLocal": "2024-02-01T11:55:00.000"
+					},
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T10:55:00.000Z",
+							"dateLocal": "2024-02-01T11:55:00.000"
+					},
+					"publishedArrival": {
+							"dateUtc": "2024-02-01T12:20:00.000Z",
+							"dateLocal": "2024-02-01T13:20:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T12:20:00.000Z",
+							"dateLocal": "2024-02-01T13:20:00.000"
+					}
+			},
+			"codeshares": [],
+			"delays": {},
+			"flightDurations": {
+					"scheduledBlockMinutes": 85
+			},
+			"airportResources": {
+					"departureTerminal": "1",
+					"arrivalGate": "A42"
+			},
+			"flightEquipment": {
+					"scheduledEquipmentIataCode": "320",
+					"actualEquipmentIataCode": "320",
+					"tailNumber": "OO-SNM",
+					"fleetAircraftId": 220055
+			},
+			"irregularOperations": [
+					{
+							"type": "CANCELLATION",
+							"dateUtc": "2024-01-31T09:04:52.017Z"
+					}
+			]
+	},
+	{
+			"flightId": 1234379777,
+			"carrierFsCode": "SN",
+			"operatingCarrierFsCode": "SN",
+			"primaryCarrierFsCode": "SN",
+			"flightNumber": "9914",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T17:40:00.000Z",
+					"dateLocal": "2024-02-01T18:40:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T19:05:00.000Z",
+					"dateLocal": "2024-02-01T20:05:00.000"
+			},
+			"status": "L",
+			"schedule": {
+					"flightType": "J"
+			},
+			"operationalTimes": {
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T17:40:00.000Z",
+							"dateLocal": "2024-02-01T18:40:00.000"
+					},
+					"estimatedGateDeparture": {
+							"dateUtc": "2024-02-01T17:43:00.000Z",
+							"dateLocal": "2024-02-01T18:43:00.000"
+					},
+					"actualGateDeparture": {
+							"dateUtc": "2024-02-01T17:43:00.000Z",
+							"dateLocal": "2024-02-01T18:43:00.000"
+					},
+					"estimatedRunwayDeparture": {
+							"dateUtc": "2024-02-01T17:50:00.000Z",
+							"dateLocal": "2024-02-01T18:50:00.000"
+					},
+					"actualRunwayDeparture": {
+							"dateUtc": "2024-02-01T17:50:00.000Z",
+							"dateLocal": "2024-02-01T18:50:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T19:05:00.000Z",
+							"dateLocal": "2024-02-01T20:05:00.000"
+					},
+					"estimatedGateArrival": {
+							"dateUtc": "2024-02-01T19:06:00.000Z",
+							"dateLocal": "2024-02-01T20:06:00.000"
+					},
+					"actualGateArrival": {
+							"dateUtc": "2024-02-01T19:06:00.000Z",
+							"dateLocal": "2024-02-01T20:06:00.000"
+					},
+					"estimatedRunwayArrival": {
+							"dateUtc": "2024-02-01T18:59:00.000Z",
+							"dateLocal": "2024-02-01T19:59:00.000"
+					},
+					"actualRunwayArrival": {
+							"dateUtc": "2024-02-01T18:59:00.000Z",
+							"dateLocal": "2024-02-01T19:59:00.000"
+					}
+			},
+			"codeshares": [],
+			"delays": {
+					"departureGateDelayMinutes": 3,
+					"arrivalGateDelayMinutes": 1
+			},
+			"flightDurations": {
+					"scheduledBlockMinutes": 85,
+					"blockMinutes": 83,
+					"airMinutes": 69,
+					"taxiOutMinutes": 7,
+					"taxiInMinutes": 7
+			},
+			"airportResources": {
+					"arrivalGate": "A42"
+			},
+			"flightEquipment": {
+					"actualEquipmentIataCode": "320",
+					"tailNumber": "OO-SNM",
+					"fleetAircraftId": 220055
+			},
+			"irregularOperations": []
+	},
+	{
+			"flightId": 1233959392,
+			"carrierFsCode": "SN",
+			"operatingCarrierFsCode": "SN",
+			"primaryCarrierFsCode": "SN",
+			"flightNumber": "2588",
+			"departureAirportFsCode": "BER",
+			"arrivalAirportFsCode": "BRU",
+			"departureDate": {
+					"dateUtc": "2024-02-01T17:40:00.000Z",
+					"dateLocal": "2024-02-01T18:40:00.000"
+			},
+			"arrivalDate": {
+					"dateUtc": "2024-02-01T19:05:00.000Z",
+					"dateLocal": "2024-02-01T20:05:00.000"
+			},
+			"status": "C",
+			"schedule": {
+					"flightType": "J",
+					"serviceClasses": "FJY",
+					"restrictions": "",
+					"uplines": [],
+					"downlines": []
+			},
+			"operationalTimes": {
+					"publishedDeparture": {
+							"dateUtc": "2024-02-01T17:40:00.000Z",
+							"dateLocal": "2024-02-01T18:40:00.000"
+					},
+					"scheduledGateDeparture": {
+							"dateUtc": "2024-02-01T17:40:00.000Z",
+							"dateLocal": "2024-02-01T18:40:00.000"
+					},
+					"publishedArrival": {
+							"dateUtc": "2024-02-01T19:05:00.000Z",
+							"dateLocal": "2024-02-01T20:05:00.000"
+					},
+					"scheduledGateArrival": {
+							"dateUtc": "2024-02-01T19:05:00.000Z",
+							"dateLocal": "2024-02-01T20:05:00.000"
+					}
+			},
+			"codeshares": [],
+			"delays": {},
+			"flightDurations": {
+					"scheduledBlockMinutes": 85
+			},
+			"airportResources": {
+					"departureTerminal": "1",
+					"arrivalGate": "A65"
+			},
+			"flightEquipment": {
+					"scheduledEquipmentIataCode": "32N",
+					"actualEquipmentIataCode": "32A",
+					"tailNumber": "OO-SNE",
+					"fleetAircraftId": 8045
+			},
+			"irregularOperations": [
+					{
+							"type": "CANCELLATION",
+							"dateUtc": "2024-01-31T09:21:37.485Z"
+					}
+			]
+	}
+]
