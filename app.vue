@@ -17,7 +17,6 @@ const client = useSupabaseClient();
 
 const app = useNuxtApp();
 const { currentRoute } = useRouter()
-const isPDF = computed(() => currentRoute.value.path.split("/")[1] === 'pdf')
 if (!app.$state) app.provide("state", reactive(state));
-watch(currentRoute, (e) => console.log(e.fullPath, e.redirectedFrom, e.query))
+// watch(currentRoute, (e) => console.log(e.fullPath, e.redirectedFrom, e.query))
 </script>

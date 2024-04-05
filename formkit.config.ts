@@ -5,7 +5,7 @@ import { createAutoAnimatePlugin } from '@formkit/addons'
 import { createFloatingLabelsPlugin } from '@formkit/addons'
 import '@formkit/addons/css/floatingLabels'
 
-const faUrl = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/svgs'
+const faUrl = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/svgs'
 const config: DefaultConfigOptions = {
   locales: { de },
   locale: 'de',
@@ -24,7 +24,7 @@ const config: DefaultConfigOptions = {
       global: {
         form: '[&>.formkit-outer]:last:mb-0',
         fieldset: 'max-w-2xl border border-neutral-400 rounded-lg px-2 pb-1',
-        help: 'text-xs text-neutral-500 leading-tight',
+        help: 'text-xs text-neutral-500 leading-tight mt-1',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
         input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200 hover:bg-neutral-50',
         label: 'text-neutral-500 font-medium text-sm leading-tight block',
@@ -34,7 +34,7 @@ const config: DefaultConfigOptions = {
         messages: 'list-none p-0 mt-1 mb-0',
         outer: 'formkit-disabled:opacity-50 min-w-[auto]',
         prefixIcon: 'w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40',
-        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 hover:cursor-pointer hover:[&>svg]:fill-neutral-800 ',
+        suffixIcon: 'w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 [[data-suffix-icon-click="true"]_&:hover]:cursor-pointer [[data-suffix-icon-click="true"]_&:hover>svg]:fill-neutral-800 duration-0',
       },
       'family:box': {
         decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-white bg-gradient-to-b from-transparent to-neutral-200 ring-1 ring-neutral-200 peer-checked:ring-primary-500 text-transparent peer-checked:text-primary-500',
@@ -42,11 +42,11 @@ const config: DefaultConfigOptions = {
         help: 'mb-2 mt-1.5',
         input: 'absolute w-0 h-0 overflow-hidden opacity-0 pointer-events-none peer',
         label: '$reset text-sm text-neutral-700 mt-1 select-none',
-        wrapper: 'flex items-center mb-1',
+        wrapper: 'flex items-center',
       },
       'family:button': {
         input: '$reset inline-flex items-center justify-center disabled:bg-primary-500 bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-14 leading-tight',
-        wrapper: 'mb-1',
+        wrapper: '',
         prefixIcon: '$reset block w-3 -ml-2 mr-2 stretch shrink-0 [&>svg]:fill-white',
         suffixIcon: '$reset block w-3 ml-2 stretch shrink-0 [&>svg]:fill-white',
       },
@@ -68,7 +68,7 @@ const config: DefaultConfigOptions = {
         selectIcon: 'flex box-content w-4 px-2 self-stretch grow-0 shrink-0',
       },
       'family:text': {
-        inner: 'flex items-center max-w-2xl ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg mb-1',
+        inner: 'flex items-center max-w-2xl ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg',
         input: 'w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400',
       },
       'datetime-local': {
@@ -99,18 +99,18 @@ const config: DefaultConfigOptions = {
       },
       range: {
         inner: '$reset flex items-center max-w-2xl',
-        input: '$reset w-full mb-1 h-2 p-0 rounded-full accent-primary-600',
+        input: '$reset w-full h-2 p-0 rounded-full accent-primary-600',
         prefixIcon: '$reset w-4 mr-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto',
         suffixIcon: '$reset w-4 ml-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto'
       },
       select: {
-        inner: 'flex relative max-w-2xl items-center rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
+        inner: 'flex relative max-w-2xl items-center rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>span:first-child]:focus-within:text-primary-500',
         input: 'w-full pl-3 pr-8 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 formkit-multiple:p-0 data-[placeholder="true"]:text-neutral-400 formkit-multiple:data-[placeholder="true"]:text-inherit',
         selectIcon: 'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none',
         option: 'formkit-multiple:p-3 formkit-multiple:text-sm text-neutral-700'
       },
       textarea: {
-        inner: 'flex max-w-2xl rounded-lg mb-1 ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
+        inner: 'flex max-w-2xl rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
         input: 'block w-full h-32 px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
       },
       
@@ -136,7 +136,7 @@ const config: DefaultConfigOptions = {
         downControl: 'hover:text-primary-500 disabled:hover:text-inherit disabled:opacity-25',
         fieldset: 'py-4 px-5',
         help: 'mb-2 mt-1.5',
-        item: 'flex w-full mb-1 rounded-lg border border-neutral-200',
+        item: 'flex w-full rounded-lg border border-neutral-200',
         moveDownIcon: 'block w-3 my-1',
         moveUpIcon: 'block w-3 my-1',
         removeControl: 'hover:text-primary-500 disabled:hover:text-inherit disabled:opacity-25',

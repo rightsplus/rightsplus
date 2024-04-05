@@ -3,6 +3,8 @@
     <!-- <div class="flex flex-col gap-3 mb-2">
       <h2 class="text-2xl sm:text-3xl font-bold">{{ title }}</h2>
     </div> -->
+    <!-- <div>Um deinen Anspruch zu prüfen brauchen wir ein paar Informationen.</div>
+    <ul><li>Bei welchem Flug ist etwas schliefgelaufen?</li><li>Was ist schiefgelaufen?</li><li>Angabe zu den Passagieren?</li></ul> -->
     <AccordionItem
       index="layover"
       :modelValue="active"
@@ -23,7 +25,7 @@
         <div
           class="mt-10"
           v-if="
-            modelValue.airport.trip.layover?.some((e) => Object.keys(e).length)
+            modelValue.airport.trip.layover?.some((e) => Object.keys(e).length) && modelValue.airport.trip.departure && modelValue.airport.trip.arrival
           "
         >
           <SectionSubHeader
@@ -46,18 +48,18 @@
       <template #title>
         <SectionHeader
           label="Wann bist du geflogen?"
-          :showValue="!!modelValue.flight_date"
+          :showValue="!!modelValue.date"
           >{{ flightDate }}</SectionHeader
         >
       </template>
       <template #content>
-        <InputDate v-model="modelValue.flight_date" class="mt-5" />
+        <InputDate v-model="modelValue.date" class="mt-5" />
       </template>
     </AccordionItem>
     <AccordionItem
       v-if="
-        modelValue.flight_date &&
-        !isBarred(modelValue.flight_date) &&
+        modelValue.date &&
+        !isBarred(modelValue.date) &&
         filteredFlights.length
       "
       index="flight"
@@ -100,7 +102,7 @@
           />
           <Callout
             type="warning"
-            icon="exclamation-triangle"
+            icon="triangle-exclamation"
             v-if="modelValue.route && modelValue.flight && !europeanUnion"
           >
             Sowohl der Abflugs- und Zielflughafen als auch die Fluggesellschaft
@@ -112,19 +114,19 @@
     <div
       v-if="
         modelValue.route &&
-        modelValue.flight_date
+        modelValue.date
       "
       class="mt-5"
     >
       <Callout
         type="info"
         icon="info-circle"
-        v-if="isBarred(modelValue.flight_date)"
+        v-if="isBarred(modelValue.date)"
         ><template #title>Dein Flug ist verjährt</template
         ><span
           >Ansprüche für Flugverspätungen vor dem
           {{
-            isBarred(modelValue.flight_date)?.toLocaleDateString($i18n.locale)
+            isBarred(modelValue.date)?.toLocaleDateString($i18n.locale)
           }}
           sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung
           mehr einfordern.</span
@@ -139,7 +141,7 @@
 
       <Callout
         type="error"
-        icon="exclamation-triangle"
+        icon="triangle-exclamation"
         v-else-if="!filteredFlights.length && error"
         >Flüge konnten nicht geladen werden
       </Callout>
@@ -198,13 +200,13 @@ const filteredFlights = computed(() => {
   const filtered = getFilteredFlights({
     departure: departure?.iata,
     arrival: arrival?.iata,
-    date: props.modelValue.flight_date,
+    date: props.modelValue.date,
   });
   return filtered;
 });
 
 watch(
-  () => props.modelValue.flight_date || props.modelValue.airport,
+  () => props.modelValue.date || props.modelValue.airport,
   () => {
     const { departure, arrival } = props.modelValue.airport;
     getCities([departure?.iata, arrival?.iata], locale.value).then(
@@ -217,15 +219,12 @@ watch(
     fetchFlights({
       departure: departure?.iata,
       arrival: arrival?.iata,
-      date: props.modelValue.flight_date,
+      date: props.modelValue.date,
       locale: locale.value,
     })
       .catch(() => (error.value = true))
       .finally(() => (loading.value = false));
-    if (props.modelValue.route && Object.values(props.modelValue.airport.trip).every(Boolean) && !props.modelValue.flight_date) {
-      active.value = ["date"];
-    }
-    if (props.modelValue.flight_date && !props.modelValue.flight) {
+    if (props.modelValue.date && !props.modelValue.flight) {
       active.value = ["flight"];
     }
   },
@@ -233,7 +232,7 @@ watch(
 );
 
 watch(
-  () => filteredFlights.value,
+  filteredFlights,
   (val) => {
     if (
       !val.some((e) => e.flight.iata === props.modelValue.flight?.flight.iata)
@@ -253,7 +252,7 @@ const logo = computed(() => {
 
 const { width } = useElementSize(container);
 const flightDate = computed(() => {
-  const date = new Date(props.modelValue.flight_date);
+  const date = new Date(props.modelValue.date);
   const format = {
     weekday: width.value > 480 ? "long" : undefined,
     year: "numeric",

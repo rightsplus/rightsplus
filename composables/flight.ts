@@ -1,6 +1,7 @@
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import type { ClaimsForm, Flight, FlightPhase } from "@/types";
+import type { Airport, ClaimsForm, Flight, FlightAviationEdge, FlightPhase } from "@/types";
+import { airports } from "~/store";
 
 
 const circumstance = reactive({
@@ -8,9 +9,8 @@ const circumstance = reactive({
 	arrival: false as boolean | string,
 })
 const getAirports = async (flight: Flight) => {
-	const airports = await useAirports([flight?.departure?.iata, flight?.arrival?.iata])
-	const departureAirport = airports?.[flight?.departure?.iata || ""]
-	const arrivalAirport = airports?.[flight?.arrival?.iata || ""]
+	const departureAirport = airports.value?.[flight?.departure?.iata || ""]
+	const arrivalAirport = airports.value?.[flight?.arrival?.iata || ""]
 
 	if (!departureAirport || !arrivalAirport) {
 		// @todo: here I could actually make sure i load the appropriate airports, if they have not been loaded yet
@@ -29,7 +29,7 @@ export function isBarred(flight: string): Date
 export function isBarred(flight: Flight | null): false | Date
 export function isBarred(flight: Flight | string | null) {
 	if (!flight) return false
-	const flightDate = typeof flight === 'string' ? flight : flight.arrival?.scheduled
+	const flightDate = typeof flight === 'string' ? flight : flight.arrival?.scheduledTime
 	const date = flightDate && new Date(flightDate)
 
 	if (!date || typeof date === 'string') {
@@ -61,19 +61,21 @@ export const isExtraordinaryCircumstance = async (flight: Flight | null) => {
 
 	const { departureAirport, arrivalAirport } = await getAirports(flight)
 
-	const departureDate = flight.departure?.scheduled && new Date(flight.departure.scheduled)
-	const arrivalDate = flight.arrival?.scheduled && new Date(flight.arrival.scheduled)
+	const departureDate = flight.departure?.scheduledTime && new Date(flight.departure.scheduledTime)
+	const arrivalDate = flight.arrival?.scheduledTime && new Date(flight.arrival.scheduledTime)
 
 	if (!departureDate || !arrivalDate) {
 		console.warn("Missing departure or arrival date")
 		return circumstance
 	}
 
+	console.log(departureDate.getHours())
+
 	getWeather(departureAirport, departureDate).then((weather) => {
 		circumstance.departure = isUnsafeToTakeoffOrLand(weather, departureDate.getHours())
 	})
 	getWeather(arrivalAirport, arrivalDate).then((weather) => {
-		circumstance.arrival = isUnsafeToTakeoffOrLand(weather, departureDate.getHours())
+		circumstance.arrival = isUnsafeToTakeoffOrLand(weather, arrivalDate.getHours())
 	})
 
 
@@ -109,10 +111,8 @@ export const getEU = async (flight: Flight | null) => {
 
 
 export const useFlightStatus = (flight: Flight | null) => {
-	// isExtraordinaryCircumstance(flight)
-
 	const barred = isBarred(flight)
-	const delay = getDelay(flight?.arrival, 180)
+	const delay = getDelay(flight?.arrival)
 	// const eu = getEU(flight)
 	const eu = false
 	return {
@@ -121,8 +121,8 @@ export const useFlightStatus = (flight: Flight | null) => {
 			label: barred ? "Verjährt" : "Nicht verjährt",
 		},
 		cancelled: {
-			value: flight?.flight_status === "cancelled",
-			label: flight?.flight_status === "cancelled" ? "Annulliert" : "Nicht annulliert",
+			value: flight?.status === "cancelled",
+			label: flight?.status === "cancelled" ? "Annulliert" : "Nicht annulliert",
 		},
 		delayed: {
 			value: delay,
@@ -139,32 +139,33 @@ export const useFlightStatus = (flight: Flight | null) => {
 	}
 }
 
-export const getFilteredFlights = ({ departure, arrival, date, custom }: {
-	departure: string,
-	arrival: string,
-	date: string,
+export const getFilteredFlights = ({ departure, arrival, date, number, custom }: {
+	departure?: string,
+	arrival?: string,
+	date?: string,
+	number?: string,
 	custom?: (flight: Flight) => boolean
 }) => {
 	const filterFlights = (flight: Flight) => {
 		return (
-			flight.flight.number && // @todo check if this is good
-			flight.departure.iata === departure &&
-			flight.arrival.iata === arrival &&
-			getISODate(flight.departure.scheduled) ===
-			getISODate(date)
+			(!departure || flight.departure.iata === departure) &&
+			(!arrival || flight.arrival.iata === arrival) &&
+			(!number || flight.flight.iata === number) &&
+			(!date ||
+				getISODate(flight[flight.type].scheduledTime) ===
+				getISODate(date))
 			&& (!custom || custom && custom(flight))
 		);
 	};
+
 	return useAppState().flights?.filter(filterFlights)
 }
 
-export const useDisruption = (flight?: Flight | null) => {
+export const useDisruption = (claim: ClaimsForm) => {
 	const { t, locale } = useI18n()
-	try {
-		const arrivalAirport = computed(
-			() => flight ? useAirports()[flight?.arrival.iata] : {}
-		);
+	const { airports } = useAirports()
 
+	try {
 		const format = new Intl.NumberFormat(locale.value);
 		const delayedDetails = [
 			{ value: "<3", preLabel: t("fewerThan").trim(), label: t("hours", 3) },
@@ -172,7 +173,7 @@ export const useDisruption = (flight?: Flight | null) => {
 			{ value: ">4", preLabel: t("moreThan").trim(), label: t("hours", 4) },
 		];
 		const cancelledDetails = [
-			{ value: "<7", preLabel: t("fewerThan").trim(), label: t("days", 7) },
+			{ value: "<8", preLabel: t("fewerThan").trim(), label: t("days", 7) },
 			{ value: "8-14", label: t("days", { n: format.formatRange(8, 14) }, 8) },
 			{ value: ">14", preLabel: t("moreThan").trim(), label: t("days", 14) },
 		];
@@ -180,7 +181,7 @@ export const useDisruption = (flight?: Flight | null) => {
 			{
 				value: "delayed",
 				label: t("disruptions.delayed.label"),
-				sublabel: t("disruptions.delayed.sublabel", { city: arrivalAirport.value?.city || t('itsDestination') }),
+				sublabel: t("disruptions.delayed.sublabel", { city: airports.value[claim.flight?.arrival?.iata || '']?.city || t('itsDestination') }),
 				icon: "clock",
 			},
 			{
@@ -195,7 +196,7 @@ export const useDisruption = (flight?: Flight | null) => {
 				sublabel: t("disruptions.noBoarding.sublabel"),
 				icon: "ban",
 			},
-			{ value: "other", label: t('other'), icon: "question" },
+			// { value: "other", label: t('other'), icon: "question" },
 		];
 		const noBoardingReasons = [
 			{
@@ -289,7 +290,7 @@ export const useDisruption = (flight?: Flight | null) => {
 			{
 				value: "unexpectedIssues",
 				label: t('reasons.unexpectedIssues.label'),
-				icon: "exclamation-triangle",
+				icon: "triangle-exclamation",
 			},
 			{
 				value: "other",
@@ -318,19 +319,20 @@ export const useDisruption = (flight?: Flight | null) => {
 }
 
 export const sortByScheduled = (a: Flight, b: Flight) =>
-	new Date(a.departure.scheduled).getTime() -
-	new Date(b.departure.scheduled).getTime();
+	new Date(a.departure.scheduledTime).getTime() -
+	new Date(b.departure.scheduledTime).getTime() + (a.codeshared ? 1 : 0) -
+	(b.codeshared ? 1 : 0);
 
 export const removeDuplicateFlights = (flights: Flight[]) => {
 	const uniqueFlights = new Set();
 	return flights.filter((flight) => {
 		const operatedBy =
-			flight.flight.codeshared?.airline_iata?.toUpperCase() ||
+			flight.codeshared?.airline.iata?.toUpperCase() ||
 			flight.airline.iata?.toUpperCase();
 		const id = `${operatedBy}-${get24HTime(
-			flight.departure.scheduled
-		)}-${get24HTime(flight.arrival.scheduled)}-${getISODate(
-			flight.departure.scheduled
+			flight.departure.scheduledTime
+		)}-${get24HTime(flight.arrival.scheduledTime)}-${getISODate(
+			flight.departure.scheduledTime
 		)}`;
 		if (uniqueFlights.has(id)) return false;
 		uniqueFlights.add(id);
@@ -338,153 +340,187 @@ export const removeDuplicateFlights = (flights: Flight[]) => {
 	});
 };
 
-const queries = ref([] as string[]);
-export const fetchFlights = async ({ departure, arrival, date, locale }: {
-	departure: string,
-	arrival: string,
-	date: string,
-	locale?: string,
-}) => {
-	const { aviationstack, cirium } = useRuntimeConfig().public.flight;
 
-	try {
-		if (
-			!date ||
-			!departure ||
-			!arrival
-		) {
-			console.warn("Missing date, departure or arrival");
-			return
+
+const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Flight => {
+	const airline: Flight['airline'] = {
+		name: ucfirst(aviationEdgeFlight.airline.name),
+		iata: aviationEdgeFlight.airline.iataCode.toUpperCase(),
+	};
+
+	const flight: Flight['flight'] = {
+		number: aviationEdgeFlight.flight.number,
+		iata: aviationEdgeFlight.flight.iataNumber.toUpperCase(),
+	};
+
+	const departure: Flight['departure'] = {
+		iata: aviationEdgeFlight.departure.iataCode.toUpperCase(),
+		delay: aviationEdgeFlight.departure.delay,
+		scheduledTime: aviationEdgeFlight.departure.scheduledTime,
+		estimatedTime: aviationEdgeFlight.departure.estimatedTime,
+		actualTime: aviationEdgeFlight.departure.actualTime,
+		estimatedRunway: aviationEdgeFlight.departure.estimatedRunway,
+		actualRunway: aviationEdgeFlight.departure.actualRunway,
+	};
+
+	const arrival: Flight['arrival'] = {
+		iata: aviationEdgeFlight.arrival.iataCode.toUpperCase(),
+		delay: aviationEdgeFlight.arrival.delay || 0, // Ensure delay is a number
+		scheduledTime: aviationEdgeFlight.arrival.scheduledTime,
+		estimatedTime: aviationEdgeFlight.arrival.estimatedTime,
+		actualTime: aviationEdgeFlight.arrival.actualTime,
+		estimatedRunway: aviationEdgeFlight.arrival.estimatedRunway,
+		actualRunway: aviationEdgeFlight.arrival.actualRunway,
+	};
+
+	const transformedFlight: Flight = {
+		type: aviationEdgeFlight.type,
+		status: aviationEdgeFlight.status,
+		departure,
+		arrival,
+		airline,
+		flight,
+	};
+
+	if (aviationEdgeFlight.codeshared) {
+		transformedFlight.codeshared = {
+			airline: {
+				name: ucfirst(aviationEdgeFlight.codeshared.airline.name),
+				iata: aviationEdgeFlight.codeshared.airline.iataCode.toUpperCase(),
+			},
+			flight: {
+				number: aviationEdgeFlight.codeshared.flight.number,
+				iata: aviationEdgeFlight.codeshared.flight.iataNumber.toUpperCase(),
+			},
 		}
-
-		const fetched = useAppState().flights.find(
-			(e) =>
-				e.flight_date === date &&
-				e.departure.iata === departure &&
-				e.arrival.iata === arrival
-		);
-		if (fetched) {
-			console.log("fetched from cache", useAppState().flights);
-			return
-		}
-		const query = `${departure}-${arrival}-${getISODate(date)}`;
-		if (queries.value.includes(query)) {
-			return
-		}
-		queries.value.push(query);
-		// Create a URL instance with the desired URL string
-		// const proxy =
-		// 	process.env.NODE_ENV === "development" ? "https://cors-anywhere.herokuapp.com/" : "";
-		// const url = new URL(proxy + "http://api.aviationstack.com/v1/flights");
-		// url.searchParams.append("access_key", aviationstack);
-		// url.searchParams.append("dep_iata", departure);
-		// url.searchParams.append("arr_iata", arrival);
-		// url.searchParams.append('flight_date', date);
-
-		// const url = new URL("https://app.airhelp.com/api/flights/selector");
-		// url.searchParams.append('local_departure_date', new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-'));
-		// url.searchParams.append("departure_airport_code", departure);
-		// url.searchParams.append("arrival_airport_code", arrival);
-		const [year, month, day] = date.split("-")
-		const url = new URL(`https://api.flightstats.com/flex/flightstatus/historical/rest/v3/json/route/status/${departure}/${arrival}/dep/${year}/${month}/${day}`);
-		url.searchParams.append('extendedOptions', ['excludeAppendix', locale && `languageCode:${locale}`].filter(Boolean).join(','));
-		const { fetchProxy } = useSupabaseFunctions()
-
-
-		console.log("fetching...", url.href);
-
-		// const headers = new Headers();
-		// headers.append("Content-Type", "application/json");
-		// headers.append("Access-Control-Allow-Origin", "*");
-		// headers.append("X-Requested-With", "XMLHttpRequest");
-
-		// const requestOptions = {
-		// 	method: "GET",
-		// 	headers: headers,
-		// };
-		// fetch("api/aviationstack-lax-jfk.json")
-		
-		// const { flights: data }: { flights: Flight[] } = await fetchProxy(url.href)
-		// const { flights: data }: { flights: Flight[] } = await (await fetch(url.href, requestOptions)).json()
-		// const { data }: { data: Flight[] } = await (await fetch(url.href, requestOptions)).json()
-
-		//cirium
-		const data: Flight[] = await (await fetch("/api/flights.json")).json()
-		// const { flightStatuses: data }: { flightStatuses: Flight[] } = await fetchProxy(url.href)
-		console.log(await (await fetch("/api/flights.json")).json())
-		console.log("fetched from api", data);
-
-		const flightStatuses = {
-			A: "active",
-			C: "cancelled",
-			D: "diverted",
-			DN: "dataNeeded",
-			L: "landed",
-			NO: "notOperational",
-			R: "redirected",
-			S: "scheduled",
-			U: "unknown",
-		}
-		const transformCirium = (f) => {
-			return {
-				flight_date: f.departureDate.dateLocal,
-				flight_status: flightStatuses[f.status as keyof typeof flightStatuses],
-				departure: {
-					iata: departure,
-					delay: f.delays.departureGateDelayMinutes,
-					scheduled: f.operationalTimes.scheduledGateDeparture.dateLocal,
-					actual: f.operationalTimes.actualGateDeparture?.dateLocal,
-				},
-				arrival: {
-					iata: arrival,
-					delay: f.delays.arrivalGateDelayMinutes,
-					scheduled: f.operationalTimes.scheduledGateArrival.dateLocal,
-					actual: f.operationalTimes.actualGateArrival?.dateLocal,
-				},
-				airline: {
-					iata: f.carrierFsCode,
-					name: f.carrierFsCode,
-					codeshared: f.operatingCarrierFsCode,
-				},
-				flight: {
-					codeshared: {},
-					iata: `${f.carrierFsCode}${f.flightNumber}`,
-					number: f.flightNumber,
-				},
-			}
-		}
-
-
-		const uniqueFlights = data
-			? removeDuplicateFlights(
-				// [...useAppState().flights, ...data].sort(sortByScheduled)
-				[...useAppState().flights, ...data.map(transformCirium)].sort(sortByScheduled)
-			)
-			: [];
-
-		const airports = {
-			departure: await useAirports(departure),
-			arrival: await useAirports(arrival),
-		};
-		const flights = uniqueFlights?.map((flight) => {
-			return {
-				...flight,
-				...(airports.departure &&
-					airports.arrival && {
-					distance: getAirportDistance(
-						airports.departure,
-						airports.arrival
-					),
-				}),
-			};
-		});
-		useAppState().flights = flights;
-	} catch (error) {
-		console.log("error", error);
-		throw error
 	}
+	return transformedFlight
+}
+
+const queries = ref([] as string[]);
+export const useFetchFlight = () => {
+	const { fetchProxy } = useSupabaseFunctions()
+	const { airports } = useAirports()
+
+	const fetchFlights = async ({ departure, arrival, date, locale }: {
+		date: string,
+		departure?: string,
+		arrival?: string,
+		locale?: string,
+	}) => {
+		try {
+			if (
+				!date ||
+				!departure ||
+				!arrival
+			) {
+				console.log("Missing date, departure or arrival");
+				return
+			}
+
+			const query = `${departure}-${arrival}-${getISODate(date)}`;
+			if (queries.value.includes(query)) {
+				console.log("has been queried", queries.value, query);
+				return
+			}
+
+			queries.value.push(query);
+			// Create a URL instance with the desired URL string
+			const url = new URL("https://aviation-edge.com/v2/public/flightsHistory");
+			url.searchParams.append("code", departure);
+			url.searchParams.append("type", 'departure');
+			url.searchParams.append('date_from', date);
+			// console.log('fetching started', date)
+			// url.searchParams.append('date_to', date);
+
+			// const url = new URL("https://app.airhelp.com/api/flights/selector");
+			// url.searchParams.append('local_departure_date', new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-'));
+			// url.searchParams.append("departure_airport_code", departure);
+			// url.searchParams.append("arrival_airport_code", arrival);
+
+			const key = useRuntimeConfig().public.flight.aviationEdge;
+			url.searchParams.append("key", key);
+			const res = await fetch(url.href)
+			const data: FlightAviationEdge[] = await (res)?.json()
+			const timeStamp = Date.now()
+			console.log("fetchhh");
+			// const data = await fetchProxy<FlightAviationEdge[]>(url.href)
+			console.log(`Fetched from API in ${Date.now() - timeStamp}ms`, data);
+
+
+
+
+
+			const distance = getAirportDistance(
+				airports.value[arrival],
+				airports.value[departure]
+			)
+
+			const flights: Flight[] = data
+				.map((flight) => transformAviationEdgeFlight(flight))
+				.map(flight => {
+					if (departure !== flight.departure.iata || arrival !== flight.arrival.iata) return flight
+					return {
+						...flight,
+						distance
+					}
+				})
+
+
+			console.log(flights.reduce((acc, curr) => {
+				if (curr.status === 'cancelled') acc.cancelled.push(curr)
+				else if (curr.arrival.delay > 180) acc.delayed.push(curr)
+				return acc
+			}, { cancelled: [] as Flight[], delayed: [] as Flight[] }))
+			useAppState().flights = flights;
+
+		} catch (error) {
+			console.log("error", error);
+			throw error
+		}
+	}
+	return { fetch: fetchFlights }
 }
 
 export const getCities = async (iataCodes: (string | undefined)[], locale?: string) => {
-	return (await Promise.all(iataCodes.map(e => useAirports(e)))).map(e => getCityTranslation(e, locale));
+	const { query } = useAirports()
+	return (await Promise.all(iataCodes.map(async e => await query(e || '')))).map(e => getCityTranslation(e, locale));
 };
+export const useCities = (iataCodes: (string | undefined)[], options?: {
+	iata?: boolean
+}) => {
+	const { locale } = useI18n()
+	const cities = ref(iataCodes);
+	const pending = ref(true)
+	const { query } = useAirports()
+	const assign = () => {
+		pending.value = true
+		query(iataCodes.map(e => e || ''))
+			.then((airports) => {
+				cities.value = []
+				iataCodes.forEach(airport => {
+					let city = airport && airports[airport] && getCityTranslation(airports[airport], locale.value);
+					if (options?.iata) city = city?.concat(' ', `(${airport})`)
+					if (city) cities.value.push(city)
+				})
+			})
+			.catch((error) => console.error(error))
+			.finally(() => pending.value = false)
+	}
+	watch(iataCodes, assign, { immediate: true, deep: true })
+	return { cities, pending }
+}
+
+
+export const useFlightRoute = (claim: ClaimsForm) => {
+	const { airports, query } = useAirports()
+	const routes = computed(() => generateRoutes?.(claim.airport.trip));
+
+	const assignRoute = async () => {
+		const [departure, arrival] = claim.route?.split("-") || [];
+		await query([departure, arrival])
+		Object.assign(claim.airport, { departure: airports.value[departure], arrival: airports.value[arrival] });
+	};
+
+	return { routes, assignRoute }
+}

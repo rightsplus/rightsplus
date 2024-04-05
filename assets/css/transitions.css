@@ -9,7 +9,7 @@
 
 .list-enter-from,
 .list-leave-to {
-  opacity: 0;
+  opacity: 0.5;
   transform: scale(0.9);
 }
 
@@ -250,4 +250,32 @@
    animations can be calculated correctly. */
 .new-list-leave-active {
   position: absolute;
+}
+
+
+
+.step-prev-leave-active,
+.step-next-leave-active {
+  transition: 100ms ease-in;
+  transition-property: opacity, transform;
+}
+
+.step-prev-enter-active,
+.step-next-enter-active {
+  transition: 100ms ease-out;
+  transition-property: opacity, transform;
+}
+.step-prev-enter-from,
+.step-prev-leave-to,
+.step-next-enter-from,
+.step-next-leave-to {
+  opacity: 0;
+}
+.step-next-leave-to,
+.step-prev-enter-from {
+  transform: translateX(-2%);
+}
+.step-next-enter-from,
+.step-prev-leave-to {
+  transform: translateX(2%);
 }

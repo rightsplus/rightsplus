@@ -9,7 +9,7 @@
       <FlightResultAirport
         label="Abflug"
         :flight="flight?.departure"
-        :cancelled="flight?.flight_status === 'cancelled'"
+        :cancelled="flight?.status === 'cancelled'"
       />
       <span class="text-center text-primary-500"
         ><FontAwesomeIcon icon="plane"
@@ -17,7 +17,7 @@
       <FlightResultAirport
         label="Ankunft"
         :flight="flight?.arrival"
-        :cancelled="flight?.flight_status === 'cancelled'"
+        :cancelled="flight?.status === 'cancelled'"
         class="items-end text-right"
       />
     </div>
@@ -71,7 +71,7 @@ const end = "2021-01-01";
 const warning = ref([] as string[]);
 
 const isEuMember = computed(() => {
-  const airport = useClaim().value?.airport;
+  const airport = useClaim()?.airport;
   return (
     euMember(airport?.departure?.country || "") ||
     euMember(airport?.arrival?.country || "")

@@ -1,7 +1,7 @@
 <template>
   <Callout
-    type="error"
-    icon="exclamation-triangle"
+    type="info"
+    icon="triangle-exclamation"
     key=""
     v-if="index >= claimProccess.completed && claimProccess.eligible === false"
     >{{ claimProccess.message }}
@@ -51,7 +51,7 @@ defineProps<{
   previousDisabled?: boolean;
 }>();
 
-const emit = defineEmits();
+const emit = defineEmits(['submit']);
 const claimProccess = useProcessClaim();
 
 const nextLabel = computed(() => {

@@ -1,21 +1,28 @@
-import { state, claim, airports, airlines } from '@/store'
+import { state, claim, airports, airlines, admin } from '@/store'
+import IBAN from 'iban';
 import { euMember } from 'is-european';
-import { Airline, Airport } from '~~/types';
+import type { Airline, Airport } from '@/types';
 
 
 export const useAppState = () => state
+export const useAdminState = () => admin
 export const useClaim = () => claim
-export async function useAirports(): Promise<Record<string, Airport>>;
-export async function useAirports(iata?: string): Promise<Airport>
-export async function useAirports(iata?: string[]): Promise<Record<string, Airport>>
-export async function useAirports(iata?: string | string[]) {
-  if (!iata?.length) return airports.value
-  const iatas = Array.isArray(iata) ? iata : [iata]
-  await Promise.all(iatas.map(async (iata) => {
-    if (airports.value[iata]) return
-    return await queryAirports(useAlgoliaSearch("AIRPORTS"), iata)
-  }))
-  return Array.isArray(iata) ? airports.value : airports.value[iata]
+export const useAirports = () =>{
+  async function query (iata: string): Promise<Airport>
+  async function query (iata: string[]): Promise<Record<string, Airport>>
+  async function query (iata: string | string[]) {
+    const algolia = useAlgoliaSearch("AIRPORTS")
+    const iatas = Array.isArray(iata) ? iata : [iata]
+    await Promise.all(iatas.map(async (iata) => {
+      if (airports.value[iata]) return
+      await queryAirports(algolia, iata)
+    }))
+    return Array.isArray(iata) ? airports.value : airports.value[iata]
+  }
+  return {
+    airports,
+    query
+  }
 }
 export async function useAirlines(iata: string): Promise<Airline>
 export async function useAirlines(iata?: string[]): Promise<Record<string, Airline>>
@@ -139,7 +146,7 @@ export const useProcessClaim = () => {
       }
       if (disruption.details === '>14') {
         response.eligible = false
-        response.message = "Die Annullierung wurde weit im Voraus angekündigt."
+        response.message = "Wenn du mehr als 14 Tage im Voraus über die Annulierung informiert wurdest, hast du laut geltendem EU-Recht keinen Anspruch auf Entschädigung."
         return response
       }
       if (disruption.replacement) {
@@ -172,8 +179,23 @@ export const useProcessClaim = () => {
     }
     response.completed = 1
 
-    // PASSENGERS
-    if (!client.passengers.every(passenger => passenger.firstName && passenger.lastName && passenger.email)) {
+    if ((client.bookingNumber?.length || 0) < 3) {
+      response.message = "Bitte die Buchungsnummer angeben!"
+      return response
+    }
+    if (client.passengers.some(passenger => !IBAN.isValid(passenger.iban))) {
+      response.message = "Bitte eine gültige IBAN eingeben."
+      return response
+    }
+    const validateEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    if (client.passengers.some(passenger => !validateEmail(passenger.email))) {
+      response.message = "Bitte eine gültige E-Mail eingeben."
+      return response
+    }
+    if (!client.passengers.every(passenger => Object.values(passenger).every(Boolean) && Object.values(passenger.address).every(Boolean))) {
       response.message = "Bitte alle Felder ausfüllen."
       return response
     }

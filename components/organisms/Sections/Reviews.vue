@@ -33,7 +33,7 @@
             size="large"
         /></Popup>
         <NuxtLink
-          :to="$state.reviews.url"
+          :to="state.reviews.url"
           target="_blank"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
           ><span>Weitere Bewertungen ansehen</span>
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import ReviewCard from "@/components/cells/ReviewCard.vue";
 import type { Review } from "@/types";
-const { $state } = useNuxtApp();
+const state = useAppState();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
 const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review,url&language=${locale.value}`;

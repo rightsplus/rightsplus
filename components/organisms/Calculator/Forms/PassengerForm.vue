@@ -26,18 +26,40 @@
               :class="['duration-100', name ? 'translate-y-2.5' : 'opacity-0']"
               >{{ name || "-" }}</span
             ></span
-          ><span v-if="length > 1"
-            ><FontAwesomeIcon
-              icon="trash"
-              fixed-width
-              class="text-sm hover-hover:opacity-100 opacity-0 group-hover:opacity-100 text-red-500 hover:!text-red-600 cursor-pointer"
-              role="button"
-              aria-labelledby="remove-passenger-label"
-              @click="emit('remove')"
-            /><span id="remove-passenger-label" class="sr-only"
-              >Passagier entfernen</span
-            ></span
           >
+          <div class="flex items-center gap-2">
+            <span v-if="index" class="flex items-center"
+              ><FontAwesomeIcon
+                icon="trash"
+                fixed-width
+                class="text-sm opacity-0 group-hover:opacity-100 text-red-500 hover:!text-red-600 cursor-pointer"
+                role="button"
+                aria-labelledby="remove-passenger-label"
+                @click="emit('remove')"
+              /><span
+                id="remove-passenger-label"
+                class="sr-only"
+                role="label"
+                >{{ $t("remove", { value: $t("passenger") }) }}</span
+              ></span
+            >
+
+            <span
+              class="flex items-center"
+              v-if="
+                Object.values(touched).some(Boolean) || !open.includes(index)
+              "
+              ><FontAwesomeIcon
+                :icon="completed ? 'circle-check' : 'triangle-exclamation'"
+                fixed-width
+                class="text-lg"
+                :class="completed ? 'text-green-500' : 'text-yellow-500'"
+                aria-labelledby="completed-label"
+              /><span id="completed-label" class="sr-only">{{
+                $t(completed ? "completed" : "missingFields")
+              }}</span></span
+            >
+          </div>
         </div>
       </template>
       <template #content>
@@ -49,25 +71,67 @@
             :label="$t('firstName')"
             v-model="modelValue.firstName"
             outer-class="col-span-full @sm:col-span-2"
+            :suffix-icon="icon('firstName')"
+            :suffix-icon-class="iconClass('firstName')"
+            @blur="touched.firstName = true"
           />
           <FormKit
             type="text"
             :label="$t('lastName')"
             v-model="modelValue.lastName"
             outer-class="col-span-full @sm:col-span-2"
+            :suffix-icon="icon('lastName')"
+            :suffix-icon-class="iconClass('lastName')"
+            @blur="touched.lastName = true"
           />
           <span
-            class="formkit-help text-xs text-neutral-500 leading-tight col-span-full @sm:!-mt-4"
+            class="formkit-help !-mt-3 text-xs text-neutral-500 leading-tight col-span-full"
             >Stelle sicher, dass die Angabe mit dem Namen auf deiner Bordkarte
             übereinstimmt.</span
           >
+          <div class="flex items-center gap-1" v-if="index > 0">
+            <FormKit
+              type="checkbox"
+              name="isMinor"
+              decorator-icon="check"
+              id="isMinor"
+            />
+            <label
+              tag="label"
+              for="isMinor"
+              class="text-base"
+            >{{ $t('isMinor') }}
+            </label>
+          </div>
           <FormKit
             type="email"
             :label="$t('email')"
             v-model="modelValue.email"
             @input="emit('update:modelValue', { ...modelValue, email: $event })"
             help="Keine Sorge, wir schicken dir nicht ungefragt Werbung."
+            @focus="emailFocus = true"
+            @blur="
+              () => {
+                emailFocus = false;
+                touched.email = true;
+              }
+            "
             outer-class="col-span-full"
+            :inner-class="
+              emailFocus && modelValue.email
+                ? validEmail
+                  ? '!ring-green-500'
+                  : '!ring-red-500'
+                : ''
+            "
+            :suffix-icon="validEmail ? 'circle-check' : 'circle-xmark'"
+            :suffix-icon-class="
+              !validEmail && modelValue.email
+                ? '[&>svg]:fill-red-500'
+                : emailFocus && modelValue.email
+                ? '[&>svg]:fill-green-500'
+                : 'opacity-0'
+            "
           />
           <InputIBAN
             :label="$t('iban')"
@@ -75,6 +139,8 @@
             v-model="modelValue.iban"
             help="Damit wird dir deinen Anspruch an dich auszahlen können."
             outer-class="col-span-full"
+            :touched="touched.iban"
+            @blur="touched.iban = true"
           />
           <!-- <FormKit
             type="tel"
@@ -85,11 +151,32 @@
           <AddressInput
             name="address"
             label="Adresse"
-            placeholder="z.B. Haupstraße 1, 10115 Berlin"
+            :placeholder="{
+              street: $t('forExample', { value: 'Haupstraße 1' }),
+              postalCode: $t('forExample', { value: '10115' }),
+              city: $t('forExample', { value: 'Berlin' }),
+            }"
+            :suffix-icon="{
+              street: icon('address', 'street'),
+              postalCode: icon('address', 'postalCode'),
+              city: icon('address', 'city'),
+            }"
+            :suffix-icon-class="{
+              street: iconClass('address', 'street'),
+              postalCode: iconClass('address', 'postalCode'),
+              city: iconClass('address', 'city'),
+            }"
+            @blur:street="
+              touched.address = { ...touched.address!, street: true }
+            "
+            @blur:postalCode="
+              touched.address = { ...touched.address!, postalCode: true }
+            "
+            @blur:city="touched.address = { ...touched.address!, city: true }"
             v-model="modelValue.address"
             class="col-span-full"
           />
-          <FormKit
+          <!-- <FormKit
             type="file"
             accept="image/*, application/pdf"
             :label="$t('boardingPass')"
@@ -100,7 +187,7 @@
             :fileIcon="'image'"
             fileRemoveIcon="xmark"
             :multiple="false"
-          />
+          /> -->
 
           <!-- <div class="col-span-full  text-sm">Damit wir den Fall notfalls vor Gericht verteidigen können.</div> -->
           <!-- <div class="col-span-full  text-sm">Damit wird dir das Geld auszahlen können.</div> -->
@@ -127,13 +214,36 @@ import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import AccordionItem from "../../Accordion/AccordionItem.vue";
 import AddressInput from "./AddressInput.vue";
 import type { PassengerDetails } from "@/types";
-import SignaturePad from "~~/components/molecules/SignaturePad.vue";
+import IBAN from "iban";
+
 const props = defineProps<{
   modelValue: PassengerDetails;
   index: number;
   length: number;
   open: number[];
 }>();
+
+const touched = ref<Partial<PassengerDetails<boolean>> & { form: boolean }>({
+  firstName: false,
+  lastName: false,
+  address: {
+    street: false,
+    postalCode: false,
+    city: false,
+  },
+  email: false,
+  iban: false,
+  form: false,
+});
+watch(
+  () => props.open,
+  (open) => {
+    if (!open.includes(props.index)) {
+      touched.value.form = true;
+    }
+  },
+  { deep: true }
+);
 
 const emit = defineEmits<{
   "update:modelValue": [value: PassengerDetails];
@@ -153,18 +263,44 @@ onMounted(() => {
       },
       email: "",
       iban: "",
-      bookingNumber: "",
-      phone: "",
     });
   }
 });
+const validEmail = computed(() => validateEmail(props.modelValue.email));
+const emailFocus = ref(false);
 
 const name = computed(() => {
   return [props.modelValue.firstName, props.modelValue.lastName]
     .filter(Boolean)
     .join(" ");
 });
+const completed = computed(() => {
+  const complete = Object.values(props.modelValue).every(Boolean);
+  const validEmail = validateEmail(props.modelValue.email);
+  const validIBAN = IBAN.isValid(props.modelValue.iban);
+  return complete && validEmail && validIBAN;
+});
 const passenger = (index: number) => {
   return index === 0 ? "Deine Angaben" : `${index + 1}. Passagier`;
+};
+const hasValue = (prop: keyof PassengerDetails, subprop?: string) => {
+  let value = props.modelValue[prop];
+  if (subprop && value && subprop in value) return value[subprop];
+  return value;
+};
+const wasTouched = (prop: keyof PassengerDetails, subprop?: string) => {
+  let touch = touched.value[prop];
+  if (subprop && touch && subprop in touch) return touch[subprop];
+  return !!touch;
+};
+const icon = (prop: keyof PassengerDetails, subprop?: string) => {
+  return !hasValue(prop, subprop) && !!wasTouched(prop, subprop)
+    ? "triangle-exclamation"
+    : "circle-check";
+};
+const iconClass = (prop: keyof PassengerDetails, subprop?: string) => {
+  return !hasValue(prop, subprop) && !!wasTouched(prop, subprop)
+    ? "[&>svg]:fill-yellow-500"
+    : "opacity-0";
 };
 </script>

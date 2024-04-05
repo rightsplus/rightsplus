@@ -1,17 +1,17 @@
 /* Claims Form State */
-export type Address = {
-  street: string;
-  postalCode: string;
-  city: string;
-  country?: string;
+export type Address<T = string> = {
+  street: T;
+  postalCode: T;
+  city: T;
+  country?: T;
 };
-export interface PassengerDetails {
-  firstName: string;
-  lastName: string;
-  address: Address
-  email: string;
-  iban: string;
-  phone?: string;
+export interface PassengerDetails<T = string> {
+  firstName: T;
+  lastName: T;
+  address: Address<T>
+  email: T;
+  iban: T;
+  phone?: T;
   boardingPass?: Files;
   isMinor?: boolean;
 }
@@ -29,16 +29,28 @@ export interface ClaimsForm {
   route: string | null;
   flight: Flight | null;
   connectingFlight: Flight | null;
-  flight_date: string;
+  date: string | null;
   disruption: {
-    type: string | null;
-    details: string | null;
+    type: 'cancelled' | 'delayed' | 'noBoarding' | null;
+    details: '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14' | null;
     reason: string | null;
-    replacement: boolean | null;
-    connectingFlight: boolean | null;
-    replacementFlight: Flight | null;
     other: string | null;
+    selfInflicted?: boolean;
   };
+  replacement: {
+    offered: boolean;
+    departure: Airport;
+    date: string | null;
+    number: string | null;
+    flight: Flight | null;
+  }
+  connection: {
+    offered: boolean;
+    departure: Airport;
+    date: string | null;
+    number: string | null;
+    flight: Flight | null;
+  }
   client: {
     agreedToTerms: boolean;
     bookingNumber: string;
@@ -89,135 +101,60 @@ export interface Airport {
 }
 
 /* Flight */
-interface FlightAirport {
-  airport: string;
-  timezone?: string;
-  iata: string;
-  icao?: string;
-  terminal?: string | number;
-  gate?: string;
-  delay: number;
-  scheduled: string;
-  estimated: string;
-  actual: string;
-  estimated_runway: string;
-  actual_runway: string;
-}
-export interface CodeSharedInfo {
-  airline_name: string;
-  airline_iata: string;
-  airline_icao: string;
-  flight_number: string;
-  flight_iata: string;
-  flight_icao: string;
-}
-export interface FlightInfo {
-  codeshared?: CodeSharedInfo;
-  iata: string;
-  icao: string;
-  icao24?: string;
-  number?: string;
-}
-export interface FlightLive {
-  updated: string;
-  latitude: number;
-  longitude: number;
-  altitude: number;
-  direction: number;
-  speed_horizontal: number;
-  speed_vertical: number;
-  is_ground: boolean;
-};
-export interface AircraftInfo {
-  number: string;
-  iata: string;
-  icao: string;
-  codeshared: string | null;
-}
-export interface FlightAirline {
+type AirlineInfo {
   name: string;
   iata: string;
-  icao: string;
 }
-export interface FlightPhase {
-  airport: string;
-  timezone: string;
+type FlightInfo {
+  number: string;
   iata: string;
-  icao: string;
-  terminal: string;
-  gate: string;
-  delay: number;
-  scheduled: string;
-  estimated: string;
-  actual: string | null;
-  estimated_runway: string | null;
-  actual_runway: string | null;
 }
-export interface Flight {
-  flight_date: string;
-  flight_status: string;
-  departure: FlightPhase;
-  arrival: FlightPhase & {
-    baggage: string;
-  };
-  airline: FlightAirline;
-  flight: FlightInfo;
-  aircraft: AircraftInfo;
-  live: FlightLive
+type CodeSharedInfo {
+  airline: AirlineInfo;
+  flight: FlightInfo
 }
 
+export type FlightPhase<T = 'departure' | 'arrival'> = {
+  iata: string;
+  delay: number;
+  scheduledTime: string;
+  estimatedTime: string;
+  actualTime: string;
+  estimatedRunway: string;
+  actualRunway: string;
+}
+export interface Flight {
+  type: "arrival" | "departure";
+  status: "landed" | "scheduled" | "cancelled" | "active" | "unknown";
+  departure: FlightPhase;
+  arrival: FlightPhase;
+  airline: AirlineInfo;
+  flight: FlightInfo;
+  distance?: number;
+  codeshared?: CodeSharedInfo;
+}
 
 export interface Route extends Record<'departure' | 'arrival', {
   airport: Airport;
 }> {
   flight?: Flight;
-  flight_date: string;
+  date: string;
 }
-
+export { Flight as FlightAviationEdge } from "./aviation-edge.types"
+export { Airline as AirlineAviationEdge } from "./aviation-edge.types"
 /* Airline */
-export interface AirlineAviationEdge { // legacy
-  airlineId: string;
-  nameAirline: string;
-  codeIataAirline: string;
-  iataPrefixAccounting: string;
-  codeIcaoAirline: string;
-  callsign: string;
-  type: string;
-  statusAirline: string;
-  sizeAirline: string;
-  ageFleet: string;
-  founding: string;
-  codeHub: string;
-  nameCountry: string;
-  codeIso2Country: string;
-}
-export interface AirlineAviationStack { // not yet used, but should be used when using api for airlines
-  airline_name: string;
-  iata_code: string;
-  iata_prefix_accounting: string;
-  icao_code: string;
-  callsign: string;
-  type: string;
-  status: string;
-  fleet_size: string;
-  fleet_average_age: string;
-  date_founded: string;
-  hub_code: string;
-  country_name: string;
-  country_iso2: string;
-}
 export interface Airline {
-    id: string;
-    iata: string;
-    name: string;
-    country: string;
-    isEuMember: boolean;
-    callsign: string;
-    hubCode: string;
-    dateFounded: string;
-    iataPrefixAccounting: string;
-    fleetSize: string;
-    type: string[];
+  id: string;
+  iata: string;
+  name: string;
+  country: string;
+  isEuMember: boolean;
+  callsign: string;
+  hubCode: string;
+  dateFounded: string;
+  iataPrefixAccounting: string;
+  fleetSize: string;
+  type: string[];
 }
 
 /* Google Maps */

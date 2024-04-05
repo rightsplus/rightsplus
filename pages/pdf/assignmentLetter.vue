@@ -15,9 +15,9 @@
           >
           <template v-slot:flight
             ><span class="block m-5 mb-0">
-              <strong>{{ flightNumber }}</strong> {{ t("am") }}
+              <strong>{{ flightNumber }}</strong> {{ t("on") }}
               <strong>{{
-                new Date(flightDate as string).toLocaleDateString()
+                new Date(flightDate as string).toLocaleDateString(locale)
               }}</strong>
             </span></template
           >
@@ -47,7 +47,9 @@
           <div
             class="bg-neutral-100 rounded h-12 w-full px-3 items-center flex font-semibold text-base"
           >
-            {{ new Date().toLocaleDateString() }}
+            <span v-if="claimId">{{
+              new Date().toLocaleDateString(locale)
+            }}</span>
           </div>
           <span class="text-sm text-neutral-500">{{ t("date") }}</span>
         </div>
@@ -61,12 +63,28 @@
               class="h-[170%] mt-[10%] [&>svg]:w-[initial] [&>svg]:h-full"
             /> -->
             <img
+              v-if="claimId"
               :src="`https://mtunwdgfmuekdjdecgdc.supabase.co/storage/v1/object/public/client-files//${formatClaimId(
                 claimId as string,
                 false
               )}/signature.svg`"
               class="h-[170%] mt-[10%]"
             />
+            <!-- <img
+              v-if="claimId"
+              :src="`https://mtunwdgfmuekdjdecgdc.supabase.co/storage/v1/object/public/client-files//${formatClaimId(
+                claimId as string,
+                false
+              )}/signature.svg`"
+              class="h-[170%] mt-[10%]"
+            /> -->
+            <FontAwesomeIcon
+              v-if="claimId"
+              icon="times"
+              class="px-3 text-2xl"
+            />
+            <FontAwesomeIcon v-else icon="times" class="px-3 text-2xl" />
+
             <!-- <img v-if="data?.signature" :src="data.signature" class="h-[170%] mt-[10%]" /> -->
             <!-- <img :src="`https://mtunwdgfmuekdjdecgdc.supabase.co/storage/v1/object/sign/client-files/${claimId}/signature.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjbGllbnQtZmlsZXMvMDAwMDAzOC9zaWduYXR1cmUuc3ZnIiwiaWF0IjoxNzA4MzY1MjIzLCJleHAiOjE3MDg5NzAwMjN9.yKqLziYYz3yFsvFfY0SJtjb7941MxybPqoUH7lHKtng&t=2024-02-19T17%3A53%3A43.261Z`" class="h-[170%] mt-[10%]"/> -->
           </div>
@@ -90,9 +108,10 @@
   </div>
 </template>
 <script setup lang="ts">
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Logo from "~/assets/logo";
 import { claim } from "~/store";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { query } = useRoute();
 const client = useSupabaseClient();
 definePageMeta({
@@ -112,34 +131,37 @@ const {
   claimId,
   bookingNumber,
 } = query;
-const { data } = await useAsyncData(async () => {
-  try {
-    const { data, error } = await client.storage
-      .from("client-files")
-      .getPublicUrl(`/${formatClaimId(claimId, false)}/signature.svg`);
-    // .download(`/${formatClaimId(claimId, false)}/signature.svg`);
-    if (!data) return;
-    // Create a FileReader to read the Blob
-    const signature = data.publicUrl;
-    // const reader = new FileReader();
-    // const signature = await new Promise((resolve) => {
-    //   reader.onload = (event) => resolve(event.target?.result as string);
-    //   reader.readAsText(data);
-    // });
+// const { data } = await useAsyncData(async () => {
+//   try {
+//     const { data, error } = await client.storage
+//       .from("client-files")
+//       .getPublicUrl(`/${formatClaimId(claimId, false)}/signature.svg`);
+//     // .download(`/${formatClaimId(claimId, false)}/signature.svg`);
+//     if (!data) return;
+//     // Create a FileReader to read the Blob
+//     const signature = data.publicUrl;
+//     // const reader = new FileReader();
+//     // const signature = await new Promise((resolve) => {
+//     //   reader.onload = (event) => resolve(event.target?.result as string);
+//     //   reader.readAsText(data);
+//     // });
 
-    console.log(data, signature);
-    return { signature };
-  } catch (error) {
-    console.error(error);
-  }
-});
+//     console.log(data, signature);
+//     return { signature };
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
 
 const aside = [
-  { label: "date", value: new Date(date as string).toLocaleDateString() },
+  {
+    label: "date",
+    value: new Date(date as string).toLocaleDateString(locale.value),
+  },
   { label: "claimId", value: formatClaimId(claimId as string) },
   { value: "RightsPlus GbR\nZülpicher Platz 18\n50674 Köln" },
   { value: "info@rightsplus.de" },
-];
+].filter((e) => !("value" in e) || e.value);
 </script>
 <style lang="postcss">
 .page {

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mb-5" ref="container">
+  <div class="relative" ref="container">
     <FormKit
       ref="input"
       type="text"
@@ -15,13 +15,15 @@
       :errors="errors"
       :prefix-icon="prefixIcon"
       :suffix-icon="loading ? 'circle-notch' : suffixIcon || 'circle-notch'"
-      @prefix-icon-click="$emit('prefix-icon-click')"
-      @suffix-icon-click="$emit('suffix-icon-click')"
+      :prefix-icon-class="$attrs['prefix-icon-class']"
+      :suffix-icon-class="$attrs['suffix-icon-class']"
       @keydown.down.up.prevent="keydown"
-      @keydown.enter.prevent="handleInput"
+      @keydown.enter.prevent="handleEnter"
       @keydown.escape.prevent="blur"
+      v-bind="attrs"
       floatingLabel
       :placeholder="placeholder"
+      :disabled="disabled"
       :classes="{
         outer: `!mb-0 ${
           !loading && !suffixIcon
@@ -68,18 +70,31 @@ const props = defineProps<{
   suffixIcon?: string;
   errors?: string[];
   loading?: boolean;
+  disabled?: boolean;
   autocomplete?: string;
   options: DropdownItem[];
 }>();
 const emit = defineEmits([
   "update:modelValue",
+  "blur",
   "query",
   "suffix-icon-click",
   "prefix-icon-click",
+  "keydown.enter",
 ]);
+const passedProps = getCurrentInstance()?.vnode.props || {};
+console.log(passedProps)
+const attrs = computed(() => {
+  const a = {} as typeof passedProps;
+  if (passedProps.onPrefixIconClick)
+    a.onPrefixIconClick = () => emit("prefix-icon-click");
+  if (passedProps.onSuffixIconClick)
+    a.onSuffixIconClick = () => emit("suffix-icon-click");
+  return a;
+});
 const highlighted = ref(0);
 const input = ref<FormKitFrameworkContext | null>(null);
-const [container, position] = usePosition()
+const [container, position] = usePosition();
 const inputFocused = ref(false);
 const inputValue = ref(props.modelValue);
 
@@ -99,22 +114,25 @@ watch(showDropdown, (open) => {
 function updateInput(value: string) {
   highlighted.value = 0;
   inputValue.value = value;
-  if (!value.length) emit("update:modelValue", "");
-  if (value !== props.modelValue) emit("query", value);
+  if (!value?.length) emit("update:modelValue", "");
+  if (value !== props.modelValue || !value?.length) emit("query", value);
 }
 function keydown(e: KeyboardEvent) {
   highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
 }
+function handleEnter() {
+  handleInput();
+  emit("keydown.enter");
+}
 function handleInput(value?: DropdownItem) {
-  console.log('handlingInpu', value)
   const index = typeof value === "number" ? value : highlighted.value;
   if (props.options[index]) emit("update:modelValue", props.options[index]);
-  if (input.value?.node) {
+  if (input.value?.node && !props.options[index].cancel) {
     input.value.node.context?.handlers.DOMInput({
       target: { value: props.modelValue },
     });
   }
-  focusNext(true);
+  if (!props.options[index].cancel) focusNext({ select: true });
 }
 function focus() {
   inputFocused.value = true;
@@ -123,6 +141,7 @@ function focus() {
   }, 0);
 }
 function blur() {
+  emit('blur')
   if (!inputValue.value?.length) {
     emit("update:modelValue", "");
   }

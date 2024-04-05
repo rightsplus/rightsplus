@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       title: "RightsPlus",
       meta: [
         { name: 'description', content: '' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content' },
         { name: 'HandheldFriendly', content: 'true' }
       ],
     }
@@ -19,14 +19,14 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@formkit/nuxt',
     '@nuxtjs/supabase',
-    '@vue-email/nuxt'
+    '@vue-email/nuxt',
   ],
   buildModules: [
     '@nuxtjs/pwa',
   ],
   build: {
     transpile: [
-      "primevue",
+      // "primevue",
       "@fortawesome/vue-fontawesome",
       'vue-i18n'
     ]
@@ -41,7 +41,7 @@ export default defineNuxtConfig({
     '~/assets/css/main.scss',
     '~/assets/css/transitions.css',
     '@fortawesome/fontawesome-svg-core/styles.css',
-    "primevue/resources/themes/lara-light-blue/theme.css",
+    // "primevue/resources/themes/lara-light-blue/theme.css",
     "primevue/resources/primevue.css"
   ],
   components: [
@@ -69,12 +69,7 @@ export default defineNuxtConfig({
         placeId: process.env.GOOGLE_PLACE_ID
       },
       flight: {
-        aviationstack: process.env.AVIATIONSTACK_KEY,
-        cirium: {
-          appId: process.env.CIRIUM_APP_ID,
-          appKey: process.env.CIRIUM_APP_KEY
-        },
-        flighlabs: process.env.FLIGHTLABS_KEY,
+        aviationEdge: process.env.AVIATION_EDGE_KEY,
         key: process.env.APP_KEY,
         appId: process.env.APP_ID
       }

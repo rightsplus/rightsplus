@@ -1,16 +1,18 @@
 const { orange, neutral, sky, emerald, yellow, red, black, white, transparent } = require('tailwindcss/colors')
 const gray = {
-	"50": "#d3e1e6",
-	"100": "#c4d2d7",
-	"200": "#b6c3c8",
-	"300": "#a5b3ba",
-	"400": "#94a4ab",
-	"500": "#71838e",
-	"600": "#516471",
-	"700": "#374854",
-	"800": "#222e37",
-	"900": "#0f1519"
+  "50": "hsl(200deg 60% 98%)",
+  "100": "hsl(200deg 44% 94%)",
+  "200": "hsl(200deg 32% 88%)",
+  "300": "hsl(200deg 25% 80%)",
+  "400": "hsl(200deg 20% 64%)",
+  "500": "hsl(200deg 16% 48%)",
+  "600": "hsl(200deg 16% 32%)",
+  "700": "hsl(200deg 17% 24%)",
+  "800": "hsl(200deg 35% 16%)",
+  "900": "hsl(200deg 45% 8%)",
+  "950": "hsl(217deg 63% 5%)"
 }
+
 const colors = {
   primary: orange,
   neutral,
@@ -62,6 +64,7 @@ module.exports = {
     },
   },
   plugins: [
+    require('tailwindcss-unimportant'),
     require('tailwindcss-touch'),
     require('@tailwindcss/container-queries'),
     require('@formkit/tailwindcss'),

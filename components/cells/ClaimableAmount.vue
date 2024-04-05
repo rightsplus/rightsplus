@@ -12,15 +12,15 @@ import gsap from "gsap";
 import { getDistance } from "@/composables/flight";
 const props = defineProps<{ full?: boolean }>();
 const processClaim = useProcessClaim();
-const status = computed(() => useFlightStatus(useClaim().value.flight));
+const status = computed(() => useFlightStatus(useClaim().flight));
 const potentialReimbursment = computed(() => {
   if (!processClaim.value.eligible) return 0;
-  const distance = getDistance(useClaim().value);
+  const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
   const { total, youGet } = reimbursementByDistance(
     distance,
     delay,
-    useClaim().value.client.passengers.length
+    useClaim().client.passengers.length
   );
   return props.full ? total : youGet;
 });

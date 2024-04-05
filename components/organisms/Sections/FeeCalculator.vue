@@ -45,7 +45,7 @@
               maximumFractionDigits: 2,
             })
           }}</span></span>
-          <span class="text-base">Mehrwertsteuer ({{$n(compensation.vatRate, 'percent')}}): <span class="font-bold tabular-nums tracking-tighter">{{
+          <span class="text-base" v-if="compensation.vatRate">Mehrwertsteuer ({{$n(compensation.vatRate, 'percent')}}): <span class="font-bold tabular-nums tracking-tighter">{{
             $n(vat.number * -1, "currency", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,

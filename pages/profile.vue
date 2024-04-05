@@ -27,7 +27,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   useAppState().headerColor = null;
 });
-
+const { query: queryAirports } = useAirports();
 const claims = ref(
   null as
     | null
@@ -55,7 +55,7 @@ useAsyncData("claims", async () => {
   claims.value = data.value;
   data.value?.forEach(({ flights }) => {
     if (flights.data)
-      useAirports([flights.data.departure?.iata, flights.arrival?.iata]);
+      queryAirports([flights.data.departure?.iata, flights.arrival?.iata]);
   });
 });
 </script>

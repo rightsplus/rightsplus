@@ -7,28 +7,30 @@
         'pointer-events-none opacity-50': !freq,
       }"
     >
+            <!-- (dayTime === 'morning' && hour < 13) ||
+            (dayTime === 'afternoon' && hour >= 13 && hour < 18) ||
+            (dayTime === 'evening' && hour >= 18), -->
       <div
         class="cursor-pointer rounded-sm bg-gray-200 hover:bg-gray-300"
         :class="{
           'bg-primary-400 hover:!bg-primary-500':
-            (dayTime === 'morning' && hour < 12) ||
-            (dayTime === 'afternoon' && hour >= 12 && hour < 20) ||
-            (dayTime === 'evening' && hour >= 20),
+            time === hour,
         }"
         :style="`height: ${((freq / max) * 30 + 2)}px`"
         @click="
           freq &&
             $emit('select',
-              hour < 12
-                ? 'morning'
-                : hour >= 12 && hour < 20
-                ? 'afternoon'
-                : 'evening'
+              hour
             )
         "
       />
+              <!-- hour < 13
+                ? 'morning'
+                : hour >= 13 && hour < 18
+                ? 'afternoon'
+                : 'evening' -->
       <span
-        class="hidden @lg:inline text-xs text-center font-medium tracking-tighter"
+        class="@lg:inline text-xs text-center font-medium tracking-tighter"
         >{{ hour }}</span
       >
     </div>
@@ -39,11 +41,12 @@ import type { Flight } from "@/types";
 const props = defineProps<{
 	flights: Flight[]
   dayTime: string | null;
+  time: number;
 }>();
 
 const flightsPerHour = computed(() =>
   props.flights.map((e, i) =>
-    new Date(e.departure.scheduled).getHours()
+    new Date(e.departure.scheduledTime).getHours()
   )
 );
 const frequency = computed(() =>

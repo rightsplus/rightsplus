@@ -1,19 +1,16 @@
 import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
-import nodemailer from 'nodemailer'
-import { generatePDF as generate } from "@/pdf/pdfGenerator";
-import { useCompiler } from '#vue-email'
-
 
 export default defineEventHandler(async (event) => {
 	try {
-		const user = await serverSupabaseUser(event)
-		if (!user?.email) throw createError({ statusCode: 401, message: "Unauthorized" })
-		const body = JSON.parse(await readBody(event)) as SendPDFMailProps
+		const body = await readBody(event)
+		console.log(body)
 
-		return {
-			statusCode: 200,
-			body: JSON.stringify({ })
-		}
+		
+		// const url = new URL("https://aviation-edge.com/v2/public/flightsHistory");
+		// url.searchParams.append("code", departure);
+		// url.searchParams.append("type", 'departure');
+		// url.searchParams.append('date_from', date);
+		return body
 	} catch (error) {
 		return error
 	}

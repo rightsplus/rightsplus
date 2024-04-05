@@ -1,37 +1,21 @@
 <template>
   <div ref="container">
-    <!-- <div class="grid @md:grid-cols-2 gap-5 @container mb-5">
-      <div
-        v-for="(e, i) in [
-          {
-            value: false,
-            label: 'Direktflug',
-          },
-          {
-            value: true,
-            label: 'Umsteigeflug',
-          },
-        ]"
-        :key="i"
-        class="w-full flex flex-col gap-3"
-      >
-        <ButtonLarge
-          :selected="hasLayover === e.value"
-          :name="`${e.value}`"
-          @click="hasLayover = e.value"
-          :label="e.label"
-        />
+    <div class="flex items-center rounded-lg mb-0 max-w-full duration-75">
+      <span
+        class="w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 formkit-icon"
+        ><FontAwesomeIcon icon="plane-departure" class="text-neutral-400"
+      /></span>
+      <div class="flex flex-col px-4 py-3">
+        <span class="text-neutral-500 font-medium text-xs leading-tight block"
+          >Abflug</span
+        >
+        <span
+          class="bg-transparent font-medium rounded-lg w-full border-none text-base text-neutral-700 placeholder-neutral-400 line-clamp-1 leading-tight"
+          >{{ convertName(modelValue.airport.trip.departure) }}</span
+        >
       </div>
-    </div> -->
-    <AirportInput
-      label="Abflug"
-      name="departure"
-      id="departure"
-      prefix-icon="plane-departure"
-      :modelValue="modelValue.airport.trip.departure"
-      @update:modelValue="modelValue.airport.trip.departure = $event"
-      floatingLabel
-    />
+    </div>
+    <div class="grid gap-3">
     <div
       v-for="(layover, i) in modelValue.airport.trip.layover"
       v-if="modelValue.airport.trip?.layover"
@@ -41,32 +25,29 @@
         :id="`layover-${i}`"
         :label="`${i + 1}. Zwischenstopp`"
         name="layover"
-        prefix-icon="plus"
+        prefix-icon="arrow-right-arrow-left"
         :modelValue="modelValue.airport.trip.layover[i]"
         @update:modelValue="update($event, i)"
-        :suffix-icon="
-          modelValue.airport.trip.layover.length > 0 ? 'xmark' : undefined
-        "
-        @suffix-icon-click="modelValue.airport.trip.layover?.splice(i, 1)"
+        :suffix-icon="isRemovable(i) ? 'xmark' : undefined"
+        @suffix-icon-click="removeLayover(i)"
       />
     </div>
-    <button
-      v-if="showAddLayoverButton"
-      class="text-sm font-medium text-blue-600 underline underline-offset-2 text-left flex gap-2 items-center h-14 my-5 hover:bg-neutral-100 px-5 rounded-xl"
-      @click="addLayover"
-    >
-      <span><FontAwesomeIcon icon="plus" /></span>
-      <span class="leading-none">Zwischenstopp hinzufügen</span>
-    </button>
-    <AirportInput
-      label="Ankunft"
-      name="arrival"
-      id="arrival"
-      prefix-icon="plane-arrival"
-      :modelValue="modelValue.airport.trip.arrival"
-      @update:modelValue="modelValue.airport.trip.arrival = $event"
-      floatingLabel
-    />
+  </div>
+    <div class="flex items-center rounded-lg max-w-full duration-75">
+      <span
+        class="w-10 ml-1 -mr-4 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 z-40 formkit-icon"
+        ><FontAwesomeIcon icon="plane-arrival" class="text-neutral-400"
+      /></span>
+      <div class="flex flex-col px-4 py-3">
+        <span class="text-neutral-500 font-medium text-xs leading-tight block"
+          >Ankunft</span
+        >
+        <span
+          class="bg-transparent font-medium rounded-lg w-full border-none text-base text-neutral-700 placeholder-neutral-400 line-clamp-1 leading-tight"
+          >{{ convertName(modelValue.airport.trip.arrival) }}</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,23 +59,19 @@ import type { Airport, ClaimsForm } from "@/types";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-const container = ref<HTMLElement | null>(null);
+const container = ref<HTMLElement>();
 const hasLayover = ref<boolean>(true);
 // const hasLayover = ref<boolean>(false)
-const routes = computed(() => generateRoutes?.(props.modelValue.airport.trip));
 function update(e: any, i: number) {
   if (e && "iata" in e && props.modelValue.airport.trip.layover) {
     props.modelValue.airport.trip.layover[i] = e;
   }
 }
+const convertName = (value?: Airport) =>
+  value?.name ? `${value?.name} (${value?.iata})` : "";
 
-const assignRoute = async () => {
-  const route = props.modelValue.route?.split("-") || [];
-  const [departure, arrival] = await Promise.all(
-    route.map((e) => useAirports(e))
-  );
-  Object.assign(props.modelValue.airport, { departure, arrival });
-};
+const { routes, assignRoute } = useFlightRoute(props.modelValue)
+
 watch(
   props.modelValue.airport.trip,
   () => {
@@ -117,17 +94,21 @@ watch(hasLayover, (value) => {
   if (value) {
     addLayover();
   } else {
-    props.modelValue.airport.trip.layover = [];
+    props.modelValue.airport.trip.layover = [{} as Airport];
   }
 });
-watch(
-  () => props.modelValue.airport.trip.layover?.length,
-  (value) => {
-    if (!value) {
-      // hasLayover.value = false;
-    }
+
+const isRemovable = (i: number) => {
+  const { layover } = props.modelValue.airport.trip
+  return (layover?.length || 0) > 1 || !!layover?.[i].iata;
+}
+const removeLayover = (i: number) => {
+  if (props.modelValue.airport.trip.layover?.length === 1) {
+    props.modelValue.airport.trip.layover = [{} as Airport]
+    return
   }
-);
+  props.modelValue.airport.trip.layover?.splice(i, 1)
+}
 
 const showAddLayoverButton = computed(() => {
   return (

@@ -1,9 +1,12 @@
 <template>
   <ButtonLarge
-    :selected="selected"
+    :selected="!!selected"
     name="no"
     @click="emit('click')"
-    class="flex flex-col !gap-1 !items-start"
+    class="flex !gap-1 items-center justify-between"
+  >
+  <div
+    class="flex flex-col"
   >
     <span class="flex items-center gap-3 font-bold"
       >{{ route.departure.airport.iata
@@ -15,17 +18,20 @@
         {{$t("to")}}
       <span class="font-bold">{{ arrivalCity }}</span>
     </span>
+  </div>
+    <FontAwesomeIcon icon="angle-right" class="text-gray-400 text-sm" />
   </ButtonLarge>
 </template>
 
 <script setup lang="ts">
 import type { Route } from "@/types";
 import ButtonLarge from "./ButtonLarge.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 
 const props = defineProps<{
   route: Route;
-  selected: boolean;
+  selected?: boolean;
 }>();
 
 const emit = defineEmits(["click"]);

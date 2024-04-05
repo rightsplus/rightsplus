@@ -24,10 +24,10 @@
           <Transition name="fade">
             <div
               class="container bg-white rounded-3xl p-5 sm:p-12 shadow-2xl shadow-black/10"
-              v-if="useClaim().value && ready"
+              v-if="claim && ready"
             >
               <FlightByAirport
-                v-model="useClaim().value"
+                v-model="claim"
                 @submit="() => {}"
               /></div
           ></Transition>
@@ -67,6 +67,7 @@ import Reviews from "@/components/organisms/Sections/Reviews.vue";
 import type { Database } from "@/types";
 const ready = ref(false);
 const scrollDownReady = ref(false);
+const claim = useClaim()
 onMounted(() => {
   ready.value = true;
   setTimeout(() => {

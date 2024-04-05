@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-5">
-    <h1 class="text-3xl font-bold">Welches Problem ist aufgetreten?</h1>
     <DisruptionNotice v-if="status" :status="status" :modelValue="modelValue" />
     <!-- first {{ firstSectionComplete }}<button @click="reset()">essers</button> -->
     <div class="relative z-10">
@@ -17,7 +16,7 @@
             label="Was ist schiefgelaufen?"
             :showValue="!!modelValue.disruption.type"
             >{{
-              disruptions.find(e => e.value === modelValue.disruption.type)
+              disruptions.find((e) => e.value === modelValue.disruption.type)
                 ?.label
             }}</SectionHeader
           >
@@ -36,7 +35,10 @@
         headless
         :tag="{ outer: 'div', inner: 'div', title: 'h3' }"
         :collapsible="false"
-        v-if="modelValue.disruption.type && !['>14'].includes(modelValue.disruption.details || '')"
+        v-if="
+          modelValue.disruption.type &&
+          !['>14'].includes(modelValue.disruption.details || '')
+        "
       >
         <template #title>
           <SectionHeader
@@ -44,7 +46,7 @@
             :showValue="!!modelValue.disruption.reason"
             >{{
               [...noBoardingReasons, ...cancelledDelayedReasons].find(
-                e => e.value === modelValue.disruption.reason
+                (e) => e.value === modelValue.disruption.reason
               )?.label
             }}</SectionHeader
           >
@@ -52,32 +54,24 @@
         <template #content>
           <div class="flex flex-col gap-5">
             <!--  // mindestens 14 Tage // Ersatzbeförderung -->
-            <DropdownButton
+            <SelectDisruptionReason
               v-if="
                 modelValue.disruption.type &&
-                  ['cancelled', 'delayed', 'noBoarding'].includes(
-                    modelValue.disruption.type
-                  )
+                ['cancelled', 'delayed', 'noBoarding'].includes(
+                  modelValue.disruption.type
+                )
               "
-              label="Welchen Grund hat die Airline angegeben?"
-              name="actualArrivalTime"
-              v-model="modelValue.disruption.reason"
-              :options="
-                modelValue.disruption.type === 'noBoarding'
-                  ? noBoardingReasons
-                  : cancelledDelayedReasons
-              "
-              prefix-icon="clock"
+              modelValue="modelValue"
             />
           </div>
         </template>
       </AccordionItem>
 
+      <!-- || ['>14'].includes(modelValue.disruption.details || '') -->
       <FormKit
         v-if="
           modelValue.disruption.type === 'other' ||
-            modelValue.disruption.reason === 'other' ||
-            ['>14'].includes(modelValue.disruption.details || '')
+          modelValue.disruption.reason === 'other'
         "
         type="textarea"
         label="Deine Erläuterung hilft uns deinen Fall zu bearbeiten"
@@ -108,6 +102,7 @@ import type { ClaimsForm, Flight } from "@/types";
 import AccordionItem from "../Accordion/AccordionItem.vue";
 import SelectDisruptionType from "./Forms/SelectDisruptionType.vue";
 import SelectDisruptionDetails from "./Forms/SelectDisruptionDetails.vue";
+import SelectDisruptionReason from "./Forms/SelectDisruptionReason.vue";
 import SelectDisruptionReplacement from "./Forms/SelectDisruptionReplacement.vue";
 
 const props = defineProps<{
@@ -120,22 +115,21 @@ const {
   cancelledDetails,
   disruptions,
   noBoardingReasons,
-  cancelledDelayedReasons
+  cancelledDelayedReasons,
 } = useDisruption(props.modelValue.flight);
 
 const processClaim = useProcessClaim();
-const hasSwitched = ref(false)
+const hasSwitched = ref(false);
 watch(
   () => processClaim.value,
   () => {
     if (processClaim.value.sectionComplete === 1 && !hasSwitched.value) {
       active.value = ["disruptionCause"];
-      hasSwitched.value = true
+      hasSwitched.value = true;
     }
   },
   { deep: true }
 );
-const status = ref(null as null | ReturnType<typeof useFlightStatus>);
 
 const completed = computed(() => {
   if (!props.modelValue.disruption.type) return;
@@ -152,12 +146,8 @@ const completed = computed(() => {
 const arrivalCity = ref();
 const { locale } = useI18n();
 const firstSectionComplete = computed(() => {
-  const {
-    type,
-    details,
-    replacement,
-    replacementFlight
-  } = props.modelValue.disruption;
+  const { type, details, replacement, replacementFlight } =
+    props.modelValue.disruption;
   console.log({ type, details, replacement, replacementFlight });
   if (!type) return false;
   console.log("is type");
@@ -178,13 +168,8 @@ const secondSectionComplete = () => {
 watch(
   () => props.modelValue.disruption,
   () => {
-    const {
-      type,
-      details,
-      replacement,
-      replacementFlight,
-      reason
-    } = props.modelValue.disruption;
+    const { type, details, replacement, replacementFlight, reason } =
+      props.modelValue.disruption;
     if (firstSectionComplete) {
       // active.value = ["disruptionCause"]
     }
@@ -204,25 +189,30 @@ watch(
   { immediate: true, deep: true }
 );
 
+const status = ref(useFlightStatus(props.modelValue.flight));
 
-onMounted(() => {
-  status.value = useFlightStatus(props.modelValue.flight);
-  const { cancelled, delayed } = status.value || {};
-  if (cancelled.value) {
-    props.modelValue.disruption.type = "cancelled";
-  } else if (delayed.value > 0) {
-    props.modelValue.disruption.type = "delayed";
-    if (delayed.value < 180) {
-      props.modelValue.disruption.details = delayedDetails[0].value;
-    } else if (delayed.value >= 240) {
-      props.modelValue.disruption.details = delayedDetails[2].value;
+watch(
+  status,
+  () => {
+    const { cancelled, delayed } = status.value || {};
+    console.log(delayed.value);
+    if (cancelled.value) {
+      props.modelValue.disruption.type = "cancelled";
+    } else if (delayed.value > 0) {
+      props.modelValue.disruption.type = "delayed";
+      if (delayed.value < 180) {
+        props.modelValue.disruption.details = delayedDetails[0].value;
+      } else if (delayed.value >= 240) {
+        props.modelValue.disruption.details = delayedDetails[2].value;
+      } else {
+        props.modelValue.disruption.details = delayedDetails[1].value;
+      }
     } else {
-      props.modelValue.disruption.details = delayedDetails[1].value;
+      props.modelValue.disruption.type = null;
     }
-  } else {
-    props.modelValue.disruption.type = undefined;
-  }
-});
+  },
+  { immediate: true, deep: true }
+);
 
 watch(
   () => props.modelValue.disruption.type,
@@ -234,20 +224,5 @@ watch(
     }
   }
 );
-watch(
-  () => props.modelValue,
-  () => {
-    fetchFlights({
-      departure: props.modelValue.airport.departure.iata,
-      arrival: props.modelValue.airport.arrival.iata,
-      date: props.modelValue.flight_date
-    });
-    fetchFlights({
-      departure: props.modelValue.airport.arrival.iata,
-      arrival: props.modelValue.airport.trip.arrival.iata,
-      date: props.modelValue.flight_date
-    });
-  },
-  { deep: true }
-);
+
 </script>

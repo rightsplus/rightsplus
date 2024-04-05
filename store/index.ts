@@ -1,5 +1,5 @@
 import { reactive, onMounted } from 'vue'
-import { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
+import type { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
 import nuxtStorage from 'nuxt-storage';
 
 
@@ -14,6 +14,11 @@ export interface State {
   routes: Record<string, Route>;
   log: (message: string) => void;
 }
+export interface AdminState {
+  claims: any[];
+  clients: any[];
+}
+
 
 export const defaultClaim = {
   airport: {
@@ -28,7 +33,7 @@ export const defaultClaim = {
   route: null,
   flight: null,
   connectingFlight: null,
-  flight_date: '',
+  date: '',
   client: {
     passengers: [{
       firstName: '',
@@ -48,17 +53,22 @@ export const defaultClaim = {
     details: null,
     reason: null,
     other: null,
-    replacement: null,
-    connectingFlight: null,
+  },
+  replacement: {
+    departure: {} as Airport,
+    date: '',
+    number: '',
+    flight: null,
+  },
+  connection: {
+    departure: {} as Airport,
+    date: '',
+    number: '',
+    flight: null,
   },
 } as ClaimsForm
-export const claim = reactive({
-  value: defaultClaim,
-  reset: () => {
-    console.log('resetting claim')
-    claim.value = defaultClaim
-  }
-})
+
+export const claim = reactive(defaultClaim)
 export const state = reactive({
   routes: {} as Record<string, Route>,
   flights: [] as Flight[],
@@ -70,19 +80,24 @@ export const state = reactive({
   log: (message: string) => console.log(message),
 } as State)
 
+export const admin = reactive({
+  claims: [],
+  clients: [],
+} as AdminState)
+
 // watch(() => claim.value.airport.trip, (value) => {
 //   if (value) state.routes = generateRoutes?.(value);
 //   console.log('trip', value)
 //   console.log('state.routes',state.routes)
 // }, { deep: true });
-watch(() => claim.value, (value) => {
+watch(claim, (value) => {
   if (!process.client || !value) return
   nuxtStorage.localStorage.setData('rights-plus-claims', value, 30);
-}, { deep: true});
-watch(() => {}, () => {
+}, { deep: true });
+watch(() => { }, () => {
   if (process.client) {
     const value = nuxtStorage.localStorage.getData('rights-plus-claims')
-    if (value) claim.value = value
+    if (value) Object.assign(claim, value)
   }
 }, { immediate: true });
 

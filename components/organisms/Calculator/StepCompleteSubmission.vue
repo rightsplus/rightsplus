@@ -53,7 +53,6 @@ const addPassenger = (n = 1) => {
       },
       email: "",
       iban: "",
-      bookingNumber: "",
     });
   });
   if (n === 1) {

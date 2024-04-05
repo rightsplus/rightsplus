@@ -2,8 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: "Inter";
+    src: local("Inter"),
+      url("../fonts/Inter-VariableFont_slnt,wght.woff2")
+        format("woff2-variations");
+    // src: url("../fonts/Nunito-VariableFont_wght.ttf") format("woff2-variations");
+    font-weight: 400 700;
+    font-variation-settings: "slnt" 0 -10;
+    font-feature-settings: "liga" 1, "calt" 1;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+   
+  }
+}
 * {
   min-width: 0;
+}
+a {
+  cursor: pointer;
 }
 .markdown {
   h1,
@@ -80,7 +97,9 @@
   }
 }
 
-span, label, p {
+span,
+label,
+p {
   a[target="_blank"]:after {
     content: "\00a0\2197";
   }
@@ -88,7 +107,6 @@ span, label, p {
 .text-shadow {
   text-shadow: 0 5px 15px var(--tw-shadow-color, black);
 }
-
 
 [data-floating-label="true"] {
   --left: 1em;
@@ -118,7 +136,7 @@ span, label, p {
     text-overflow: ellipsis;
     white-space: nowrap;
     position: relative;
-    width: calc((100% - var(--left) - var(--right)) * 1 / var(--scale) );
+    width: calc((100% - var(--left) - var(--right)) * 1 / var(--scale));
     transform: scale(var(--scale)) !important;
     background-color: transparent !important;
     cursor: text;
@@ -148,13 +166,13 @@ span, label, p {
     --top: 0em;
   }
   &[data-prefix-icon="true"] {
-    --left: 2.9em;
+    --left: 2.9rem;
     .formkit-input {
       margin-left: calc(-1.8em + 1px);
     }
   }
   &[data-suffix-icon="true"]:not(.hidden-suffix) {
-    --right: 2.9em;
+    --right: 2.9rem;
     .formkit-input {
       margin-right: calc(-1.8em + 1px);
     }

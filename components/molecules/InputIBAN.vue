@@ -1,7 +1,7 @@
 <template>
   <div :class="['max-w-full mb-3', outerClass]">
     <div
-      class="relative formkit-inner bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500 flex items-center ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg mb-1"
+      class="relative formkit-inner bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500 flex items-center ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg"
       :class="[
         {
           '!ring-red-500': isFocused && modelValue && !IBAN.isValid(modelValue),
@@ -10,7 +10,7 @@
         },
       ]"
       data-floating-label="true"
-      :data-suffix-icon="suffixIcon && 'true'"
+      :data-suffix-icon="suffixIconComputed && 'true'"
     >
       <input
         :value="modelValue"
@@ -24,7 +24,12 @@
         class="formkit-input appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200 w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400"
         :placeholder="maskByCountry(modelValue).example"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="
+          () => {
+            isFocused = false;
+            $emit('blur');
+          }
+        "
       />
       <label
         class="absolute formkit-label -mt-1"
@@ -38,8 +43,10 @@
         }}</label
       >
       <label
-        v-if="suffixIcon"
-        class="formkit-suffix-icon w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 formkit-icon"
+        v-if="((isFocused || !valid) && suffixIconComputed) || (touched && !modelValue)"
+        :class="[
+          'formkit-suffix-icon w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 formkit-icon',
+        ]"
         :for="name"
         :title="
           valid
@@ -47,13 +54,13 @@
             : 'Irgendetwas stimmt nicht mit deiner IBAN'
         "
         ><FontAwesomeIcon
-          :icon="valid ? 'check-circle' : 'times-circle'"
-          :class="valid ? 'text-green-500' : 'text-red-500'"
+          :icon="valid ? 'check-circle' : touched && !modelValue ? 'triangle-exclamation' : 'circle-xmark'"
+          :class="valid ? 'text-green-500' : touched && !modelValue ? 'text-yellow-500' : 'text-red-500'"
       /></label>
     </div>
     <div
       v-if="help"
-      class="formkit-help text-xs text-neutral-500 leading-tight"
+      class="formkit-help mt-1 text-xs text-neutral-500 leading-tight"
     >
       {{ help }}
     </div>
@@ -70,6 +77,7 @@ const props = defineProps<{
   label: string;
   outerClass?: string;
   help?: string;
+  touched?: boolean;
 }>();
 const options: MaskInputOptions = reactive({
   tokens: {
@@ -102,7 +110,7 @@ const maskString = (str: string, numeric = "#", alpha = "@") => {
     /[0-9]/.test(match) ? numeric : alpha
   );
 };
-const suffixIcon = computed(
+const suffixIconComputed = computed(
   () =>
     props.modelValue?.length ===
       maskByCountry(props.modelValue).example?.length ||

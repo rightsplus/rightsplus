@@ -1,4 +1,5 @@
 import { corsHeaders } from '../_shared/cors.ts'
+import fetchFlight from '../_shared/fetchFlight.ts'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -8,11 +9,9 @@ Deno.serve(async (req) => {
   try {
     const { url, options } = await req.json()
     const newUrl = new URL(url)
-    if (newUrl.hostname === 'api.flightstats.com') {
-      // @todo: add the option to save response to the database
-      // when request with same parameters is made, fetch from db
-      newUrl.searchParams.append('appId', Deno.env.get("CIRIUM_APP_ID"));
-      newUrl.searchParams.append('appKey', Deno.env.get("CIRIUM_APP_KEY"));
+    // const newUrl = url includes('flightsHistory') ? new URL('https://aviation-edge.com/v2/public/' + url) : new URL(url)
+    if (newUrl.hostname === 'aviation-edge.com') {
+      newUrl.searchParams.append('key', Deno.env.get("AVIATION_EDGE_KEY"));
     }
     console.log(newUrl.href)
     const response = await fetch(newUrl.href, options)

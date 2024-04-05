@@ -42,14 +42,14 @@
       <li><b>Mindestens 3h Verspätet:</b> {{ status.delayed?.label }}</li>
       <li><b>Außergewöhlicher Umstand:</b> {{ status.extraordinaryCirumstance?.label }}</li>
 		</ol> -->
-    <!-- <pre>{{ useClaim().value }}</pre> -->
+    <!-- <pre>{{ useClaim() }}</pre> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import gsap from "gsap";
 const { t, n } = useI18n();
-const status = computed(() => useFlightStatus(useClaim().value.flight));
+const status = computed(() => useFlightStatus(useClaim().flight));
 const noClaims = computed(() => {
   if (status.value.barred?.value) return "Verjährt";
   if (!status.value.cancelled.value || !status.value.delayed.value)
@@ -59,12 +59,12 @@ const noClaims = computed(() => {
 const potentialReimbursment = computed(() => {
   if (!status.value.cancelled.value && status.value.delayed.value < 180)
     return 0;
-  const distance = getDistance(useClaim().value);
+  const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
   return reimbursementByDistance(
     distance,
     delay,
-    useClaim().value.client.passengerCount
+    useClaim().client.passengerCount
   ).youGet;
 });
 const youGet = reactive({
@@ -86,14 +86,14 @@ const resultTiles = computed(() => {
     {
       name: 'distance',
       label: 'Distanz',
-      value: n(getDistance(useClaim().value), 'km'),
+      value: n(getDistance(useClaim()), 'km'),
       icon: 'route'
     },
     {
       name: 'status',
       label: 'Flugstatus',
-      value: t(useClaim().value.disruption.type),
-      icon: 'exclamation-triangle'
+      value: t(useClaim().disruption.type),
+      icon: 'triangle-exclamation'
     },
     {
       name: 'eu',

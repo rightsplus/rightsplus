@@ -79,7 +79,7 @@ const emit = defineEmits([
   "suffix-icon-click",
   "prefix-icon-click",
 ]);
-const [ button, position] = usePosition();
+const [button, position] = usePosition();
 const highlighted = ref(
   props.options.findIndex((e) => e.value === props.modelValue) || 0
 );
@@ -95,7 +95,7 @@ function handleInput(input: DropdownItem | KeyboardEvent) {
   const index = typeof input === "number" ? input : highlighted.value;
   highlighted.value = index;
   emit("update:modelValue", props.options[index].value);
-  focusNext(true);
+  focusNext({ select: true });
   inputFocused.value = false;
 }
 </script>

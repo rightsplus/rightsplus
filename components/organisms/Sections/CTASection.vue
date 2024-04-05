@@ -14,7 +14,7 @@
             Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich.
           </h3>
         </div>
-        <Button class="!bg-gray-800 hover:!bg-gray-900 mr-auto" to="claim/new"
+        <Button class="text-white bg-gray-800 hover:bg-gray-900 mr-auto" to="claim/new"
           >Jetzt Anspruch prüfen!</Button
         >
       </div>

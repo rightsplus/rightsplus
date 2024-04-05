@@ -1,12 +1,6 @@
 <template>
-  <div>
-    <!-- <h3 class="text-base font-medium mb-8 tracking-tight">
-      Gib hier deine Flugdaten ein und sichere dir bis zu
-      <strong>450€</strong> Entschädigung.
-    </h3> -->
-    <!-- {{ modelValue }} -->
-    <!-- <FormKit type="date" name="type" v-model="modelValue.type" /> -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+  <div class="grid gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
       <AirportInput
         name="departure"
         label="Abflug"
@@ -18,6 +12,7 @@
         label="Ankunft"
         prefix-icon="plane-arrival"
         v-model="modelValue.airport.trip.arrival"
+        @keydown.enter="start"
       />
     </div>
     <FormKit
@@ -27,32 +22,23 @@
       outer-class="!mb-0"
     />
     <CheckList
-      class="mt-6"
       :items="['professionalExpertise', 'completeProcess', 'noRisk']"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { FormKit } from "@formkit/vue";
+import claimMachine from "~/machines/claim";
 import AirportInput from "./AirportInput.vue";
 import type { ClaimsForm } from "@/types";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-const props = defineProps<{ modelValue: ClaimsForm }>();
+defineProps<{ modelValue: ClaimsForm }>();
 const emit = defineEmits(["submit"]);
+const { push } = useRouter();
+const claimState = useClaim()
+const { invoke } = useMachine<ClaimsForm>(claimMachine, claimState)
 const start = () => {
-  useRouter().push("/claim/new");
-  useSteps().index.value = 0;
+  push("/claim/new");
+  invoke('go', 'itinerary')
   emit("submit");
 };
 </script>
-<style scoped>
-.double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-</style>

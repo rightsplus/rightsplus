@@ -1,126 +1,32 @@
 <template>
-  <NuxtLink
-    v-if="to"
+  <component
+    :is="to ? 'NuxtLink' : 'button'"
     :to="to"
-    :title="title"
+    :title="label"
     :disabled="disabled"
-    class="button flex items-center justify-center gap-2 leading-none"
+    class="font-medium text-base flex items-center justify-center gap-2 leading-none px-5 rounded-xl h-14 cursor-pointer"
+    :class="{
+      'text-white bg-primary-500 hover:bg-primary-600': primary,
+      'bg-neutral-200 hover:bg-neutral-300': secondary,
+      'pointer-events-none opacity-50': disabled
+    }"
+    :aria-label="label"
     :bind="$attrs"
   >
-      <slot />
-  </NuxtLink>
-  <button
-    v-else
-    :title="title"
-    :disabled="disabled"
-    :aria-label="title"
-    class="button flex items-center justify-center gap-2 leading-none"
-    :bind="$attrs"
-  >
-      <slot/>
-  </button>
+    <FontAwesomeIcon v-if="prefixIcon" :icon="prefixIcon" class="text-xl shrink-0" />
+    <span class="truncate leading-normal"><slot /></span>
+    <FontAwesomeIcon v-if="suffixIcon" :icon="suffixIcon" class="text-xl shrink-0" />
+  </component>
 </template>
-<script lang="ts">
-export default defineComponent({
-  name: "Button",
-  setup() {
-    // const NuxtLink = resolveComponent("NuxtLink");
-    // return {
-    //   NuxtLink,
-    // };
-  },
-  props: {
-    name: String,
-    title: String,
-    vertical: Boolean,
-    disabled: Boolean,
-    to: {
-      type: String,
-    },
-    icon: {
-      type: [String, Boolean],
-    },
-  },
-});
+<script lang="ts" setup>
+export type ButtonProps = {
+  to?: string;
+  prefixIcon?: string;
+  suffixIcon?: string;
+  label?: string;
+  disabled?: boolean;
+  primary?: boolean;
+  secondary?: boolean;
+};
+defineProps<ButtonProps>();
 </script>
-<style lang="scss" scoped>
-@media (hover: hover) {
-  .button:hover {
-    & > :deep(*),
-    :deep(svg),
-    :deep(path) {
-      fill: currentColor !important;
-    }
-    .move-right > :deep(svg) {
-      transform: translateX(0.25em);
-    }
-    .move-left > :deep(svg) {
-      transform: translateX(-0.25em);
-    }
-  }
-}
-$colors: primary, secondary, info, beige, success, warning, alert;
-:global(:where(.button)) {
-  display: flex;
-  margin: 0 calc(var(--border-default) * -2);
-  border: none;
-  font-size: 1em;
-}
-.button {
-  --size: var(--h-14);
-  --padding: var(--p-2) var(--p-5);
-  --bg-opacity: 1;
-  --border-radius: var(--rounded-lg);
-  --color: white;
-  --background: var(--color-primary-500);
-  --hover: var(--color-primary-600);
-  height: var(--size);
-  border-radius: var(--border-radius);
-  position: relative;
-  padding: var(--padding);
-  line-height: 1.1;
-  box-shadow: inset 0 0 0 var(--border-default) var(--border-color);
-  text-align: center;
-  transition: all var(--transition-duration-default) ease-in-out;
-  z-index: 1;
-  white-space: nowrap;
-  background-color: var(--background);
-  color: var(--color);
-  &:hover {
-    background-color: var(--hover);
-  }
-  &.fill {
-    --background: white;
-    --color: currentColor;
-    &:hover {
-      --background: transparent;
-      --color: white;
-      --border-color: white;
-      box-shadow: inset 0 0 0 var(--border-default) var(--border-color);
-    }
-  }
-  &.xxs {
-    font-size: var(--text-xs);
-    --size: var(--h-5);
-    --padding: var(--p-0) var(--p-1);
-  }
-  &.xs {
-    // font-size: var(--text-lg);
-    --size: var(--h-6);
-    --padding: var(--p-0) var(--p-1);
-  }
-  &.sm {
-    --size: var(--h-8);
-    --padding: var(--p-1) var(--p-3);
-  }
-  &.lg {
-    --size: var(--h-14);
-    --padding: var(--p-4) var(--p-5);
-  }
-  &.xl {
-    font-size: var(--text-lg);
-    --size: var(--h-16);
-    --padding: var(--p-6) var(--p-7);
-  }
-}
-</style>

@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Mask, MaskaDetail, vMaska } from "maska";
+import { vMaska } from "maska";
 import type { MaskInputOptions } from "maska";
 import type { FormKitFrameworkContext } from "@formkit/core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";

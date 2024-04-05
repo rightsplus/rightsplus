@@ -2,11 +2,8 @@ import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
 import nodemailer from 'nodemailer'
 import { generatePDF as generate } from "@/pdf/pdfGenerator";
 import { useCompiler } from '#vue-email'
+import type { SendMailProps, SendPDFMailProps } from "./types";
 
-type SendMailProps = SendPDFMailProps & {
-	html?: string;
-	pdfBuffer?: Buffer;
-}
 const sendMail = async (props: SendMailProps) => {
 	console.log(props)
 	const transporter = nodemailer.createTransport({
@@ -27,7 +24,7 @@ const sendMail = async (props: SendMailProps) => {
 			html: props.html || props.text,
 			attachments: props.pdf && props.pdfBuffer ? [
 				{
-					filename: `${props.pdf.fileName}.pdf`,
+					filename: `${props.pdf.fileName || props.pdf.template}.pdf`,
 					content: props.pdfBuffer,
 				},
 			] : [],
@@ -39,11 +36,8 @@ const sendMail = async (props: SendMailProps) => {
 
 const generatePDF = async ({ data, pdf }: SendPDFMailProps) => {
 	if (!pdf) return
-	const base = process.env.NODE_ENV === 'production' ? 'https://rightsplus.up.railway.app' : 'http://localhost:3000'
-	const url = new URL(`${base}/pdf/${pdf.template}`)
-	Object.entries(data || {}).forEach(([key, value]) => {
-		url.searchParams.append(key, value.toString());
-	});
+
+	const url = generatePDFTemplateLink(pdf.template, data)
 	console.log(url.href)
 
 	return await generate(url.href)

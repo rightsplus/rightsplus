@@ -9,7 +9,7 @@
       'border-yellow-200 bg-yellow-100 text-yellow-700': type === 'warning'
     }"
   >
-    <FontAwesomeIcon v-if="icon" :icon="icon" class="my-1" />
+    <FontAwesomeIcon v-if="icon" :icon="icon" class="my-1 shrink-0" />
     <div class="flex flex-col gap-1">
       <span v-if="$slots.title" class="text-base font-bold"
         ><slot name="title"

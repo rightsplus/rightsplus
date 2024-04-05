@@ -16,16 +16,20 @@
       <span class="text-xs leading-none" v-if="subLabel">{{ subLabel }}</span>
     </div>
     <slot />
+    <FontAwesomeIcon v-if="proceed" icon="angle-right" class="ml-auto text-neutral-400 text-base" />
   </button>
 </template>
 
 <script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 defineProps<{
-  selected: boolean
-  name: string
+  selected?: boolean
+  name?: string
   label?: string
   icon?: string
   preLabel?: string
   subLabel?: string
+  proceed?: boolean
 }>()
 </script>

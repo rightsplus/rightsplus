@@ -13,7 +13,7 @@
           </h3>
         </div>
         <Button
-          class="!bg-gray-700 hover:!bg-gray-800 mr-auto"
+          class="text-white !bg-gray-700 hover:!bg-gray-800 mr-auto"
           to="deine-rechte"
           >Mehr erfahren</Button
         >

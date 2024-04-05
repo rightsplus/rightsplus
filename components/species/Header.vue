@@ -28,7 +28,7 @@
       :class="[useAppState()?.headerColor === 'white' ? 'text-white' : '']"
     />
     <nav
-      class="flex items-center justify-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
+      class="flex justify-center md:items-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
       :class="{
         dark: useAppState()?.headerColor === 'white',
         'max-w-7xl': useRoute().path !== '/admin',
@@ -50,9 +50,9 @@
           >
             <Icon :icon="Logo" />
             <span
-              class="flex gap-1"
+              class="flex gap-1 text-lg sm:text-xl"
               :class="{
-                'text-white drop-shadow': $state?.headerColor === 'white',
+                'text-white drop-shadow': state?.headerColor === 'white',
               }"
             >
               <span class="font-bold">RightsPlus</span
@@ -82,7 +82,7 @@
               'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
               'hover:text-gray-500 ': item.type !== 'button',
-              'text-white drop-shadow': $state?.headerColor === 'white',
+              'text-white drop-shadow': state?.headerColor === 'white',
               'bg-red-500 hover:bg-red-600 active:bg-red-700': item.critical,
             }"
             @click="clickLink(item)"
@@ -117,6 +117,7 @@ interface Route {
 }
 const user = useSupabaseUser();
 const client = useSupabaseClient<Database>();
+const state = useAppState()
 
 const menuOpen = ref(false);
 const isAdmin =

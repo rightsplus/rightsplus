@@ -3,11 +3,13 @@
     <DatePicker
       :modelValue.string="modelValue"
       @update:modelValue="updateModelValue"
-      :masks="{modelValue: 'DD.MM.YYYY'}"
+      @transitionAfterEnter="console.log"
+      :masks="{ modelValue: 'DD.MM.YYYY' }"
       class="calendar"
       color="orange"
       :step="1"
       :columns="columns"
+      :min-date="minDate ? new Date(minDate) : undefined"
       :max-date="new Date()"
       expanded
       :locale="useI18n().locale.value"
@@ -31,12 +33,14 @@ const columns = computed(() => width.value < 540 ? 1 : 2)
 
 defineProps<{
   modelValue: string;
+  minDate?: string | Date;
   name?: string;
   label?: string;
 }>();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'select']);
 const updateModelValue = (value: Date) => {
   emit('update:modelValue', value ? getISODate(value) : undefined);
+  if (value) emit('select')
 };
 </script>
 <style lang="scss">

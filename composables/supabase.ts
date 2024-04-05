@@ -5,16 +5,21 @@ import { SupabaseClient } from "@supabase/supabase-js";
 export const useSupabaseFunctions = () => {
 	const client = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
+	console.log('setup supabase')
 
-	const fetchProxy = async (url: string, options?: RequestInit) => {
-		console.log('fetchProxy', url, options)
+	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
+		console.log('proxy', client)
+		client.functions.invoke("proxy", {
+			body: { url, options },
+		}).then(console.log).catch(console.error).finally(() => console.log('fin'))
 		const { data, error } = await client.functions.invoke("proxy", {
 			body: { url, options },
 		})
+		console.log("data", data)
 		if (error) {
 			throw error;
 		}
-		return data;
+		return data as T;
 	}
 
 	const userExists = async ({ email }: {
@@ -41,6 +46,24 @@ export const useSupabaseFunctions = () => {
 			throw error
 		}
 	}
+	const handleUploadSignatures = (claimId: number, signatures: string[]) => signatures.map(async (signature, index) => {
+		const storageFolderClaim = formatClaimId(claimId, false);
+		const signatureSVG = new Blob([signature], {
+			type: "image/svg+xml",
+		});
+
+		const filePath = [storageFolderClaim, `signature_${index}.svg`].join("/");
+
+		const { data, error } = await client.storage
+			.from("client-files")
+			.upload(filePath, signatureSVG, {
+				cacheControl: "3600",
+				upsert: false,
+			});
+
+		// Handle the result (data, error) as needed
+		return { data, error, index };
+	});
 
 	const handleUploadFile = async (file: File, folder?: string) => {
 		if (!file) {
@@ -74,7 +97,7 @@ export const useSupabaseFunctions = () => {
 	const submitFlight = async (flight: Flight) => {
 		const preparedFlight = {
 			number: flight.flight.iata,
-			status: flight.flight_status,
+			status: flight.status,
 			airline_iata: flight.airline.iata,
 			airline: flight.airline.name,
 			codeshared: flight.flight.codeshared,
@@ -124,6 +147,7 @@ export const useSupabaseFunctions = () => {
 	return {
 		userExists,
 		handleUploadFile,
+		handleUploadSignatures,
 		submitFlight,
 		submitClaim,
 		fetchProxy

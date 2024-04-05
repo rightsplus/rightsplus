@@ -58,6 +58,7 @@ export type DropdownItem = {
   label: string;
   sublabel?: string;
   icon?: string;
+  cancel?: boolean
 };
 
 const props = defineProps<{

@@ -24,7 +24,7 @@
 
     <div
       class="absolute top-2 right-2 z-20 flex gap-2"
-      :class="{ 'opacity-50 pointer-events-none': empty }"
+      v-if="!empty"
     >
       <button
         class="hover:bg-neutral-100 hover:text-red-500 h-10 w-10 rounded-full flex gap-2 items-center justify-center"

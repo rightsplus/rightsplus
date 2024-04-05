@@ -5,7 +5,7 @@
     >
       <ClientOnly>
         <template #fallback>
-          {{ title.join(' ') }}
+          {{ title[0] }}
         </template>
         <span v-for="(char, i) in titleASCII" :key="i">
           {{ transform(char) }}

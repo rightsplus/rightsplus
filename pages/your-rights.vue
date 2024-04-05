@@ -4,7 +4,9 @@
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-5">
           <h1 class="text-4xl sm:text-6xl font-extrabold">Deine Rechte</h1>
-          <p class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto">
+          <p
+            class="text-2xl sm:text-3xl font-medium text-gray-500 hyphens-auto"
+          >
             Nach der Fluggastrechteverordnung hast Du unter verschiedenen
             Voraussetzungen ein Recht auf Entschädigung
           </p>
@@ -117,6 +119,12 @@
 </template>
 
 <script lang="ts" setup>
+defineI18nRoute({
+  paths: {
+    de: "/deine-rechte",
+    en: "/your-rights",
+  },
+});
 definePageMeta({
   title: "Angebote",
   description:

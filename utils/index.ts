@@ -1,14 +1,9 @@
-import { Airline, AirlineAviationEdge, Airport, ClaimsForm, Flight, FlightPhase, Route } from "types";
+import type { Airline, Airport, ClaimsForm, FlightPhase, Route } from "@/types";
 import weatherCodes from "~~/assets/weather-codes.json";
-import { countries } from "@/config/countries";
-import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
-import { AlgoliaIndices } from "@nuxtjs/algolia/dist/module";
 import { airlines, airports, claim } from "~~/store";
 import type { State } from "~~/store";
-import { euMember } from "is-european";
 import Compressor from "compressorjs";
-import SignaturePad from "signature_pad";
 import { uuid as vueUuid } from "vue-uuid";
 
 export const uuid = () => vueUuid.v4()
@@ -56,8 +51,8 @@ export interface WeatherResponse<N = number[], S = string[]> {
 }
 export const getHumanReadableWeather = async (flight: FlightPhase) => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
-	const airports = useAirports()
-	const weather = await getWeather(airports[flight.iata], flight.scheduled)
+	const { airports } = useAirports()
+	const weather = await getWeather(airports.value[flight.iata], flight.scheduled)
 	const getByHour = (weather: Partial<WeatherResponse> | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): Partial<WeatherResponse<number, string>> => {
 		if (!weather) return {}
 		return Object.fromEntries(
@@ -207,8 +202,17 @@ export const generateRoutes = (airport: ClaimsForm['airport']['trip']) => {
 	return routes;
 }
 
-const commission = 0.22;
-const vatRate = 0.19;
+export const nextDeparture = (claim: ClaimsForm) => {
+	const routes = Object.keys(generateRoutes?.(claim.airport.trip))
+	const currentRoute = routes.findIndex(e => e === claim.route)
+	const nextRoute = routes[currentRoute + 1]
+	if (nextRoute) return claim.airport.trip.layover?.find(e => e.iata === nextRoute.split('-')[0])
+	return claim.airport.arrival
+
+}
+
+const commission = 0.25;
+const vatRate = 0; // 0.19
 export const reimbursementByDistance = (distance: number, delay = 180, passengers = 1) => {
 	let total = 250
 	if ((distance || 0) > 1500) total = 400
@@ -243,12 +247,14 @@ export const keyIncrement = (e: KeyboardEvent, value: number, length: number) =>
 	return v
 }
 
-export const focusNext = (select = false, active = document.activeElement as HTMLInputElement) => {
-
+export const focusNext = ({ select, activeElement, scope }: { select?: boolean, activeElement?: HTMLInputElement, scope?: HTMLElement }) => {
+	const active = activeElement || document.activeElement as HTMLElement;
 	if (!active) return;
 
+	const container = scope || active.closest('form') || document;
+
 	// Get all the input elements in the document
-	const inputElements = document.querySelectorAll("input, select, textarea, button, [tabindex]");
+	const inputElements = container.querySelectorAll("input, select, textarea, button, [tabindex]");
 
 	// Find the index of the currently focused input element
 	const currentIndex = Array.from(inputElements).findIndex(
@@ -274,9 +280,41 @@ export const focusNext = (select = false, active = document.activeElement as HTM
 	}
 }
 
-export const getISODate = (value: Date | string) => {
+export const focusFirst = ({ select, empty, scope, type }: { select?: boolean; empty?: boolean; scope?: HTMLElement; type?: string[]; }) => {
+	setTimeout(() => {
+		const container = scope || document;
+
+		// Get all the input elements in the document
+		const inputElements = container.querySelectorAll((type || ["input", "select", "textarea", "button", "[tabindex]"]).join(', '));
+
+		const currentIndex = 0
+		const active = inputElements[currentIndex] as HTMLInputElement
+
+
+		// Find the next input element
+		let nextElement = inputElements[currentIndex] as HTMLInputElement;
+		let count = 0
+		while (count <= inputElements.length && nextElement && inputElements[currentIndex + 1] && (nextElement.disabled || empty && nextElement.value)) {
+			nextElement = inputElements[currentIndex + 1] as HTMLInputElement;
+			count++
+		}
+		// Focus on the next input element
+		if (nextElement) {
+			nextElement.focus();
+			if (select && typeof nextElement.select === 'function') {
+				nextElement.select();
+			} else {
+				active?.blur()
+			}
+		} else {
+			active?.blur()
+		}
+	})
+}
+
+export const getISODate = (value?: Date | string) => {
 	try {
-		value = new Date(value)
+		value = value ? new Date(value) : new Date()
 		const offset = value.getTimezoneOffset()
 		const date = new Date(value.getTime() - (offset * 60 * 1000))
 		return date.toISOString().split('T')[0]
@@ -301,7 +339,7 @@ export const getDuration = (minutes: number) => {
 
 export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query?: string) => {
 	const { hits } = await algolia.search({ query })
-	hits.forEach((hit) => {
+	hits.forEach((hit: Airport) => {
 		const a = { ...hit };
 		delete a._highlightResult, a.objectID;
 		airports.value[hit.iata] = a;
@@ -339,7 +377,6 @@ export const getCityTranslation = (airport: Airport, locale = 'de', highlight = 
 	}
 	return airport.city_translations?.[locale] || airport.city
 }
-
 
 export const compressImage = async (file: File, options?: Compressor.Options) => {
 	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => new Compressor(file, {
@@ -431,4 +468,69 @@ export const cropSignatureCanvas = (canvas: HTMLCanvasElement) => {
 	croppedCtx.putImageData(cut, 0, 0);
 
 	return croppedCanvas;
+}
+
+
+export const ucfirst = (value: string) => {
+	return value?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+};
+
+
+export const isReplacementFlightWithinBounds = (claim: ClaimsForm) => {
+	if (!claim.flight) return false;
+	const replacementFlight = claim.replacement.flight
+	if (!replacementFlight || replacementFlight.flight.iata?.toUpperCase() === claim.flight.flight.iata)
+		return false;
+	// 0-7 Tage: max 1h vor planm. Abflug gestartet + max 2h nach planm. Ankunft gelandet
+	// 8-14 Tage: max 2h vor planm. Abflug gestartet + max 4h nach planm. Ankunft gelandet
+	const { details } = claim.disruption;
+	const { departure, arrival } = claim.flight;
+	const arrivalBuffer = "<8" === details ? 3600000 : 7200000;
+	const departureBuffer = "<8" === details ? 7200000 : 14400000;
+
+
+	return (
+		!!details &&
+		["<8", "8-14"].includes(details) &&
+		new Date(replacementFlight.departure.actualTime || replacementFlight.departure.scheduledTime).getTime() -
+		new Date(departure.scheduledTime).getTime() <=
+		arrivalBuffer &&
+		new Date(arrival.scheduledTime).getTime() -
+		new Date(replacementFlight.arrival.actualTime || replacementFlight.arrival.scheduledTime).getTime() <=
+		departureBuffer
+	);
+};
+
+
+export const convertAssignmentAgreementData = (claim: ClaimsForm) => {
+	const [passenger] = claim.client.passengers;
+	return {
+		name: [passenger.firstName, passenger.lastName].join(" "),
+		firstName: passenger.firstName,
+		address: passenger.address.street,
+		postalCode: passenger.address.postalCode,
+		city: passenger.address.city,
+		flightNumber: claim.flight?.flight.iata,
+		flightDate: getISODate(claim.flight?.[claim.flight?.type].scheduledTime),
+		departure: claim.flight?.departure.iata,
+		arrival: claim.flight?.arrival.iata,
+		date: new Date().toISOString(),
+	};
+
+}
+
+export const generatePDFTemplateLink = (template: string, data?: Record<string, string | undefined>) => {
+	console.log(process?.env)
+	const base = process.env.NODE_ENV === 'production' ? 'https://rightsplus.up.railway.app' : 'http://localhost:3000'
+	const url = new URL(`${base}/pdf/${template}`)
+	Object.entries(data || {}).forEach(([key, value]) => {
+		if (value) url.searchParams.append(key, value.toString());
+	});
+	return url
+}
+
+
+export const validateEmail = (email: string) => {
+	const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+	return emailRegex.test(email);
 }

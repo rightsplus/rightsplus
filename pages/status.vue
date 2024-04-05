@@ -60,6 +60,7 @@ const claims = ref<
     data: ClaimsForm;
   }[]
 >([]);
+const { query: queryAirports } = useAirports();
 useAsyncData("claims", async () => {
   if (!user.value?.email) return;
   const { data, error } = await client
@@ -79,7 +80,7 @@ useAsyncData("claims", async () => {
   claims.value = data.value;
   data.value?.forEach(({ flights }) => {
     if (flights.data)
-      useAirports([flights.data.departure?.iata, flights.arrival?.iata]);
+    queryAirports([flights.data.departure?.iata, flights.arrival?.iata]);
   });
 });
 </script>
