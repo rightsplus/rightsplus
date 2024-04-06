@@ -69,9 +69,9 @@
             ref="submitButton"
             type="button"
             @click="submitForm"
-            :suffix-icon="loading.email ? 'circle-notch' : ' '"
+            :suffix-icon="loading.email ? 'circle-quarter' : ' '"
             :classes="{
-              outer: loading.email ? '[&_.formkit-icon_svg]:animate-spin' : '',
+              outer: loading.email ? '[&_.formkit-icon_svg]:animate-revolve' : '',
             }"
             >{{ $t(mode) }}</FormKit
           >

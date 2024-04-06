@@ -27,7 +27,6 @@ const options: ModuleOptions = {
   defaultLocale: 'en',
   strategy: 'prefix',
 	customRoutes: 'config',
-	dynamicRouteParams: true,
   vueI18n: 'config/i18n.options.ts',
 	pages: {
 		'terms-and-conditions': {

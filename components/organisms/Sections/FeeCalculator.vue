@@ -1,6 +1,6 @@
 <template>
   <section class="sm:py-24 bg-gray-200 relative">
-    <img src="/images/airfield.jpg" class="object-cover w-full h-full absolute inset-0 opacity-100 brightness-80 saturate-50" />
+    <img src="/images/mkjr_-8QsqXeJMvOU-unsplash.jpg" class="object-cover w-full h-full absolute inset-0 opacity-100 brightness-80 saturate-50" />
     <div
       class="grid gap-12 max-w-full sm:max-w-xl mx-auto p-5 sm:p-12 h-full relative z-1 bg-white sm:rounded-xl"
     >
@@ -15,7 +15,7 @@
       </div>
       <div class="flex flex-col gap-4">
         <span
-          class="uppercase text-base tracking-wider font-medium text-gray-500"
+          class="uppercase tracking-wider text-yellow-800/70 font-bold"
           >Flugstrecke</span
         >
         <div class="grid grid-cols-3 gap-4">

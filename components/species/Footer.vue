@@ -1,16 +1,23 @@
 <template>
-  <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24" :class="$route.meta.classes?.footer">
+  <footer
+    class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24 @container"
+    :class="$route.meta.classes?.footer"
+  >
     <nav
-      class="grid grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-full"
+      class="grid @2xl:grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-full"
     >
-      <div class="col-span-12 md:col-span-3 flex flex-col gap-24">
+      <div class="@2xl:col-span-4 @5xl:col-span-3 flex flex-col gap-24">
         <NuxtLinkLocale
           to="/"
           class="w-full max-w-[160px] h-min flex gap-3 items-center leading-none cursor-pointer"
           title="home"
           @click="scrollTop"
         >
-          <Icon v-if="Logo" :icon="Logo" class="shrink-0 border border-white/30 rounded-md" />
+          <Icon
+            v-if="Logo"
+            :icon="Logo"
+            class="shrink-0 border border-white/30 rounded-md"
+          />
           <span class="flex gap-1">
             <span class="font-bold shrink-0">RightsPlus</span
             ><span class="font-medium shrink-0">Flights</span>
@@ -18,7 +25,7 @@
         </NuxtLinkLocale>
       </div>
       <ul
-        class="col-span-12 sm:col-span-9 grid grid-cols-2 lg:grid-cols-4 font-medium gap-5 gap-y-12 sm:gap-12"
+        class="@2xl:col-span-8 @5xl:col-span-9 grid grid-cols-2 @5xl:grid-cols-4 font-medium gap-5 gap-y-12 sm:gap-12"
       >
         <li v-for="column in routes" class="flex flex-col gap-3">
           <span
@@ -41,7 +48,7 @@
     <hr class="max-w-5xl mx-auto w-full border-t border-gray-700 my-12" />
     <div class="max-w-5xl mx-auto w-full flex gap-12 items-center">
       <span
-        class="flex w-full text-xs sm:text-sm text-center text-gray-500"
+        class="flex w-full text-xs sm:text-sm text-gray-500"
         v-html="
           `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. ${t(
             'allRightsReserved'

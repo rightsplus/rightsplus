@@ -1,4 +1,5 @@
-import { library, config } from '@fortawesome/fontawesome-svg-core'
+import { library, config, type IconDefinition, type IconPack, type Library, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCircleQuarter, faEuropeanUnion } from '@/assets/icons'
 import {
@@ -93,7 +94,8 @@ import {
   faCircleXmark,
   faTriangleExclamation,
   faCircle,
-  faCalendarXmark
+  faCalendarXmark,
+  prefix
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -201,8 +203,20 @@ library.add(
 )
 
 config.autoAddCss = false
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
-  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
+export const parse = ({ prefix, iconName, icon }: IconDefinition) => {
+  if (typeof icon === 'string') return icon
+  const [w, h, _1, _2, path] = icon
+  const svg = `<svg class="svg-inline--fa fa-${iconName} fa-fw" aria-hidden="true" focusable="false" data-prefix="${prefix}" data-icon="${iconName}" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"><path d="${path}"></path></svg>`
+  return svg
+}
+declare module '@fortawesome/fontawesome-svg-core' {
+  interface Library {
+    definitions: Record<IconPrefix, IconDefinition>
+  }
+}
+export {library}
+  export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
+    nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 
-})
+  })

@@ -1,7 +1,8 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+type IconName = 'european-union' | 'circle-quarter'
 export const faEuropeanUnion = {
   prefix: 'fas',
-  iconName: 'european-union' as string,
+  iconName: 'european-union' as IconName,
   icon: [
     14,
     14,
@@ -13,7 +14,7 @@ export const faEuropeanUnion = {
 
 export const faCircleQuarter = {
   prefix: 'fas',
-  iconName: 'circle-quarter' as string,
+  iconName: 'circle-quarter' as IconName,
   icon: [
     512,
     512,

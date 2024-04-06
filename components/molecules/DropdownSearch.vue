@@ -14,7 +14,7 @@
       @blur="blur"
       :errors="errors"
       :prefix-icon="prefixIcon"
-      :suffix-icon="loading ? 'circle-notch' : suffixIcon || 'circle-notch'"
+      :suffix-icon="true ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
       :prefix-icon-class="$attrs['prefix-icon-class']"
       :suffix-icon-class="$attrs['suffix-icon-class']"
       @keydown.down.up.prevent="keydown"
@@ -22,6 +22,7 @@
       @keydown.escape.prevent="blur"
       v-bind="attrs"
       floatingLabel
+      :loading="loading"
       :placeholder="placeholder"
       :disabled="disabled"
       :classes="{
@@ -30,6 +31,7 @@
             ? 'hidden-suffix [&_.formkit-suffix-icon]:hidden'
             : ''
         }`,
+        suffixIcon: loading ? '[&>svg]:animate-revolve' : '',
         inner: `${
           inputFocused &&
           options?.length &&
@@ -37,9 +39,7 @@
           !errors?.length
             ? 'rounded-b-none'
             : ''
-        } ${
-          loading ? '[&_.formkit-suffix-icon_svg]:animate-spin' : ''
-        } max-w-full duration-75 !mb-0`,
+        } max-w-full !mb-0`,
       }"
     />
     <Dropdown
@@ -83,7 +83,6 @@ const emit = defineEmits([
   "keydown.enter",
 ]);
 const passedProps = getCurrentInstance()?.vnode.props || {};
-console.log(passedProps)
 const attrs = computed(() => {
   const a = {} as typeof passedProps;
   if (passedProps.onPrefixIconClick)

@@ -226,11 +226,6 @@ export interface Database {
   }
 }
 
-declare module '@fortawesome/vue-fontawesome' {
-  interface FontAwesomeIconProps {
-    icon: 'hello'
-  }
-}
 
 import '@nuxtjs/algolia'
 import { DefineComponent } from 'nuxt/dist/app/compat/capi';

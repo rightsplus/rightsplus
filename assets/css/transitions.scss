@@ -296,18 +296,3 @@
 .step-prev-leave-to {
   transform: translateX(2%);
 }
-
-
-.animate-revolve {
-  // animation: revolve 700ms infinite cubic-bezier(0.5, 0.3, 0.3, 0.7);
-  animation: revolve 500ms infinite cubic-bezier(0.3, 0.3, 0.3, 0.5);
-}
-
-@keyframes revolve {
-  0% {
-    transform: rotate(-40deg);
-  }
-  100% {
-    transform: rotate(320deg);
-  }
-}

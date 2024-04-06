@@ -1,11 +1,23 @@
 import { de } from '@formkit/i18n'
-import { DefaultConfigOptions } from '@formkit/vue'
+import type { DefaultConfigOptions } from '@formkit/vue'
 import { generateClasses } from '@formkit/themes'
 import { createAutoAnimatePlugin } from '@formkit/addons'
 import { createFloatingLabelsPlugin } from '@formkit/addons'
 import '@formkit/addons/css/floatingLabels'
+import { library, parse } from './plugins/fontawesome'
+import type { IconDefinition, IconName, IconPathData, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 
-const faUrl = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/svgs'
+const icons: Record<string, string> = {}
+
+Object.entries(library.definitions)
+  .forEach((pack) => {
+    const [prefix, set] = pack as [IconPrefix, IconDefinition]
+    Object.entries(set).forEach((definition) => {
+      const [iconName, icon] = definition as [IconName, IconDefinition['icon']]
+      icons[iconName] = parse({ prefix, iconName, icon })
+    })
+  })
+
 const config: DefaultConfigOptions = {
   locales: { de },
   locale: 'de',
@@ -18,7 +30,7 @@ const config: DefaultConfigOptions = {
       useAsDefault: true, // defaults to false
     }),
   ],
-  iconLoaderUrl: (iconName) => iconName.includes('fab') ? `${faUrl}/brands/${iconName.replace('fab-', '')}.svg` : `${faUrl}/solid/${iconName}.svg`,
+  icons,
   config: {
     classes: generateClasses({
       global: {
@@ -29,7 +41,7 @@ const config: DefaultConfigOptions = {
         input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200',
         label: 'text-neutral-500 font-medium text-sm leading-tight block',
         legend: 'text-neutral-500 font-medium text-sm',
-        loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
+        loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-revolve',
         message: 'text-red-500 mb-1 text-xs',
         messages: 'list-none p-0 mt-1 mb-0',
         outer: 'formkit-disabled:opacity-50 min-w-[auto]',
@@ -45,7 +57,7 @@ const config: DefaultConfigOptions = {
         wrapper: 'flex items-center',
       },
       'family:button': {
-        input: '$reset inline-flex items-center justify-center disabled:bg-primary-500 bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin w-full disabled:opacity-50 h-14 leading-tight',
+        input: '$reset inline-flex items-center justify-center disabled:bg-primary-500 bg-primary-500 hover:bg-primary-600 text-white text-base font-medium py-4 px-5 rounded-lg focus-visible:outline-1 focus-visible:outline-primary-600 focus-visible:outline-offset-1 formkit-disabled:bg-neutral-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-revolve w-full disabled:opacity-50 h-14 leading-tight',
         wrapper: '',
         prefixIcon: '$reset block w-3 -ml-2 mr-2 stretch shrink-0 [&>svg]:fill-white',
         suffixIcon: '$reset block w-3 ml-2 stretch shrink-0 [&>svg]:fill-white',
@@ -74,7 +86,7 @@ const config: DefaultConfigOptions = {
       'datetime-local': {
         input: 'h-14',
       },
-      
+
       // Specific styles apply only to a given input type
       color: {
         inner: 'flex max-w-[5.5em] w-full formkit-prefix-icon:max-w-[7.5em] formkit-suffix-icon:formkit-prefix-icon:max-w-[10em]',
@@ -113,7 +125,7 @@ const config: DefaultConfigOptions = {
         inner: 'flex max-w-2xl rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
         input: 'block w-full h-32 px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
       },
-      
+
       // PRO input styles
       autocomplete: {
         closeIcon: 'block grow-0 shrink-0 w-3 mr-3.5',

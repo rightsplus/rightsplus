@@ -13,6 +13,7 @@ const gray = {
   "950": "hsl(217deg 63% 5%)"
 }
 
+
 const colors = {
   primary: orange,
   neutral,
@@ -47,6 +48,17 @@ module.exports = {
     },
     colors,
     extend: {
+      animation: {
+        revolve: `revolve 500ms infinite cubic-bezier(0.3, 0.3, 0.3, 0.5)`,
+        tumble: `revolve 700ms infinite cubic-bezier(0.5, 0.3, 0.3, 0.7)`
+      },
+      keyframes: {
+        revolve: {
+          '0%': { transform: 'rotate(-40deg)' },
+          '100%': { transform: 'rotate(320deg)' },
+        }
+      },
+
       boxShadow: {
         autofill: `inset 0 0 0 2em ${colors.blue['100']}`,
       },
@@ -64,12 +76,12 @@ module.exports = {
     },
   },
   plugins: [
+    require('@formkit/tailwindcss'),
+    require('@tailwindcss/container-queries'),
+    require('@tailwindcss/forms'),
     require('tailwindcss-unimportant'),
     require('tailwindcss-touch'),
-    require('@tailwindcss/container-queries'),
-    require('@formkit/tailwindcss'),
     require("tailwindcss-hyphens"),
-    require('@tailwindcss/forms'),
     require('tailwind-css-variables')({
       screens: false,
       lineHeight: false,
