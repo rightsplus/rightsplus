@@ -4,7 +4,6 @@ import nuxtStorage from 'nuxt-storage';
 
 
 export interface State {
-  headerColor?: string | null;
   flights: Flight[];
   // airports: Record<string, Airport>,
   reviews: {
@@ -76,7 +75,6 @@ export const state = reactive({
     url: '',
     entries: [],
   },
-  headerColor: null,
   log: (message: string) => console.log(message),
 } as State)
 

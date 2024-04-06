@@ -202,6 +202,7 @@ export interface FlightsTable {
   delay_arrival: string;
   airport_departure: string;
   airport_arrival: string;
+  data: Flight
 }
 export interface Database {
   public: {
@@ -225,6 +226,11 @@ export interface Database {
   }
 }
 
+declare module '@fortawesome/vue-fontawesome' {
+  interface FontAwesomeIconProps {
+    icon: 'hello'
+  }
+}
 
 import '@nuxtjs/algolia'
 import { DefineComponent } from 'nuxt/dist/app/compat/capi';
@@ -232,5 +238,16 @@ import { Component } from 'nuxt/schema';
 declare module '@nuxtjs/algolia' {
   interface AlgoliaIndices {
     AIRPORTS: Airport
+  }
+}
+
+declare module '#app' {
+  interface PageMeta {
+    classes?: {
+      body?: string;
+      header?: string;
+      main?: string;
+      footer?: string;
+    }
   }
 }

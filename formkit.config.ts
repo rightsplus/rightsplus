@@ -26,7 +26,7 @@ const config: DefaultConfigOptions = {
         fieldset: 'max-w-2xl border border-neutral-400 rounded-lg px-2 pb-1',
         help: 'text-xs text-neutral-500 leading-tight mt-1',
         inner: 'bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500',
-        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200 hover:bg-neutral-50',
+        input: 'appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200',
         label: 'text-neutral-500 font-medium text-sm leading-tight block',
         legend: 'text-neutral-500 font-medium text-sm',
         loaderIcon: 'inline-flex items-center w-4 text-neutral-600 animate-spin',
@@ -68,7 +68,7 @@ const config: DefaultConfigOptions = {
         selectIcon: 'flex box-content w-4 px-2 self-stretch grow-0 shrink-0',
       },
       'family:text': {
-        inner: 'flex items-center max-w-2xl ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg',
+        inner: 'flex items-center max-w-2xl ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg hover:bg-neutral-50',
         input: 'w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400',
       },
       'datetime-local': {

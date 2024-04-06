@@ -1,11 +1,11 @@
 <template>
   <section class="sm:py-24 bg-gray-200 relative">
-    <img src="/images/airfield.jpg" class="object-cover w-full h-full absolute inset-0 opacity-50" />
+    <img src="/images/airfield.jpg" class="object-cover w-full h-full absolute inset-0 opacity-100 brightness-80 saturate-50" />
     <div
       class="grid gap-12 max-w-full sm:max-w-xl mx-auto p-5 sm:p-12 h-full relative z-1 bg-white sm:rounded-xl"
     >
       <div class="flex flex-col justify-around gap-4 leading-0 h-full">
-        <h2 class="text-2xl sm:text-3xl font-medium">Entschädigungshöhe und Vergütung</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold">Entschädigungshöhe und Vergütung</h2>
         <p class="text-sm">
           Unsere Vergütung hängt von deiner Entschädigung ab. Wir bekommen nur
           Geld, wenn du auch eine Entschädigung bekommst. Das bedeutet, dass wir
@@ -29,6 +29,10 @@
             :selected="distance === option.value"
           />
         </div>
+        <div class="flex items-center duration-150" :class="{'opacity-0 pointer-events-none': distance !== 4000}">
+        <FormKit type="checkbox" decorator-icon="check" id="withinEU" v-model="withinEU" />
+        <label for="withinEU">Innerhalb der EU</label>
+      </div>
       </div>
       <div class="flex gap-12 justify-between text-right">
         <div class="flex flex-col w-full sm:text-xl">
@@ -68,6 +72,7 @@ import gsap from "gsap";
 import ButtonLarge from "../Calculator/ButtonLarge.vue";
 
 const distance = ref(2000);
+const withinEU = ref(false)
 const distances = ref([
   {
     preLabel: `weniger als`,
@@ -85,7 +90,7 @@ const distances = ref([
   },
 ]);
 const compensation = computed(() =>
-  reimbursementByDistance(distance.value)
+  reimbursementByDistance(distance.value, undefined, withinEU.value)
 );
 
 const total = reactive({

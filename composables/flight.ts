@@ -84,8 +84,8 @@ export const isExtraordinaryCircumstance = async (flight: Flight | null) => {
 
 export const getDistance = (claim: ClaimsForm | null) => {
 	if (!claim?.airport.trip.departure || !claim?.airport.trip.arrival) return 0
-	const { departure, arrival } = claim.airport.trip
 
+	const { departure, arrival } = claim.airport.trip
 	return getAirportDistance(departure, arrival)
 }
 
@@ -137,28 +137,6 @@ export const useFlightStatus = (flight: Flight | null) => {
 			label: circumstance,
 		}
 	}
-}
-
-export const getFilteredFlights = ({ departure, arrival, date, number, custom }: {
-	departure?: string,
-	arrival?: string,
-	date?: string,
-	number?: string,
-	custom?: (flight: Flight) => boolean
-}) => {
-	const filterFlights = (flight: Flight) => {
-		return (
-			(!departure || flight.departure.iata === departure) &&
-			(!arrival || flight.arrival.iata === arrival) &&
-			(!number || flight.flight.iata === number) &&
-			(!date ||
-				getISODate(flight[flight.type].scheduledTime) ===
-				getISODate(date))
-			&& (!custom || custom && custom(flight))
-		);
-	};
-
-	return useAppState().flights?.filter(filterFlights)
 }
 
 export const useDisruption = (claim: ClaimsForm) => {
@@ -398,16 +376,19 @@ const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Fl
 }
 
 const queries = ref([] as string[]);
-export const useFetchFlight = () => {
+export const useFlights = () => {
+	const flights = ref<Flight[]>([])
 	const { fetchProxy } = useSupabaseFunctions()
 	const { airports } = useAirports()
+	const ATTEMPTS = 3
 
-	const fetchFlights = async ({ departure, arrival, date, locale }: {
+	const fetchFlights = async (props: {
 		date: string,
 		departure?: string,
 		arrival?: string,
 		locale?: string,
-	}) => {
+	}, attempts = ATTEMPTS) => {
+		const { departure, arrival, date, locale } = props
 		try {
 			if (
 				!date ||
@@ -456,7 +437,7 @@ export const useFetchFlight = () => {
 				airports.value[departure]
 			)
 
-			const flights: Flight[] = data
+			flights.value = data
 				.map((flight) => transformAviationEdgeFlight(flight))
 				.map(flight => {
 					if (departure !== flight.departure.iata || arrival !== flight.arrival.iata) return flight
@@ -467,48 +448,77 @@ export const useFetchFlight = () => {
 				})
 
 
-			console.log(flights.reduce((acc, curr) => {
+			console.log(flights.value.reduce((acc, curr) => {
 				if (curr.status === 'cancelled') acc.cancelled.push(curr)
 				else if (curr.arrival.delay > 180) acc.delayed.push(curr)
 				return acc
 			}, { cancelled: [] as Flight[], delayed: [] as Flight[] }))
-			useAppState().flights = flights;
 
 		} catch (error) {
-			console.log("error", error);
-			throw error
+
+			if (attempts > 0) {
+				console.log('fetch failed', error, attempts)
+				fetchFlights(props, attempts - 1)
+			} else {
+				throw error
+			}
 		}
 	}
-	return { fetch: fetchFlights }
+
+	const getFilteredFlights = ({ departure, arrival, date, number, custom }: {
+		departure?: string,
+		arrival?: string,
+		date?: string,
+		number?: string,
+		custom?: (flight: Flight) => boolean
+	}) => {
+		const filterFlights = (flight: Flight) => {
+			return (
+				(!departure || flight.departure.iata === departure) &&
+				(!arrival || flight.arrival.iata === arrival) &&
+				(!number || flight.flight.iata === number) &&
+				(!date ||
+					getISODate(flight[flight.type].scheduledTime) ===
+					getISODate(date))
+				&& (!custom || custom && custom(flight))
+			);
+		};
+
+		return flights.value.filter(filterFlights)
+	}
+	return { fetchFlights, getFilteredFlights }
 }
 
 export const getCities = async (iataCodes: (string | undefined)[], locale?: string) => {
 	const { query } = useAirports()
 	return (await Promise.all(iataCodes.map(async e => await query(e || '')))).map(e => getCityTranslation(e, locale));
 };
-export const useCities = (iataCodes: (string | undefined)[], options?: {
+interface IataCodes {
+	[x: string]: string | undefined
+
+}
+export const useCities = <T extends IataCodes>(iataCodes: T, options?: {
 	iata?: boolean
-}) => {
+}): Ref<T | undefined> => {
 	const { locale } = useI18n()
-	const cities = ref(iataCodes);
-	const pending = ref(true)
+	const cities = ref<T>();
 	const { query } = useAirports()
 	const assign = () => {
-		pending.value = true
-		query(iataCodes.map(e => e || ''))
+		cities.value = iataCodes
+		query(Object.values(iataCodes).map(e => e || ''))
 			.then((airports) => {
-				cities.value = []
-				iataCodes.forEach(airport => {
-					let city = airport && airports[airport] && getCityTranslation(airports[airport], locale.value);
-					if (options?.iata) city = city?.concat(' ', `(${airport})`)
-					if (city) cities.value.push(city)
+				Object.entries(iataCodes).forEach(([phase, iata]) => {
+					let city = iata && airports[iata] && getCityTranslation(airports[iata], locale.value);
+					if (options?.iata) city = city?.concat(' ', `(${iata})`)
+					if (city && cities.value) {
+						cities.value[phase] = city
+					}
 				})
 			})
 			.catch((error) => console.error(error))
-			.finally(() => pending.value = false)
 	}
 	watch(iataCodes, assign, { immediate: true, deep: true })
-	return { cities, pending }
+	return cities
 }
 
 

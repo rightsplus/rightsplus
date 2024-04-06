@@ -1,17 +1,30 @@
 <template>
   <div class="w-full max-w-3xl mx-auto grid gap-5 mb-12">
-    <div v-if="state.matches('loading')" class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 grid gap-2 justify-items-start"> Loading </div>
+    <div
+      v-if="state.matches('loading')"
+      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 grid gap-2 justify-items-start"
+    >
+      Loading
+    </div>
     <form
       v-else
-      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 grid gap-2 justify-items-start"
+      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 flex flex-col gap-2 justify-items-start"
       @submit.prevent
       ref="form"
     >
       <button
         @click.prevent="
-          machine.invoke(state.matches(state.initial) ? 'exit' : 'back')
+          () => {
+            if (state.matches(state.initial)) {
+            invoke('reset');
+            navigateTo(localePath('/'));
+            } else {
+            invoke('back');
+
+            }
+          }
         "
-        class="leading-none text-2xl"
+        class="leading-none text-2xl self-start"
       >
         <FontAwesomeIcon v-show="state.matches(state.initial)" icon="times" />
         <FontAwesomeIcon
@@ -31,7 +44,7 @@
             @primary="send('next')"
             :primary="{
               label: $t('next'),
-              disabled: !state.can('next')
+              disabled: !state.can('next'),
             }"
           />
         </StepWrapper>
@@ -41,7 +54,7 @@
           <ButtonGroup
             @primary="send('next')"
             :primary="{
-              label: $t('next')
+              label: $t('next'),
             }"
             @secondary="claimState.airport.trip.layover?.push({} as Airport)"
             :secondary="{
@@ -51,17 +64,17 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('chooseRoute')"
-        >
+        <StepWrapper v-else-if="state?.matches('chooseRoute')">
           <SelectRoute :modelValue="claimState" @select="send('next')" />
         </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('flightDate')"
-         
-        >
+        <StepWrapper v-else-if="state?.matches('flightDate')">
           <SelectFlightDate :modelValue="claimState" @select="send('next')" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: $t('next'),
+            }"
+          />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('flight')">
           <FlightList
@@ -74,19 +87,18 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('disruptionDetected')"
           :description="
             claimState.flight?.status === 'cancelled'
               ? $t('disruptionDetected.cancelled.description')
               : $t('disruptionDetected.delayed.description', {
                   delay: getDuration(claimState.flight?.arrival.delay || 0),
-                  arrival: arrivalCity,
+                  arrival: city.arrival,
                 })
           "
         >
           <div v-if="claimState.flight">
-            <FlightCard :flight="claimState.flight" />
+            <ClaimCard :flight="claimState.flight" />
           </div>
           <ButtonGroup
             stack
@@ -104,10 +116,9 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('noDisruptionDetected')"
           :description="
-            $t('noDisruptionDetected.description', { arrival: arrivalCity })
+            $t('noDisruptionDetected.description', { arrival: city.arrival })
           "
         >
           <div v-if="claimState.flight">
@@ -121,10 +132,9 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('disruptionType')"
           :description="
-            $t(`disruptionType.description`, { arrival: arrivalCity })
+            $t(`disruptionType.description`, { arrival: city.arrival })
           "
         >
           <SelectDisruptionType
@@ -133,12 +143,11 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('disruptionReason')"
           :title="$t(`disruptionReason.${claimState.disruption.type}.title`)"
           :description="
             $t(`disruptionReason.${claimState.disruption.type}.description`, {
-              arrival: arrivalCity,
+              arrival: city.arrival,
             })
           "
         >
@@ -155,7 +164,6 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('delayDetails')"
           :title="$t('delay')"
         >
@@ -166,7 +174,6 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('cancellationDetails')"
           :title="$t('cancellation')"
         >
@@ -177,7 +184,6 @@
           />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('otherFlightYN')"
           :title="
             claimState.disruption.type === 'cancelled'
@@ -195,14 +201,19 @@
             <ButtonLarge @click="send('no')" :label="$t('no')" proceed />
           </div>
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('connectionFlightDetails')"
-        >
+        <StepWrapper v-else-if="state?.matches('connectionFlightDetails')">
           <FlightDetails :modelValue="claimState.connection" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: $t('next'),
+              disabled:
+                !claimState.connection.date ||
+                !claimState.connection.departure,
+            }"
+          />
         </StepWrapper>
         <StepWrapper
-         
           v-else-if="state?.matches('replacementFlightDetails')"
           :title="$t('replacementFlight.title')"
         >
@@ -217,9 +228,7 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('replacementFlight')"
-        >
+        <StepWrapper v-else-if="state?.matches('replacementFlight')">
           <FlightList
             :departure="claimState.replacement.departure.iata"
             :arrival="claimState.airport.arrival.iata"
@@ -231,17 +240,14 @@
             @select="send('next')"
           />
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('ineligable')"
-        >
+        <StepWrapper v-else-if="state?.matches('ineligable')">
           <div v-if="claimState.flight">
-            <FlightCard :flight="claimState.flight" />
+            <ClaimCard :flight="claimState.flight" />
           </div>
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('eligable')">
           <div v-if="claimState.flight">
-            <FlightCard :flight="claimState.flight" />
+            <ClaimCard :flight="claimState.flight" />
           </div>
           <ButtonGroup
             @primary="send('next')"
@@ -250,10 +256,7 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('bookingNumber')"
-        >
+        <StepWrapper v-else-if="state?.matches('bookingNumber')">
           <AddBookingNumber :modelValue="claimState" />
           <ButtonGroup
             @primary="send('next')"
@@ -263,10 +266,7 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('passengers')"
-        >
+        <StepWrapper v-else-if="state?.matches('passengers')">
           <StepPassengers :modelValue="claimState" ref="passengers" />
           <ButtonGroup
             @primary="send('next')"
@@ -283,13 +283,8 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper
-         
-          v-else-if="state?.matches('assignmentAgreement')"
-        >
-          <AssignmentAgreementPreflight
-            :modelValue="claimState"
-          />
+        <StepWrapper v-else-if="state?.matches('assignmentAgreement')">
+          <AssignmentAgreementPreflight :modelValue="claimState" />
           <ButtonGroup
             @primary="send('next')"
             :primary="{
@@ -317,20 +312,24 @@ import FlightDetails from "@/components/organisms/Calculator/Forms/FlightDetails
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import FlightCard from "@/components/cells/FlightCard.vue";
+import ClaimCard from "@/components/cells/ClaimCard.vue";
 import AddDisruptionComment from "@/components/organisms/Calculator/Forms/AddDisruptionComment.vue";
 
 import claimMachine from "@/machines/claim";
 import type { ClaimsForm, Airport, Flight } from "~/types";
-import { invoke } from "@vueuse/core";
 import AddBookingNumber from "./Forms/AddBookingNumber.vue";
 import PassengerForm from "./Forms/PassengerForm.vue";
 import StepPassengers from "./StepPassengers.vue";
 import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
 const claimState = useClaim();
+const route = useRoute();
 const { locale } = useI18n();
-const machine = useMachine<ClaimsForm>(claimMachine, claimState);
-const { state, send, transition, subscribe } = machine;
-
+const localePath = useLocalePath();
+const { state, send, transition, subscribe, invoke } = useMachine<ClaimsForm>(
+  claimMachine,
+  claimState
+);
+const { getFilteredFlights } = useFlights()
 const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
@@ -349,16 +348,7 @@ const filteredFlights = computed(() => {
   return filtered;
 });
 
-const arrivalCity = ref();
-watch(
-  () => claimState.airport,
-  (value) => {
-    getCities([value.trip.arrival?.iata], locale.value).then(([arrival]) => {
-      arrivalCity.value = arrival;
-    });
-  },
-  { immediate: true, deep: true }
-);
+const city = useCities({ arrival: claimState.airport.trip.arrival?.iata});
 const loadingFlights = ref(false);
 // watch(
 //   () => claimState.date || claimState.airport,
@@ -395,8 +385,8 @@ const loadingFlights = ref(false);
 //   { deep: true }
 // );
 
-onMounted(() => {
-  if (state.value.matches('itinerary')) send('next')
-})
-
+onBeforeMount(() => {
+  // if (!route.query.resume) invoke("reset");
+  if (state.value.matches("itinerary")) send("next");
+});
 </script>

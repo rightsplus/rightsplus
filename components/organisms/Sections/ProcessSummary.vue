@@ -12,11 +12,6 @@
             Mit RightsPlus setzen wir deine Ansprüche gemäß EU-Recht durch.
           </h3>
         </div>
-        <Button
-          class="text-white !bg-gray-700 hover:!bg-gray-800 mr-auto"
-          to="deine-rechte"
-          >Mehr erfahren</Button
-        >
       </div>
       <div class="bg-white p-5 sm:p-12 rounded-2xl">
         <ol class="flex flex-col gap-8">
@@ -40,12 +35,13 @@
   </section>
 </template>
 <script lang="ts" setup>
+const localePath = useLocalePath()
 const process = [
   {
-    icon: "circle-check",
-    color: "text-green-500",
+    icon: "plane",
+    color: "text-orange-500",
     title: "Entschädigungsanspruch prüfen",
-    description: "Anhand von Flugnummer und Datum",
+    description: "Anhand von Flugroute und Datum",
   },
   {
     icon: "file-pen",
@@ -55,7 +51,7 @@ const process = [
   },
   {
     icon: "money-bill-1-wave",
-    color: "text-primary-500",
+    color: "text-green-500",
     title: "Entschädigung erhalten",
     description: "Innerhalb von 2 Wochen",
   },

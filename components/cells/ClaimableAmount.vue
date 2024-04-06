@@ -20,6 +20,7 @@ const potentialReimbursment = computed(() => {
   const { total, youGet } = reimbursementByDistance(
     distance,
     delay,
+    undefined,
     useClaim().client.passengers.length
   );
   return props.full ? total : youGet;

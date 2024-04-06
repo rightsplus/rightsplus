@@ -197,6 +197,7 @@ const { locale } = useI18n();
 const filteredFlights = computed(() => {
   if (!props.modelValue.route) return [];
   const { departure, arrival } = props.modelValue.airport;
+  const { getFilteredFlights } = useFlights()
   const filtered = getFilteredFlights({
     departure: departure?.iata,
     arrival: arrival?.iata,

@@ -19,7 +19,7 @@
         </div>
         <Button
           class="text-white !bg-gray-800 hover:!bg-gray-900 mr-auto"
-          to="/claim/new"
+          to="claim-new"
           >Jetzt Anspruch prüfen!</Button
         >
       </div>

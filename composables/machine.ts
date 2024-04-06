@@ -67,6 +67,10 @@ export const useMachine = <T extends Record<string, any>>(
     loading.value = false
   })
   const invoke = (action: string, target?: string) => {
+    if (!machine.actions[action]) {
+      console.error(`Action ${action} not found`)
+      return
+    }
     machine.actions[action]({ context, history, state: currentState, machine, target });
     Object.values(subscriptions.value).forEach(e => e?.(cleanObject({ type: 'action', action, target })))
 

@@ -19,11 +19,11 @@
       <div
         class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1"
       >
-        <div class="flex flex-col gap-12 lg:w-2/3 max-w-3xl">
+        <div class="flex flex-col gap-12 lg:w-2/3 max-w-4xl">
           <Dashboard class="" />
           <Transition name="fade">
             <div
-              class="container bg-white rounded-3xl p-5 sm:p-12 shadow-2xl shadow-black/10"
+              class="container bg-white rounded-3xl p-5 shadow-2xl shadow-black/10"
               v-if="claim && ready"
             >
               <FlightByAirport
@@ -38,19 +38,19 @@
         class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10"
       >
         <Transition name="move-up">
-          <ScrollDown v-show="scrollDownReady" scrollTo="process-summary" />
+          <ScrollDown v-show="scrollDownReady" scrollTo="below-the fold" />
         </Transition>
       </div>
     </section>
-
-    <!-- <Button @click="generate">Generate PDF</Button> -->
-    <ProcessSummary id="process-summary" class="relative bg-white" />
+    <CompensationBanner />
+    <DisruptedFlights id="below-the fold" />
     <YourRights />
-    <CTASection />
+    <ProcessSummary />
     <Reasons />
     <Stats class="bg-gray-700 text-white" />
     <FeeCalculator />
     <Reviews />
+    <CTASection />
   </div>
 </template>
 <script setup lang="ts">
@@ -58,6 +58,7 @@ import Dashboard from "@/components/species/Dashboard.vue";
 import FlightByAirport from "@/components/organisms/Calculator/Forms/FlightByAirport.vue";
 import ScrollDown from "@/components/cells/ScrollDown.vue";
 import ProcessSummary from "@/components/organisms/Sections/ProcessSummary.vue";
+import DisruptedFlights from "@/components/organisms/Sections/DisruptedFlights.vue";
 import YourRights from "@/components/organisms/Sections/YourRights.vue";
 import CTASection from "@/components/organisms/Sections/CTASection.vue";
 import Reasons from "@/components/organisms/Sections/Reasons.vue";
@@ -65,6 +66,7 @@ import Stats from "@/components/organisms/Sections/Stats.vue";
 import FeeCalculator from "@/components/organisms/Sections/FeeCalculator.vue";
 import Reviews from "@/components/organisms/Sections/Reviews.vue";
 import type { Database } from "@/types";
+import CompensationBanner from "~/components/organisms/Calculator/Forms/CompensationBanner.vue";
 const ready = ref(false);
 const scrollDownReady = ref(false);
 const claim = useClaim()
@@ -73,5 +75,12 @@ onMounted(() => {
   setTimeout(() => {
     scrollDownReady.value = true;
   }, 1000);
+});
+definePageMeta({
+  title: "Flugverspätung oder Flugausfall?",
+  layoutTransition: {
+    name: "layout",
+    mode: "out-in",
+  },
 });
 </script>

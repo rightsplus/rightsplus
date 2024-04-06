@@ -66,6 +66,7 @@ const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const { disruptions } = useDisruption(props.modelValue.flight);
+const { getFilteredFlights } = useFlights()
 
 const filterConnectionFlights = (flight: Flight) => {
   if (!props.modelValue.flight) return false;

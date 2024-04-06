@@ -125,7 +125,7 @@ p {
   .formkit-label {
     pointer-events: none;
     padding: 0 !important;
-    font-size: 0.875em !important;
+    font-size: var(--text-base) !important;
     font-weight: 500 !important;
     top: var(--top) !important;
     left: var(--left) !important;

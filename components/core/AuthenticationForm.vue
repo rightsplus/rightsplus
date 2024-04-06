@@ -52,9 +52,17 @@
               for="terms"
               class="text-xs"
             >
-            <template v-slot:terms><NuxtLink to="terms-and-conditions">{{ $t("termsAndConditions") }}</NuxtLink></template>
-            <template v-slot:privacyPolicy><NuxtLink to="privacy">{{ $t("privacyPolicy") }}</NuxtLink></template>
-            <template v-slot:partner>RightsPlus</template>
+              <template v-slot:terms
+                ><NuxtLinkLocale to="/terms-and-conditions">{{
+                  $t("termsAndConditions")
+                }}</NuxtLinkLocale></template
+              >
+              <template v-slot:privacyPolicy
+                ><NuxtLinkLocale to="/privacy">{{
+                  $t("privacyPolicy")
+                }}</NuxtLinkLocale></template
+              >
+              <template v-slot:partner>RightsPlus</template>
             </i18n-t>
           </div>
           <FormKit
@@ -83,8 +91,16 @@
           v-if="mode === 'signUp'"
         >
           <i18n-t keypath="accountAcceptTerms.notice" tag="span">
-            <template v-slot:terms><NuxtLink to="terms-and-conditions">{{ $t("termsAndConditions") }}</NuxtLink></template>
-            <template v-slot:privacyPolicy><NuxtLink to="privacy">{{ $t("privacyPolicy") }}</NuxtLink></template>
+            <template v-slot:terms
+              ><NuxtLinkLocale to="/terms-and-conditions">{{
+                $t("termsAndConditions")
+              }}</NuxtLinkLocale></template
+            >
+            <template v-slot:privacyPolicy
+              ><NuxtLinkLocale to="/privacy">{{
+                $t("privacyPolicy")
+              }}</NuxtLinkLocale></template
+            >
           </i18n-t>
         </span>
         <span class="text-sm [&>*:not(:last-child)]:mr-1 justify-center w-full">

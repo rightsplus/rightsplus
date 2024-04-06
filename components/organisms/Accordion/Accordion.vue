@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag?.outer || 'ul'">
+  <component :is="tag?.outer || 'ul'" :class="classes?.outer">
     <AccordionItem
       v-for="(item, i) in items"
       :key="itemKey ? item[itemKey] : i"

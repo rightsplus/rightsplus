@@ -23,7 +23,7 @@ button {
 	&:before, &:after {
 		position: absolute;
 		--size: 2rem;
-		--border-default: 2px;
+		--border-default: 3px;
 		content: "";
 		background-color: currentColor;
 		width: var(--size, 2rem);
@@ -31,6 +31,7 @@ button {
 		transform: rotate(var(--rotate, 0deg)) translate(-50%, var(--translate, 0));
 		transform-origin: 0%;
 		transition: transform 0.5s cubic-bezier(0.1, 1, 0.2, 1);
+		border-radius: 10px;
 	}
 	--factor: 1;
 	&:hover {

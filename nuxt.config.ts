@@ -4,7 +4,8 @@ import pwa from './config/pwa'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    pageTransition: { name: 'layout', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       title: "RightsPlus",
       meta: [
@@ -39,7 +40,7 @@ export default defineNuxtConfig({
   },
   css: [
     '~/assets/css/main.scss',
-    '~/assets/css/transitions.css',
+    '~/assets/css/transitions.scss',
     '@fortawesome/fontawesome-svg-core/styles.css',
     // "primevue/resources/themes/lara-light-blue/theme.css",
     "primevue/resources/primevue.css"

@@ -1,4 +1,5 @@
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
+import type { ClaimsForm } from "~/types";
 
 
 export const useSendMail = () => {
@@ -44,4 +45,26 @@ export const useGeneratePDF = () => {
 		return streamToPdfLink(response.body);
 	};
 	return { generate };
+}
+
+
+
+const getCompensation = (claim: ClaimsForm) => {
+	const distance = getDistance(claim)
+	let compensation = 250
+	if (distance > 1500) compensation = 400
+	const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)
+	if (distance > 3500 && beyondEU) compensation = 600
+	return { compensation, distance }
+}
+export const useReimbursment = () => {
+	const claim = useClaim()
+	const compensation = ref(0);
+	const distance = ref(0);
+	watch(claim.airport, () => {
+		const { compensation: c, distance: d } = getCompensation(claim)
+		compensation.value = c
+		distance.value = d
+	}, { immediate: true, deep: true})
+	return { compensation, distance }
 }

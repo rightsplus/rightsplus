@@ -1,5 +1,6 @@
 <template>
-  <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0">
+  <div class="pt-24">{{  $route.name }}</div>
+  <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0" v-if="claim">
     <div class="flex flex-col space-y-12 w-full" v-if="claimId">
       <!-- <FormKit
         v-model="bookingNumber"
@@ -9,7 +10,7 @@
     </div>
     <div
       class="flex flex-col space-y-12 w-full"
-      v-if="claimId && bookingNumber && claim"
+      v-if="claimId && bookingNumber"
     >
       <div class="flex flex-col">
         <!-- <CellsFlightCard

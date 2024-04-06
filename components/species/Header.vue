@@ -1,9 +1,12 @@
 <template>
   <header
     class="z-40 w-full text-neutral"
-    :class="{
-      open: menuOpen,
-    }"
+    :class="[
+      $route.meta.classes?.header,
+      {
+        open: menuOpen,
+      },
+    ]"
     @click.self="menuOpen = false"
     :style="`--total: ${links.length}`"
   >
@@ -25,12 +28,13 @@
       :active="menuOpen"
       @click="menuOpen = !menuOpen"
       class="absolute cursor-pointer right-5 sm:right-12 top-4 sm:top-6 z-40 md:hidden"
-      :class="[useAppState()?.headerColor === 'white' ? 'text-white' : '']"
+      :class="{
+        'text-gray-800': menuOpen,
+      }"
     />
     <nav
-      class="flex justify-center md:items-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-bold md:font-medium"
+      class="flex justify-center md:items-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-medium"
       :class="{
-        dark: useAppState()?.headerColor === 'white',
         'max-w-7xl': useRoute().path !== '/admin',
         'max-w-screen': useRoute().path === '/admin',
       }"
@@ -43,18 +47,16 @@
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLink
-            to="/"
+            :to="localePath('/')"
             class="flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
             @click="clickLink"
+            :class="{
+              'text-gray-800': menuOpen,
+            }"
           >
             <Icon :icon="Logo" />
-            <span
-              class="flex gap-1 text-lg sm:text-xl"
-              :class="{
-                'text-white drop-shadow': state?.headerColor === 'white',
-              }"
-            >
+            <span class="flex gap-1 text-lg sm:text-xl">
               <span class="font-bold">RightsPlus</span
               ><span class="font-medium">Flights</span>
             </span>
@@ -73,16 +75,15 @@
             '--k': `${i}`,
           }"
         >
-          <NuxtLink
+          <NuxtLinkLocale
             :to="item.path"
-            class="flex gap-3 items-center py-3 leading-none cursor-pointer group"
+            class="flex gap-3 items-center py-3 leading-none cursor-pointer group -text-gray-800 sm:text-current"
             exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
               'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
               'hover:text-gray-500 ': item.type !== 'button',
-              'text-white drop-shadow': state?.headerColor === 'white',
               'bg-red-500 hover:bg-red-600 active:bg-red-700': item.critical,
             }"
             @click="clickLink(item)"
@@ -94,7 +95,7 @@
               fixed-width
               class="duration-100 group-hover:scale-105 group-active:scale-95"
             />
-          </NuxtLink>
+          </NuxtLinkLocale>
         </li>
       </TransitionGroup>
     </nav>
@@ -105,7 +106,9 @@
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Logo from "~/assets/logo";
 import type { Database } from "@/types";
+import claimMachine from "@/machines/claim";
 const { auth } = useSupabaseAuthClient();
+const localePath = useLocalePath();
 interface Route {
   name: string;
   path: string;
@@ -117,7 +120,9 @@ interface Route {
 }
 const user = useSupabaseUser();
 const client = useSupabaseClient<Database>();
-const state = useAppState()
+const state = useAppState();
+const claim = useClaim();
+const { t } = useI18n();
 
 const menuOpen = ref(false);
 const isAdmin =
@@ -130,27 +135,29 @@ const isAdmin =
       .single()
   ).data?.role === "admin";
 
+const { invoke } = useMachine(claimMachine, claim);
 const links = computed(
   () =>
     [
       {
-        name: "claims",
-        path: "/claim/new",
-        title: "Rechner",
+        path: "delayed-and-cancelled-flights",
+        name: "disrupted-flights",
+        title: t("disruptedFlights"),
       },
       {
-        name: "rechte",
-        path: "/deine-rechte",
-        title: "Deine Rechte",
+        path: "your-passenger-rights",
+        name: "your-passenger-rights",
+        title: t("yourRights"),
       },
       {
-        name: "status",
-        path: "/status",
-        title: "Meine Forderungen",
+        path: "claim-new",
+        onClick: () => invoke("reset"),
+        name: "claim",
+        title: t("checkClaim"),
         type: "button",
       },
       {
-        name: "signOut",
+        name: "sign-out",
         onClick: () => auth.signOut(),
         type: "button",
         icon: "door-open",
@@ -251,9 +258,6 @@ watch(
       pointer-events: all;
       nav {
         background-color: white;
-        &.dark {
-          background-color: var(--color-gray-900);
-        }
         height: calc(var(--total) * 43px + 350px) !important;
         transition-delay: 0ms;
         ul {

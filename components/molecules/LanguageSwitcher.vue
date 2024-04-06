@@ -25,10 +25,11 @@
     titleClass="!text-xl"
   >
     <div class="grid grid-cols-1 @sm:grid-cols-2 gap-4">
-      <button
+      <NuxtLink
         v-for="{ iso, name, code } in (locales as LocaleObject[])"
         :key="code"
-        @click="setLocale(code)"
+        :to="switchLocalePath(code)"
+        @click="closeModal"
         class="flex items-center gap-2 hover:bg-blue-100 p-4 rounded-lg"
         :class="{
           'bg-blue-100 hover:bg-blue-50': locale === code,
@@ -40,18 +41,20 @@
           class="relative z-10 w-6 shrink-0"
         />
         <span class="text-base">{{ name }}</span>
-      </button>
+      </NuxtLink>
     </div>
   </Popup>
 </template>
 
 <script setup lang="ts">
-import type { LocaleObject } from "~/config/i18n.options";
+import type { LocaleObject } from "~/config/i18n";
+const switchLocalePath = useSwitchLocalePath();
 
 const { locale, locales, localeProperties, t } = useI18n();
 const isOpen = ref(false);
-const setLocale = (l: string) => {
-  locale.value = l;
+const closeModal = (l: string) => {
+  // locale.value = l;
+  // switchLocalePath(l);
   setTimeout(() => (isOpen.value = false), 100);
 };
 </script>

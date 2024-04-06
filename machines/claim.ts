@@ -9,7 +9,6 @@ import { nextDeparture } from "~/utils";
 // const machine = createMachine({
 
 // })
-
 export default {
   initial: "itinerary",
   loading: "loading",
@@ -24,8 +23,7 @@ export default {
       return !!context.airport.trip.layover?.some(e => e.iata)
     },
     hasEUAirport: ({ context }) => {
-      console.log([context.airport.departure, context.airport.arrival]?.map(e => ([e.iata, e.ec261])))
-      return [context.airport.departure, context.airport.arrival]?.some(e => e.ec261)
+      return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
     isDelayed: ({ context }) => {
       return (context.flight?.arrival.delay || 0) > 0
@@ -95,10 +93,9 @@ export default {
         state.value = machine.initial
       }
     },
-    exit: ({ history, state, machine }) => {
+    reset: ({ history, state, machine }) => {
       history.value = []
       state.value = machine.initial
-      navigateTo('/')
     },
     setDelayed: ({ context }) => {
       context.disruption.type = 'delayed'

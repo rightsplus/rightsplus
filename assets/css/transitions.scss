@@ -4,7 +4,8 @@
 /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all var(--transition-duration-1000, 300ms) cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all var(--transition-duration-1000, 300ms)
+    cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .list-enter-from,
@@ -19,7 +20,9 @@
 }
 
 .list-enter-active {
-  transition-delay: calc(calc(300ms / var(--total, 1000)) * var(--i, 1) + 100ms);
+  transition-delay: calc(
+    calc(300ms / var(--total, 1000)) * var(--i, 1) + 100ms
+  );
 }
 
 .list-move {
@@ -29,8 +32,6 @@
 .list-leave-active {
   position: absolute;
 }
-
-
 
 /* 1. declare transition */
 .page-move,
@@ -53,13 +54,32 @@
 }
 
 .page-leave-to {
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94)
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.layout-move,
+.layout-enter-active,
+.layout-leave-active {
+  &,
+  main {
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+    transition-property: opacity, transform;
+    transform-origin: top;
+  }
+}
+
+.layout-enter-from,
+.layout-leave-to {
+  main {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+}
 .slide-in-move,
 .slide-in-enter-active,
 .slide-in-leave-active {
-  transition-duration: var(--transition-duration-1000, 1250ms);
+  transition-duration: var(--duration, 1250ms);
   transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
   transition-property: opacity, transform;
 }
@@ -67,7 +87,7 @@
 .slide-in-enter-from,
 .slide-in-leave-to {
   opacity: 0;
-  transform: translateY(2%);
+  transform: translateY(var(--offset, 2%));
 }
 
 .move-container,
@@ -94,7 +114,6 @@
   transform: scale(1.1) translateY(50%);
   /* animation: flip-out 500ms; */
 }
-
 
 .dropdown-move,
 .dropdown-enter-active,
@@ -177,13 +196,15 @@
 .transition-hide {
   opacity: 0;
   transform: translateY(-20px) scale(0.9);
-  transition: var(--transition-duration-1000, 100ms) cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: var(--transition-duration-1000, 100ms)
+    cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .transition-show {
   opacity: 1;
   transform: translateY(0) scale(1);
-  transition: var(--transition-duration-1000, 100ms) cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: var(--transition-duration-1000, 100ms)
+    cubic-bezier(0.165, 0.84, 0.44, 1);
   transition-delay: calc(100ms * (var(--total, 1) - var(--i, 1)));
 }
 
@@ -200,7 +221,6 @@
     transform: rotate(340deg);
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
@@ -233,7 +253,6 @@
   scale: 0.95;
 }
 
-
 .new-list-move, /* apply transition to moving elements */
 .new-list-enter-active,
 .new-list-leave-active {
@@ -251,8 +270,6 @@
 .new-list-leave-active {
   position: absolute;
 }
-
-
 
 .step-prev-leave-active,
 .step-next-leave-active {
@@ -278,4 +295,19 @@
 .step-next-enter-from,
 .step-prev-leave-to {
   transform: translateX(2%);
+}
+
+
+.animate-revolve {
+  // animation: revolve 700ms infinite cubic-bezier(0.5, 0.3, 0.3, 0.7);
+  animation: revolve 500ms infinite cubic-bezier(0.3, 0.3, 0.3, 0.5);
+}
+
+@keyframes revolve {
+  0% {
+    transform: rotate(-40deg);
+  }
+  100% {
+    transform: rotate(320deg);
+  }
 }

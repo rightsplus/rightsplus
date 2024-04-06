@@ -20,12 +20,6 @@ definePageMeta({
   middleware: ["auth"],
   layout: "claims",
 });
-onMounted(() => {
-  useAppState().headerColor = "dark";
-});
-onBeforeUnmount(() => {
-  useAppState().headerColor = null;
-});
 watch(user, (val) => {
   if (!val) router.push("/login");
 });

@@ -1,6 +1,6 @@
 import { library, config } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faEuropeanUnion } from '@/assets/icons'
+import { faCircleQuarter, faEuropeanUnion } from '@/assets/icons'
 import {
   faArrowLeft,
   faArrowRight,
@@ -62,7 +62,7 @@ import {
   faRoad,
   faPhone,
   faAt,
-  faSearch,
+  faMagnifyingGlass,
   faArrowUp,
   faCircleNotch,
   faEarthEurope,
@@ -91,7 +91,9 @@ import {
   faBuilding,
   faGavel,
   faCircleXmark,
-  faTriangleExclamation
+  faTriangleExclamation,
+  faCircle,
+  faCalendarXmark
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -126,7 +128,7 @@ library.add(
   faGithub,
   faUserGroup,
   faSignsPost,
-  faCalendar,
+  faCalendarXmark,
   faPassport,
   faUsers,
   faHeartbeat,
@@ -153,6 +155,7 @@ library.add(
   faPlaneSlash,
   faCircleXmark,
   faEuropeanUnion,
+  faCircleQuarter,
   faInfoCircle,
   faSun,
   faCloudRain,
@@ -174,7 +177,7 @@ library.add(
   faRoad,
   faPhone,
   faAt,
-  faSearch,
+  faMagnifyingGlass,
   faCircleNotch,
   faEarthEurope,
   faMinus,
@@ -193,7 +196,8 @@ library.add(
   faFolder,
   faFolderClosed,
   faHouse,
-  faBars
+  faBars,
+  faCircle
 )
 
 config.autoAddCss = false

@@ -3,7 +3,8 @@
     <DatePicker
       :modelValue.string="modelValue"
       @update:modelValue="updateModelValue"
-      @transitionAfterEnter="console.log"
+      @dayclick="dayClick"
+      @update:pages="$emit('update:page', $event)"
       :masks="{ modelValue: 'DD.MM.YYYY' }"
       class="calendar"
       color="orange"
@@ -13,6 +14,7 @@
       :max-date="new Date()"
       expanded
       :locale="useI18n().locale.value"
+      is-required
       :attributes="[
         {
           key: 'today',
@@ -37,16 +39,18 @@ defineProps<{
   name?: string;
   label?: string;
 }>();
-const emit = defineEmits(['update:modelValue', 'select']);
+const emit = defineEmits(['update:modelValue', 'update:page', 'select']);
 const updateModelValue = (value: Date) => {
   emit('update:modelValue', value ? getISODate(value) : undefined);
-  if (value) emit('select')
+};
+const dayClick = (value: Date) => {
+  emit('select')
 };
 </script>
 <style lang="scss">
 .vc-weekdays {
   .vc-weekday {
-    color: var(--color-gray-200);
+    color: var(--color-gray-300);
   }
 }
 

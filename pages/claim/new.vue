@@ -11,12 +11,9 @@ import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator
 
 definePageMeta({
   title: "Ansprüche berechnen",
-  description: ""
-});
-onMounted(() => {
-  useAppState().headerColor = "dark";
-});
-onBeforeUnmount(() => {
-  useAppState().headerColor = null;
+  layoutTransition: {
+    name: "layout",
+    mode: "out-in",
+  }
 });
 </script>

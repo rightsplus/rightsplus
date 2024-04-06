@@ -213,11 +213,11 @@ export const nextDeparture = (claim: ClaimsForm) => {
 
 const commission = 0.25;
 const vatRate = 0; // 0.19
-export const reimbursementByDistance = (distance: number, delay = 180, passengers = 1) => {
+export const reimbursementByDistance = (distance: number, delay = 180, withinEU = false, passengers = 1) => {
 	let total = 250
 	if ((distance || 0) > 1500) total = 400
-	if ((distance || 0) > 3500) total = 600
-	if ((distance || 0) > 3500 && delay > 180 && delay < 240) total = 300
+	const beyondEU = !withinEU || [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261)
+	if ((distance || 0) > 3500 && beyondEU) total = 600
 	total = total * (passengers || 1)
 	const weGet = total * commission
 	const vat = total * commission * vatRate
@@ -231,6 +231,7 @@ export const reimbursementByDistance = (distance: number, delay = 180, passenger
 		commission
 	}
 }
+
 
 export const keyIncrement = (e: KeyboardEvent, value: number, length: number) => {
 	let v = value

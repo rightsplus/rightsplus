@@ -3,7 +3,7 @@
     <Head>
       <Title>RightsPlus</Title>
     </Head>
-    <Body class="antialiased text-gray-800 bg-neutral-200 text-lg">
+    <Body class="antialiased text-gray-800" :class="$route.meta.classes?.body">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
@@ -16,7 +16,6 @@ const client = useSupabaseClient();
 
 
 const app = useNuxtApp();
-const { currentRoute } = useRouter()
 if (!app.$state) app.provide("state", reactive(state));
 // watch(currentRoute, (e) => console.log(e.fullPath, e.redirectedFrom, e.query))
 </script>

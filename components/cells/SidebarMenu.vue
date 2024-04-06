@@ -27,7 +27,7 @@
     </div>
     <div v-for="(item, index) in items" :key="index">
       <hr v-if="'separator' in item" class="m-5 border-neutral-300"/>
-      <NuxtLink
+      <NuxtLinkLocale
         class="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 relative flex items-center md:px-3 py-2 rounded text-foreground md:hover:bg-neutral-300 hover:text-foreground sidebar-item sidebar-item-General group mb-2 gap-3"
         :class="[
           item.class,
@@ -35,13 +35,13 @@
             'cursor-pointer': item.onClick,
           },
         ]"
-        :to="item.href"
+        :to="item.path"
         @click="item.onClick"
         v-else
       >
         <FontAwesomeIcon :icon="item.icon" fixed-width class="text-sm" />
         <p class="text-base">{{ item.label }}</p>
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
   </aside>
 </template>
@@ -51,7 +51,7 @@ import type { User } from "@supabase/supabase-js";
 type Item = {
   icon: string;
   label: string;
-  href?: string;
+  path?: string;
   onClick?: () => void;
   class?: string;
   critical?: boolean;

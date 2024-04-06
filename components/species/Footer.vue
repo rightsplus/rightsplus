@@ -1,19 +1,21 @@
 <template>
-  <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24">
+  <footer class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24" :class="$route.meta.classes?.footer">
     <nav
       class="grid grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-full"
     >
-      <div class="col-span-12 sm:col-span-3 flex flex-col gap-24">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <NuxtLink
-            to="/"
-            class="w-full max-w-[160px] h-min"
-            title="home"
-            @click="scrollTop"
-          >
-            <Icon v-if="Logo" :icon="Logo" />
-          </NuxtLink>
-        </div>
+      <div class="col-span-12 md:col-span-3 flex flex-col gap-24">
+        <NuxtLinkLocale
+          to="/"
+          class="w-full max-w-[160px] h-min flex gap-3 items-center leading-none cursor-pointer"
+          title="home"
+          @click="scrollTop"
+        >
+          <Icon v-if="Logo" :icon="Logo" class="shrink-0 border border-white/30 rounded-md" />
+          <span class="flex gap-1">
+            <span class="font-bold shrink-0">RightsPlus</span
+            ><span class="font-medium shrink-0">Flights</span>
+          </span>
+        </NuxtLinkLocale>
       </div>
       <ul
         class="col-span-12 sm:col-span-9 grid grid-cols-2 lg:grid-cols-4 font-medium gap-5 gap-y-12 sm:gap-12"
@@ -25,40 +27,25 @@
           >
           <ul class="flex flex-col gap-3 text-sm md:text-base">
             <li v-for="item in column.links" class="leading-tight">
-              <NuxtLink
-                :to="item.link || `/${item.name}`"
+              <NuxtLinkLocale
+                :to="item.path"
                 class="hover:text-gray-400 break-words hyphens-auto"
                 exactActiveClass="text-gray-400"
-                >{{ item.title }}</NuxtLink
+                >{{ item.title }}</NuxtLinkLocale
               >
             </li>
           </ul>
         </li>
       </ul>
-      <!-- <ul
-        class="col-span-6 sm:col-span-3 lg:col-span-3 flex flex-col text-xl font-medium leading-loose md:leading-normal"
-        :style="{ '--total': routes.length }"
-      >
-        <li v-for="(item, i) in routes" :key="item.name" :style="{ '--i': i }">
-          <NuxtLink
-            :to="item.path"
-            v-if="!item.spacer"
-            class="duration-75 hover:text-gold-600 whitespace-nowrap py-3 md:py-1"
-            exactActiveClass="text-gold-500"
-          >
-            <Icon v-if="item.icon" :icon="item.icon" class="w-36" />
-            <template v-else>{{ item.title }}</template>
-          </NuxtLink>
-          <hr v-else class="border-none h-4" />
-        </li>
-      </ul> -->
     </nav>
     <hr class="max-w-5xl mx-auto w-full border-t border-gray-700 my-12" />
     <div class="max-w-5xl mx-auto w-full flex gap-12 items-center">
       <span
         class="flex w-full text-xs sm:text-sm text-center text-gray-500"
         v-html="
-          `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. ${t('allRightsReserved')}`
+          `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. ${t(
+            'allRightsReserved'
+          )}`
         "
       />
       <LanguageSwitcher />
@@ -70,75 +57,77 @@
 import Logo from "~/assets/logo";
 import LanguageSwitcher from "@/components/molecules/LanguageSwitcher.vue";
 const { t } = useI18n();
+const localePath = useLocalePath();
+
 const routes = computed(() => [
   {
     title: t("ourService"),
     links: [
       {
-        name: "claim/new",
-        title: t("calculateYourClaim")
-      },
-
-      {
-        name: "your-rights",
-        title: t("yourRights")
+        path: "claim-new",
+        title: t("checkClaim"),
       },
       {
-        name: "prices-and-services",
-        title: t("pricesAndServices")
+        path: "delayed-and-cancelled-flights",
+        title: t("disruptedFlights"),
       },
-    ]
+      {
+        path: "your-rights",
+        title: t("yourRights"),
+      },
+      {
+        path: "prices-and-services",
+        title: t("pricesAndServices"),
+      },
+    ],
   },
   {
     title: t("legal"), // Legal
     links: [
       {
-        name: "privacy",
-        title: t("privacy")
+        path: "privacy",
+        title: t("privacy"),
       },
       {
-        name: "terms-and-conditions",
-        title: t('termsAndConditions')
+        path: "terms-and-conditions",
+        title: t("termsAndConditions"),
       },
       {
-        name: "legal-notice",
-        title: t('legalNotice')
-      }
-    ]
+        path: "legal-notice",
+        title: t("legalNotice"),
+      },
+    ],
   },
   {
     title: t("about").trim(),
     links: [
       {
-        link: "blog",
-        name: "blog",
-        title: t("blog")
+        path: "blog",
+        title: t("blog"),
       },
       {
-        link: "team",
-        name: "team",
-        title: t("team")
+        path: "team",
+        title: t("team"),
       },
       {
-        link: "ueber-rights-plus",
-        name: "about-rights-plus",
-        title: t("about", { name: "RightsPlus" })
-      }
-    ]
+        path: "about-rights-plus",
+        title: t("about", { name: "RightsPlus" }),
+      },
+    ],
   },
   {
-    title: t('help'),
+    title: t("help"),
     links: [
       {
-        name: "customer-service",
-        title: t("customerService")
+        path: "faq",
+        title: t("customerService"),
       },
       {
-        name: "faq",
-        title: t("faq")
-      }
-    ]
-  }
+        path: "faq",
+        title: t("faq"),
+      },
+    ],
+  },
 ]);
 const scrollTop = () => {
   // scroll to top smooth

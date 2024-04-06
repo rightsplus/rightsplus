@@ -21,12 +21,6 @@ definePageMeta({
   middleware: ["auth"],
   layout: "claims",
 });
-onMounted(() => {
-  useAppState().headerColor = "dark";
-});
-onBeforeUnmount(() => {
-  useAppState().headerColor = null;
-});
 const { query: queryAirports } = useAirports();
 const claims = ref(
   null as

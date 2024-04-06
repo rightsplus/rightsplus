@@ -26,19 +26,19 @@
         class="whitespace-pre-line [&_a]:text-blue-500 [&_a]:underline"
       >
         <template v-slot:terms
-          ><NuxtLink to="/terms">
+          ><NuxtLinkLocale to="/terms-and-conditions">
             {{ $t("termsAndConditions") }}
-          </NuxtLink></template
+          </NuxtLinkLocale></template
         >
         <template v-slot:privacy
-          ><NuxtLink to="/privacy">
+          ><NuxtLinkLocale to="/privacy">
             {{ $t("privacyPolicy") }}
-          </NuxtLink></template
+          </NuxtLinkLocale></template
         >
         <template v-slot:pricelist
-          ><NuxtLink to="/pricelist">
+          ><NuxtLinkLocale to="/prices-and-services">
             {{ $t("pricelist") }}
-          </NuxtLink></template
+          </NuxtLinkLocale></template
         >
         <template v-slot:assignmentAgreement
           ><NuxtLink @click.prevent="generateAssignmentAgreement">
@@ -56,7 +56,7 @@ import SignaturePad from "~/components/molecules/SignaturePad.vue";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-
+const localePath = useLocalePath()
 const { generate } = useGeneratePDF()
 const signatures = ref<(string | undefined)[]>([]);
 

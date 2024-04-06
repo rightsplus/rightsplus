@@ -76,14 +76,11 @@
 
 <script setup lang="ts">
 import Stats from "@/components/organisms/Sections/Stats.vue";
-onMounted(() => {
-  useAppState().headerColor = "white";
-})
-onBeforeUnmount(() => {
-  useAppState().headerColor = undefined;
-})
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
+  classes: {
+    header: 'text-white'
+  }
 });
 </script>
 

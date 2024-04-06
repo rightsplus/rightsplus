@@ -1,11 +1,5 @@
 import { locales } from "./i18n";
 
-export type LocaleObject = {
-	code: string;
-	name: string;
-	file: string;
-	iso: string;
-}
 const format = () => ({
 	km: { style: 'unit', unit: 'kilometer', unitDisplay: 'narrow' },
 	m: { style: 'unit', unit: 'meter', unitDisplay: 'narrow' },
@@ -18,4 +12,5 @@ const format = () => ({
 })
 export default defineI18nConfig(() => ({
 	numberFormats: locales.reduce((a, { code }) => ({ ...a, [code]: format() }), {}),
+	fallbackLocale: 'de'
 }))

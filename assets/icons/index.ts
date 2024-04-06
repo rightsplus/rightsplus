@@ -1,1 +1,1 @@
-export { faEuropeanUnion } from './customIcons'
+export { faEuropeanUnion, faCircleQuarter } from './customIcons'

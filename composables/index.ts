@@ -1,5 +1,18 @@
 import type { MaskInputOptions } from "maska";
 
+export const useScroll = () => {
+	const scroll = ref(0);
+	const onScroll = () => {
+		scroll.value = window.scrollY;
+	}
+	onMounted(() => {
+		window.addEventListener('scroll', onScroll);
+	});
+	onUnmounted(() => {
+		window.removeEventListener('scroll', onScroll);
+	});
+	return scroll;
+}
 export const usePosition = () => {
 	const element = ref<HTMLElement>();
 	const position = ref({ top: '0px', left: '0px', width: "0px" });

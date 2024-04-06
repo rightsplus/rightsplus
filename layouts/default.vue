@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <Header class="w-full z-50 absolute" />
-    <main class="min-h-screen">
+    <main class="min-h-screen" :class="$route.meta.classes?.main">
       <slot />
     </main>
     <Footer class="w-full mt-auto" />

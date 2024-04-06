@@ -5,7 +5,7 @@
       class="min-h-screen p-12 bg-neutral-200 max-w-7xl mx-auto w-full block md:flex gap-8"
     >
       <!-- <CellsSidebarMenu :user="user" :items="menu" /> -->
-      <main class="w-full">
+      <main class="w-full" :class="$route.meta.classes?.main">
         <!-- <h1 class="text-3xl">{{ $route.meta.title }}</h1> -->
         <!-- <hr class="my-12 w-full border-t border-neutral-300" /> -->
         <slot />

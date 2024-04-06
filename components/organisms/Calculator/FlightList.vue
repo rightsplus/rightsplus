@@ -1,10 +1,20 @@
 <template>
-  <div class="flex flex-col gap-5" v-if="loading">Flüge werden geladen ...</div>
-  <div class="flex flex-col gap-5" v-else-if="!flights.length">
-    Keine Flüge gefunden.
+  <div
+    class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+    v-if="loading"
+  >
+    <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
+    <span class="text-neutral-500">Flüge werden geladen ...</span>
+  </div>
+  <div
+    class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+    v-else-if="!allFlights.length"
+  >
+    <FontAwesomeIcon icon="plane-slash" class="text-xl" />
+    <span class="text-neutral-500">Keine Flüge gefunden</span>
   </div>
   <div class="flex flex-col gap-5" v-else>
-    <div class="flex gap-2 flex-wrap" v-if="flights.length > 12">
+    <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
       <span
         class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
         :class="{
@@ -12,7 +22,7 @@
             iata === selectedAirline,
         }"
         v-for="{ name, iata } in Object.values(
-          flights.reduce(
+          allFlights.reduce(
             (acc, curr) => ({ ...acc, [curr.airline.iata]: curr.airline }),
             {} as Record<string, Flight['airline']>
           )
@@ -29,19 +39,19 @@
         ><span
           class="w-5 h-5 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
         >
-          <img :src="getAirlineLogo(iata)" class="w-4" /></span
+          <img :src="getAirlineLogo(iata, 80)" class="w-4" /></span
         >{{ name }}</span
       >
     </div>
     <FlightFrequency
-      :flights="flights"
+      :flights="allFlights"
       :time="time"
       @select="selectTime"
       v-if="filteredDayTimeButtons?.length > 7"
     />
 
     <div
-      v-if="flights.length > 7 && filteredDayTimeButtons?.length > 1"
+      v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
       class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
     >
       <ButtonLarge
@@ -62,24 +72,19 @@
     >
       <ButtonFlight
         v-for="(flight, index) in filteredFlights"
-        :key="`${flight.flight?.iata}-${flight[flight.type].scheduledTime}`"
+        :key="`${flight.flight?.iata}-${flight[flight.type]?.scheduledTime}`"
         :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
         :flight="flight"
         @click="handleSelect(flight)"
         class="w-full"
         :class="{
           'rounded-b-none -mb-5 [&_+_*]:rounded-t-none [&_+_*]:mt-0.5':
-          filteredFlights[index + 1]?.departure.scheduledTime ===
-              flight.departure.scheduledTime &&
-            operatingAirline(filteredFlights[index + 1]) === operatingAirline(flight),
+            filteredFlights[index + 1]?.departure?.scheduledTime ===
+              flight.departure?.scheduledTime &&
+            operatingAirline(filteredFlights[index + 1]) ===
+              operatingAirline(flight),
         }"
       />
-      <!-- (flights[index + 1]?.codeshared?.airline.iata ===
-              flight.airline.iata ||
-              flights[index + 1]?.codeshared?.airline.iata ===
-                flight.codeshared?.airline.iata) &&
-            flights[index + 1]?.departure.scheduledTime ===
-              flight.departure.scheduledTime, -->
     </ListGroupTransition>
   </div>
 </template>
@@ -89,26 +94,30 @@ import ButtonFlight from "./ButtonFlight.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const props = defineProps<{
-  // flights: Flight[];
+  flights?: Flight[];
   departure?: string;
   arrival?: string;
   date?: string;
   number?: string;
-  modelValue: Flight | null;
+  modelValue?: Flight | null;
 }>();
+const { fetchFlights, getFilteredFlights } = useFlights();
 
-const flights = computed(() =>
-  getFilteredFlights({
-    departure: props.departure,
-    arrival: props.arrival,
-    date: props.date,
-    number: props.number
-  })
-    .filter((e) => e.flight.iata)
-);
+const allFlights = computed(() => {
+  return (
+    props.flights ||
+    getFilteredFlights({
+      departure: props.departure,
+      arrival: props.arrival,
+      date: props.date,
+      number: props.number,
+    })
+  ).filter((e) => e.flight.iata);
+});
 const filteredFlights = computed(() =>
-  flights.value
+  allFlights.value
     .filter((e) => dayTimeFilter(e))
     .filter((e) => timeFilter(e))
     .filter((e) => airlineFilter(e))
@@ -117,11 +126,10 @@ const filteredFlights = computed(() =>
 const loading = ref(true);
 const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
-const { fetch } = useFetchFlight();
 onMounted(() => {
   console.log("flight list mounted");
   loading.value = true;
-  fetch({
+  fetchFlights({
     departure: props.departure,
     arrival: props.arrival,
     date: props.date,
@@ -131,7 +139,7 @@ onMounted(() => {
 const emit = defineEmits(["update:modelValue", "select"]);
 const handleSelect = (flight: Flight) => {
   emit("update:modelValue", flight);
-  emit("select");
+  emit("select", flight);
 };
 const dayTime = ref(null as null | string);
 const time = ref<number>();
@@ -166,7 +174,7 @@ const timesOfDay = [
 ];
 const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
   if (!time) return true;
-  const { scheduledTime } = flight.departure;
+  const { scheduledTime } = flight.departure || {};
   const departureTime = parseInt(get24HTime(scheduledTime));
   if (time === "morning") {
     return departureTime < 1300;
@@ -181,7 +189,7 @@ const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
 const timeFilter = (flight: Flight, t = time.value) => {
   if (!t) return true;
   return (
-    t === parseInt(get24HTime(flight.departure.scheduledTime).slice(0, -2))
+    t === parseInt(get24HTime(flight.departure?.scheduledTime).slice(0, -2))
   );
 };
 const selectedAirline = ref();
@@ -192,7 +200,9 @@ const airlineFilter = (flight: Flight) => {
 };
 const filteredDayTimeButtons = computed(() =>
   timesOfDay.filter((button: { value: string; subLabel: string }) => {
-    return flights.value?.some((flight) => dayTimeFilter(flight, button.value));
+    return allFlights.value?.some((flight) =>
+      dayTimeFilter(flight, button.value)
+    );
   })
 );
 
@@ -205,10 +215,10 @@ watch(filteredDayTimeButtons, () => {
   }
 });
 // watch(
-//   () => props.flights && dayTime.value,
+//   () => props.allFlights && dayTime.value,
 //   () => {
 //     if (
-//       !props.flights
+//       !props.allFlights
 //         .filter((e) => dayTimeFilter(e, dayTime.value))
 //         .some(
 //           (flight) =>

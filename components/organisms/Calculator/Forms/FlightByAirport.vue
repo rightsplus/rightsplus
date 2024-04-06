@@ -1,29 +1,25 @@
 <template>
-  <div class="grid gap-5">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <div class="grid gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <AirportInput
         name="departure"
-        label="Abflug"
+        :label="$t('departureAirport')"
         prefix-icon="plane-departure"
         v-model="modelValue.airport.trip.departure"
       />
       <AirportInput
         name="arrival"
-        label="Ankunft"
+        :label="$t('arrivalAirport')"
         prefix-icon="plane-arrival"
         v-model="modelValue.airport.trip.arrival"
         @keydown.enter="start"
       />
     </div>
-    <FormKit
-      type="submit"
-      @click.prevent="start"
-      label="Jetzt Entschädigung berechnen!"
-      outer-class="!mb-0"
-    />
-    <CheckList
+    <Button @click.prevent="start" primary>Jetzt Anspruch prüfen!</Button>
+    <!-- <CheckList
+      class="mt-2"
       :items="['professionalExpertise', 'completeProcess', 'noRisk']"
-    />
+    /> -->
   </div>
 </template>
 
@@ -31,14 +27,17 @@
 import claimMachine from "~/machines/claim";
 import AirportInput from "./AirportInput.vue";
 import type { ClaimsForm } from "@/types";
+import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
 const emit = defineEmits(["submit"]);
 const { push } = useRouter();
-const claimState = useClaim()
-const { invoke } = useMachine<ClaimsForm>(claimMachine, claimState)
+const claimState = useClaim();
+const { invoke, send } = useMachine<ClaimsForm>(claimMachine, claimState);
+const localePath = useLocalePath()
 const start = () => {
-  push("/claim/new");
-  invoke('go', 'itinerary')
+  invoke("reset");
+  send("next");
+  push(localePath("claim-new"));
   emit("submit");
 };
 </script>
