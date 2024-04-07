@@ -89,23 +89,6 @@ const routes = computed(() => [
     ],
   },
   {
-    title: t("legal"), // Legal
-    links: [
-      {
-        path: "privacy",
-        title: t("privacy"),
-      },
-      {
-        path: "terms-and-conditions",
-        title: t("termsAndConditions"),
-      },
-      {
-        path: "legal-notice",
-        title: t("legalNotice"),
-      },
-    ],
-  },
-  {
     title: t("about").trim(),
     links: [
       {
@@ -119,6 +102,23 @@ const routes = computed(() => [
       {
         path: "about-rights-plus",
         title: t("about", { name: "RightsPlus" }),
+      },
+    ],
+  },
+  {
+    title: t("legal"), // Legal
+    links: [
+      {
+        path: "privacy",
+        title: t("privacy"),
+      },
+      {
+        path: "terms-and-conditions",
+        title: t("termsAndConditions"),
+      },
+      {
+        path: "legal-notice",
+        title: t("legalNotice"),
       },
     ],
   },

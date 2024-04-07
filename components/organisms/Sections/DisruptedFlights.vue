@@ -3,7 +3,7 @@
     class="grid gap-12 lg:grid-cols-2 max-w-7xl mx-auto p-5 py-12 sm:p-12 md:py-36 h-full relative z-1"
   >
     <div
-      class="flex flex-col items-start gap-5 sm:gap-12 sticky top-12 self-start"
+      class="flex flex-col items-start gap-5 sm:gap-12 lg:sticky lg:top-12 self-start"
     >
       <FontAwesomeIcon
         icon="plane-slash"
