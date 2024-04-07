@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-x-hidden">
       <img
-        src="/images/samuel-t-XYJ2JZrj0kg-unsplash-2.jpg"
+        src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
         alt="Airport"
         class="absolute inset-0 h-full w-full object-cover object-right -z-1"
       />

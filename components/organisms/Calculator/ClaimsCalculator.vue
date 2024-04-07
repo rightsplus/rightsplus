@@ -101,7 +101,7 @@
             <ClaimCard :flight="claimState.flight" />
           </div>
           <ButtonGroup
-            stack
+            :stack="640"
             @primary="send('continue')"
             :primary="{
               label:

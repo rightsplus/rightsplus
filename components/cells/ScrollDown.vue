@@ -3,10 +3,10 @@
     <button
       role="button"
       @click="scroll"
-      class="text-sm flex items-center gap-3 text-black hover:white-black !bg-transparent"
+      class="text-sm flex items-center gap-3 text-white hover:white-black !bg-transparent"
     >
       <span
-        class="bg-white/50 rounded-full w-6 h-6 inline-flex items-center justify-center left-0 text-sm"
+        class="bg-black/50 rounded-full w-6 h-6 inline-flex items-center justify-center left-0 text-sm"
       >
         <FontAwesomeIcon icon="arrow-down" fixed-width/></span
       ><span>Nach unten scrollen</span>

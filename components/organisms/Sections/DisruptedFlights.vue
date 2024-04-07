@@ -60,7 +60,7 @@ onMounted(async () => {
     .or("delay_arrival.gt.180,status.eq.cancelled")
     .limit(20);
 
-  flights.value = data?.map(({ data }) => data).slice(0, props.page ? 20 : 15);
+  flights.value = data?.map(({ data }) => data).slice(0, props.page ? 20 : 10);
   console.log(flights);
 });
 import claimMachine from "@/machines/claim";

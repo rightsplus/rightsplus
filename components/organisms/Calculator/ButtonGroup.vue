@@ -3,7 +3,7 @@
     ref="stickyElement"
     class="grid gap-3 sticky bottom-0 rounded-b-3xl bg-white ease-out mt-12 -m-5 p-5"
     :class="{
-      'grid-cols-2': secondary && primary && !stack,
+      'grid-cols-2': secondary && primary && !stacked,
       'shadow-2xl !rounded-b-none md:!rounded-3xl -mx-5 sm:-mx-20 md:-mx-20 lg:-mx-20 md:bottom-4 z-[99]':
         isStickyRelative,
       'duration-150': ready,
@@ -24,10 +24,10 @@
 </template>
 <script setup lang="ts">
 import Button, { type ButtonProps } from "@/components/core/Button.vue";
-defineProps<{
+const props = defineProps<{
   secondary?: ButtonProps;
   primary: ButtonProps;
-  stack?: boolean;
+  stack?: number;
 }>();
 defineEmits(["primary", "secondary"]);
 
@@ -45,15 +45,13 @@ const handleScroll = () => {
   }
 
   const threshold =
-    window.innerWidth < 768
-      ? window.innerHeight
-      : window.innerHeight - 24;
+    window.innerWidth < 768 ? window.innerHeight : window.innerHeight - 24;
   isStickyRelative.value = (rect?.bottom || 0) >= threshold;
 };
+const { width } = useElementSize(stickyElement);
+const stacked = computed(() => width.value < (props.stack || 0));
 const { height } = useElementSize(document?.body);
 watch(height, handleScroll);
-
-
 
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);

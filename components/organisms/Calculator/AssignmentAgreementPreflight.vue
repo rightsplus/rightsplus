@@ -1,8 +1,8 @@
 <template>
-  <div class="grid gap-5">
+  <div class="grid gap-12 mt-12">
     <div
       v-for="(passenger, i) in modelValue.client.passengers"
-      class="text-xs border border-gray-200 rounded-xl p-5 grid gap-5"
+      class="text-xs grid gap-5"
     >
       <!-- <AssignmentAgreementLetter
         :name="[passenger.firstName, passenger.lastName].join(' ')"
@@ -26,22 +26,22 @@
         class="whitespace-pre-line [&_a]:text-blue-500 [&_a]:underline"
       >
         <template v-slot:terms
-          ><NuxtLinkLocale to="/terms-and-conditions">
+          ><NuxtLink :to="localePath('terms-and-conditions')" target="_blank">
             {{ $t("termsAndConditions") }}
-          </NuxtLinkLocale></template
+          </NuxtLink></template
         >
         <template v-slot:privacy
-          ><NuxtLinkLocale to="/privacy">
+          ><NuxtLink :to="localePath('privacy')" target="_blank">
             {{ $t("privacyPolicy") }}
-          </NuxtLinkLocale></template
+          </NuxtLink></template
         >
         <template v-slot:pricelist
-          ><NuxtLinkLocale to="/prices-and-services">
+          ><NuxtLink :to="localePath('prices-and-services')" target="_blank">
             {{ $t("pricelist") }}
-          </NuxtLinkLocale></template
+          </NuxtLink></template
         >
         <template v-slot:assignmentAgreement
-          ><NuxtLink @click.prevent="generateAssignmentAgreement">
+          ><NuxtLink @click.prevent="generateAssignmentAgreement" target="_blank">
             {{ $t("assignmentAgreement") }}
           </NuxtLink></template
         >
