@@ -39,6 +39,14 @@
       Flüge und auch für Flüge in Norwegen, Island, Liechtenstein und der
       Schweiz, sofern die Fluggesellschaft ihren Sitz in der EU hat.
     </p>
+    <NuxtImg
+      width="800"
+      quality="70"
+      format="webp"
+      loading="lazy"
+      src="/images/billow926-jah2Y1d-6Cc-unsplash.jpg"
+      class="object-cover w-full h-96 rounded-2xl my-12"
+    />
     <h2 class="text-2xl font-bold">
       Die Höhe der Ausgleichsleistung ist abhängig von der Flugstrecke zum
       letzten Zielort und beträgt:
@@ -101,13 +109,11 @@
 </template>
 
 <script lang="ts" setup>
-
 definePageMeta({
   layout: "generic",
   category: "EU-Fluggastrechtverordnung EC261",
   title: "yourRights",
-  lead:
-    "Nach der Fluggastrechteverordnung hast Du unter verschiedenen Voraussetzungen ein Recht auf Entschädigung.",
+  lead: "Nach der Fluggastrechteverordnung hast Du unter verschiedenen Voraussetzungen ein Recht auf Entschädigung.",
 });
 </script>
 

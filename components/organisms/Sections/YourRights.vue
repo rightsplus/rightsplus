@@ -1,8 +1,13 @@
 <template>
   <section class="py-12 md:py-24 bg-neutral-200 relative">
-    <img
+    <NuxtImg
       src="/images/kenrick-mills-MF9Wy1NA55I-unsplash.jpg"
+      quality="70"
+      width="1920"
+      height="1080"
       alt="Airport"
+      loading="lazy"
+      format="webp"
       class="absolute inset-0 h-full max-h-screen w-full object-cover -z-1 -scale-x-100"
     />
     <div class="max-w-5xl mx-auto px-5 sm:px-12 h-full relative z-1">

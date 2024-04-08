@@ -1,8 +1,13 @@
 <template>
   <div class="overflow-x-hidden">
-      <img
+    <NuxtImg
         src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
+        quality="70"
+        width="1920"
+        height="1080"
+        format="webp"
         alt="Airport"
+        preload
         class="absolute inset-0 h-full w-full object-cover z-1"
       />
     <section

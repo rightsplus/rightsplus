@@ -1,9 +1,12 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-gray-900 text-white">
-    <img
+    <NuxtImg
       src="/images/empty-airport.jpg"
       alt="Airport"
       class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1 top-8 md:top-6 lg:top-0"
+      quality="80"
+      width="1920"
+      format="webp"
     />
     <div class="max-w-4xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
@@ -58,9 +61,13 @@
             </p>
           </div>
           <div class="flex items-center gap-8 mt-24">
-            <img
+            <NuxtImg
               src="/jo.jpg"
               alt="Joachim Bawa"
+              quality="80"
+              format="webp"
+              width="128"
+              height="128"
               class="object-cover rounded-full w-16 h-16 grayscale contrast-125"
             />
             <div class="flex flex-col">
@@ -77,10 +84,10 @@
 <script setup lang="ts">
 import Stats from "@/components/organisms/Sections/Stats.vue";
 definePageMeta({
-  layout: 'default',
+  layout: "default",
   classes: {
-    header: 'text-white'
-  }
+    header: "text-white",
+  },
 });
 </script>
 

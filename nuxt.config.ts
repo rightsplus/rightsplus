@@ -21,7 +21,8 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    "@nuxt/image"
   ],
   build: {
     transpile: [
@@ -35,6 +36,10 @@ export default defineNuxtConfig({
   },
   formkit: {
     configFile: './formkit.config.ts',
+  },
+  image: {
+
+    // format: ['webp']
   },
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
