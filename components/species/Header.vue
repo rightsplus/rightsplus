@@ -8,7 +8,7 @@
       },
     ]"
     @click.self="menuOpen = false"
-    :style="`--total: ${links.length}`"
+    :style="`--total: ${links?.length}`"
   >
     <div
       v-if="isAdmin && useRouter().currentRoute.value.path !== '/admin'"
@@ -136,36 +136,33 @@ const isAdmin =
   ).data?.role === "admin";
 
 const { invoke } = useMachine(claimMachine, claim);
-const links = computed(
-  () =>
-    [
-      {
-        path: "delayed-and-cancelled-flights",
-        name: "disrupted-flights",
-        title: t("disruptedFlights"),
-      },
-      {
-        path: "your-passenger-rights",
-        name: "your-passenger-rights",
-        title: t("yourRights"),
-      },
-      {
-        path: "claim-new",
-        onClick: () => invoke("reset"),
-        name: "claim",
-        title: t("checkClaim"),
-        type: "button",
-      },
-      {
-        name: "sign-out",
-        onClick: () => auth.signOut(),
-        type: "button",
-        icon: "door-open",
-        critical: true,
-        hidden: !user.value,
-      },
-    ].filter(Boolean) as Route[]
-);
+const links = [
+  {
+    path: "delayed-and-cancelled-flights",
+    name: "disrupted-flights",
+    title: t("disruptedFlights"),
+  },
+  {
+    path: "your-passenger-rights",
+    name: "your-passenger-rights",
+    title: t("yourRights"),
+  },
+  {
+    path: "claim-new",
+    onClick: () => invoke("reset"),
+    name: "claim",
+    title: t("checkClaim"),
+    type: "button",
+  },
+  {
+    name: "sign-out",
+    onClick: () => auth.signOut(),
+    type: "button",
+    icon: "door-open",
+    critical: true,
+    hidden: !user.value,
+  },
+];
 
 const clickLink = (item: Route) => {
   item.onClick?.();

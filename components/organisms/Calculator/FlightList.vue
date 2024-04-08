@@ -9,14 +9,14 @@
     </div>
     <div
       class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-      v-else-if="!allFlights.length && !show"
+      v-else-if="!allFlights.length"
     >
       <FontAwesomeIcon icon="plane-slash" class="text-xl" />
       <span class="text-neutral-500">Keine Flüge gefunden</span>
       <span class="text-neutral-500 text-xs"
         >{{ departure }} &rsaquo; {{ arrival }}, {{ date }}</span
       >
-      <button @click="fetch">erneut laden</button>
+      <Button tertiary @click="fetch" class="text-sm" prefixIcon="arrow-rotate-right">erneut laden</button>
     </div>
     <div class="flex flex-col gap-5" v-else>
       <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
@@ -24,28 +24,24 @@
           class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
           :class="{
             'bg-primary-500 text-white hover:!bg-primary-600':
-              iata === selectedAirline,
+              flight.airline.iata === selectedAirline,
           }"
-          v-for="{ name, iata } in Object.values(
+          v-for="flight in Object.values(
           allFlights.reduce(
-            (acc, curr) => ({ ...acc, [curr.airline.iata]: curr.airline }),
-            {} as Record<string, Flight['airline']>
+            (acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
+            {} as Record<string, Flight>
           )
         )"
           @click="
             () => {
-              if (selectedAirline === iata) {
+              if (selectedAirline === flight.airline.iata) {
                 selectedAirline = undefined;
               } else {
-                selectedAirline = iata;
+                selectedAirline = flight.airline.iata;
               }
             }
           "
-          ><span
-            class="w-5 h-5 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
-          >
-            <img :src="getAirlineLogo(iata, 80)" class="w-4" /></span
-          >{{ name }}</span
+          ><AirlineLogo :flight="flight" size="xs" />{{ flight.airline.name }}</span
         >
       </div>
       <FlightFrequency
@@ -99,6 +95,7 @@ import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useIntersectionObserver } from "@vueuse/core";
+import AirlineLogo from "~/components/cells/AirlineLogo.vue";
 const props = defineProps<{
   flights?: Flight[];
   departure?: string;
@@ -107,7 +104,7 @@ const props = defineProps<{
   number?: string;
   modelValue?: Flight | null;
   limit?: number;
-  flightCard?: typeof ButtonFlight
+  flightCard?: typeof FlightCard
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const show = ref(false);

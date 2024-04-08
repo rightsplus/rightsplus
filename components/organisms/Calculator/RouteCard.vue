@@ -43,11 +43,7 @@
       <div
         class="w-5 h-5 flex justify-center items-center bg-white rounded-full"
       >
-        <img
-          :alt="route.flight.airline.name"
-          :src="getAirlineLogo(route.flight.airline?.iata)"
-          class="w-4"
-        />
+      <AirlineLogo :flight="route.flight" size="sm" />
       </div>
       <span class="text-sm font-medium">{{ route.flight.airline.name }}</span>
     </div>
@@ -65,6 +61,7 @@ import type { Airport, Flight } from "@/types";
 import { euMember } from "is-european";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";
+import AirlineLogo from "~/components/cells/AirlineLogo.vue";
 
 export default defineComponent({
   components: {

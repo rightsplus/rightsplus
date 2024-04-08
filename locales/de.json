@@ -1,6 +1,12 @@
 {
+  "airline": "Fluggesellschaft",
   "departureAirport": "Startflughafen",
   "arrivalAirport": "Zielflughafen",
+  "scheduledArrivalTime": "Geplante Ankunftszeit",
+  "actualArrivalTime": "Tatsächliche Ankunftszeit",
+  "delayArrivalTime": "Verspätete Ankunftszeit",
+  "neverArrived": "Nie angekommen",
+  "flightDistance": "Flugdistanz",
   "manualInput": "Manuelle Eingabe",
   "otherFlight.label": "Anderer Flug",
   "otherFlight.sublabel": "Mein Flug ist nicht aufgeführt",
@@ -183,5 +189,8 @@
   "flightDelayedOrCancelled": "Flug verspätet oder annulliert?",
   "checkCompensationNow": "Jetzt Anspruch Prüfen!",
   "fightingForYourRights": "Mit {partner} setzen wir deine Ansprüche auf Entschädigung gemäß EU-Recht durch.",
-  "scrollDown": "Nach unten scrollen"
+  "scrollDown": "Nach unten scrollen",
+  "potentialCompensationFromAirline": "Mögliche Vergütung durch die Fluggesellschaft",
+  "noPotentialCompensationFromAirline": "Vermutlich keine Vergütung durch die Fluggesellschaft",
+  "perPerson": "{value} pro Person"
 }

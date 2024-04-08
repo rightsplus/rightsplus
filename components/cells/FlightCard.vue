@@ -11,24 +11,7 @@
     @click="emit('click')"
   >
     <div class="flex gap-2 sm:gap-5 items-center w-full">
-      <div
-        class="w-14 h-14 hidden justify-center items-center bg-white rounded-full -ml-2 shrink-0 @md:flex"
-      >
-        <FontAwesomeIcon
-          v-if="!logo"
-          icon="plane-slash"
-          class="text-sm text-gray-400"
-        />
-        <img
-          v-else
-          v-show="!logoError"
-          @error="logoError = true"
-          @load="logoError = false"
-          :alt="flight.airline?.name"
-          :src="logo"
-          class="w-10 text-xs"
-        />
-      </div>
+      <AirlineLogo class="-ml-2 hidden @md:flex" :flight="flight" size="lg" />
       <div class="flex flex-col items-start text-start">
         <span
           class="text-sm leading-none"
@@ -41,26 +24,20 @@
         <span
           v-if="flight.departure && flight.arrival"
           class="text-lg font-bold flex items-center gap-3"
-          >{{ time(flight.departure.scheduledTime || flight.departure.scheduled)
+          >{{
+            time(flight.departure.scheduledTime)
           }}<FontAwesomeIcon icon="plane" class="text-sm text-gray-400" />{{
-            time(flight.arrival.scheduledTime || flight.arrival.scheduled)
+            time(flight.arrival.scheduledTime)
           }}<span v-if="overNight(flight)" class="-ml-2 text-gray-500 text-xs"
             >+{{ overNight(flight) }}</span
           ></span
         >
         <span class="flex items-center gap-2 text-sm leading-none">
-          <span
-            class="w-6 h-6 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
-            v-if="flight.airline"
-          >
-            <img
-              v-show="!logoError"
-              @error="logoError = true"
-              @load="logoError = false"
-              :alt="flight.airline?.name"
-              :src="logo"
-              class="w-5" /></span
-          ><span
+          <AirlineLogo
+            :flight="flight"
+            size="sm"
+            class="ml-auto @md:hidden"
+          /><span
             >{{ flight.airline?.name
             }}<span v-if="flight?.codeshared?.airline.name" class="opacity-50">
               operated by
@@ -113,7 +90,7 @@
         class="text-gray-400 text-base shrink-0"
       />
     </div>
-    <hr class="w-full mt-2" v-if="compensation"/>
+    <hr class="w-full mt-2" v-if="compensation" />
     <div v-if="compensation"></div>
   </component>
 </template>
@@ -121,6 +98,7 @@
 <script setup lang="ts">
 import type { Flight } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import AirlineLogo from "./AirlineLogo.vue";
 
 const props = defineProps<{
   flight: Flight;
@@ -134,11 +112,6 @@ const props = defineProps<{
 const emit = defineEmits(["click"]);
 const iata = computed(() => {
   return `${props.flight.airline.iata} ${props.flight.flight.number}`;
-});
-const logoError = ref(false);
-const logo = computed(() => {
-  let { airline } = props.flight || {};
-  return getAirlineLogo(airline?.iata, 80);
 });
 
 const city = useCities({

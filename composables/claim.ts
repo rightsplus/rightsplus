@@ -49,24 +49,34 @@ export const useGeneratePDF = () => {
 
 
 
-const getCompensation = (claim: ClaimsForm) => {
+export const useCompensation = () => {
+	const claim = useClaim()
+	const { t } = useI18n()
+	const compensation = ref(0);
+	const distance = ref(0);
+	const message = ref<string>();
+
+const getCompensation = () => {
 	const distance = getDistance(claim)
+	let message = ""
+	if (claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
+		message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
+		return { compensation: 0, distance, message }
+	}
 	let compensation = 250
 	if (distance > 1500) compensation = 400
 	const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)
 	if (distance > 3500 && beyondEU) compensation = 600
-	return { compensation, distance }
+	return { compensation, distance, message }
 }
-export const useReimbursment = () => {
-	const claim = useClaim()
-	const compensation = ref(0);
-	const distance = ref(0);
+
 	watch(claim.airport, () => {
-		const { compensation: c, distance: d } = getCompensation(claim)
+		const { compensation: c, distance: d, message: m } = getCompensation()
 		compensation.value = c
 		distance.value = d
+		message.value = m
 	}, { immediate: true, deep: true })
-	return { compensation, distance }
+	return { compensation, distance, message }
 }
 
 export const usePrepareClaimSubmission = () => {

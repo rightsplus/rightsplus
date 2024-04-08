@@ -1,9 +1,10 @@
 <template>
   <div class="grid gap-5 w-full">
     <div class="flex flex-col items-start gap-2">
+      <!-- {{ state.value }} -->
       <div class="flex flex-col gap-2 w-full" v-if="loading">
-      <span class="bg-gray-200 w-48 h-8 mt-1"/>
-      <span class="bg-gray-200 w-96 h-5 max-w-full"/>
+        <span class="bg-gray-200 w-48 h-8 mt-1" />
+        <span class="bg-gray-200 w-96 h-5 max-w-full" />
       </div>
       <div class="flex flex-col gap-2" v-else>
         <h2 class="text-3xl sm:text-4xl font-bold" :key="state.value">
@@ -25,13 +26,13 @@
 
 <script setup lang="ts">
 import claimMachine from "~/machines/claim";
-import type { ClaimsForm } from "~/types"
-const loading = ref(true)
+import type { ClaimsForm } from "~/types";
+const loading = ref(true);
 defineProps<{
   title?: string;
   description?: string;
 }>();
-const claim = useClaim()
+const claim = useClaim();
 const { state } = useMachine<ClaimsForm>(claimMachine, claim);
-onMounted(() => loading.value = false)
+onMounted(() => (loading.value = false));
 </script>

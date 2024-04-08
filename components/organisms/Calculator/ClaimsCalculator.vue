@@ -69,7 +69,7 @@
             @primary="send('next')"
             :primary="{
               label: $t('next'),
-              disabled: !state.can('next')
+              disabled: !state.can('next'),
             }"
           />
         </StepWrapper>
@@ -85,31 +85,18 @@
         </StepWrapper>
         <StepWrapper
           v-else-if="state?.matches('disruptionDetected')"
-          :description="
-            claimState.flight?.status === 'cancelled'
-              ? $t('disruptionDetected.cancelled.description')
-              : $t('disruptionDetected.delayed.description', {
-                  delay: getDuration(claimState.flight?.arrival.delay || 0),
-                  arrival: city.arrival,
-                })
-          "
+          :title="eligableDisruption.title"
+          :description="eligableDisruption.descriptions"
         >
           <div v-if="claimState.flight">
             <ClaimCard :flight="claimState.flight" />
           </div>
           <ButtonGroup
-            :stack="640"
-            @primary="send('continue')"
-            :primary="{
-              label:
-                claimState.flight?.status === 'cancelled'
-                  ? $t('Anspruch aufgrund von Annullierung')
-                  : $t('Anspruch aufgrund von Verspätung'),
-            }"
-            @secondary="send('next')"
-            :secondary="{
-              label: $t('Anspruch aus anderem Grund'),
-            }"
+            :stack="stackButtons(640)"
+            @primary="eligableDisruption.primary.event"
+            :primary="eligableDisruption.primary"
+            @secondary="eligableDisruption.secondary.event"
+            :secondary="eligableDisruption.secondary"
           />
         </StepWrapper>
         <StepWrapper
@@ -337,9 +324,12 @@ import AddBookingNumber from "./Forms/AddBookingNumber.vue";
 import PassengerForm from "./Forms/PassengerForm.vue";
 import StepPassengers from "./StepPassengers.vue";
 import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
+import { Container } from "postcss";
+import { useElementSize } from "@vueuse/core";
 const claimState = useClaim();
 const route = useRoute();
-const { locale } = useI18n();
+const { t, locale } = useI18n();
+const form = ref<HTMLElement>();
 const localePath = useLocalePath();
 const { state, send, transition, subscribe, invoke } = useMachine<ClaimsForm>(
   claimMachine,
@@ -350,7 +340,39 @@ const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
-
+const eligableDisruption = computed(() => {
+  const cancelled = claimState.flight?.status === "cancelled";
+  const delayed = (claimState.flight?.arrival.delay || 0) > 180;
+  const eligable = cancelled || delayed;
+  const props = (primary?: boolean) => ({
+    event: () => send(primary ? "continue" : "next"),
+    label: primary
+      ? cancelled
+        ? t("Anspruch aufgrund von Annullierung")
+        : t("Anspruch aufgrund von Verspätung")
+      : t("Anspruch aus anderem Grund"),
+  });
+  return {
+    statement: eligable
+      ? t("Anspruch auf Entschädigung")
+      : t("Kein Anspruch auf Entschädigung"),
+    title: t(cancelled ? "cancelled" : "delayed"),
+    descriptions: cancelled
+      ? t("disruptionDetected.cancelled.description")
+      : t("disruptionDetected.delayed.description", {
+          delay: getDuration(claimState.flight?.arrival.delay || 0),
+          arrival: city.value.arrival,
+        }),
+    primary: {
+      event: props(eligable).event,
+      label: props(eligable).label,
+    },
+    secondary: {
+      event: props(!eligable).event,
+      label: props(!eligable).label,
+    },
+  };
+});
 const selectReplacementFlight = (flight: Flight) => {
   claimState.replacement.flight = flight;
   setTimeout(() => send("next"));
@@ -416,4 +438,7 @@ const submit = async () => {
   // await client.from("claims").insert(submission);
   // router.push(localePath("claim-thank-you"));
 };
+const { width } = useElementSize(form);
+
+const stackButtons = (w: number) => width.value < w;
 </script>
