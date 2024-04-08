@@ -74,16 +74,18 @@
         class="flex flex-col gap-5"
         :style="`--total: ${filteredFlights.length};`"
       >
-        <ButtonFlight
+        <FlightCard
           v-for="(flight, index) in filteredFlights"
           :key="`${flight.flight?.iata}`"
           :flight="flight"
+          is="button"
           @click="handleSelect(flight)"
           :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
           class="w-full"
           :class="{
             'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
           }"
+          v-bind="flightCard"
         />
       </ListGroupTransition>
     </div>
@@ -91,7 +93,7 @@
 </template>
 <script lang="ts" setup>
 import type { Flight } from "@/types";
-import ButtonFlight from "./ButtonFlight.vue";
+import FlightCard from "@/components/cells/FlightCard.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
@@ -105,6 +107,7 @@ const props = defineProps<{
   number?: string;
   modelValue?: Flight | null;
   limit?: number;
+  flightCard?: typeof ButtonFlight
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const show = ref(false);
@@ -119,7 +122,7 @@ useIntersectionObserver(
   ([{ isIntersecting }]) => {
     if (isIntersecting) show.value = true;
   },
-  { immediate: true, rootMargin: "-300px" }
+  { immediate: true, threshold: 0.5 }
 );
 const allFlights = computed(() => {
   return (

@@ -44,6 +44,10 @@
         :flights="flights"
         :limit="page ? 30 : 5"
         @select="handleSelect"
+        :flightCard="{
+          airports: true,
+          compensation: false
+        }"
       />
     </div>
   </section>

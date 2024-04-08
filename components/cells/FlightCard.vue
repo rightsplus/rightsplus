@@ -1,7 +1,7 @@
 <template>
   <component
     :is="is || 'div'"
-    class="rounded-lg py-3 px-5 @container border border-transparent"
+    class="rounded-lg py-3 px-5 @container border border-transparent flex flex-col gap-3"
     :class="{
       'bg-gray-700 text-white': selected,
       'bg-neutral-100 text-gray-800': !selected,
@@ -10,7 +10,7 @@
     }"
     @click="emit('click')"
   >
-    <div class="flex gap-2 sm:gap-5 items-center">
+    <div class="flex gap-2 sm:gap-5 items-center w-full">
       <div
         class="w-14 h-14 hidden justify-center items-center bg-white rounded-full -ml-2 shrink-0 @md:flex"
       >
@@ -32,7 +32,7 @@
       <div class="flex flex-col items-start text-start">
         <span
           class="text-sm leading-none"
-          v-if="flight.departure && flight.arrival"
+          v-if="airports && flight.departure && flight.arrival"
           ><span class="font-bold">{{ city.departure }}</span>
           {{ $t("to") }}
           <span class="font-bold">{{ city.arrival }}</span></span
@@ -113,6 +113,8 @@
         class="text-gray-400 text-base shrink-0"
       />
     </div>
+    <hr class="w-full mt-2" v-if="compensation"/>
+    <div v-if="compensation"></div>
   </component>
 </template>
 
@@ -126,6 +128,7 @@ const props = defineProps<{
   is?: string;
   disabled?: boolean;
   airports?: boolean;
+  compensation?: boolean;
 }>();
 
 const emit = defineEmits(["click"]);
