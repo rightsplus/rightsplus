@@ -35,12 +35,17 @@
             @primary="send('next')"
             :primary="{
               label: $t('next'),
-              disabled: !state.can('next'),
+            }"
+            @secondary="claimState.airport.trip.layover?.push({} as Airport)"
+            :secondary="{
+              prefixIcon: 'plus',
+              label: $t('stopover'),
+              disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
             }"
           />
         </StepWrapper>
 
-        <StepWrapper v-else-if="state?.matches('stopover')">
+        <!-- <StepWrapper v-else-if="state?.matches('stopover')">
           <SelectLayover :modelValue="claimState" />
           <ButtonGroup
             @primary="send('next')"
@@ -54,7 +59,7 @@
               disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
             }"
           />
-        </StepWrapper>
+        </StepWrapper> -->
         <StepWrapper v-else-if="state?.matches('chooseRoute')">
           <SelectRoute :modelValue="claimState" @select="send('next')" />
         </StepWrapper>
@@ -402,7 +407,6 @@ const city = useCities({ arrival: claimState.airport.trip.arrival?.iata });
 
 onBeforeMount(() => {
   // if (!route.query.resume) invoke("reset");
-  if (state.value.matches("itinerary")) send("next");
 });
 
 const { prepareClaimSubmission } = usePrepareClaimSubmission();

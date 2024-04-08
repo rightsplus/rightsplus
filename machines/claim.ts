@@ -123,16 +123,6 @@ export default {
       }
     },
     itinerary: {
-      on: {
-        next: [
-          {
-            target: "stopover",
-            guard: "hasItinerary"
-          }
-        ],
-      },
-    },
-    stopover: {
       init: {
         guard: 'hasItinerary',
         guardType: 'not',

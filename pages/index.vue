@@ -8,7 +8,7 @@
         format="webp"
         alt="Airport"
         preload
-        class="absolute inset-0 h-full w-full object-cover z-1"
+        class="absolute inset-0 h-[115%] w-full object-cover z-1"
       />
     <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
@@ -22,9 +22,9 @@
         <source src="https://www.united-internet.de/fileadmin/user_upload/united-innovation-united-success-united-internet.mp4">
       </video> -->
       <div
-        class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1 grow"
+        class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col relative z-1"
       >
-        <div class="flex flex-col gap-12 lg:w-2/3 max-w-4xl grow justify-around">
+        <div class="flex flex-col gap-12 lg:w-2/3 max-w-4xl">
           <Dashboard class="" />
           <Transition name="fade">
             <div
@@ -40,7 +40,7 @@
       </div>
       <div
         style="--duration: 1000ms"
-        class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10"
+        class="max-w-7xl w-full p-5 sm:p-12 mx-auto mt-auto z-10 h-10"
       >
         <Transition name="move-up">
           <ScrollDown v-show="scrollDownReady" scrollTo="below-the fold" />

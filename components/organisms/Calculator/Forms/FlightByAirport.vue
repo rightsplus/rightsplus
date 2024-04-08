@@ -36,7 +36,6 @@ const { invoke, send } = useMachine<ClaimsForm>(claimMachine, claimState);
 const localePath = useLocalePath()
 const start = () => {
   invoke("reset");
-  send("next");
   push(localePath("claim-new"));
   emit("submit");
 };
