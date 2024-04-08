@@ -21,9 +21,7 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
-  ],
-  buildModules: [
-    '@nuxtjs/pwa',
+    '@vite-pwa/nuxt'
   ],
   build: {
     transpile: [
@@ -39,17 +37,17 @@ export default defineNuxtConfig({
     configFile: './formkit.config.ts',
   },
   css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
     '~/assets/css/main.scss',
     '~/assets/css/transitions.scss',
-    '@fortawesome/fontawesome-svg-core/styles.css',
     // "primevue/resources/themes/lara-light-blue/theme.css",
-    "primevue/resources/primevue.css"
+    // "primevue/resources/primevue.css"
   ],
   components: [
     '~/components',
     '~/components/core',
   ],
-  pwa,
+  // pwa,
   i18n,
   postcss,
   sourcemap: {

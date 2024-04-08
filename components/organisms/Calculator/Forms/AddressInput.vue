@@ -47,7 +47,7 @@
     v-model="modelValue.city"
     @input="emit('update:modelValue', { ...modelValue, city: $event })"
     @blur="emit('blur:city')"
-    outer-class="col-span-3"
+    outer-class="col-start-2 col-end-[-1]"
     :placeholder="placeholder?.city"
     :suffix-icon="suffixIcon?.city"
     :prefix-icon="prefixIcon?.city"
@@ -180,7 +180,7 @@ const fillFields = (street: DropdownItem) => {
 
   const { name, street: st, housenumber, postcode, city } = reference || {};
   console.log(reference);
-  emit("update:modelValue", {city: ''})
+  emit("update:modelValue", { city: "" });
   setTimeout(() => {
     emit("update:modelValue", {
       street: [st || name, st && housenumber].filter(Boolean).join(" "),

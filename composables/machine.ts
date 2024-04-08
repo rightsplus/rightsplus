@@ -1,9 +1,14 @@
 
 type MachineState = {
   target?: string;
-  actions?: string | string[]
-  guard?: string | string[];
-  guardType?: "and" | "or" | "not"
+  actions?: string
+  guard?: string;
+  guardType?: "not"
+} | {
+  target?: string
+  actions?: string[]
+  guard?: string[];
+  guardType?: "and" | "or" | "xor"
 }
 
 type GuardProps<Context> = { context: Context, history: Ref<string[]>, state: Ref<string> }
@@ -14,6 +19,7 @@ export interface Machine<Context> {
     [state: string]: {
       type?: string;
       meta?: Record<string, any>;
+      init?: MachineState | MachineState[];
       on?: {
         [event: string]: MachineState | MachineState[];
       };
@@ -30,42 +36,23 @@ export interface Machine<Context> {
 const cleanObject = <T extends Record<string, any>>(obj: T): NonNullable<T> => JSON.parse(JSON.stringify(obj));
 
 
+let savedHistory = []
+let savedState
+if (typeof localStorage !== 'undefined') {
+  savedHistory = JSON.parse(localStorage.getItem('machineHistory') || '[]')
+  savedState = localStorage.getItem('currentState') || savedState
+}
+const loading = ref(true)
+const history = ref<string[]>(savedHistory);
+const currentState = ref<string>(savedState || 'loading');
+const subscriptions = ref<Record<string, ({ type, action, target }: { type: string; action?: string | string[]; target?: string }) => void>>({})
 export const useMachine = <T extends Record<string, any>>(
   machine: Machine<T>,
   context: T
 ) => {
-  let savedHistory = []
-  let savedState
-  if (typeof sessionStorage !== 'undefined') {
-    savedHistory = JSON.parse(sessionStorage.getItem('machineHistory') || '[]')
-    savedState = sessionStorage.getItem('currentState') || savedState
-  } else {
-    savedHistory = []
-    savedState = machine.loading
-  }
-  const loading = ref(true)
-  const history = ref<string[]>(savedHistory);
   const historyLength = ref<number>(history.value.length);
-  const currentState = ref<string>(savedState || machine.initial);
   const transition = ref('forward')
-  const subscriptions = ref<Record<string, ({ type, action, target }: { type: string; action?: string | string[]; target?: string }) => void>>({})
 
-  watch(currentState, (newValue) => {
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('currentState', newValue);
-    }
-  });
-  watch(history, (newValue) => {
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('machineHistory', JSON.stringify(newValue));
-    }
-    transition.value = newValue.length > historyLength.value ? 'forward' : 'back'
-    historyLength.value = newValue.length;
-  }, { deep: true });
-
-  onMounted(() => {
-    loading.value = false
-  })
   const invoke = (action: string, target?: string) => {
     if (!machine.actions[action]) {
       console.error(`Action ${action} not found`)
@@ -82,15 +69,17 @@ export const useMachine = <T extends Record<string, any>>(
     const clause = (g: string) => machine.guards[g]?.({ context, history, state: currentState })
     if (Array.isArray(guard)) {
       if (guardType === 'or') return guard.some(clause)
+      if (guardType === 'xor') return !guard.some(clause)
       return guard.every(clause)
     }
-  
+
     if (guardType === 'not') return !clause(guard)
     return clause(guard)
   }
 
-  const getNext = (event: keyof NonNullable<Machine<T>['states'][string]['on']>) => {
-    const nextState = machine.states[currentState.value].on?.[event];
+  const getNext = ({ event, state }: { event?: string; state?: MachineState | MachineState[] }) => {
+    const nextState = event ? machine.states[currentState.value].on?.[event] : state;
+    if (!nextState) return { target: undefined, action: undefined }
     let nextTarget: string | undefined = undefined;
     let nextAction: string | string[] | undefined = undefined;
     if (nextState && 'target' in nextState && nextState.target) {
@@ -100,7 +89,7 @@ export const useMachine = <T extends Record<string, any>>(
         nextState.find(guardClause)?.target;
     }
     if (nextState && 'actions' in nextState && nextState.actions) {
-      nextAction = nextState.actions;
+      if (guardClause(nextState)) nextAction = nextState.actions;
     } else if (Array.isArray(nextState)) {
       const action = nextState.find(guardClause)?.actions
       if (action) nextAction = action
@@ -109,13 +98,13 @@ export const useMachine = <T extends Record<string, any>>(
     return { target: nextTarget, action: nextAction }
   }
 
-  const can = (event: keyof NonNullable<Machine<T>['states'][string]['on']>) => {
-    const { target } = getNext(event)
+  const can = (event: string) => {
+    const { target } = getNext({ event })
     return !!target
   }
 
-  const send = (event: keyof NonNullable<Machine<T>['states'][string]['on']>) => {
-    const { target, action } = getNext(event)
+  const send = (event: string) => {
+    const { target, action } = getNext({ event })
 
     if (action) {
       if (Array.isArray(action)) action.forEach(e => invoke(e))
@@ -135,6 +124,33 @@ export const useMachine = <T extends Record<string, any>>(
     })
     return id
   }
+
+  watch(currentState, (newValue) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('currentState', newValue);
+    }
+
+    const { init } = machine.states[newValue]
+    if (init) {
+      const { action } = getNext({ state: init })
+      if (action) {
+        console.log('init', action)
+        if (Array.isArray(action)) action.forEach(e => invoke(e))
+        else invoke(action)
+      }
+    }
+  }, { immediate: true });
+  watch(history, (newValue) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('machineHistory', JSON.stringify(newValue));
+    }
+    transition.value = newValue.length > historyLength.value ? 'forward' : 'back'
+    historyLength.value = newValue.length;
+  }, { deep: true });
+
+  onMounted(() => {
+    loading.value = false
+  })
 
   return {
     state: computed(() => ({

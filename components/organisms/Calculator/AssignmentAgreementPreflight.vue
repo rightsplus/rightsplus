@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-12 mt-12">
+  <div class="grid gap-12 mt-5">
     <div
       v-for="(passenger, i) in modelValue.client.passengers"
       class="text-xs grid gap-5"
@@ -17,7 +17,8 @@
       />
       <hr /> -->
       <SignaturePad
-        @update="(e) => updateSignature(e, i)"
+        :modelValue="passenger.signature"
+        @update:modelValue="(e) => updateSignature(e, i)"
         :name="[passenger.firstName, passenger.lastName].join(' ')"
       />
       <i18n-t
@@ -58,15 +59,13 @@ const props = defineProps<{
 }>();
 const localePath = useLocalePath()
 const { generate } = useGeneratePDF()
-const signatures = ref<(string | undefined)[]>([]);
 
 const updateSignature = (val: string | undefined, i: number) => {
-  signatures.value[i] = val;
+  props.modelValue.client.passengers[i].signature = val;
 };
 
 const generateAssignmentAgreement = async () => {
   const data = convertAssignmentAgreementData(props.modelValue)
-  console.log(data)
   const { url } = await generate({template: 'assignmentLetter', data})
 
 	window.open(url, '_blank');

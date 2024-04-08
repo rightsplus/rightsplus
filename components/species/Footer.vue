@@ -79,7 +79,7 @@ const routes = computed(() => [
         title: t("disruptedFlights"),
       },
       {
-        path: "your-rights",
+        path: "your-passenger-rights",
         title: t("yourRights"),
       },
       {

@@ -54,11 +54,6 @@ const props = defineProps<{
   size?: "small" | "medium" | "large";
 }>();
 const avatar = ref<string>();
-onMounted(() => {
-  useLazyFetch(props.review.profile_photo_url).then(({ data }) => {
-    avatar.value = URL.createObjectURL(data.value as Blob);
-  });
-});
 </script>
 
 <style scoped></style>

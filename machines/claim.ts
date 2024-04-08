@@ -22,6 +22,9 @@ export default {
     hasStopover: ({ context }) => {
       return !!context.airport.trip.layover?.some(e => e.iata)
     },
+    hasDate: ({ context }) => {
+      return !!context.date
+    },
     hasEUAirport: ({ context }) => {
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
@@ -47,6 +50,8 @@ export default {
       const { delay } = context.flight?.arrival || { delay: 0 }
       const departure = nextDeparture(context)
 
+      console.log(departure)
+      if (!departure) return false
       // @todo: make action
       if (departure) {
         context.connection.departure = departure
@@ -75,6 +80,10 @@ export default {
         const validIBAN = IBAN.isValid(passenger.iban)
         return complete && validEmail && validIBAN
       })
+    },
+    agreedToTerms: ({ context }) => {
+      console.log(context.client.passengers.map(passenger => passenger.signature))
+      return context.client.passengers.every(passenger => passenger.signature)
     }
   },
   actions: {
@@ -124,6 +133,11 @@ export default {
       },
     },
     stopover: {
+      init: {
+        guard: 'hasItinerary',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [
           {
@@ -141,6 +155,11 @@ export default {
       },
     },
     chooseRoute: {
+      init: {
+        guard: 'hasStopover',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [{
           target: "flightDate",
@@ -152,6 +171,11 @@ export default {
       },
     },
     flightDate: {
+      init: {
+        guard: 'hasItinerary',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: {
           target: "flight",
@@ -159,6 +183,11 @@ export default {
       },
     },
     flight: {
+      init: {
+        guard: 'hasDate',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [
           {
@@ -179,7 +208,7 @@ export default {
       on: {
         continue: [
           {
-            target: "otherFlightYN",
+            target: "connectionFlightYN",
             guard: ["connectionRelevant", "isDelayed"],
             actions: "setDelayed"
           },
@@ -240,7 +269,7 @@ export default {
       on: {
         next: [
           {
-            target: "otherFlightYN",
+            target: "connectionFlightYN",
             guard: ["connectionRelevant", "isDelayedType"],
           },
           {
@@ -261,7 +290,7 @@ export default {
             guard: "isSelfInflicted",
           },
           {
-            target: "otherFlightYN",
+            target: "connectionFlightYN",
             guard: ["connectionRelevant", "isDelayedType"],
           },
           {
@@ -269,7 +298,7 @@ export default {
             guard: ["tooLittleDelay", "isDelayedType"],
           },
           {
-            target: "otherFlightYN",
+            target: "replacementFlightYN",
             guard: ["replacementRelevant", "isCancelledType"],
           },
           {
@@ -279,17 +308,23 @@ export default {
         ],
       },
     },
-    otherFlightYN: {
+    replacementFlightYN: {
       on: {
-        yes: [{
+        yes: {
           target: "replacementFlightDetails",
-          guard: ["replacementRelevant", "isCancelledType"],
-        }, {
-          target: "connectionFlightDetails",
-          guard: ["connectionRelevant", "isDelayedType"],
-        }],
+        },
         no: {
           target: "eligable",
+        },
+      },
+    },
+    connectionFlightYN: {
+      on: {
+        yes: {
+          target: "connectionFlightDetails",
+        },
+        no: {
+          target: "ineligable",
         },
       },
     },
@@ -362,6 +397,14 @@ export default {
       },
     },
     assignmentAgreement: {
+      on: {
+        next: {
+          target: "summary",
+          guard: "agreedToTerms"
+        },
+      },
+    },
+    summary: {
       on: {
         next: {
           target: "finish",

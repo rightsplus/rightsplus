@@ -3,7 +3,7 @@
       <img
         src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
         alt="Airport"
-        class="absolute inset-0 h-full w-full object-cover object-right -z-1"
+        class="absolute inset-0 h-full w-full object-cover z-1"
       />
     <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
@@ -17,9 +17,9 @@
         <source src="https://www.united-internet.de/fileadmin/user_upload/united-innovation-united-success-united-internet.mp4">
       </video> -->
       <div
-        class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1"
+        class="max-w-7xl w-full mx-auto p-5 sm:px-12 flex flex-col items-stretch relative z-1 grow"
       >
-        <div class="flex flex-col gap-12 lg:w-2/3 max-w-4xl">
+        <div class="flex flex-col gap-12 lg:w-2/3 max-w-4xl grow justify-around">
           <Dashboard class="" />
           <Transition name="fade">
             <div
@@ -42,6 +42,7 @@
         </Transition>
       </div>
     </section>
+    <div class="bg-white z-5 relative">
     <CompensationBanner />
     <DisruptedFlights id="below-the fold" />
     <YourRights />
@@ -51,6 +52,7 @@
     <FeeCalculator />
     <Reviews />
     <CTASection />
+  </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -69,6 +71,7 @@ import type { Database } from "@/types";
 import CompensationBanner from "~/components/organisms/Calculator/Forms/CompensationBanner.vue";
 const ready = ref(false);
 const scrollDownReady = ref(false);
+const scroll = ref(0);
 const claim = useClaim()
 onMounted(() => {
   ready.value = true;

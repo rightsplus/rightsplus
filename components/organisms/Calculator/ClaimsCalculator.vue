@@ -1,13 +1,6 @@
 <template>
   <div class="w-full max-w-3xl mx-auto grid gap-5 mb-12">
-    <div
-      v-if="state.matches('loading')"
-      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 grid gap-2 justify-items-start"
-    >
-      Loading
-    </div>
     <form
-      v-else
       class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 flex flex-col gap-2 justify-items-start"
       @submit.prevent
       ref="form"
@@ -16,11 +9,10 @@
         @click.prevent="
           () => {
             if (state.matches(state.initial)) {
-            invoke('reset');
-            navigateTo(localePath('/'));
+              invoke('reset');
+              navigateTo(localePath('/'));
             } else {
-            invoke('back');
-
+              invoke('back');
             }
           }
         "
@@ -32,7 +24,6 @@
           icon="arrow-left"
         />
       </button>
-      <!-- {{ state.value }} -->
       <Transition
         :name="transition === 'forward' ? 'step-next' : 'step-prev'"
         class="w-full"
@@ -184,17 +175,17 @@
           />
         </StepWrapper>
         <StepWrapper
-          v-else-if="state?.matches('otherFlightYN')"
-          :title="
-            claimState.disruption.type === 'cancelled'
-              ? $t('replacementFlight.title')
-              : $t('connectionFlight.title')
-          "
-          :description="
-            claimState.disruption.type === 'cancelled'
-              ? $t('replacementFlightYN.description')
-              : $t('connectionFlightYN.description')
-          "
+          v-else-if="state?.matches('replacementFlightYN')"
+          :title="$t('replacementFlight.title')"
+        >
+          <div class="flex flex-col gap-3">
+            <ButtonLarge @click="send('yes')" :label="$t('yes')" proceed />
+            <ButtonLarge @click="send('no')" :label="$t('no')" proceed />
+          </div>
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('connectionFlightYN')"
+          :title="$t('connectionFlight.title')"
         >
           <div class="flex flex-col gap-3">
             <ButtonLarge @click="send('yes')" :label="$t('yes')" proceed />
@@ -208,8 +199,7 @@
             :primary="{
               label: $t('next'),
               disabled:
-                !claimState.connection.date ||
-                !claimState.connection.departure,
+                !claimState.connection.date || !claimState.connection.departure,
             }"
           />
         </StepWrapper>
@@ -236,7 +226,18 @@
             :number="claimState.replacement.number"
             :loading="loadingFlights"
             :modelValue="claimState.replacement.flight"
-            @update:mflightcodelValue="claimState.replacement.flight = $event"
+            @select="selectReplacementFlight"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('connectionFlight')">
+          <FlightList
+            :departure="claimState.connection.departure.iata"
+            :arrival="claimState.airport.arrival.iata"
+            :date="claimState.connection.date"
+            :number="claimState.connection.number"
+            :loading="loadingFlights"
+            :modelValue="claimState.connection.flight"
+            @update:modalValue="claimState.connection.flight = $event"
             @select="send('next')"
           />
         </StepWrapper>
@@ -289,7 +290,16 @@
             @primary="send('next')"
             :primary="{
               label: $t('next'),
-              disabled: !claimState.client.bookingNumber,
+              disabled: !state.can('next'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('summary')">
+          Summary
+          <ButtonGroup
+            @primary="submit"
+            :primary="{
+              label: $t('next'),
             }"
           />
         </StepWrapper>
@@ -329,11 +339,16 @@ const { state, send, transition, subscribe, invoke } = useMachine<ClaimsForm>(
   claimMachine,
   claimState
 );
-const { getFilteredFlights } = useFlights()
+const { getFilteredFlights } = useFlights();
 const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
+
+const selectReplacementFlight = (flight: Flight) => {
+  claimState.replacement.flight = flight;
+  setTimeout(() => send("next"));
+};
 // off('next', subscription)
 const filteredFlights = computed(() => {
   if (!claimState.route) return [];
@@ -348,8 +363,7 @@ const filteredFlights = computed(() => {
   return filtered;
 });
 
-const city = useCities({ arrival: claimState.airport.trip.arrival?.iata});
-const loadingFlights = ref(false);
+const city = useCities({ arrival: claimState.airport.trip.arrival?.iata });
 // watch(
 //   () => claimState.date || claimState.airport,
 //   () => {
@@ -389,4 +403,12 @@ onBeforeMount(() => {
   // if (!route.query.resume) invoke("reset");
   if (state.value.matches("itinerary")) send("next");
 });
+
+const { prepareClaimSubmission } = usePrepareClaimSubmission();
+const submit = async () => {
+  const submission = prepareClaimSubmission(claimState);
+  console.log(submission);
+  // await client.from("claims").insert(submission);
+  // router.push(localePath("claim-thank-you"));
+};
 </script>

@@ -1,3 +1,5 @@
+import type { PointGroup } from "signature_pad";
+
 /* Claims Form State */
 export type Address<T = string> = {
   street: T;
@@ -14,6 +16,7 @@ export interface PassengerDetails<T = string> {
   phone?: T;
   boardingPass?: Files;
   isMinor?: boolean;
+  signature?: SignatureData
 }
 export interface ClaimsForm {
   id?: number;
@@ -101,15 +104,15 @@ export interface Airport {
 }
 
 /* Flight */
-type AirlineInfo {
+type AirlineInfo = {
   name: string;
   iata: string;
 }
-type FlightInfo {
+type FlightInfo = {
   number: string;
   iata: string;
 }
-type CodeSharedInfo {
+type CodeSharedInfo = {
   airline: AirlineInfo;
   flight: FlightInfo
 }
@@ -184,22 +187,24 @@ export interface UsersTable {
 }
 export interface ClaimsTable {
   id: string;
-  flight_number: string;
-  passenger_count: number;
+  uuid: string;
+  flight_iata: string;
+  email: string;
+  booking_number: string;
+  client: ClaimsForm['client']['passengers'][number];
+  disruption: ClaimsForm['disruption'];
 }
 export interface FlightsTable {
-  id: string;
-  number: string;
+  id: number;
+  created_at: string;
+  iata: string;
   status: string;
-  flight_date: string;
-  flight_number: string;
-  airline: string;
   airline_iata: string;
-  scheduled_time_departure: string;
-  scheduled_time_arrival: string;
-  actual_time_departure: string;
-  actual_time_arrival: string;
-  delay_arrival: string;
+  scheduled_departure: string;
+  scheduled_arrival: string;
+  actual_departure: string;
+  actual_arrival: string;
+  delay_arrival: number;
   airport_departure: string;
   airport_arrival: string;
   data: Flight
@@ -245,4 +250,12 @@ declare module '#app' {
       footer?: string;
     }
   }
+}
+
+
+
+
+export type SignatureData = {
+  data: PointGroup[];
+  svg: string;
 }

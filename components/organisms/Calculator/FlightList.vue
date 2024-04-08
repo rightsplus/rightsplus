@@ -1,91 +1,92 @@
 <template>
-  <div
-    class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-    v-if="loading"
-  >
-    <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
-    <span class="text-neutral-500">Flüge werden geladen ...</span>
-  </div>
-  <div
-    class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-    v-else-if="!allFlights.length"
-  >
-    <FontAwesomeIcon icon="plane-slash" class="text-xl" />
-    <span class="text-neutral-500">Keine Flüge gefunden</span>
-  </div>
-  <div class="flex flex-col gap-5" v-else>
-    <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
-      <span
-        class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
-        :class="{
-          'bg-primary-500 text-white hover:!bg-primary-600':
-            iata === selectedAirline,
-        }"
-        v-for="{ name, iata } in Object.values(
+  <div ref="container">
+    <div
+      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+      v-if="loading"
+    >
+      <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
+      <span class="text-neutral-500">Flüge werden geladen ...</span>
+    </div>
+    <div
+      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+      v-else-if="!allFlights.length && !show"
+    >
+      <FontAwesomeIcon icon="plane-slash" class="text-xl" />
+      <span class="text-neutral-500">Keine Flüge gefunden</span>
+      <span class="text-neutral-500 text-xs"
+        >{{ departure }} &rsaquo; {{ arrival }}, {{ date }}</span
+      >
+      <button @click="fetch">erneut laden</button>
+    </div>
+    <div class="flex flex-col gap-5" v-else>
+      <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
+        <span
+          class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
+          :class="{
+            'bg-primary-500 text-white hover:!bg-primary-600':
+              iata === selectedAirline,
+          }"
+          v-for="{ name, iata } in Object.values(
           allFlights.reduce(
             (acc, curr) => ({ ...acc, [curr.airline.iata]: curr.airline }),
             {} as Record<string, Flight['airline']>
           )
         )"
-        @click="
-          () => {
-            if (selectedAirline === iata) {
-              selectedAirline = undefined;
-            } else {
-              selectedAirline = iata;
+          @click="
+            () => {
+              if (selectedAirline === iata) {
+                selectedAirline = undefined;
+              } else {
+                selectedAirline = iata;
+              }
             }
-          }
-        "
-        ><span
-          class="w-5 h-5 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
+          "
+          ><span
+            class="w-5 h-5 flex justify-center items-center bg-white rounded-full ml-auto shrink-0 @md:hidden"
+          >
+            <img :src="getAirlineLogo(iata, 80)" class="w-4" /></span
+          >{{ name }}</span
         >
-          <img :src="getAirlineLogo(iata, 80)" class="w-4" /></span
-        >{{ name }}</span
-      >
-    </div>
-    <FlightFrequency
-      :flights="allFlights"
-      :time="time"
-      @select="selectTime"
-      v-if="filteredDayTimeButtons?.length > 7"
-    />
+      </div>
+      <FlightFrequency
+        :flights="allFlights"
+        :time="time"
+        @select="selectTime"
+        v-if="filteredDayTimeButtons?.length > 7"
+      />
 
-    <div
-      v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
-      class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
-    >
-      <ButtonLarge
-        v-for="timeOfDay in filteredDayTimeButtons"
-        :key="timeOfDay.value"
-        :name="timeOfDay.value"
-        :label="$t(timeOfDay.value)"
-        :subLabel="timeOfDay.subLabel"
-        @click="selectTimeOfDay(timeOfDay.value)"
-        :selected="dayTime === timeOfDay.value"
-        class="grow basis-0 shrink-0 min-w-[140px]"
-      />
+      <div
+        v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
+        class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
+      >
+        <ButtonLarge
+          v-for="timeOfDay in filteredDayTimeButtons"
+          :key="timeOfDay.value"
+          :name="timeOfDay.value"
+          :label="$t(timeOfDay.value)"
+          :subLabel="timeOfDay.subLabel"
+          @click="selectTimeOfDay(timeOfDay.value)"
+          :selected="dayTime === timeOfDay.value"
+          class="grow basis-0 shrink-0 min-w-[140px]"
+        />
+      </div>
+      <ListGroupTransition
+        class="flex flex-col gap-5"
+        :style="`--total: ${filteredFlights.length};`"
+      >
+        <ButtonFlight
+          v-for="(flight, index) in filteredFlights"
+          :key="`${flight.flight?.iata}`"
+          :flight="flight"
+          @click="handleSelect(flight)"
+          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
+          class="w-full"
+          :class="{
+            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
+          }"
+        />
+      </ListGroupTransition>
     </div>
-    <ListGroupTransition
-      name="list"
-      class="relative flex flex-col gap-5"
-      :style="`--total: ${filteredFlights.length};`"
-    >
-      <ButtonFlight
-        v-for="(flight, index) in filteredFlights"
-        :key="`${flight.flight?.iata}-${flight[flight.type]?.scheduledTime}`"
-        :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
-        :flight="flight"
-        @click="handleSelect(flight)"
-        class="w-full"
-        :class="{
-          'rounded-b-none -mb-5 [&_+_*]:rounded-t-none [&_+_*]:mt-0.5':
-            filteredFlights[index + 1]?.departure?.scheduledTime ===
-              flight.departure?.scheduledTime &&
-            operatingAirline(filteredFlights[index + 1]) ===
-              operatingAirline(flight),
-        }"
-      />
-    </ListGroupTransition>
   </div>
 </template>
 <script lang="ts" setup>
@@ -95,6 +96,7 @@ import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useIntersectionObserver } from "@vueuse/core";
 const props = defineProps<{
   flights?: Flight[];
   departure?: string;
@@ -102,9 +104,23 @@ const props = defineProps<{
   date?: string;
   number?: string;
   modelValue?: Flight | null;
+  limit?: number;
 }>();
-const { fetchFlights, getFilteredFlights } = useFlights();
-
+const { fetchFlights, flights, getFilteredFlights } = useFlights();
+const show = ref(false);
+const container = ref(null);
+const group = (index: number) =>
+  filteredFlights.value[index + 1]?.departure?.scheduledTime ===
+    filteredFlights.value[index].departure?.scheduledTime &&
+  operatingAirline(filteredFlights.value[index + 1]) ===
+    operatingAirline(filteredFlights.value[index]);
+useIntersectionObserver(
+  container,
+  ([{ isIntersecting }]) => {
+    if (isIntersecting) show.value = true;
+  },
+  { immediate: true, rootMargin: "-300px" }
+);
 const allFlights = computed(() => {
   return (
     props.flights ||
@@ -118,25 +134,34 @@ const allFlights = computed(() => {
 });
 const filteredFlights = computed(() =>
   allFlights.value
+    .filter(() => show.value)
     .filter((e) => dayTimeFilter(e))
     .filter((e) => timeFilter(e))
     .filter((e) => airlineFilter(e))
+    .slice(0, props.limit || Infinity)
     .sort(sortByScheduled)
 );
 const loading = ref(true);
 const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
-onMounted(() => {
-  console.log("flight list mounted");
+const fetch = () => {
   loading.value = true;
+  console.log("fetching flights");
   fetchFlights({
     departure: props.departure,
     arrival: props.arrival,
     date: props.date,
   }).finally(() => (loading.value = false));
+};
+onMounted(() => {
+  console.log("flight list mounted");
+  fetch();
 });
 
-const emit = defineEmits(["update:modelValue", "select"]);
+const emit = defineEmits<{
+  (e: "update:modelValue", flight: Flight): void;
+  (e: "select", flight: Flight): void;
+}>();
 const handleSelect = (flight: Flight) => {
   emit("update:modelValue", flight);
   emit("select", flight);

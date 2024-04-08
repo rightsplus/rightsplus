@@ -2,6 +2,8 @@ import { euMember } from "is-european";
 import { useI18n } from "#i18n"
 import type { Airport, ClaimsForm, Flight, FlightAviationEdge, FlightPhase } from "@/types";
 import { airports } from "~/store";
+import type { VariFlight } from "~/aviation-edge.types";
+import type { UnwrapRef } from "vue"
 
 
 const circumstance = reactive({
@@ -318,6 +320,54 @@ export const removeDuplicateFlights = (flights: Flight[]) => {
 	});
 };
 
+export const transformVariFlight = (flightObject: VariFlight) => {
+	const { FlightNo, FlightCompany, FlightDepcode, FlightArrcode, FlightDeptimePlanDate, FlightArrtimePlanDate, FlightDeptimeReadyDate, FlightArrtimeReadyDate, FlightDeptimeDate, FlightArrtimeDate, FlightIngateTime, FlightOutgateTime, CheckinTable, BoardGate, BaggageID, BoardState, FlightState, FlightHTerminal, FlightTerminal, org_timezone, dst_timezone, ShareFlightNo, StopFlag, ShareFlag, LegFlag, FlightDep, FlightArr, deptel, arrtel, airlinetel, FlightDepAirport, FlightArrAirport, OntimeRate, generic, FlightYear, FlightDuration, distance, VeryZhunReadyDeptimeDate, VeryZhunReadyArrtimeDate, DepAirportLat, DepAirportLon, DepTerminalLat, DepTerminalLon, ArrAirportLat, ArrAirportLon, ArrTerminalLat, ArrTerminalLon, StopAirportCode, StopCity } = flightObject;
+
+	const flight: Flight = {
+		type: 'departure',
+		status: FlightState === 'arrival' ? 'landed' : FlightState === 'cancel' ? 'cancelled' : 'unknown',
+		departure: {
+			iata: FlightDepcode,
+			delay: 0, // You might want to calculate this based on time data
+			scheduledTime: FlightDeptimePlanDate,
+			estimatedTime: FlightDeptimeReadyDate,
+			actualTime: FlightDeptimeDate,
+			estimatedRunway: FlightDeptimeReadyDate,
+			actualRunway: FlightDeptimeDate,
+		},
+		arrival: {
+			iata: FlightArrcode,
+			delay: 0, // You might want to calculate this based on time data
+			scheduledTime: FlightArrtimePlanDate,
+			estimatedTime: FlightArrtimeReadyDate,
+			actualTime: FlightArrtimeDate,
+			estimatedRunway: FlightArrtimeReadyDate,
+			actualRunway: FlightArrtimeDate,
+		},
+		airline: {
+			name: FlightCompany,
+			iata: '', // You might want to fetch this from somewhere
+		},
+		flight: {
+			number: FlightNo,
+			iata: FlightNo, // You might want to fetch this from somewhere
+		},
+		distance: parseInt(distance),
+		codeshared: {
+			airline: {
+				name: '',
+				iata: '', // You might want to fetch this from somewhere
+			},
+			flight: {
+				number: ShareFlightNo,
+				iata: '', // You might want to fetch this from somewhere
+			},
+		},
+	};
+
+	return flight;
+}
+
 
 
 const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Flight => {
@@ -376,8 +426,14 @@ const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Fl
 }
 
 const queries = ref([] as string[]);
+let savedFlights = []
+if (typeof localStorage !== 'undefined') {
+	savedFlights = JSON.parse(localStorage.getItem('flights') || '[]')
+} else {
+	savedFlights = []
+}
+const flights = ref<Flight[]>(savedFlights)
 export const useFlights = () => {
-	const flights = ref<Flight[]>([])
 	const { fetchProxy } = useSupabaseFunctions()
 	const { airports } = useAirports()
 	const ATTEMPTS = 3
@@ -400,8 +456,8 @@ export const useFlights = () => {
 			}
 
 			const query = `${departure}-${arrival}-${getISODate(date)}`;
-			if (queries.value.includes(query)) {
-				console.log("has been queried", queries.value, query);
+			if (queries.value.includes(query) && flights.value.length) {
+				console.log("has been queried", queries.value, query, flights.value);
 				return
 			}
 
@@ -419,8 +475,29 @@ export const useFlights = () => {
 			// url.searchParams.append("departure_airport_code", departure);
 			// url.searchParams.append("arrival_airport_code", arrival);
 
+			// console.time("fetchhh variable");
+
+			// const variData = ref()
+			// useFetch("/api/flights", {
+			// 	method: "post",
+			// 	body: { departure: 'FRA', arrival: 'JFK', date: '2024-03-25' },
+			// }).then(({ data }) => {
+			// 	console.timeEnd("fetchhh variable");
+			// 	variData.value = data.value
+			// 	console.log(data.value);
+			// })
+			// watch(variData, (newValue) => {
+			// 	if (newValue) flights.value = unref(newValue?.map(transformVariFlight))
+			// 		console.log(newValue, flights.value)
+			// })
+
+
 			const key = useRuntimeConfig().public.flight.aviationEdge;
 			url.searchParams.append("key", key);
+
+			console.time("fetchhh egde");
+
+
 			const res = await fetch(url.href)
 			const data: FlightAviationEdge[] = await (res)?.json()
 			const timeStamp = Date.now()
@@ -486,22 +563,19 @@ export const useFlights = () => {
 
 		return flights.value.filter(filterFlights)
 	}
-	return { fetchFlights, getFilteredFlights }
+	return { flights, fetchFlights, getFilteredFlights }
 }
 
 export const getCities = async (iataCodes: (string | undefined)[], locale?: string) => {
 	const { query } = useAirports()
 	return (await Promise.all(iataCodes.map(async e => await query(e || '')))).map(e => getCityTranslation(e, locale));
 };
-interface IataCodes {
-	[x: string]: string | undefined
 
-}
-export const useCities = <T extends IataCodes>(iataCodes: T, options?: {
+export const useCities = <T extends { arrival?: string; departure?: string;[x: string]: string | undefined }>(iataCodes: T, options?: {
 	iata?: boolean
-}): Ref<T | undefined> => {
+}): Ref<T> => {
 	const { locale } = useI18n()
-	const cities = ref<T>();
+	const cities = ref();
 	const { query } = useAirports()
 	const assign = () => {
 		cities.value = iataCodes

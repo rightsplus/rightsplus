@@ -207,7 +207,7 @@ export const nextDeparture = (claim: ClaimsForm) => {
 	const currentRoute = routes.findIndex(e => e === claim.route)
 	const nextRoute = routes[currentRoute + 1]
 	if (nextRoute) return claim.airport.trip.layover?.find(e => e.iata === nextRoute.split('-')[0])
-	return claim.airport.arrival
+	return false
 
 }
 
@@ -488,7 +488,6 @@ export const isReplacementFlightWithinBounds = (claim: ClaimsForm) => {
 	const { departure, arrival } = claim.flight;
 	const arrivalBuffer = "<8" === details ? 3600000 : 7200000;
 	const departureBuffer = "<8" === details ? 7200000 : 14400000;
-
 
 	return (
 		!!details &&

@@ -1,5 +1,8 @@
 <template>
-  <div class="relative w-full h-[200px] flex flex-col justify-center" ref="container">
+  <div
+    class="relative w-full h-[200px] flex flex-col justify-center"
+    ref="container"
+  >
     <canvas
       ref="canvas"
       class="relative border-neutral-300 border-2 border-dashed rounded-lg z-10"
@@ -17,15 +20,14 @@
         erscheint.</span
       >
     </div>
-    <div class="absolute top-[60%] inset-5 flex items-center flex-col text-sm gap-5">
-    <div class="border-t-2 border-neutral-300 w-full" />
-    <span v-if="name && empty" class="font-semibold">{{ name }}</span>
-  </div>
-
     <div
-      class="absolute top-2 right-2 z-20 flex gap-2"
-      v-if="!empty"
+      class="absolute top-[60%] inset-5 flex items-center flex-col text-sm gap-5"
     >
+      <div class="border-t-2 border-neutral-300 w-full" />
+      <span v-if="name && empty" class="font-semibold">{{ name }}</span>
+    </div>
+
+    <div class="absolute top-2 right-2 z-20 flex gap-2" v-if="!empty">
       <button
         class="hover:bg-neutral-100 hover:text-red-500 h-10 w-10 rounded-full flex gap-2 items-center justify-center"
         @click="clear"
@@ -37,12 +39,17 @@
 </template>
 
 <script lang="ts" setup>
-import SignaturePad from "signature_pad";
+import SignaturePad, { type PointGroup } from "signature_pad";
+import type { SignatureData } from "types"
 const emit = defineEmits<{
   (event: "confirm", data: string): void;
-  (event: "update", data: string | undefined): void;
+  (
+    event: "update:modelValue",
+    data: SignatureData
+  ): void;
 }>();
 const props = defineProps<{
+  modelValue: SignatureData | undefined;
   name?: string;
   confirm?: boolean;
   returnFormat?: "svg" | "uri";
@@ -50,8 +57,8 @@ const props = defineProps<{
 const { send } = useSendMail();
 const container = ref<HTMLDivElement | null>(null);
 const canvas = ref<HTMLCanvasElement | null>(null);
-const temp = ref<string>()
-const signaturePad = ref();
+const temp = ref<string | undefined>();
+const signaturePad = ref<SignaturePad>();
 function resizeCanvas() {
   const scale = 2;
   if (!canvas.value || !container.value) return;
@@ -70,8 +77,8 @@ const clear = () => {
   if (!signaturePad.value) return;
   signaturePad.value.clear();
   empty.value = signaturePad.value.isEmpty();
-    temp.value = undefined;
-  emit("update", undefined);
+  temp.value = undefined;
+  emit("update:modelValue", undefined);
 };
 const getSignature = (uriEncoded = false) => {
   if (!signaturePad.value) return;
@@ -79,7 +86,10 @@ const getSignature = (uriEncoded = false) => {
     clear();
     return;
   }
-  const cropped = cropSignatureCanvasSVG(signaturePad.value.toSVG(), props.returnFormat === "uri");
+  const cropped = cropSignatureCanvasSVG(
+    signaturePad.value.toSVG(),
+    props.returnFormat === "uri"
+  );
   if (!cropped) return;
   if (uriEncoded && props.returnFormat === "uri") {
     return encodeURIComponent(cropped);
@@ -87,9 +97,19 @@ const getSignature = (uriEncoded = false) => {
   return cropped;
 };
 const handleConfirm = () => {
-  const data = getSignature(true);
+  const data = getSignature();
   if (!data) return;
   emit("confirm", data);
+};
+const updateStroke = () => {
+  empty.value = false;
+  temp.value = getSignature();
+};
+const endStroke = () => {
+  emit("update:modelValue", {
+    svg: getSignature(true),
+    data: signaturePad.value?.toData(),
+  });
 };
 onMounted(() => {
   window.addEventListener("resize", resizeCanvas);
@@ -99,13 +119,18 @@ onMounted(() => {
     minWidth: 1.5,
     maxWidth: 2,
   });
-  signaturePad.value.addEventListener("afterUpdateStroke", () => {
-    empty.value = false;
-    temp.value = getSignature();
-    emit("update", getSignature(true));
-  });
+
+  if (props.modelValue) {
+    signaturePad.value.fromData(props.modelValue.data);
+    empty.value = signaturePad.value.isEmpty();
+  }
+  signaturePad.value.addEventListener("afterUpdateStroke", updateStroke);
+  signaturePad.value.addEventListener("endStroke", endStroke);
 });
+// watch(temp, (val) => !val && emit("update:modelValue", undefined), { immediate: true });
 onUnmounted(() => {
+  signaturePad.value?.removeEventListener("afterUpdateStroke", updateStroke);
+  signaturePad.value?.removeEventListener("endStroke", endStroke);
   window.removeEventListener("resize", resizeCanvas);
 });
 </script>

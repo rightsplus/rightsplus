@@ -64,7 +64,7 @@
       </template>
       <template #content>
         <div
-          class="grid [&>*]:m-0 gap-4 grid-cols-4 [&_.formkit-inner]:max-w-full"
+          class="grid [&>*]:m-0 gap-4  [&_.formkit-inner]:max-w-full @container grid-cols-3 @md:grid-cols-4"
         >
           <FormKit
             type="text"

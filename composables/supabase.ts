@@ -1,4 +1,4 @@
-import type { ClaimsForm, Database, Flight, FlightsTable } from "@/types";
+import type { ClaimsForm, ClaimsTable, Database, Flight, FlightsTable } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 
@@ -46,13 +46,30 @@ export const useSupabaseFunctions = () => {
 			throw error
 		}
 	}
-	const handleUploadSignatures = (claimId: number, signatures: string[]) => signatures.map(async (signature, index) => {
-		const storageFolderClaim = formatClaimId(claimId, false);
+	// const handleUploadSignatures = (claimId: number, signatures: string[]) => signatures.map(async (signature, index) => {
+	// 	const storageFolderClaim = formatClaimId(claimId, false);
+	// 	const signatureSVG = new Blob([signature], {
+	// 		type: "image/svg+xml",
+	// 	});
+
+	// 	const filePath = [storageFolderClaim, `signature_${index}.svg`].join("/");
+
+	// 	const { data, error } = await client.storage
+	// 		.from("client-files")
+	// 		.upload(filePath, signatureSVG, {
+	// 			cacheControl: "3600",
+	// 			upsert: false,
+	// 		});
+
+	// 	// Handle the result (data, error) as needed
+	// 	return { data, error, index };
+	// });
+	const handleUploadSignature = async (signature: string, folder?: string) => {
 		const signatureSVG = new Blob([signature], {
 			type: "image/svg+xml",
 		});
 
-		const filePath = [storageFolderClaim, `signature_${index}.svg`].join("/");
+		const filePath = [folder, `signature.svg`].join("/");
 
 		const { data, error } = await client.storage
 			.from("client-files")
@@ -61,13 +78,12 @@ export const useSupabaseFunctions = () => {
 				upsert: false,
 			});
 
-		// Handle the result (data, error) as needed
-		return { data, error, index };
-	});
+		return { data, error };
+	};
 
 	const handleUploadFile = async (file: File, folder?: string) => {
 		if (!file) {
-			return "";
+			throw new Error("No file provided");
 		}
 		const options = {
 			convertSize: 0.5,
@@ -96,25 +112,22 @@ export const useSupabaseFunctions = () => {
 	};
 	const submitFlight = async (flight: Flight) => {
 		const preparedFlight = {
-			number: flight.flight.iata,
+			iata: flight.flight.iata,
 			status: flight.status,
 			airline_iata: flight.airline.iata,
-			airline: flight.airline.name,
-			codeshared: flight.flight.codeshared,
-			scheduled_departure: flight.departure.scheduled,
-			actual_departure: flight.departure.actual,
 			airport_departure: flight.departure.iata,
-			scheduled_arrival: flight.arrival.scheduled,
-			actual_arrival: flight.arrival.actual,
-			delay_arrival: flight.arrival.delay,
 			airport_arrival: flight.arrival.iata,
+			actual_departure: flight.departure.actualTime,
+			actual_arrival: flight.arrival.actualTime,
+			scheduled_departure: flight.departure.scheduledTime,
+			scheduled_arrival: flight.arrival.scheduledTime,
+			delay_arrival: flight.arrival.delay,
 			data: flight,
-			// arrival_delay: arrival_delay,
-		};
+		} as Omit<FlightsTable, 'id' | 'created_at'>;
 		try {
 			const { data, error } = await client
 				.from("flights")
-				.upsert([preparedFlight], { onConflict: "number" })
+				.upsert([preparedFlight], { onConflict: "iata" })
 				.select()
 			if (error) throw error
 			return data
@@ -122,15 +135,15 @@ export const useSupabaseFunctions = () => {
 			throw error
 		}
 	}
-	const submitClaim = async (claim: ClaimsForm) => {
+	const submitClaim = async (claim: ClaimsForm, passengerIndex: number) => {
+		const passenger = claim.client.passengers[passengerIndex];
 		const preparedClaim = {
-			user_id: user?.value?.id,
-			email: claim.client.passengers[0].email,
-			flight_number: claim.flight?.flight.iata,
+			email: passenger.email,
+			flight_iata: claim.flight?.flight.iata,
 			booking_number: claim.client.bookingNumber,
-			client: claim.client,
+			client: passenger,
 			disruption: claim.disruption,
-		};
+		} as ClaimsTable;
 		try {
 			const { data, error } = await client
 				.from("claims")
@@ -138,7 +151,6 @@ export const useSupabaseFunctions = () => {
 				.select()
 				.single()
 			if (error) throw error
-			claim.uuid = data.uuid
 			return data
 		} catch (error) {
 			throw error
@@ -147,7 +159,7 @@ export const useSupabaseFunctions = () => {
 	return {
 		userExists,
 		handleUploadFile,
-		handleUploadSignatures,
+		handleUploadSignature,
 		submitFlight,
 		submitClaim,
 		fetchProxy

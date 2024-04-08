@@ -10,17 +10,6 @@
         class="text-primary-500 text-3xl sm:text-5xl"
       />
       <div class="flex flex-col items-start gap-5">
-        <span
-          class="uppercase tracking-wider text-green-500 font-bold flex gap-2 items-center"
-          ><span class="relative flex h-3 w-3">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-            ></span>
-            <span
-              class="relative inline-flex rounded-full h-3 w-3 bg-green-500"
-            ></span> </span
-          >live</span
-        >
         <h2 class="text-3xl sm:text-5xl font-bold">
           Aktuelle Verspätungen und Annullierungen
         </h2>
@@ -38,7 +27,24 @@
       </div>
     </div>
     <div class="flex flex-col gap-5">
-      <FlightList :flights="flights" @select="handleSelect" />
+      <div
+        class="uppercase tracking-wider font-bold flex gap-2 items-center self-end"
+      >
+        <span>live</span>
+        <div class="relative flex h-3 w-3">
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+          />
+          <span
+            class="relative inline-flex rounded-full h-3 w-3 bg-green-500"
+          />
+        </div>
+      </div>
+      <FlightList
+        :flights="flights"
+        :limit="page ? 30 : 5"
+        @select="handleSelect"
+      />
     </div>
   </section>
 </template>
@@ -60,7 +66,7 @@ onMounted(async () => {
     .or("delay_arrival.gt.180,status.eq.cancelled")
     .limit(20);
 
-  flights.value = data?.map(({ data }) => data).slice(0, props.page ? 20 : 10);
+  flights.value = data?.map(({ data }) => data);
   console.log(flights);
 });
 import claimMachine from "@/machines/claim";

@@ -1,6 +1,6 @@
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
 import type { ClaimsForm } from "~/types";
-
+import { submitFlight } from "./supabase"
 
 export const useSendMail = () => {
 	const send = async (props: SendPDFMailProps) => {
@@ -65,6 +65,71 @@ export const useReimbursment = () => {
 		const { compensation: c, distance: d } = getCompensation(claim)
 		compensation.value = c
 		distance.value = d
-	}, { immediate: true, deep: true})
+	}, { immediate: true, deep: true })
 	return { compensation, distance }
+}
+
+export const usePrepareClaimSubmission = () => {
+	const { submitFlight, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
+	const claim = useClaim()
+	const { send } = useSendMail();
+	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number) => {
+		try {
+			if (!passenger.signature) {
+				throw Error('No Signature')
+			}
+
+			const claimResponse = await submitClaim(claim, passengerIndex);
+
+			if (!claimResponse?.id) {
+				throw Error('No Claim ID')
+			}
+
+			const storageFolderClaim = [formatClaimId(claimResponse.id, false), passenger.lastName].join("/");
+
+			await Promise.all([
+				// Signature
+				handleUploadSignature(
+					passenger.signature.svg,
+					[storageFolderClaim, "signature"].join("/")
+				),
+				// Boarding Pass
+				// handleUploadFile(
+				// 	passenger.boardingPass?.[0]?.file,
+				// 	[storageFolderClaim, "boarding-pass"].join("/")
+				// )
+			])
+			
+			// const fileName = `${uuid.v4()}.svg`;
+			// const email = send({
+			// 	to: passenger.email,
+			// 	subject: "Deine Anfrage wurde erfolgreich eingereicht",
+			// 	template: "AssignmentLetter.vue",
+			// 	// pdf: {
+			// 	// 	template: "assignment-letter",
+			// 	// 	fileName: [
+			// 	// 		t("assignmentLetter"),
+			// 	// 		claim.client.passengers[0].lastName,
+			// 	// 	].join("-"),
+			// 	// },
+			// 	data: claimResponse,
+			// });
+		} catch (error) {
+			console.log(error);
+			return;
+		}
+
+	}
+
+	const prepareClaimSubmission = async (claim: ClaimsForm) => {
+		try {
+			if (!claim.flight) return;
+			const response = await submitFlight(claim.flight);
+			claim.client.passengers.forEach(processClaimPerPassenger)
+
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	return { prepareClaimSubmission }
 }

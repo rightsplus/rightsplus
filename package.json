@@ -9,7 +9,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/supabase": "^0.3.1",
     "@types/iban": "^0.0.32",
     "@types/nodemailer": "^6.4.8",
@@ -42,6 +41,7 @@
     "@stripe/stripe-js": "^1.53.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.3",
+    "@vite-pwa/nuxt": "^0.6.0",
     "@vue-email/nuxt": "^0.8.13",
     "@vueuse/core": "^10.1.2",
     "@vueuse/motion": "^2.0.0-beta.12",
