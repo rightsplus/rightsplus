@@ -64,6 +64,7 @@
             @primary="send('next')"
             :primary="{
               label: $t('next'),
+              disabled: !state.can('next')
             }"
           />
         </StepWrapper>

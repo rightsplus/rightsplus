@@ -179,6 +179,7 @@ export default {
       on: {
         next: {
           target: "flight",
+          guard: "hasDate"
         },
       },
     },

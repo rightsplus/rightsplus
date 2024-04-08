@@ -1,7 +1,7 @@
 <template>
 <div ref="container" class="grid gap-3">
   <AirportInput
-    label="Abflug"
+    :label="$t('departureAirport')"
     name="departure"
     id="departure"
     prefix-icon="plane-departure"
@@ -10,7 +10,7 @@
     floatingLabel
   />
   <AirportInput
-    label="Ankunft"
+    :label="$t('arrivalAirport')"
     name="arrival"
     id="arrival"
     prefix-icon="plane-arrival"

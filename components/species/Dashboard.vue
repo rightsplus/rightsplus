@@ -10,7 +10,7 @@
         <span v-for="(char, i) in titleASCII" :key="i">
           {{ transform(char) }}
         </span>
-          <!-- {{ (char).toFixed() }} -->
+        <!-- {{ (char).toFixed() }} -->
       </ClientOnly>
     </h1>
     <span class="text-xl sm:text-2xl font-medium opacity-100">{{
@@ -20,24 +20,31 @@
 </template>
 
 <script setup lang="ts">
-
-const title = ["Flug verspätet oder annuliert?", "Jetzt Anspruch Prüfen!"]
-const subtitle ="Mit RightsPlus setzen wir deine Ansprüche auf Entschädigung gemäß EU-Recht durch."
+const { t, locale } = useI18n();
+const title = computed(() => [
+  t("flightDelayedOrCancelled"),
+  t("checkCompensationNow"),
+]);
+const subtitle = computed(() =>
+  t("fightingForYourRights", { partner: "RightsPlus" })
+);
 
 const animatedNumber = ref(0);
 
 const key = ref(0);
-const currentText = ref(title[0]);
+const currentText = ref(title.value[0]);
 
 const convertNumber = (value: number) => {
   let n = Number(value);
 
   if (value === 160) n = 33;
   if (value < 33) n = 50;
+  if (value > 128 && value < 255) n = Number(value);
   if (value > 90 && value < 192) n = 192;
 
   return n;
 };
+
 const animateNumber = async (number: { value: number }, target: number) => {
   number.value = convertNumber(number.value);
   number.value += 1;
@@ -45,10 +52,10 @@ const animateNumber = async (number: { value: number }, target: number) => {
     try {
       requestAnimationFrame(() =>
         setTimeout(() => animateNumber(number, target), number.value / 2)
-        );
-      } catch {}
-    } else {
-    setTimeout(incrementKey, 3000)
+      );
+    } catch {}
+  } else {
+    setTimeout(incrementKey, 3000);
   }
 };
 
@@ -67,36 +74,34 @@ const randASCII = (value: number) => {
   ) {
     return value;
   } else {
-    return Math.floor(Math.random() * (90 - 65 + 1)) + 65;
+    return Math.floor(Math.random() * (122 - 97 + 1)) + 97;
   }
 };
+
 const transform = (value: number) => String.fromCharCode(randASCII(value));
 
 const incrementKey = () => {
-  if (key.value === title.length - 1) {
+  if (key.value === title.value.length - 1) {
     key.value = 0;
   } else {
     key.value++;
   }
-}
-const convertUmlaut = (value: number) => {
-  if (value === 196) return 65;
-  if (value === 214) return 79;
-  if (value === 220) return 85;
-  if (value === 228) return 97;
-  if (value === 246) return 111;
-  if (value === 252) return 117;
-  return value;
 };
+const normalize = (value: number) => {
+  const normalized = String.fromCharCode(value)
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+
+  return normalized.charCodeAt(0);
+};
+
 watch(
   () => key.value,
   (val) => {
     animatedNumber.value = 0;
-    currentText.value = title[val];
+    currentText.value = title.value[val];
     const max = currentText.value.split("").reduce((a, b) => {
-      return convertUmlaut(b.charCodeAt(0)) > a
-        ? convertUmlaut(b.charCodeAt(0))
-        : a;
+      return normalize(b.charCodeAt(0)) > a ? normalize(b.charCodeAt(0)) : a;
     }, 0);
     animateNumber(animatedNumber, max);
   },
@@ -104,16 +109,29 @@ watch(
     immediate: true,
   }
 );
+
 const titleASCII = computed(() => {
   return currentText.value
     .toUpperCase()
     .split("")
     .map((c) => {
-      const character = c.charCodeAt(0)
-      const current = animatedNumber.value
-      if (convertUmlaut(character) > current) return Math.random() * (character - current) + current
-      if (convertUmlaut(character) <= current) return character
-      return current
+      const character = c.charCodeAt(0);
+      const current = animatedNumber.value;
+      if (normalize(character) > current)
+        return Math.random() * (character - current) + current;
+      if (normalize(character) <= current) return character;
+      return current;
     });
+  // return currentText.value
+  //   .toUpperCase()
+  //   .split("")
+  //   .map((c) => {
+  //     const character = c.charCodeAt(0);
+  //     const current = animatedNumber.value;
+  //     if (normalize(character) > current)
+  //       return Math.random() * (character - current) + current;
+  //     if (normalize(character) <= current) return character;
+  //     return current;
+  //   });
 });
 </script>

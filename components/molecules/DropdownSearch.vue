@@ -14,7 +14,7 @@
       @blur="blur"
       :errors="errors"
       :prefix-icon="prefixIcon"
-      :suffix-icon="true ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
+      :suffix-icon="loading ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
       :prefix-icon-class="$attrs['prefix-icon-class']"
       :suffix-icon-class="$attrs['suffix-icon-class']"
       @keydown.down.up.prevent="keydown"

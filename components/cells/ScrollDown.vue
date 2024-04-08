@@ -9,7 +9,7 @@
         class="bg-black/50 rounded-full w-6 h-6 inline-flex items-center justify-center left-0 text-sm"
       >
         <FontAwesomeIcon icon="arrow-down" fixed-width/></span
-      ><span>Nach unten scrollen</span>
+      ><span>{{ $t('scrollDown')}}</span>
     </button>
   </div>
 </template>

@@ -7,7 +7,7 @@
       class="grid grid-cols-[1fr_auto_1fr] items-center w-full text-sm font-medium text-gray-500"
     >
       <FlightResultAirport
-        label="Abflug"
+        :label="$t('departureAirport')"
         :flight="flight?.departure"
         :cancelled="flight?.status === 'cancelled'"
       />

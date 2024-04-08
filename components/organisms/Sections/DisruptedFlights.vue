@@ -23,7 +23,7 @@
         <Button secondary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
-        <Button primary to="claim-new">Jetzt Anspruch prüfen!</Button>
+        <Button primary to="claim-new">{{ $t('checkCompensationNow')}}</Button>
       </div>
     </div>
     <div class="flex flex-col gap-5">

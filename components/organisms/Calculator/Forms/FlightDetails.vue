@@ -12,7 +12,7 @@
       v-maska:[allCaps]
     />
     <AirportInput
-      label="Abflug"
+      :label="$t('departureAirport')"
       name="departure"
       id="departure"
       prefix-icon="plane-departure"

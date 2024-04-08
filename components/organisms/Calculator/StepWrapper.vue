@@ -6,7 +6,6 @@
       <span class="bg-gray-200 w-96 h-5 max-w-full"/>
       </div>
       <div class="flex flex-col gap-2" v-else>
-      {{ state.value }}
         <h2 class="text-3xl sm:text-4xl font-bold" :key="state.value">
           {{ title || $t(state.value + ".title") }}
         </h2>

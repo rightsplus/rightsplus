@@ -534,3 +534,32 @@ export const validateEmail = (email: string) => {
 	const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 	return emailRegex.test(email);
 }
+
+
+
+const enOrdinalRules = (locale: string) => new Intl.PluralRules(locale, { type: 'ordinal' });
+
+const suffixes = (locale: string) => {
+	const map = {
+		en: new Map([
+			['one', 'st'],
+			['two', 'nd'],
+			['few', 'rd'],
+			['other', 'th'],
+		])
+	}[locale.split(/[-_]/g)[0]];
+	if (!map) return new Map([
+		['one', '.'],
+		['two', '.'],
+		['few', '.'],
+		['other', '.'],
+
+	])
+	return map;
+}
+export const formatOrdinals = (n: number, locale = 'de') => {
+	const rule = enOrdinalRules(locale).select(n);
+	console.log(rule)
+	const suffix = suffixes(locale).get(rule);
+	return `${n}${suffix}`;
+};

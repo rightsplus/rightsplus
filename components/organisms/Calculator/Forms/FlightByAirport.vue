@@ -15,7 +15,7 @@
         @keydown.enter="start"
       />
     </div>
-    <Button @click.prevent="start" primary>Jetzt Anspruch prüfen!</Button>
+    <Button @click.prevent="start" primary>{{ $t('checkCompensationNow')}}</Button>
     <!-- <CheckList
       class="mt-2"
       :items="['professionalExpertise', 'completeProcess', 'noRisk']"

@@ -14,7 +14,7 @@
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-6">
           <h3 class="uppercase tracking-wider text-red-200 font-bold">
-            Deine Rechte
+            {{ $t('yourRights')}}
           </h3>
           <h2 class="text-3xl sm:text-5xl font-bold">
             Wann bekomme ich eine Entschädigung?
