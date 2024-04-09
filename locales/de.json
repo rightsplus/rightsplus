@@ -125,6 +125,8 @@
   "date": "Datum",
   "claimId": "Fallnummer",
   "status.paymentProcessed.title": "Zahlung eingegangen",
+  "status.dataReceived.preTitle": "Daten erhalten",
+  "status.dataReceived.title": "Wir übernehmen ab hier das Steuer",
   "letter.salutation.formal": "Sehr geehrte Damen und Herren,",
   "letter.salutation.informal": "Hey {name},",
   "letter.regards.formal": "Mit freundlichen Grüßen,",
@@ -192,5 +194,5 @@
   "scrollDown": "Nach unten scrollen",
   "potentialCompensationFromAirline": "Mögliche Vergütung durch die Fluggesellschaft",
   "noPotentialCompensationFromAirline": "Vermutlich keine Vergütung durch die Fluggesellschaft",
-  "perPerson": "{value} pro Person"
+  "perPerson": "{value} pro Person",
 }

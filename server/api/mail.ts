@@ -29,8 +29,10 @@ const sendMail = async (props: SendMailProps) => {
 				},
 			] : [],
 		})
+		return { message: 'Email sent successfully' }
 	} catch (error) {
 		console.log('error', error)
+		return { message: "Something went wrong" + error }
 	}
 }
 
@@ -50,13 +52,13 @@ export default defineEventHandler(async (event) => {
 
 	try {
 		const user = await serverSupabaseUser(event)
-		if (!user?.email) throw createError({ statusCode: 401, message: "Unauthorized" })
+		// if (!user?.email) throw createError({ statusCode: 401, message: "Unauthorized" })
 		const body = JSON.parse(await readBody(event)) as SendPDFMailProps
 
 		const pdfBuffer = await generatePDF(body)
 		const html = body.template ? (await useCompiler(body.template, { props: body.data })).html : undefined
 
-		await sendMail({
+		const response = await sendMail({
 			...body,
 			pdfBuffer,
 			html
@@ -64,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
 		return {
 			statusCode: 200,
-			body: { message: 'Email sent successfully' }
+			body: response
 		}
 	} catch (error) {
 		return error

@@ -5,7 +5,6 @@ import { SupabaseClient } from "@supabase/supabase-js";
 export const useSupabaseFunctions = () => {
 	const client = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
-	console.log('setup supabase')
 
 	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
 		console.log('proxy', client)
@@ -129,7 +128,7 @@ export const useSupabaseFunctions = () => {
 				.from("flights")
 				.upsert([preparedFlight], { onConflict: "iata" })
 				.select()
-			if (error) throw error
+			if (error) console.log('flight already exists', error)
 			return data
 		} catch (error) {
 			throw error
@@ -147,7 +146,7 @@ export const useSupabaseFunctions = () => {
 		try {
 			const { data, error } = await client
 				.from("claims")
-				.upsert([preparedClaim], { onConflict: "booking_number" })
+				.upsert([preparedClaim])
 				.select()
 				.single()
 			if (error) throw error

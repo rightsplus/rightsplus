@@ -1,9 +1,9 @@
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
 import type { ClaimsForm } from "~/types";
-import { submitFlight } from "./supabase"
 
 export const useSendMail = () => {
 	const send = async (props: SendPDFMailProps) => {
+		console.log('sending email')
 		const response = await fetch("/api/mail", {
 			method: "POST",
 			headers: useRequestHeaders(["cookie"]),
@@ -56,19 +56,19 @@ export const useCompensation = () => {
 	const distance = ref(0);
 	const message = ref<string>();
 
-const getCompensation = () => {
-	const distance = getDistance(claim)
-	let message = ""
-	if (claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
-		message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
-		return { compensation: 0, distance, message }
+	const getCompensation = () => {
+		const distance = getDistance(claim)
+		let message = ""
+		if (claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
+			message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
+			return { compensation: 0, distance, message }
+		}
+		let compensation = 250
+		if (distance > 1500) compensation = 400
+		const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)
+		if (distance > 3500 && beyondEU) compensation = 600
+		return { compensation, distance, message }
 	}
-	let compensation = 250
-	if (distance > 1500) compensation = 400
-	const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)
-	if (distance > 3500 && beyondEU) compensation = 600
-	return { compensation, distance, message }
-}
 
 	watch(claim.airport, () => {
 		const { compensation: c, distance: d, message: m } = getCompensation()
@@ -82,7 +82,9 @@ const getCompensation = () => {
 export const usePrepareClaimSubmission = () => {
 	const { submitFlight, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
 	const claim = useClaim()
+	const { t } = useI18n()
 	const { send } = useSendMail();
+	const statusEmail = useStatusEmail()
 	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number) => {
 		try {
 			if (!passenger.signature) {
@@ -109,21 +111,28 @@ export const usePrepareClaimSubmission = () => {
 				// 	[storageFolderClaim, "boarding-pass"].join("/")
 				// )
 			])
-			
+
 			// const fileName = `${uuid.v4()}.svg`;
-			// const email = send({
-			// 	to: passenger.email,
-			// 	subject: "Deine Anfrage wurde erfolgreich eingereicht",
-			// 	template: "AssignmentLetter.vue",
-			// 	// pdf: {
-			// 	// 	template: "assignment-letter",
-			// 	// 	fileName: [
-			// 	// 		t("assignmentLetter"),
-			// 	// 		claim.client.passengers[0].lastName,
-			// 	// 	].join("-"),
-			// 	// },
-			// 	data: claimResponse,
-			// });
+			const email = send({
+				to: passenger.email,
+				subject: "Deine Anfrage wurde erfolgreich eingereicht",
+				template: "Status.vue",
+				// pdf: {
+				// 	template: "assignment-letter",
+				// 	fileName: [
+				// 		t("assignmentLetter"),
+				// 		claim.client.passengers[0].lastName,
+				// 	].join("-"),
+				// },
+				data: {
+					name: [passenger?.firstName, passenger?.lastName].join(" "),
+					firstName: passenger?.firstName,
+					claimId: formatClaimId(claimResponse.id),
+					bookingNumber: claimResponse.booking_number,
+					status: "dataReceived",
+					...statusEmail('dataReceived', { name: passenger?.firstName, reimbursment: 300, }),
+				},
+			});
 		} catch (error) {
 			console.log(error);
 			return;

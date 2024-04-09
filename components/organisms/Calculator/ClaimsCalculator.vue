@@ -433,7 +433,7 @@ onBeforeMount(() => {
 
 const { prepareClaimSubmission } = usePrepareClaimSubmission();
 const submit = async () => {
-  const submission = prepareClaimSubmission(claimState);
+  const submission = await prepareClaimSubmission(claimState);
   console.log(submission);
   // await client.from("claims").insert(submission);
   // router.push(localePath("claim-thank-you"));

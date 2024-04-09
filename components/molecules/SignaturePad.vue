@@ -54,7 +54,7 @@ const props = defineProps<{
   confirm?: boolean;
   returnFormat?: "svg" | "uri";
 }>();
-const { send } = useSendMail();
+
 const container = ref<HTMLDivElement | null>(null);
 const canvas = ref<HTMLCanvasElement | null>(null);
 const temp = ref<string | undefined>();
