@@ -29,7 +29,6 @@ const company = "RightsPlus GbR";
 const address = ["Zülpicher Platz 18", "50674 Köln"].join(" · ");
 const moreDetails = [
   "Geschäftsführer: Joachim Bawa",
-  "Büro: Köln",
   "Amtsgericht Köln",
 ].join(" · ");
 </script>

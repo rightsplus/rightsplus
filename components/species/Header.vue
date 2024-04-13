@@ -11,7 +11,7 @@
     :style="`--total: ${links?.length}`"
   >
     <div
-      v-if="isAdmin && useRouter().currentRoute.value.path !== '/admin'"
+      v-if="useRouter().currentRoute.value.path !== '/admin'"
       role="banner"
       class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
     >
@@ -19,7 +19,7 @@
         <span class="">Angeldet als Admin</span>
         <NuxtLink
           class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
-          to="/admin"
+          :to="useLocaleRoute()('admin-claims')"
           >Zum Dashboard</NuxtLink
         >
       </div>

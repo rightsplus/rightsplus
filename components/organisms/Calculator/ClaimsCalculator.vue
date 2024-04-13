@@ -5,6 +5,7 @@
       @submit.prevent
       ref="form"
     >
+    <!-- {{ messages }} -->
       <button
         @click.prevent="
           () => {
@@ -18,7 +19,7 @@
         "
         class="leading-none text-2xl self-start"
       >
-        <FontAwesomeIcon v-show="state.matches(state.initial)" icon="times" />
+        <FontAwesomeIcon v-show="state.matches(state.initial)" icon="xmark" />
         <FontAwesomeIcon
           v-show="!state.matches(state.initial)"
           icon="arrow-left"
@@ -32,15 +33,24 @@
         <StepWrapper v-if="state?.matches('itinerary')">
           <SelectItinerary :modelValue="claimState" />
           <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-            }"
-            @secondary="claimState.airport.trip.layover?.push({} as Airport)"
+            :stack="
+              claimState.airport.trip.layover?.some(Boolean) &&
+              stackButtons(640)
+            "
+            @secondary="addLayover"
             :secondary="{
               prefixIcon: 'plus',
               label: $t('stopover'),
               disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
+            }"
+            @primary="send('next')"
+            :primary="{
+              label: !claimState.airport.trip.layover?.some((e) => e.iata)
+                ? $t('continueWithoutStopover')
+                : $t('next'),
+              disabled: !state.can('next'),
+              tooltip: $t(state.can('next') + '.title'),
+              suffixIcon: 'angle-right',
             }"
           />
         </StepWrapper>
@@ -60,8 +70,8 @@
             }"
           />
         </StepWrapper> -->
-        <StepWrapper v-else-if="state?.matches('chooseRoute')">
-          <SelectRoute :modelValue="claimState" @select="send('next')" />
+        <StepWrapper v-else-if="state?.matches('chooseLeg')">
+          <SelectLeg :modelValue="claimState" @select="send('next')" />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('flightDate')">
           <SelectFlightDate :modelValue="claimState" @select="send('next')" />
@@ -81,6 +91,9 @@
             :modelValue="claimState.flight"
             @update:modelValue="claimState.flight = $event"
             @select="send('next')"
+            :flight-card="{
+              is: 'button',
+            }"
           />
         </StepWrapper>
         <StepWrapper
@@ -89,7 +102,7 @@
           :description="eligableDisruption.descriptions"
         >
           <div v-if="claimState.flight">
-            <ClaimCard :flight="claimState.flight" />
+            <ClaimCard :claim="claimState" />
           </div>
           <ButtonGroup
             :stack="stackButtons(640)"
@@ -97,22 +110,6 @@
             :primary="eligableDisruption.primary"
             @secondary="eligableDisruption.secondary.event"
             :secondary="eligableDisruption.secondary"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('noDisruptionDetected')"
-          :description="
-            $t('noDisruptionDetected.description', { arrival: city.arrival })
-          "
-        >
-          <div v-if="claimState.flight">
-            <FlightCard :flight="claimState.flight" />
-          </div>
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('Grund angeben'),
-            }"
           />
         </StepWrapper>
         <StepWrapper
@@ -135,15 +132,18 @@
             })
           "
         >
-          <SelectDisruptionReason
-            :modelValue="claimState"
-            @select="send('next')"
-          />
+          <div class="flex flex-col gap-3">
+            <SelectDisruptionReason
+              :modelValue="claimState"
+              @select="send('next')"
+            />
+            <AddDisruptionComment v-model="claimState" />
+          </div>
           <ButtonGroup
             @primary="send('next')"
             :primary="{
               label: $t('next'),
-              disabled: !claimState.disruption.reason,
+              disabled: !state.can('next'),
             }"
           />
         </StepWrapper>
@@ -220,28 +220,34 @@
             :loading="loadingFlights"
             :modelValue="claimState.replacement.flight"
             @select="selectReplacementFlight"
+            :flight-card="{
+              is: 'button',
+            }"
           />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('connectionFlight')">
           <FlightList
             :departure="claimState.connection.departure.iata"
-            :arrival="claimState.airport.arrival.iata"
+            :arrival="claimState.connection.arrival.iata"
             :date="claimState.connection.date"
             :number="claimState.connection.number"
             :loading="loadingFlights"
             :modelValue="claimState.connection.flight"
             @update:modalValue="claimState.connection.flight = $event"
             @select="send('next')"
+            :flight-card="{
+              is: 'button',
+            }"
           />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('ineligable')">
           <div v-if="claimState.flight">
-            <ClaimCard :flight="claimState.flight" />
+            <ClaimCard :claim="claimState" />
           </div>
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('eligable')">
           <div v-if="claimState.flight">
-            <ClaimCard :flight="claimState.flight" />
+            <ClaimCard :claim="claimState" />
           </div>
           <ButtonGroup
             @primary="send('next')"
@@ -306,7 +312,7 @@ import StepWrapper from "@/components/organisms/Calculator/StepWrapper.vue";
 import ButtonGroup from "@/components/organisms/Calculator/ButtonGroup.vue";
 import SelectItinerary from "@/components/organisms/Calculator/Forms/SelectItinerary.vue";
 import SelectLayover from "@/components/organisms/Calculator/Forms/SelectLayover.vue";
-import SelectRoute from "@/components/organisms/Calculator/Forms/SelectRoute.vue";
+import SelectLeg from "~/components/organisms/Calculator/Forms/SelectLeg.vue";
 import SelectFlightDate from "@/components/organisms/Calculator/Forms/SelectFlightDate.vue";
 import SelectDisruptionType from "@/components/organisms/Calculator/Forms/SelectDisruptionType.vue";
 import SelectDisruptionDetails from "@/components/organisms/Calculator/Forms/SelectDisruptionDetails.vue";
@@ -331,7 +337,7 @@ const route = useRoute();
 const { t, locale } = useI18n();
 const form = ref<HTMLElement>();
 const localePath = useLocalePath();
-const { state, send, transition, subscribe, invoke } = useMachine<ClaimsForm>(
+const { state, send, transition, subscribe, invoke, messages } = useMachine<ClaimsForm>(
   claimMachine,
   claimState
 );
@@ -379,7 +385,7 @@ const selectReplacementFlight = (flight: Flight) => {
 };
 // off('next', subscription)
 const filteredFlights = computed(() => {
-  if (!claimState.route) return [];
+  if (!claimState.leg) return [];
   const { departure, arrival } = claimState.airport;
 
   const filtered = getFilteredFlights({
@@ -441,4 +447,8 @@ const submit = async () => {
 const { width } = useElementSize(form);
 
 const stackButtons = (w: number) => width.value < w;
+const test = ref([{}]);
+const addLayover = () => {
+  claimState.airport.trip.layover?.push({} as Airport);
+};
 </script>

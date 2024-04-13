@@ -16,6 +16,7 @@
     @query="findAddress"
     class="col-span-full"
     autocomplete="address-line1"
+    required
   />
   <!-- <FormKit
     type="text"
@@ -54,6 +55,19 @@
     :suffix-icon-class="suffixIconClass?.city"
     :prefix-icon-class="prefixIconClass?.city"
   />
+  <FormKit
+    type="text"
+    :label="$t('country')"
+    v-model="modelValue.country"
+    @input="emit('update:modelValue', { ...modelValue, country: $event })"
+    @blur="emit('blur:country')"
+    outer-class="col-span-full"
+    :placeholder="placeholder?.country"
+    :suffix-icon="suffixIcon?.country"
+    :prefix-icon="prefixIcon?.country"
+    :suffix-icon-class="suffixIconClass?.country"
+    :prefix-icon-class="prefixIconClass?.country"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -81,6 +95,7 @@ const emit = defineEmits([
   "blur:street",
   "blur:postalCode",
   "blur:city",
+  "blur:country",
 ]);
 
 const { t } = useI18n();
@@ -178,14 +193,15 @@ const fillFields = (street: DropdownItem) => {
   const reference = listReference.value[street.value];
   if (!reference) return;
 
-  const { name, street: st, housenumber, postcode, city } = reference || {};
+  const { name, street: st, housenumber, postcode, city, country } = reference || {};
   console.log(reference);
   emit("update:modelValue", { city: "" });
   setTimeout(() => {
     emit("update:modelValue", {
       street: [st || name, st && housenumber].filter(Boolean).join(" "),
       postalCode: postcode,
-      city: city,
+      city,
+      country,
     });
   });
 };

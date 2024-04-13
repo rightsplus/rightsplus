@@ -2,35 +2,28 @@
 	<button class="p-5" :class="{active}" :aria-label="$t('open.mainmenu')" :tabindex="-1"/>
 </template>
 
-<script lang="ts">
-
-export default defineComponent({
-	props: {
-		active: {
-			type: Boolean,
-			default: false,
-		},
-	}
-})
+<script lang="ts" setup>
+defineProps<{ active: boolean }>()
 </script>
 
 <style lang="scss" scoped>
 button {
-	height: var(--size, 2rem);
-	width: var(--size, 2rem);
+	height: var(--size);
+	width: var(--size);
 	position: absolute;
 	background-color: transparent;
 	&:before, &:after {
-		position: absolute;
 		--size: 2rem;
-		--border-default: 3px;
+		--border: 3px;
+		position: absolute;
 		content: "";
 		background-color: currentColor;
-		width: var(--size, 2rem);
-		height: var(--border-default);
+		width: var(--size);
+		height: var(--border);
 		transform: rotate(var(--rotate, 0deg)) translate(-50%, var(--translate, 0));
 		transform-origin: 0%;
-		transition: transform 0.5s cubic-bezier(0.1, 1, 0.2, 1);
+		transition: 0.5s cubic-bezier(0.1, 1, 0.2, 1);
+		transition-property: transform width;
 		border-radius: 10px;
 	}
 	--factor: 1;
@@ -46,10 +39,12 @@ button {
 	&.active {
 		&:before {
 			--translate: 0;
+			--size: calc(2rem * var(--factor));
 			--rotate: calc(-45deg);
 		}
 		&:after {
 			--translate: 0;
+			--size: calc(2rem * var(--factor));
 			--rotate: calc(45deg);
 		}
 	}

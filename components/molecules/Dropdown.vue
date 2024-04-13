@@ -12,7 +12,7 @@
           v-for="(item, i) in options"
           :key="item.value"
           :name="item.value"
-          class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 border-b border-b-white last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600"
+          class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 border-b border-b-white last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600 items-center"
           :class="{
             'bg-primary-50': i === active,
           }"
@@ -25,23 +25,37 @@
             fixed-width
             class="icon"
             :class="{
-              'text-primary-600': i === active,
-              'text-gray-500': i !== active,
+              'text-primary-500': i === active,
+              'text-gray-400': i !== active,
             }"
+          />
+          <component
+            v-if="item.prepend"
+            :is="item.prepend.component"
+            v-bind="item.prepend.props"
           />
           <div class="flex flex-col gap-1">
             <span
-              class="algolia-result"
+              v-if="item.label"
               v-html="item.label"
+              class="algolia-result"
               :class="{
                 'text-primary-600': i === active,
               }"
             />
             <span
-              class="algolia-result text-sm leading-none text-neutral-500"
+              v-if="item.sublabel"
               v-html="item.sublabel"
+              class="algolia-result text-sm leading-none text-neutral-500"
             />
           </div>
+          <FontAwesomeIcon
+            v-if="!required && modelValue === item.value"
+            icon="xmark"
+            fixed-width
+            class="ml-auto"
+            :class="{ 'text-primary-600': i === active }"
+          />
         </li>
       </ul>
     </Transition>
@@ -58,7 +72,11 @@ export type DropdownItem = {
   label: string;
   sublabel?: string;
   icon?: string;
-  cancel?: boolean
+  cancel?: boolean;
+  prepend?: {
+    component: ReturnType<typeof defineComponent>;
+    props?: Record<string, unknown>;
+  };
 };
 
 const props = defineProps<{
@@ -68,6 +86,8 @@ const props = defineProps<{
   show?: boolean;
   style?: StyleValue;
   teleport?: boolean;
+  required?: boolean;
+  modelValue?: string | null | undefined;
 }>();
 
 defineEmits(["input"]);

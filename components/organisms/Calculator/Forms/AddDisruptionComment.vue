@@ -1,10 +1,10 @@
 <template>
   <FormKit
     type="textarea"
-    label="Deine Erläuterung hilft uns deinen Fall zu bearbeiten"
+    :label="modelValue.disruption.comment ? $t('disruption.comment') : $t('disruption.comment.label')"
+    :placeholder="$t('disruption.comment.placeholder')"
     name="reason"
-    v-model="modelValue.disruption.other"
-    select-icon="angle-down"
+    v-model="modelValue.disruption.comment"
     inner-class="max-w-full"
   />
 </template>

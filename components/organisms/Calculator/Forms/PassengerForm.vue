@@ -7,7 +7,7 @@
       :modelValue="open"
       @update:modelValue="emit('setOpen', $event)"
       :tag="{ outer: 'div', inner: 'div', title: 'h3' }"
-      :collapsible="false"
+      collapsible
       v-if="modelValue"
     >
       <template #title>
@@ -89,7 +89,7 @@
             >Stelle sicher, dass die Angabe mit dem Namen auf deiner Bordkarte
             übereinstimmt.</span
           >
-          <div class="flex items-center gap-1" v-if="index > 0">
+          <div class="flex items-center gap-1 col-span-full" v-if="index > 0">
             <FormKit
               type="checkbox"
               name="isMinor"
@@ -99,7 +99,7 @@
             <label
               tag="label"
               for="isMinor"
-              class="text-base"
+              class="text-base leading-none"
             >{{ $t('isMinor') }}
             </label>
           </div>

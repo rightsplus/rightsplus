@@ -46,16 +46,23 @@
         @select="handleSelect"
         :flightCard="{
           airports: true,
-          compensation: false
+          compensation: false,
+          actionButton: {
+            label: $t('checkClaim'),
+            suffixIcon: 'arrow-right',
+            secondary: true,
+            class: 'h-9 text-sm ml-auto',
+          }
         }"
       />
     </div>
   </section>
 </template>
 <script lang="ts" setup>
-import type { ClaimsForm, Database, Flight } from "~/types";
+import type { ClaimsForm, Database, FlightsRow, Flight } from "~/types";
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAirports } from "@/composables/flight";
 const client = useSupabaseClient<Database>();
 const claim = useClaim();
 const router = useRouter();
@@ -67,14 +74,15 @@ onMounted(async () => {
     .from("flights")
     .select("data")
     .not("data", "is", null)
-    .or("delay_arrival.gt.180,status.eq.cancelled")
-    .limit(20);
+    .or("delayArrival.gt.180,status.eq.cancelled")
+    .limit(20)
+    .returns<FlightsRow[]>();
 
-  flights.value = data?.map(({ data }) => data);
+  flights.value = data?.map(({ data }) => data) || [];
   console.log(flights);
 });
 import claimMachine from "@/machines/claim";
-const { send, state, invoke } = useMachine<ClaimsForm>(claimMachine, claim);
+const { send, state, invoke, messages } = useMachine<ClaimsForm>(claimMachine, claim);
 const { query, airports } = useAirports();
 const localePath = useLocalePath();
 const handleSelect = async (flight: Flight) => {
@@ -86,15 +94,12 @@ const handleSelect = async (flight: Flight) => {
   claim.airport.trip.arrival = airports.value[flight.arrival.iata];
   console.log("is in itinerary");
   send("next");
-  if (!state.value.matches("stopover")) return;
-  console.log("is in stopover");
-  send("next");
   if (!state.value.matches("flightDate")) {
     console.log(state.value.value);
     return;
   }
   claim.date = getISODate(
-    flight.departure.scheduledTime || flight.departure.scheduled
+    flight.departure.scheduledTime
   );
   console.log("is in flightDate");
   send("next");

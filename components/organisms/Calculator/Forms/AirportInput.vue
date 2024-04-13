@@ -2,7 +2,14 @@
   <ClientOnly>
     <DropdownSearch
       :modelValue="convertName(modelValue)"
-      @update:modelValue="$emit('update:modelValue', airports[$event?.value])"
+      @update:modelValue="
+        ($event) => {
+          $emit(
+            'update:modelValue',
+            $event?.value ? airports[$event?.value] : {} as Airport
+          );
+        }
+      "
       :label="label"
       :name="name"
       :id="id || name"
@@ -38,15 +45,15 @@ const props = defineProps<{
   suffixIcon?: string;
   disabled?: boolean;
 }>();
-const emit = defineEmits([
-  "update:modelValue",
-  "suffix-icon-click",
-  "prefix-icon-click",
-  "keydown.enter",
-]);
+const emit = defineEmits<{
+  "update:modelValue": [value?: Airport];
+  "suffix-icon-click": [];
+  "prefix-icon-click": [];
+  "keydown.enter": [];
+}>();
 
 const { t } = useI18n();
-emit("update:modelValue", props.modelValue);
+emit("update:modelValue", props.modelValue || {} as Airport);
 const { airports } = useAirports();
 
 const { locale } = useI18n();
@@ -70,7 +77,7 @@ const mapAirports = (airport: Airport) => ({
   ]
     .filter(Boolean)
     .join(", "),
-  icon: airport.name.includes("Rail") ? "train" : "plane",
+  icon: airport.name.includes("Rail") ? "train" : "plane-up",
 });
 function findAirports(query: string) {
   if (query?.length < 1) return;

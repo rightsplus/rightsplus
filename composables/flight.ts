@@ -1,8 +1,9 @@
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import type { Airport, ClaimsForm, Flight, FlightAviationEdge, FlightPhase } from "@/types";
+import { type AirlinesRow, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type FlightPhase } from "@/types";
 import { airports } from "~/store";
-import type { VariFlight } from "~/aviation-edge.types";
+import { airlines } from "~/store";
+import type { Airline, VariFlight } from "~/aviation-edge.types";
 import type { UnwrapRef } from "vue"
 
 
@@ -91,25 +92,25 @@ export const getDistance = (claim: ClaimsForm | null) => {
 	return getAirportDistance(departure, arrival)
 }
 
-export const getEU = async (flight: Flight | null) => {
-	if (!flight?.airline?.iata) return {
-		departure: false,
-		arrival: false,
-		airline: false,
-	}
-	const { departureAirport, arrivalAirport } = await getAirports(flight)
+// export const getEU = async (flight: Flight | null) => {
+// 	if (!flight?.airline?.iata) return {
+// 		departure: false,
+// 		arrival: false,
+// 		airline: false,
+// 	}
+// 	const { departureAirport, arrivalAirport } = await getAirports(flight)
 
-	const airlineObject = await useAirlines(flight.airline.iata)
+// 	const airlineObject = await useAirlines(flight.airline.iata)
 
-	const departure = euMember(departureAirport?.country_code || "")
-	const arrival = euMember(arrivalAirport?.country_code || "")
-	const airline = airlineObject?.isEuMember
-	return {
-		departure,
-		arrival,
-		airline,
-	}
-}
+// 	const departure = euMember(departureAirport?.country_code || "")
+// 	const arrival = euMember(arrivalAirport?.country_code || "")
+// 	const airline = airlineObject?.isEuMember
+// 	return {
+// 		departure,
+// 		arrival,
+// 		airline,
+// 	}
+// }
 
 
 export const useFlightStatus = (flight: Flight | null) => {
@@ -140,6 +141,51 @@ export const useFlightStatus = (flight: Flight | null) => {
 		}
 	}
 }
+
+
+export const useAirlines = () => {
+	const client = useSupabaseClient()
+	async function query(iata: string): Promise<Airline>
+	async function query(iata: string[]): Promise<Record<string, Airline>>
+	async function query(iata: string | string[]) {
+		const iatas = Array.isArray(iata) ? iata : [iata]
+		await Promise.all(iatas.map(async (iata) => {
+			if (airlines.value[iata]) return
+			await client.from('airlines').select('iata, name, isEuMember').eq('iata', iata).returns<AirlinesRow[]>().then(({ data }) => {
+				const [airline] = data || []
+				console.log(airline)
+				if (airline) airlines.value[iata] = {
+					...airline,
+					id: airline.id?.toString()
+				}
+			})
+		}))
+		return Array.isArray(iata) ? airlines.value : airlines.value[iata]
+	}
+	return {
+		airlines,
+		query
+	}
+}
+
+export const useAirports = () => {
+	async function query(iata: string): Promise<Airport>
+	async function query(iata: string[]): Promise<Record<string, Airport>>
+	async function query(iata: string | string[]) {
+		const algolia = useAlgoliaSearch("AIRPORTS")
+		const iatas = Array.isArray(iata) ? iata : [iata]
+		await Promise.all(iatas.map(async (iata) => {
+			if (airports.value[iata]) return
+			await queryAirports(algolia, iata)
+		}))
+		return Array.isArray(iata) ? airports.value : airports.value[iata]
+	}
+	return {
+		airports,
+		query
+	}
+}
+
 
 export const useDisruption = (claim: ClaimsForm) => {
 	const { t, locale } = useI18n()
@@ -425,6 +471,7 @@ const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Fl
 	return transformedFlight
 }
 
+
 const queries = ref([] as string[]);
 let savedFlights = []
 if (typeof localStorage !== 'undefined') {
@@ -435,7 +482,10 @@ if (typeof localStorage !== 'undefined') {
 const flights = ref<Flight[]>(savedFlights)
 export const useFlights = () => {
 	const { fetchProxy } = useSupabaseFunctions()
+	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
+	const { airlines, query: queryAirlines } = useAirlines()
+	queryAirlines('LH').then(console.log)
 	const ATTEMPTS = 3
 
 	const fetchFlights = async (props: {
@@ -463,7 +513,10 @@ export const useFlights = () => {
 
 			queries.value.push(query);
 			// Create a URL instance with the desired URL string
-			const url = new URL("https://aviation-edge.com/v2/public/flightsHistory");
+			// if date is more than three days back, use flightsHistory, else use flights
+			const api = new Date(date) < new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) ? 'flightsHistory' : 'flights'
+
+			const url = new URL(`https://aviation-edge.com/v2/public/${api}`);
 			url.searchParams.append("code", departure);
 			url.searchParams.append("type", 'departure');
 			url.searchParams.append('date_from', date);
@@ -492,17 +545,17 @@ export const useFlights = () => {
 			// })
 
 
-			const key = useRuntimeConfig().public.flight.aviationEdge;
-			url.searchParams.append("key", key);
+			// const key = useRuntimeConfig().public.flight.aviationEdge;
+			// url.searchParams.append("key", key);
 
-			console.time("fetchhh egde");
+			// console.time("fetchhh egde");
 
 
-			const res = await fetch(url.href)
-			const data: FlightAviationEdge[] = await (res)?.json()
+			// const res = await fetch(url.href)
+			// const data: FlightAviationEdge[] = await (res)?.json()
 			const timeStamp = Date.now()
 			console.log("fetchhh");
-			// const data = await fetchProxy<FlightAviationEdge[]>(url.href)
+			const data = await fetchProxy<FlightAviationEdge[]>(url.href)
 			console.log(`Fetched from API in ${Date.now() - timeStamp}ms`, data);
 
 
@@ -596,15 +649,15 @@ export const useCities = <T extends { arrival?: string; departure?: string;[x: s
 }
 
 
-export const useFlightRoute = (claim: ClaimsForm) => {
+export const useFlightLeg = (claim: ClaimsForm) => {
 	const { airports, query } = useAirports()
-	const routes = computed(() => generateRoutes?.(claim.airport.trip));
+	const legs = computed(() => generateLegs?.(claim.airport.trip));
 
-	const assignRoute = async () => {
-		const [departure, arrival] = claim.route?.split("-") || [];
+	const assignLeg = async () => {
+		const [departure, arrival] = claim.leg?.split("-") || [];
 		await query([departure, arrival])
 		Object.assign(claim.airport, { departure: airports.value[departure], arrival: airports.value[arrival] });
 	};
 
-	return { routes, assignRoute }
+	return { legs, assignLeg }
 }

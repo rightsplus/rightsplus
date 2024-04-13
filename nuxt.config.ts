@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   ],
   build: {
     transpile: [
-      // "primevue",
+      "primevue",
       "@fortawesome/vue-fontawesome",
       'vue-i18n'
     ]
@@ -43,10 +43,10 @@ export default defineNuxtConfig({
   },
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
-    '~/assets/css/main.scss',
-    '~/assets/css/transitions.scss',
-    // "primevue/resources/themes/lara-light-blue/theme.css",
-    // "primevue/resources/primevue.css"
+    '~/assets/scss/main.scss',
+    '~/assets/scss/transitions.scss',
+    "primevue/resources/themes/lara-light-blue/theme.css",
+    "primevue/resources/primevue.css"
   ],
   components: [
     '~/components',
@@ -65,9 +65,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      stripe: {
-        key: process.env.STRIPE_KEY,
-      },
+      // stripe: {
+      //   key: process.env.STRIPE_KEY,
+      // },
       google: {
         key: process.env.GOOGLE_KEY,
         placeId: process.env.GOOGLE_PLACE_ID
@@ -79,5 +79,7 @@ export default defineNuxtConfig({
       }
     },
   },
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+  },
 })

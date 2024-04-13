@@ -29,7 +29,6 @@ import AirportInput from "./AirportInput.vue";
 import type { ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
-const emit = defineEmits(["submit"]);
 const { push } = useRouter();
 const claimState = useClaim();
 const { invoke, send } = useMachine<ClaimsForm>(claimMachine, claimState);
@@ -37,6 +36,5 @@ const localePath = useLocalePath()
 const start = () => {
   invoke("reset");
   push(localePath("claim-new"));
-  emit("submit");
 };
 </script>

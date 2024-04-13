@@ -5,7 +5,7 @@
     outer-class="col-span-2 mb-12"
     placeholder="z.B. XY789"
     maxlength="20"
-    prefix-icon="hashtag"
+    prefix-icon="ticket-airline"
     v-maska:[allCaps]
   />
 </template>

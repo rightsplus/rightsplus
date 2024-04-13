@@ -46,21 +46,22 @@ const { locale } = useI18n();
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
+const t = ref()
 const container = ref<HTMLElement>();
 
-const { routes, assignRoute } = useFlightRoute(props.modelValue);
+const { legs, assignLeg } = useFlightLeg(props.modelValue);
 
 watch(
   props.modelValue.airport.trip,
   () => {
-    const iatasRoute = Object.keys(routes.value);
-    if (iatasRoute.length <= 1) {
-      props.modelValue.route = iatasRoute[0];
+    const iatasLeg = Object.keys(legs.value);
+    if (iatasLeg.length <= 1) {
+      props.modelValue.leg = iatasLeg[0];
     }
   },
   { deep: true, immediate: true }
 );
-watch(props.modelValue.airport.trip, assignRoute, {
+watch(props.modelValue.airport.trip, assignLeg, {
   deep: true,
   immediate: true,
 });
@@ -68,8 +69,8 @@ onMounted(() => {
   focusFirst({ select: true, empty: true, scope: container.value });
 });
 
-const update = (e: any, i: number) => {
-  if (e && "iata" in e && props.modelValue.airport.trip.layover) {
+const update = (e: Airport, i: number) => {
+  if (props.modelValue.airport.trip.layover) {
     props.modelValue.airport.trip.layover[i] = e;
   }
 }

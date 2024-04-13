@@ -171,7 +171,7 @@ import Callout from "@/components/molecules/Callout.vue";
 import { get24HTime } from "@/utils";
 import AccordionItem from "../Accordion/AccordionItem.vue";
 import { useElementSize } from "@vueuse/core";
-import SelectRoute from "./Forms/SelectRoute.vue";
+import SelectRoute from "./Forms/SelectLeg.vue";
 import SelectLayover from "./Forms/SelectLayover.vue";
 
 const container = ref(null as HTMLElement | null);

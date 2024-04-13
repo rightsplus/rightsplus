@@ -29,7 +29,7 @@ export interface ClaimsForm {
       layover?: Airport[];
     }
   };
-  route: string | null;
+  leg: string | null;
   flight: Flight | null;
   connectingFlight: Flight | null;
   date: string | null;
@@ -37,7 +37,7 @@ export interface ClaimsForm {
     type: 'cancelled' | 'delayed' | 'noBoarding' | null;
     details: '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14' | null;
     reason: string | null;
-    other: string | null;
+    comment: string | null;
     selfInflicted?: boolean;
   };
   replacement: {
@@ -50,6 +50,7 @@ export interface ClaimsForm {
   connection: {
     offered: boolean;
     departure: Airport;
+    arrival: Airport;
     date: string | null;
     number: string | null;
     flight: Flight | null;
@@ -137,7 +138,7 @@ export interface Flight {
   codeshared?: CodeSharedInfo;
 }
 
-export interface Route extends Record<'departure' | 'arrival', {
+export interface Leg extends Record<'departure' | 'arrival', {
   airport: Airport;
 }> {
   flight?: Flight;
@@ -153,7 +154,7 @@ export interface Airline {
   country: string;
   isEuMember: boolean;
   callsign: string;
-  hubCode: string;
+  hubCode: string | null;
   dateFounded: string;
   iataPrefixAccounting: string;
   fleetSize: string;
@@ -185,30 +186,58 @@ export interface UsersTable {
   iban: string;
   agreed_to_terms: boolean;
 }
-export interface ClaimsTable {
-  id: string;
-  uuid: string;
-  flight_iata: string;
+export interface AirlinesRow {
+  id: number;
+  iata: string;
+  name: string;
+  legalName: string | null;
+  created_at: string;
+  country: string;
+  isEuMember: boolean;
+  callsign: string;
+  hubCode: string | null;
+  dateFounded: string;
+  iataPrefixAccounting: string;
+  fleetSize: string;
+  type: string[];
+  address: string;
+  postalCode: string;
+  city: string;
   email: string;
-  booking_number: string;
+}
+export interface FlightsRow {
+  id: number;
+  createdAt: string;
+  iata: string;
+  status: string;
+  airlineIata: AirlinesRow['iata'];
+  scheduledDeparture: string;
+  scheduledArrival: string;
+  actualDeparture: string;
+  actualArrival: string;
+  delayArrival: number;
+  airportDeparture: string;
+  airportArrival: string;
+  data: Flight
+}
+export interface ClaimsRow {
+  uuid?: string; // remove?
+  id: string;
+  createdAt: string;
+  status: string;
+  flightId: FlightsRow['id'];
+  flightIata: FlightsRow['iata'];
+  email: string;
+  bookingNumber: string;
   client: ClaimsForm['client']['passengers'][number];
   disruption: ClaimsForm['disruption'];
 }
-export interface FlightsTable {
-  id: number;
-  created_at: string;
-  iata: string;
-  status: string;
-  airline_iata: string;
-  scheduled_departure: string;
-  scheduled_arrival: string;
-  actual_departure: string;
-  actual_arrival: string;
-  delay_arrival: number;
-  airport_departure: string;
-  airport_arrival: string;
-  data: Flight
+export type ClaimsRowExtended = ClaimsRow & {
+  flight: FlightsRow & {
+    airline: AirlinesRow
+  };
 }
+
 export interface Database {
   public: {
     Tables: {
@@ -218,19 +247,29 @@ export interface Database {
         Update: UsersTable
       }
       claims: {
-        Row: ClaimsTable
-        Insert: ClaimsTable
-        Update: ClaimsTable
+        Row: ClaimsRow
+        Insert: ClaimsRow
+        Update: ClaimsRow
       }
       flights: {
-        Row: FlightsTable
-        Insert: FlightsTable
-        Update: FlightsTable
+        Row: FlightsRow
+        Insert: FlightsRow
+        Update: FlightsRow
+      }
+      airlines: {
+        Row: AirlinesRow
+        Insert: AirlinesRow
+        Update: AirlinesRow
       }
     }
   }
 }
 
+
+export type SignatureData = {
+  data: PointGroup[];
+  svg: string;
+}
 
 import '@nuxtjs/algolia'
 import { DefineComponent } from 'nuxt/dist/app/compat/capi';
@@ -241,21 +280,22 @@ declare module '@nuxtjs/algolia' {
   }
 }
 
-declare module '#app' {
-  interface PageMeta {
+
+import 'vue-router'
+declare module 'vue-router' {
+  interface RouteMeta {
     classes?: {
       body?: string;
       header?: string;
       main?: string;
       footer?: string;
-    }
+    };
+    title?: string;
+    lead?: string;
+    category?: string;
   }
 }
 
 
 
-
-export type SignatureData = {
-  data: PointGroup[];
-  svg: string;
-}
+export { }

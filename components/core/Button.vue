@@ -2,7 +2,7 @@
   <component
     :is="component"
     :to="path"
-    :title="label"
+    :title="tooltip"
     :disabled="disabled"
     class="font-medium text-base flex items-center justify-center gap-2 leading-none px-5 rounded-xl h-14 cursor-pointer"
     :class="{
@@ -15,7 +15,8 @@
     :bind="$attrs"
   >
     <FontAwesomeIcon v-if="prefixIcon" :icon="prefixIcon" class="shrink-0" />
-    <span class="truncate leading-normal"><slot /></span>
+    <span class="truncate leading-normal" v-if="$slots?.default"><slot /></span>
+    <span class="truncate leading-normal" v-else>{{label}}</span>
     <FontAwesomeIcon v-if="suffixIcon" :icon="suffixIcon" class="shrink-0" />
   </component>
 </template>
@@ -29,6 +30,7 @@ export type ButtonProps = {
   primary?: boolean;
   secondary?: boolean;
   tertiary?: boolean;
+  tooltip?: string;
 };
 const props = defineProps<ButtonProps>();
 const localePath = useLocalePath()

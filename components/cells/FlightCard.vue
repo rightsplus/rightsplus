@@ -8,10 +8,14 @@
       'hover:bg-neutral-50 hover:border-neutral-100':
         !selected && !disabled && is === 'button',
     }"
-    @click="emit('click')"
+    @click="actionButton ? undefined : emit('click')"
   >
     <div class="flex gap-2 sm:gap-5 items-center w-full">
-      <AirlineLogo class="-ml-2 hidden @md:flex" :flight="flight" size="lg" />
+      <AirlineLogo
+        class="-ml-2 hidden @md:flex"
+        :airline="flight.airline"
+        size="lg"
+      />
       <div class="flex flex-col items-start text-start">
         <span
           class="text-sm leading-none"
@@ -24,64 +28,37 @@
         <span
           v-if="flight.departure && flight.arrival"
           class="text-lg font-bold flex items-center gap-3"
-          >{{
-            time(flight.departure.scheduledTime)
+          >{{ time(flight.departure.scheduledTime)
           }}<FontAwesomeIcon icon="plane" class="text-sm text-gray-400" />{{
             time(flight.arrival.scheduledTime)
           }}<span v-if="overNight(flight)" class="-ml-2 text-gray-500 text-xs"
             >+{{ overNight(flight) }}</span
           ></span
         >
-        <span class="flex items-center gap-2 text-sm leading-none">
+        <div class="flex items-center gap-2 text-sm leading-none">
           <AirlineLogo
-            :flight="flight"
+            :airline="flight.airline"
             size="sm"
             class="ml-auto @md:hidden"
-          /><span
-            >{{ flight.airline?.name
+          />
+          <div class="">
+            <span>{{ flight.airline?.name }}</span
+            >{{ " "
             }}<span v-if="flight?.codeshared?.airline.name" class="opacity-50">
-              operated by
-              {{ flight?.codeshared?.airline.name }}</span
-            ></span
-          ></span
-        >
+              {{
+                $t("operatedBy", {
+                  airline: flight?.codeshared?.airline.name,
+                })
+              }}</span
+            >
+          </div>
+        </div>
       </div>
 
       <div class="flex flex-col gap-1 items-center ml-auto shrink-0">
         <span
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
-        >
-        <span
-          v-if="flight.status === 'cancelled'"
-          class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
-          :class="selected ? 'text-red-400' : 'text-red-500'"
-          >{{ $t("cancelled") }}</span
-        >
-        <span
-          v-else-if="flight.arrival?.delay > 0"
-          class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
-          :class="selected ? 'text-orange-400' : 'text-orange-500'"
-          >{{
-            $t("delayed.by", { value: getDuration(flight.arrival?.delay) })
-          }}</span
-        >
-        <span
-          v-else-if="flight.arrival?.delay < 0"
-          class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
-          :class="selected ? 'text-green-400' : 'text-green-500'"
-          >{{
-            $t("early.by", { value: getDuration(flight.arrival?.delay * -1) })
-          }}</span
-        >
-        <span
-          v-else-if="
-            flight.status === 'landed' &&
-            new Date(flight.departure.scheduledTime) > new Date()
-          "
-          class="ml-auto text-sm font-medium leading-none whitespace-nowrap"
-          :class="selected ? 'text-green-400' : 'text-green-600'"
-          >{{ $t("onTime") }}</span
         >
       </div>
       <FontAwesomeIcon
@@ -90,8 +67,20 @@
         class="text-gray-400 text-base shrink-0"
       />
     </div>
-    <hr class="w-full mt-2" v-if="compensation" />
-    <div v-if="compensation"></div>
+    <template v-if="compensation">
+      <hr class="w-full mt-2" />
+    </template>
+    <template v-if="actionButton">
+      <hr class="w-full mt-2" />
+      <div class="flex justify-between items-center">
+        <span
+          class="text-sm font-medium leading-none whitespace-nowrap px-3 py-1.5 rounded-full"
+          :class="status.class"
+          >{{ status.text }}</span
+        >
+        <Button @click="emit('click')" v-bind="actionButton" />
+      </div>
+    </template>
   </component>
 </template>
 
@@ -99,19 +88,46 @@
 import type { Flight } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirlineLogo from "./AirlineLogo.vue";
-
-const props = defineProps<{
+import type { ButtonProps } from "../core/Button.vue";
+export type FlightCardProps = {
   flight: Flight;
   selected?: boolean;
   is?: string;
   disabled?: boolean;
   airports?: boolean;
   compensation?: boolean;
-}>();
+  actionButton?: ButtonProps;
+};
+const props = defineProps<FlightCardProps>();
 
 const emit = defineEmits(["click"]);
 const iata = computed(() => {
   return `${props.flight.airline.iata} ${props.flight.flight.number}`;
+});
+const { t } = useI18n();
+const status = computed(() => {
+  const s =
+    props.flight.status === "cancelled"
+      ? "cancelled"
+      : props.flight.arrival?.delay > 0
+      ? "delayed"
+      : "landed";
+  return {
+    cancelled: {
+      class: "bg-red-100 text-red-600",
+      text: t("cancelled"),
+    },
+    delayed: {
+      class: "bg-yellow-100 text-yellow-700",
+      text: t("delayed.by", {
+        value: getDuration(props.flight.arrival?.delay),
+      }),
+    },
+    landed: {
+      class: "bg-green-100 text-green-600",
+      text: t("onTime"),
+    },
+  }[s];
 });
 
 const city = useCities({

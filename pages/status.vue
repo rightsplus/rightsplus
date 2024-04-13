@@ -11,7 +11,7 @@
 
           <AccordionItem
             v-for="claim in claims"
-            :index="claim.uuid"
+            :index="claim.id"
             :modelValue="active"
             @update:modelValue="active = $event"
             headless
@@ -21,11 +21,11 @@
           >
             <template #title>
               <CellsFlightCard
-                :key="claim.uuid"
+                :key="claim.id"
                 :flight="claim.flights.data || undefined"
                 class="w-full"
                 :class="{
-                  'rounded-b-none': active?.includes(claim.uuid),
+                  'rounded-b-none': active?.includes(claim.id),
                 }"
               />
             </template>

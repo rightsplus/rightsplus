@@ -1,4 +1,4 @@
-import type { ClaimsForm, ClaimsTable, Database, Flight, FlightsTable } from "@/types";
+import type { ClaimsForm, ClaimsRow, Database, Flight, FlightsRow } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 
@@ -33,18 +33,6 @@ export const useSupabaseFunctions = () => {
 		return data as boolean;
 	}
 
-	const submitPassenger = async (flight: Flight) => {
-		try {
-			const { data, error } = await client
-				.from("flights")
-				.upsert([preparedFlight], { onConflict: "number" })
-				.select()
-			if (error) throw error
-			return data
-		} catch (error) {
-			throw error
-		}
-	}
 	// const handleUploadSignatures = (claimId: number, signatures: string[]) => signatures.map(async (signature, index) => {
 	// 	const storageFolderClaim = formatClaimId(claimId, false);
 	// 	const signatureSVG = new Blob([signature], {
@@ -92,7 +80,7 @@ export const useSupabaseFunctions = () => {
 		};
 
 		const resizedFile = await compressImage(file, options);
-		const fileExt = resizedFile.name.split(".").pop();
+		const fileExt = (resizedFile as File).name.split(".").pop();
 		const fileName = `${uuid()}.${fileExt}`;
 		const filePath = [folder, fileName].filter(Boolean).join("/");
 		const { data, error } = await client.storage
@@ -113,42 +101,55 @@ export const useSupabaseFunctions = () => {
 		const preparedFlight = {
 			iata: flight.flight.iata,
 			status: flight.status,
-			airline_iata: flight.airline.iata,
-			airport_departure: flight.departure.iata,
-			airport_arrival: flight.arrival.iata,
-			actual_departure: flight.departure.actualTime,
-			actual_arrival: flight.arrival.actualTime,
-			scheduled_departure: flight.departure.scheduledTime,
-			scheduled_arrival: flight.arrival.scheduledTime,
-			delay_arrival: flight.arrival.delay,
+			airlineIata: flight.airline.iata,
+			airportDeparture: flight.departure.iata,
+			airportArrival: flight.arrival.iata,
+			actualDeparture: flight.departure.actualTime,
+			actualArrival: flight.arrival.actualTime,
+			scheduledDeparture: flight.departure.scheduledTime,
+			scheduledArrival: flight.arrival.scheduledTime,
+			delayArrival: flight.arrival.delay,
 			data: flight,
-		} as Omit<FlightsTable, 'id' | 'created_at'>;
+		} as Omit<FlightsRow, 'id' | 'createdAt'>;
+
 		try {
-			const { data, error } = await client
+			const { data: existingFlight, error: errExisting } = await client.from("flights").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<FlightsRow>();
+
+			if (errExisting) throw errExisting
+			if (existingFlight) return existingFlight
+			const { data: addedFlight, error } = await client
 				.from("flights")
-				.upsert([preparedFlight], { onConflict: "iata" })
+				.upsert([preparedFlight]
+				)
 				.select()
-			if (error) console.log('flight already exists', error)
-			return data
+				.single<FlightsRow>()
+			if (error) {
+				throw error
+			}
+			if (!addedFlight) {
+				throw Error('No flight data')
+			}
+			return addedFlight
 		} catch (error) {
 			throw error
 		}
 	}
-	const submitClaim = async (claim: ClaimsForm, passengerIndex: number) => {
+	const submitClaim = async (claim: ClaimsForm, passengerIndex: number, flightId: number) => {
 		const passenger = claim.client.passengers[passengerIndex];
 		const preparedClaim = {
 			email: passenger.email,
-			flight_iata: claim.flight?.flight.iata,
-			booking_number: claim.client.bookingNumber,
+			flightId: flightId,
+			flightIata: claim.flight?.flight.iata,
+			bookingNumber: claim.client.bookingNumber,
 			client: passenger,
 			disruption: claim.disruption,
-		} as ClaimsTable;
+		} as ClaimsRow;
 		try {
 			const { data, error } = await client
 				.from("claims")
 				.upsert([preparedClaim])
 				.select()
-				.single()
+				.single<ClaimsRow>()
 			if (error) throw error
 			return data
 		} catch (error) {

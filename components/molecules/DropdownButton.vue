@@ -3,7 +3,9 @@
     class="relative w-full h-14"
     data-floating-label="true"
     data-suffix-icon="true"
-    :data-prefix-icon="(current?.icon || prefixIcon) && 'true'"
+    :data-prefix-icon="
+      (current?.prepend?.component || current?.icon || prefixIcon) && 'true'
+    "
   >
     <button
       ref="button"
@@ -26,8 +28,14 @@
         modelValue ? 'active' : '',
       ]"
     >
+      <component
+        v-if="current?.prepend?.component"
+        :is="current?.prepend?.component"
+        v-bind="current?.prepend?.props"
+        class="max-w-[18px]"
+      />
       <FontAwesomeIcon
-        v-if="current?.icon || prefixIcon"
+        v-else-if="current?.icon || prefixIcon"
         :icon="current?.icon || prefixIcon"
         :class="[inputFocused && options?.length ? 'text-primary-600' : '']"
         fixed-width
@@ -56,6 +64,8 @@
       :options="options"
       @input="handleInput"
       teleport
+      :required="required"
+      :modelValue="modelValue"
     />
   </div>
 </template>
@@ -72,14 +82,17 @@ const props = defineProps<{
   prefixIcon?: string;
   suffixIcon?: string;
   options: DropdownItem[];
+  required?: boolean;
+  showAllLabel?: string;
 }>();
-const emit = defineEmits([
-  "update:modelValue",
-  "query",
-  "suffix-icon-click",
-  "prefix-icon-click",
-]);
+const emit = defineEmits<{
+  "update:modelValue": [value: DropdownItem["value"]];
+  query: [value: string];
+  "suffix-icon-click": [];
+  "prefix-icon-click": [];
+}>();
 const [button, position] = usePosition();
+const { t } = useI18n();
 const highlighted = ref(
   props.options.findIndex((e) => e.value === props.modelValue) || 0
 );
@@ -88,13 +101,19 @@ const current = computed(() => {
   return props.options.find((e) => e.value === props.modelValue);
 });
 function keydown(e: KeyboardEvent) {
-  highlighted.value = keyIncrement(e, highlighted.value, props.options.length);
+  highlighted.value = keyIncrement(
+    e,
+    highlighted.value,
+    props.options.length
+  );
 }
 function handleInput(input: KeyboardEvent): void;
 function handleInput(input: DropdownItem | KeyboardEvent) {
   const index = typeof input === "number" ? input : highlighted.value;
   highlighted.value = index;
-  emit("update:modelValue", props.options[index].value);
+  const { value } = props.options[index];
+
+  emit("update:modelValue", value === props.modelValue ? "" : value);
   focusNext({ select: true });
   inputFocused.value = false;
 }

@@ -85,13 +85,13 @@ export const usePrepareClaimSubmission = () => {
 	const { t } = useI18n()
 	const { send } = useSendMail();
 	const statusEmail = useStatusEmail()
-	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number) => {
+	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, flightId: number) => {
 		try {
 			if (!passenger.signature) {
 				throw Error('No Signature')
 			}
 
-			const claimResponse = await submitClaim(claim, passengerIndex);
+			const claimResponse = await submitClaim(claim, passengerIndex, flightId);
 
 			if (!claimResponse?.id) {
 				throw Error('No Claim ID')
@@ -128,7 +128,7 @@ export const usePrepareClaimSubmission = () => {
 					name: [passenger?.firstName, passenger?.lastName].join(" "),
 					firstName: passenger?.firstName,
 					claimId: formatClaimId(claimResponse.id),
-					bookingNumber: claimResponse.booking_number,
+					bookingNumber: claimResponse.bookingNumber,
 					status: "dataReceived",
 					...statusEmail('dataReceived', { name: passenger?.firstName, reimbursment: 300, }),
 				},
@@ -143,8 +143,9 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
-			const response = await submitFlight(claim.flight);
-			claim.client.passengers.forEach(processClaimPerPassenger)
+			const { id } = await submitFlight(claim.flight);
+			const claimWithFlightId = { ...claim, flight_id: id };
+			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, id))
 
 		} catch (error) {
 			console.log(error);

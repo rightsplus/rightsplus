@@ -1,15 +1,15 @@
 <template>
   <div class="overflow-x-hidden">
     <NuxtImg
-        src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
-        quality="70"
-        width="1920"
-        height="1080"
-        format="webp"
-        alt="Airport"
-        preload
-        class="absolute inset-0 h-[115%] w-full object-cover z-1"
-      />
+      src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
+      quality="70"
+      width="1920"
+      height="1080"
+      format="webp"
+      alt="Airport"
+      preload
+      class="absolute inset-0 h-[115%] w-full object-cover z-1"
+    />
     <section
       class="min-h-screen flex flex-col items-stretch pt-16 sm:pt-36 pb-8 bg-neutral-200"
     >
@@ -31,11 +31,9 @@
               class="container bg-white rounded-3xl p-5 shadow-2xl shadow-black/10"
               v-if="claim && ready"
             >
-              <FlightByAirport
-                v-model="claim"
-                @submit="() => {}"
-              /></div
-          ></Transition>
+              <FlightByAirport v-model="claim" />
+            </div></Transition
+          >
         </div>
       </div>
       <div
@@ -48,16 +46,16 @@
       </div>
     </section>
     <div class="bg-white z-5 relative">
-    <CompensationBanner />
-    <DisruptedFlights id="below-the fold" />
-    <YourRights />
-    <ProcessSummary />
-    <Reasons />
-    <Stats class="bg-gray-700 text-white" />
-    <FeeCalculator />
-    <Reviews />
-    <CTASection />
-  </div>
+      <CompensationBanner />
+      <DisruptedFlights id="below-the fold" />
+      <YourRights />
+      <ProcessSummary />
+      <Reasons />
+      <Stats class="bg-gray-700 text-white" />
+      <FeeCalculator />
+      <Reviews />
+      <CTASection />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -77,7 +75,7 @@ import CompensationBanner from "~/components/organisms/Calculator/Forms/Compensa
 const ready = ref(false);
 const scrollDownReady = ref(false);
 const scroll = ref(0);
-const claim = useClaim()
+const claim = useClaim();
 onMounted(() => {
   ready.value = true;
   setTimeout(() => {
@@ -86,9 +84,5 @@ onMounted(() => {
 });
 definePageMeta({
   title: "Flugverspätung oder Flugausfall?",
-  layoutTransition: {
-    name: "layout",
-    mode: "out-in",
-  },
 });
 </script>

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import CustomTable from "@/components/cells/CustomTable.vue";
-import type { UsersTable, FlightsTable, Database, ClaimsTable } from "@/types";
+import type { UsersTable, FlightsRow, Database, ClaimsRow } from "@/types";
 
 const currentUser = useSupabaseUser();
 

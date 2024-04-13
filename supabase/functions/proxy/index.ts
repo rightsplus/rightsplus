@@ -16,7 +16,6 @@ Deno.serve(async (req) => {
     console.log(newUrl.href)
     const response = await fetch(newUrl.href, options)
     const json = await (response).json()
-    console.log(json)
 
     return new Response(JSON.stringify(json), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

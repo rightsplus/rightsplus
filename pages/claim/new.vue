@@ -11,7 +11,7 @@ import ClaimsCalculator from "@/components/organisms/Calculator/ClaimsCalculator
 
 definePageMeta({
   title: "Ansprüche berechnen",
-  layoutTransition: {
+  pageTransition: {
     name: "layout",
     mode: "out-in",
   }

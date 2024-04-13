@@ -9,9 +9,9 @@
     class="flex flex-col"
   >
     <span class="flex items-center gap-3 font-bold"
-      >{{ route.departure.airport.iata
+      >{{ leg.departure.airport.iata
       }}<FontAwesomeIcon icon="plane" class="text-gray-400 text-sm" />
-      {{ route.arrival?.airport.iata }}</span
+      {{ leg.arrival?.airport.iata }}</span
     >
     <span class="text-sm">
       <span class="font-bold">{{ departureCity }}</span>
@@ -24,13 +24,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Route } from "@/types";
+import type { Leg } from "@/types";
 import ButtonLarge from "./ButtonLarge.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 
 const props = defineProps<{
-  route: Route;
+  leg: Leg;
   selected?: boolean;
 }>();
 
@@ -41,7 +41,7 @@ const { locale } = useI18n();
 const departureCity = ref()
 const arrivalCity = ref()
 
-getCities([props.route.departure.airport?.iata, props.route.arrival.airport?.iata], locale.value).then(
+getCities([props.leg.departure.airport?.iata, props.leg.arrival.airport?.iata], locale.value).then(
   ([departure, arrival]) => {
     departureCity.value = departure
     arrivalCity.value = arrival

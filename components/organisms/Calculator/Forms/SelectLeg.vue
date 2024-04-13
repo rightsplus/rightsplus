@@ -1,20 +1,20 @@
 <template>
   <div class="grid @md:grid-cols-2 gap-3 @container">
     <div
-      v-for="([key, route], i) in Object.entries(routes)"
+      v-for="([key, leg], i) in Object.entries(legs)"
       :key="key"
       class="w-full flex flex-col gap-1"
-      :class="{ 'col-span-full': Object.values(routes).length !== 2 }"
+      :class="{ 'col-span-full': Object.values(legs).length !== 2 }"
     >
-      <ButtonRoute
+      <ButtonLeg
         @click="
           () => {
-            modelValue.route = key;
-            assignRoute();
+            modelValue.leg = key;
+            assignLeg();
             $emit('select');
           }
         "
-        :route="route"
+        :leg="leg"
       />
     </div>
   </div>
@@ -22,11 +22,11 @@
 
 <script setup lang="ts">
 import type { ClaimsForm } from "@/types";
-import ButtonRoute from "../ButtonRoute.vue";
+import ButtonLeg from "../ButtonLeg.vue";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 
-const { routes, assignRoute } = useFlightRoute(props.modelValue)
+const { legs, assignLeg } = useFlightLeg(props.modelValue)
 
 </script>

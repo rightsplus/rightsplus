@@ -3,15 +3,23 @@ type MachineState = {
   target?: string;
   actions?: string
   guard?: string;
-  guardType?: "not"
+  guardType?: "not";
+  event?: string;
 } | {
   target?: string
   actions?: string[]
   guard?: string[];
-  guardType?: "and" | "or" | "xor"
+  guardType?: "and" | "or" | "xor";
+  event?: string;
 }
 
-type GuardProps<Context> = { context: Context, history: Ref<string[]>, state: Ref<string> }
+type GuardProps<Context> = {
+  context: Context;
+  history: Ref<string[]>;
+  state: Ref<string>;
+  messages: Ref<Record<string, string>>;
+  event?: string;
+}
 export interface Machine<Context> {
   initial: string;
   loading: string;
@@ -51,6 +59,7 @@ export const useMachine = <T extends Record<string, any>>(
   context: T
 ) => {
   const historyLength = ref<number>(history.value.length);
+  const messages = ref<Record<string, string>>({})
   const transition = ref('forward')
 
   const invoke = (action: string, target?: string) => {
@@ -58,15 +67,19 @@ export const useMachine = <T extends Record<string, any>>(
       console.error(`Action ${action} not found`)
       return
     }
-    machine.actions[action]({ context, history, state: currentState, machine, target });
+    machine.actions[action]({ context, history, state: currentState, machine, target, messages });
     Object.values(subscriptions.value).forEach(e => e?.(cleanObject({ type: 'action', action, target })))
 
   };
 
   const guardClause = (e: MachineState) => {
-    const { guard, guardType } = e || {}
+    const { guard, guardType, event } = e || {}
     if (!guard) return true
-    const clause = (g: string) => machine.guards[g]?.({ context, history, state: currentState })
+    const clause = (g: string) => {
+      const res = machine.guards[g]?.({ context, history, state: currentState, messages, event })
+      if (res) delete messages.value[g]
+      return res
+    }
     if (Array.isArray(guard)) {
       if (guardType === 'or') return guard.some(clause)
       if (guardType === 'xor') return !guard.some(clause)
@@ -83,8 +96,10 @@ export const useMachine = <T extends Record<string, any>>(
     let nextTarget: string | undefined = undefined;
     let nextAction: string | string[] | undefined = undefined;
     if (nextState && 'target' in nextState && nextState.target) {
+      if (event) nextState.event = event
       if (guardClause(nextState)) nextTarget = nextState.target;
     } else if (Array.isArray(nextState)) {
+      if (event) nextState.forEach(e => e.event = event)
       nextTarget =
         nextState.find(guardClause)?.target;
     }
@@ -100,7 +115,7 @@ export const useMachine = <T extends Record<string, any>>(
 
   const can = (event: string) => {
     const { target } = getNext({ event })
-    return !!target
+    return target
   }
 
   const send = (event: string) => {
@@ -130,7 +145,7 @@ export const useMachine = <T extends Record<string, any>>(
       localStorage.setItem('currentState', newValue);
     }
 
-    const { init } = machine.states[newValue]
+    const { init } = machine.states[newValue] || {}
     if (init) {
       const { action } = getNext({ state: init })
       if (action) {
@@ -167,5 +182,6 @@ export const useMachine = <T extends Record<string, any>>(
     transition,
     subscribe,
     loading,
+    messages
   };
 };

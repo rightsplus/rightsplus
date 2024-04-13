@@ -1,7 +1,7 @@
 import { library, config, type IconDefinition, type IconPack, type Library, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCircleQuarter, faEuropeanUnion } from '@/assets/icons'
+import { faCircleQuarter, faEuropeanUnion, faTicketAirline, faPlaneTail, faTicketsAirline, faTowerControl } from '@/assets/icons'
 import {
   faArrowLeft,
   faArrowRight,
@@ -203,7 +203,11 @@ library.add(
   faFolderClosed,
   faHouse,
   faBars,
-  faCircle
+  faCircle,
+  faTicketAirline,
+  faTicketsAirline,
+  faPlaneTail,
+  faTowerControl
 )
 
 config.autoAddCss = false
@@ -218,9 +222,9 @@ declare module '@fortawesome/fontawesome-svg-core' {
     definitions: Record<IconPrefix, IconDefinition>
   }
 }
-export {library}
-  export default defineNuxtPlugin((nuxtApp) => {
-    nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
-    nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
+export { library }
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 
-  })
+})

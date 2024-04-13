@@ -16,15 +16,46 @@
       <span class="text-neutral-500 text-xs"
         >{{ departure }} &rsaquo; {{ arrival }}, {{ date }}</span
       >
-      <Button tertiary @click="fetch" class="text-sm" prefixIcon="arrow-rotate-right">erneut laden</button>
+      <Button
+        tertiary
+        @click="fetch"
+        class="text-sm"
+        prefixIcon="arrow-rotate-right"
+        >erneut laden</Button
+      >
     </div>
     <div class="flex flex-col gap-5" v-else>
       <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
-        <span
+        <DropdownButton
+          v-model="selectedAirline"
+          name="airline"
+          :label="$t('filterBy', { value: $t('airline') })"
+          :options="[
+            ...filteredAirlines.map((flight) => ({
+              value: flight.airline.iata,
+              label: flight.airline.name,
+              prepend: {
+                component: AirlineLogo,
+                props: {
+                  airline: flight.airline,
+                  size: 'xs',
+                },
+              },
+            })),
+          ]"
+          placeholder="Filtern ..."
+          class="w-full"
+        />
+        <!-- <span
           class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
           :class="{
             'bg-primary-500 text-white hover:!bg-primary-600':
               flight.airline.iata === selectedAirline,
+            'pointer-events-none opacity-50':
+              !filteredFlights
+                .map((e) => e.airline.iata)
+                .includes(flight.airline.iata) &&
+              selectedAirline !== flight.airline.iata,
           }"
           v-for="flight in Object.values(
           allFlights.reduce(
@@ -41,8 +72,10 @@
               }
             }
           "
-          ><AirlineLogo :flight="flight" size="xs" />{{ flight.airline.name }}</span
-        >
+          ><AirlineLogo :airline="flight.airline" size="xs" />{{
+            flight.airline.name
+          }}</span
+        > -->
       </div>
       <FlightFrequency
         :flights="allFlights"
@@ -51,7 +84,7 @@
         v-if="filteredDayTimeButtons?.length > 7"
       />
 
-      <div
+      <!-- <div
         v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
         class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
       >
@@ -65,7 +98,7 @@
           :selected="dayTime === timeOfDay.value"
           class="grow basis-0 shrink-0 min-w-[140px]"
         />
-      </div>
+      </div> -->
       <ListGroupTransition
         class="flex flex-col gap-5"
         :style="`--total: ${filteredFlights.length};`"
@@ -74,7 +107,6 @@
           v-for="(flight, index) in filteredFlights"
           :key="`${flight.flight?.iata}`"
           :flight="flight"
-          is="button"
           @click="handleSelect(flight)"
           :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
           class="w-full"
@@ -89,22 +121,25 @@
 </template>
 <script lang="ts" setup>
 import type { Flight } from "@/types";
-import FlightCard from "@/components/cells/FlightCard.vue";
+import FlightCard, {
+  type FlightCardProps,
+} from "@/components/cells/FlightCard.vue";
 import ListGroupTransition from "@/components/cells/ListGroupTransition.vue";
 import FlightFrequency from "~/components/molecules/FlightFrequency.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useIntersectionObserver } from "@vueuse/core";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
+import DropdownButton from "~/components/molecules/DropdownButton.vue";
 const props = defineProps<{
   flights?: Flight[];
   departure?: string;
   arrival?: string;
-  date?: string;
-  number?: string;
+  date?: string | null;
+  number?: string | null;
   modelValue?: Flight | null;
   limit?: number;
-  flightCard?: typeof FlightCard
+  flightCard?: Partial<FlightCardProps>;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const show = ref(false);
@@ -141,6 +176,15 @@ const filteredFlights = computed(() =>
     .slice(0, props.limit || Infinity)
     .sort(sortByScheduled)
 );
+const filteredAirlines = computed(() => {
+  const airlines = Object.values(
+    allFlights.value.reduce(
+      (acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
+      {} as Record<string, Flight>
+    )
+  ).sort((a, b) => a.airline.name.localeCompare(b.airline.name));
+  return airlines;
+});
 const loading = ref(true);
 const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
@@ -159,8 +203,8 @@ onMounted(() => {
 });
 
 const emit = defineEmits<{
-  (e: "update:modelValue", flight: Flight): void;
-  (e: "select", flight: Flight): void;
+  "update:modelValue": [flight: Flight];
+  select: [flight: Flight];
 }>();
 const handleSelect = (flight: Flight) => {
   emit("update:modelValue", flight);
@@ -220,7 +264,9 @@ const timeFilter = (flight: Flight, t = time.value) => {
 const selectedAirline = ref();
 const airlineFilter = (flight: Flight) => {
   return (
-    !selectedAirline.value || flight.airline.iata === selectedAirline.value
+    !selectedAirline.value ||
+    flight.airline.iata === selectedAirline.value ||
+    flight.codeshared?.airline.iata === selectedAirline.value
   );
 };
 const filteredDayTimeButtons = computed(() =>

@@ -73,22 +73,22 @@ function update(e: any, i: number) {
 const convertName = (value?: Airport) =>
   value?.name ? `${value?.name} (${value?.iata})` : "";
 
-const { routes, assignRoute } = useFlightRoute(props.modelValue);
+const { legs, assignLeg } = useFlightLeg(props.modelValue);
 
 watch(
   props.modelValue.airport.trip,
   () => {
-    const iatasRoute = Object.keys(routes.value);
+    const iatasRoute = Object.keys(legs.value);
     if (iatasRoute.length <= 1) {
-      props.modelValue.route = iatasRoute[0];
+      props.modelValue.leg = iatasRoute[0];
     }
   },
   { deep: true, immediate: true }
 );
 watch(
-  [() => props.modelValue.airport.trip, () => props.modelValue.route],
+  [() => props.modelValue.airport.trip, () => props.modelValue.leg],
   () => {
-    assignRoute();
+    assignLeg();
   },
   { deep: true, immediate: true }
 );

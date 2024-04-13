@@ -2,56 +2,51 @@
   <DataTable
     :value="data"
     removableSort
-    :pt="{
-      wrapper: { class: 'rounded-xl' },
-      bodyCell: { class: 'leading-none' },
-      paginator: { bottom: { class: 'border-b-0' } },
-    }"
+    :pt="{}"
     paginator
     :rows="10"
     v-model:selection="selectedRow"
     selectionMode="multiple"
     @rowSelect="rowSelect"
     @rowUnselect="rowUnselect"
-    sortField="created_at"
+    sortField="createdAt"
     :sortOrder="-1"
   >
-    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-    <Column field="caseId" header="#" />
-    <Column field="booking_number" header="Buchung" sortable />
-    <Column field="airport_departure" header="Ab" sortable />
-    <Column field="airport_arrival" header="An" sortable />
+    <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
+    <Column field="id" header="#" />
+    <Column field="bookingNumber" header="Buchung" sortable />
+    <!-- <Column field="flight.airportDeparture" header="Ab" sortable />
+    <Column field="flight.airportArrival" header="An" sortable /> -->
     <Column header="Flug" field="flight" sortable sortField="flight.number">
-      <template #body="{ data }">
+      <template #body="{ data }: { data: ClaimsRowExtended }">
         <div class="flex items-center gap-2">
-          <img
-            :alt="data.flight.airline"
-            :src="data.flight.logo"
-            class="rounded-full w-5 h-5 border border-neutral-200 shrink-0"
-          />
-          <span>{{ data.flight.number }}</span>
+          <!-- <CellsAirlineLogo :airline="data.flight.airline" /> -->
+          <span>{{ data.flight.iata }}</span>
         </div>
       </template>
     </Column>
     <Column header="Status" field="status" sortable sortField="status">
-      <template #body="{ data }">
+      <template #body="{ data }: { data: ClaimsRowExtended }">
         <span
           class="text-xs font-medium p-1 rounded"
-          :class="getStatus(data.status, data.delay).class"
-          >{{ getStatus(data.status, data.delay).text }}</span
+          :class="getStatus(data.flight.status, data.flight.delayArrival).class"
+          >{{
+            getStatus(data.flight.status, data.flight.delayArrival).text
+          }}</span
         >
       </template>
     </Column>
     <Column header="Verspätung" field="delay" sortable sortField="delay">
-      <template #body="{ data }">
+      <template #body="{ data }: { data: ClaimsRowExtended }">
         <span
           class="text-xs font-medium"
           :class="
-            getStatus(data.status, data.delay).value === 'delayed'
+            getStatus(data.flight.status, data.flight.delayArrival).value ===
+            'delayed'
               ? 'text-red-500'
               : ''
           "
-          >{{ getDuration(data.delay) }}</span
+          >{{ getDuration(data.flight.delayArrival) }}</span
         >
       </template>
     </Column>
@@ -61,11 +56,10 @@
       sortable
       sortField="created_at"
     >
-      <template #body="{ data }">
+      <template #body="{ data }: { data: ClaimsRowExtended }">
         {{
-          new Date(data.created_at).toLocaleString({
-            dateStyle: "short",
-            timeStyle: "short",
+          formatRelative(new Date(data.createdAt), new Date(), {
+            locale: de,
           })
         }}
       </template>
@@ -89,12 +83,12 @@
       </template>
     </Column>
   </DataTable>
-  <Popup
+  <!-- <Popup
     :open="!!selectedRow && clickedRow"
     @closeOutside="clickedRow = false"
     @close="clickedRow = false"
     class="p-12"
-    :title="`${selectedRow?.[0]?.airport_departure} → ${selectedRow?.[0]?.airport_arrival}`"
+    :title="`${selectedRow?.[0]?.flightairportDeparture} → ${selectedRow?.[0]?.airport_arrival}`"
     ><template #pretitle>
       <span
         class="text-xs font-medium p-1 rounded"
@@ -124,34 +118,43 @@
         JSON.parse(selectedRow?.[0].item.flights.codeshared || "").airline?.name
       }}</span
     >
-  </Popup>
+  </Popup> -->
 </template>
 
 <script setup lang="ts">
-import { useStatusEmail } from '~/composables/statusEmail';
+import { useStatusEmail } from "~/composables/statusEmail";
+import type { ClaimsRowExtended } from "~/types";
+import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import { de } from 'date-fns/locale'
 
 const props = defineProps<{
-  data: any[];
+  data: ClaimsRowExtended[];
 }>();
 const { t, locale } = useI18n();
 
-const getStatus = (status: string, delay: string) => {
-  const newStatus =
-    status === "cancelled" || parseInt(delay, 10) < 180 ? status : "delayed";
-
+const getStatus = (status: string, delay: number) => {
   const classes = {
     cancelled: "bg-red-100 text-red-600",
     delayed: "bg-yellow-100 text-yellow-700",
     landed: "bg-green-100 text-green-600",
-  }[newStatus];
+  };
+
+  console.log(status);
+
+  const newStatus =
+    status === "cancelled" || delay < 180
+      ? status in classes
+        ? status
+        : "landed"
+      : "delayed";
 
   return {
-    class: classes,
+    class: classes[newStatus as keyof typeof classes],
     text: t(newStatus),
     value: newStatus,
   };
 };
-const selectedRow = ref(null);
+const selectedRow = ref<ClaimsRowExtended[]>();
 const clickedRow = ref(false);
 const rowSelect = (e) => {
   console.log(e);
@@ -188,7 +191,7 @@ async function initiatePayout(email: string) {
 }
 
 const { send } = useSendMail();
-const statusEmail = useStatusEmail()
+const statusEmail = useStatusEmail();
 const sendEmail = async (to: any) => {
   const [passenger] = to.item.client.passengers;
   const [departure, arrival] = await getCities(
@@ -209,7 +212,10 @@ const sendEmail = async (to: any) => {
     claimId: formatClaimId(to.item.id, false),
     bookingNumber: to.item.booking_number,
     status: "paymentProcessed",
-    ...statusEmail('paymentProcessed', { name: passenger?.firstName, reimbursment: 300, }),
+    ...statusEmail("paymentProcessed", {
+      name: passenger?.firstName,
+      reimbursment: 300,
+    }),
   };
   console.log(data);
 

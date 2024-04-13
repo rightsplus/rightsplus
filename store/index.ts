@@ -1,5 +1,5 @@
 import { reactive, onMounted } from 'vue'
-import type { Flight, ClaimsForm, Review, Airport, Route, Airline } from '@/types'
+import type { Flight, ClaimsForm, Review, Airport, Leg, Airline, ClaimsRow } from '@/types'
 import nuxtStorage from 'nuxt-storage';
 
 
@@ -10,11 +10,10 @@ export interface State {
     url?: string;
     entries?: Review[];
   };
-  routes: Record<string, Route>;
-  log: (message: string) => void;
+  legs: Record<string, Leg>;
 }
 export interface AdminState {
-  claims: any[];
+  claims: ClaimsRow[];
   clients: any[];
 }
 
@@ -29,7 +28,7 @@ export const defaultClaim = {
       layover: [{}] as Airport[],
     },
   },
-  route: null,
+  leg: null,
   flight: null,
   connectingFlight: null,
   date: '',
@@ -42,6 +41,7 @@ export const defaultClaim = {
         street: '',
         postalCode: '',
         city: '',
+        country: '',
       },
       iban: '',
     }],
@@ -51,7 +51,7 @@ export const defaultClaim = {
     type: null,
     details: null,
     reason: null,
-    other: null,
+    comment: null,
   },
   replacement: {
     departure: {} as Airport,
@@ -69,13 +69,12 @@ export const defaultClaim = {
 
 export const claim = reactive(defaultClaim)
 export const state = reactive({
-  routes: {} as Record<string, Route>,
+  legs: {} as Record<string, Leg>,
   flights: [] as Flight[],
   reviews: {
     url: '',
     entries: [],
   },
-  log: (message: string) => console.log(message),
 } as State)
 
 export const admin = reactive({
@@ -84,9 +83,9 @@ export const admin = reactive({
 } as AdminState)
 
 // watch(() => claim.value.airport.trip, (value) => {
-//   if (value) state.routes = generateRoutes?.(value);
+//   if (value) state.legs = generateLegs?.(value);
 //   console.log('trip', value)
-//   console.log('state.routes',state.routes)
+//   console.log('state.legs',state.legs)
 // }, { deep: true });
 watch(claim, (value) => {
   if (!process.client || !value) return

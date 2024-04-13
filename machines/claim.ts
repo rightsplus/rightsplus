@@ -2,7 +2,7 @@ import IBAN from "iban";
 import { ExitStatus } from "typescript";
 import type { Machine } from "~/composables/machine";
 import type { ClaimsForm } from "~/types";
-import { nextDeparture } from "~/utils";
+import { nextLeg } from "~/utils";
 
 // import { createMachine } from 'xstate'
 
@@ -13,19 +13,33 @@ export default {
   initial: "itinerary",
   loading: "loading",
   guards: {
-    hasItinerary: ({ context }) => {
-      return !!context.airport.trip.departure?.iata && !!context.airport.trip.arrival?.iata
+    hasItinerary: ({ context, messages }) => {
+      messages.value.hasItinerary = "Please provide a valid itinerary"
+
+      const { departure, arrival } = context.airport.trip
+      return !!departure?.iata && !!arrival?.iata && departure?.iata !== arrival?.iata
     },
-    hasDisruptionReason: ({ context }) => {
+    hasDisruptionReason: ({ context , messages }) => {
+      messages.value.hasDisruptionReason = "Please provide a reason"
+
       return !!context.disruption.reason
+    },
+    hasDisruptionComment: ({ context }) => {
+      return !!context.disruption.comment
     },
     hasStopover: ({ context }) => {
       return !!context.airport.trip.layover?.some(e => e.iata)
     },
-    hasDate: ({ context }) => {
+    hasDate: ({ context, messages }) => {
+      messages.value.hasDate = "Please provide a date"
+
       return !!context.date
     },
-    hasEUAirport: ({ context }) => {
+    hasFlight: ({ context }) => {
+      return !!context.flight
+    },
+    hasEUAirport: ({ context, messages }) => {
+      messages.value.hasEUAirport = "Please provide at least one EU airport"
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
     isDelayed: ({ context }) => {
@@ -48,14 +62,13 @@ export default {
     },
     connectionRelevant: ({ context }) => {
       const { delay } = context.flight?.arrival || { delay: 0 }
-      const departure = nextDeparture(context)
+      const { departure, arrival } = nextLeg(context)
 
-      console.log(departure)
-      if (!departure) return false
+      console.log(departure, arrival)
+      if (!departure || !arrival) return false
       // @todo: make action
-      if (departure) {
-        context.connection.departure = departure
-      }
+      context.connection.departure = departure
+      context.connection.arrival = arrival
       if (context.flight?.arrival.scheduledTime) {
         context.connection.date = new Date(context.flight?.arrival.scheduledTime).toISOString().split('T')[0]
       }
@@ -123,28 +136,25 @@ export default {
       }
     },
     itinerary: {
-      init: {
-        guard: 'hasItinerary',
-        guardType: 'not',
-        actions: 'back'
-      },
       on: {
         next: [
           {
-            target: "chooseRoute",
-            guard: "hasStopover",
+            target: "chooseLeg",
+            guard: ["hasItinerary", "hasStopover"],
+            guardType: "and"
           },
           {
             target: "flightDate",
-            guard: "hasEUAirport"
+            guard: ["hasItinerary", "hasEUAirport"],
           },
           {
+            guard: "hasItinerary",
             target: "ineligable",
           },
         ],
       },
     },
-    chooseRoute: {
+    chooseLeg: {
       init: {
         guard: 'hasStopover',
         guardType: 'not',
@@ -190,12 +200,17 @@ export default {
             guard: "isCancelled",
           },
           {
-            target: "noDisruptionDetected",
+            target: "disruptionType",
           },
         ],
       },
     },
     disruptionDetected: {
+      init: {
+        guard: 'hasFlight',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         continue: [
           {
@@ -222,14 +237,12 @@ export default {
         },
       },
     },
-    noDisruptionDetected: {
-      on: {
-        next: {
-          target: "disruptionType",
-        },
-      },
-    },
     disruptionType: {
+      init: {
+        guard: 'hasFlight',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [
           {
@@ -247,6 +260,11 @@ export default {
       },
     },
     cancellationDetails: {
+      init: {
+        guard: 'hasFlight',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [{
           target: "disruptionReason",
@@ -257,6 +275,11 @@ export default {
       },
     },
     delayDetails: {
+      init: {
+        guard: 'hasFlight',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [
           {
@@ -274,27 +297,32 @@ export default {
       },
     },
     disruptionReason: {
+      init: {
+        guard: 'hasFlight',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: [
           {
             target: "ineligable",
-            guard: "isSelfInflicted",
+            guard: ["hasDisruptionReason", "hasDisruptionComment", "isSelfInflicted"],
           },
           {
             target: "connectionFlightYN",
-            guard: ["connectionRelevant", "isDelayedType"],
+            guard: ["hasDisruptionReason", "hasDisruptionComment", "connectionRelevant", "isDelayedType"],
           },
           {
             target: "ineligable",
-            guard: ["tooLittleDelay", "isDelayedType"],
+            guard: ["hasDisruptionReason", "hasDisruptionComment", "tooLittleDelay", "isDelayedType"],
           },
           {
             target: "replacementFlightYN",
-            guard: ["replacementRelevant", "isCancelledType"],
+            guard: ["hasDisruptionReason", "hasDisruptionComment", "replacementRelevant", "isCancelledType"],
           },
           {
             target: "eligable",
-            guard: "hasDisruptionReason"
+            guard: ["hasDisruptionReason", "hasDisruptionComment"]
           },
         ],
       },

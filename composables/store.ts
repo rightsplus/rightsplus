@@ -7,37 +7,6 @@ import type { Airline, Airport } from '@/types';
 export const useAppState = () => state
 export const useAdminState = () => admin
 export const useClaim = () => claim
-export const useAirports = () =>{
-  async function query (iata: string): Promise<Airport>
-  async function query (iata: string[]): Promise<Record<string, Airport>>
-  async function query (iata: string | string[]) {
-    const algolia = useAlgoliaSearch("AIRPORTS")
-    const iatas = Array.isArray(iata) ? iata : [iata]
-    await Promise.all(iatas.map(async (iata) => {
-      if (airports.value[iata]) return
-      await queryAirports(algolia, iata)
-    }))
-    return Array.isArray(iata) ? airports.value : airports.value[iata]
-  }
-  return {
-    airports,
-    query
-  }
-}
-export async function useAirlines(iata: string): Promise<Airline>
-export async function useAirlines(iata?: string[]): Promise<Record<string, Airline>>
-export async function useAirlines(iata?: string | string[]) {
-  if (!iata?.length) {
-    await queryAirlines()
-    return airlines.value
-  }
-  const iatas = Array.isArray(iata) ? iata : [iata]
-  await Promise.all(iatas.map(async (iata) => {
-    if (airlines.value[iata]) return
-    return await queryAirlines(iata)
-  }))
-  return Array.isArray(iata) ? airlines.value : airlines.value[iata]
-}
 
 type ProcessClaimResponse = {
   eligible: boolean | null;
@@ -52,7 +21,7 @@ const initialResults: ProcessClaimResponse = {
   sectionComplete: 0
 }
 export const useProcessClaim = () => {
-  const { noBoardingReasons } = useDisruption()
+  const { noBoardingReasons } = useDisruption(useClaim())
   const airline = ref<Airline>()
 
   const result = ref<ProcessClaimResponse>(initialResults)
@@ -65,7 +34,7 @@ export const useProcessClaim = () => {
 
 
   const processClaim = () => {
-    const { airport, route, flight, disruption, client } = claim.value || {}
+    const { airport, leg, flight, disruption, replacement, connection, client } = claim || {}
     const response: ProcessClaimResponse = {
       eligible: null,
       message: null,
@@ -90,10 +59,10 @@ export const useProcessClaim = () => {
       response.message = "Keiner der Flughäfen liegt in der EU."
       return response
     }
-    const routes = generateRoutes(airport.trip)
+    const legs = generateLegs(airport.trip)
 
-    if (!route || !routes[route]) {
-      response.message = "Wähle eine Route."
+    if (!leg || !legs[leg]) {
+      response.message = "Wähle einen Streckenabschnitt."
       return response
     }
 
@@ -125,11 +94,11 @@ export const useProcessClaim = () => {
         return response
       }
       if (disruption.details === "<3") {
-        if (disruption.replacement) {
+        if (replacement) {
           // @todo
           response.message = "Anschlussverbindung angeben."
           return response
-        } else if (disruption.replacement === false) {
+        } else if (replacement === false) {
           response.eligible = false
           response.message = "Die Verspätung ist zu gering."
           return response
@@ -149,11 +118,11 @@ export const useProcessClaim = () => {
         response.message = "Wenn du mehr als 14 Tage im Voraus über die Annulierung informiert wurdest, hast du laut geltendem EU-Recht keinen Anspruch auf Entschädigung."
         return response
       }
-      if (disruption.replacement) {
+      if (replacement) {
         // @todo
         response.message = "Anschlussverbindung angeben."
         return response
-      } else if (disruption.replacement === null) {
+      } else if (replacement === null) {
         response.message = "Angeben ob es Ersatzflug gab."
         return response
       }
@@ -166,13 +135,13 @@ export const useProcessClaim = () => {
       }
       response.sectionComplete = 1
     }
-    if (disruption.type !== "other" && !disruption.reason) {
+    if (!disruption.reason) {
       response.message = "Ursache angeben."
       response.sectionComplete = 1
       return response
     }
     response.eligible = true
-    if (disruption.reason === 'other' && !disruption.other) {
+    if (!disruption.comment) {
       response.message = "Bitte erläutern."
       response.sectionComplete = 1
       return response
@@ -207,6 +176,6 @@ export const useProcessClaim = () => {
     return response
   }
   onMounted(() => useAirlines().then(processClaim))
-  watch(() => claim.value, assign, { immediate: true, deep: true })
+  watch(claim, assign, { immediate: true, deep: true })
   return result
 }

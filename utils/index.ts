@@ -1,4 +1,4 @@
-import type { Airline, Airport, ClaimsForm, FlightPhase, Route } from "@/types";
+import type { Airline, Airport, ClaimsForm, FlightPhase, Leg } from "@/types";
 import weatherCodes from "~~/assets/weather-codes.json";
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { airlines, airports, claim } from "~~/store";
@@ -52,7 +52,7 @@ export interface WeatherResponse<N = number[], S = string[]> {
 export const getHumanReadableWeather = async (flight: FlightPhase) => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
 	const { airports } = useAirports()
-	const weather = await getWeather(airports.value[flight.iata], flight.scheduled)
+	const weather = await getWeather(airports.value[flight.iata], flight.scheduledTime)
 	const getByHour = (weather: Partial<WeatherResponse> | null, time: string, pick = ['temperature_2m', 'weathercode', 'windspeed_100m']): Partial<WeatherResponse<number, string>> => {
 		if (!weather) return {}
 		return Object.fromEntries(
@@ -61,7 +61,7 @@ export const getHumanReadableWeather = async (flight: FlightPhase) => {
 				.map(([key, value]) => [key, value[new Date(time).getHours()]])
 		)
 	}
-	return getByHour(weather, flight.scheduled)
+	return getByHour(weather, flight.scheduledTime)
 }
 
 export const getWeather = async (airport: Airport, date: Date | string): Promise<WeatherResponse | null> => {
@@ -169,7 +169,7 @@ export const isUnsafeToTakeoffOrLand = (response: WeatherResponse | null, hour: 
 };
 
 
-export const reduceAirports = (airport: State['airport'], fetch?: string[]) => {
+export const reduceAirports = (airport: ClaimsForm['airport']['trip'], fetch?: string[]) => {
 	const all = ([
 		airport?.departure,
 		...(airport?.layover || []),
@@ -183,13 +183,13 @@ export const reduceAirports = (airport: State['airport'], fetch?: string[]) => {
 }
 
 
-export const generateRoutes = (airport: ClaimsForm['airport']['trip']) => {
+export const generateLegs = (airport: ClaimsForm['airport']['trip']) => {
 	const airports = reduceAirports(airport);
-	const routes = {} as Record<string, Route>;
+	const legs = {} as Record<string, Leg>;
 	Object.values(airports).forEach((airport, i, arr) => {
 		if (i === arr.length - 1) return;
-		routes[`${airport.iata}-${arr[i + 1].iata}`] = ({
-			flight_date: "",
+		legs[`${airport.iata}-${arr[i + 1].iata}`] = ({
+			date: "",
 			departure: {
 				airport,
 			},
@@ -199,15 +199,23 @@ export const generateRoutes = (airport: ClaimsForm['airport']['trip']) => {
 			flight: undefined
 		})
 	})
-	return routes;
+	return legs;
 }
 
-export const nextDeparture = (claim: ClaimsForm) => {
-	const routes = Object.keys(generateRoutes?.(claim.airport.trip))
-	const currentRoute = routes.findIndex(e => e === claim.route)
-	const nextRoute = routes[currentRoute + 1]
-	if (nextRoute) return claim.airport.trip.layover?.find(e => e.iata === nextRoute.split('-')[0])
-	return false
+export const nextLeg = (claim: ClaimsForm) => {
+	const legs = Object.keys(generateLegs?.(claim.airport.trip))
+	const currentLeg = legs.findIndex(e => e === claim.leg)
+	const nextLeg = legs[currentLeg + 1]
+	if (nextLeg) {
+		const [dep, arr] = nextLeg.split('-')
+		const departure = [...(claim.airport.trip.layover || []), claim.airport.arrival]?.find(e => e.iata === dep)
+		const arrival = [...(claim.airport.trip.layover || []), claim.airport.arrival]?.find(e => e.iata === arr)
+
+		return {
+			departure, arrival
+		}
+	}
+	return { departure: undefined, arrival: undefined }
 
 }
 
@@ -264,13 +272,17 @@ export const focusNext = ({ select, activeElement, scope }: { select?: boolean, 
 
 	// Find the next input element
 	let nextElement = inputElements[currentIndex + 1] as HTMLInputElement;
-	while (nextElement && nextElement.disabled) {
+	let counter = 0
+	while (nextElement && nextElement.disabled && counter <= inputElements.length) {
 		nextElement = inputElements[currentIndex + 2] as HTMLInputElement;
+		counter++
 	}
 
 	// Focus on the next input element
 	if (nextElement) {
 		nextElement.focus();
+		// console.log(nextElement)
+		// return 
 		if (select && typeof nextElement.select === 'function') {
 			nextElement.select();
 		} else {
@@ -345,13 +357,12 @@ export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query
 		delete a._highlightResult, a.objectID;
 		airports.value[hit.iata] = a;
 	});
-	return hits
+	return hits as Airport[]
 }
 export const queryAirlines = async (query?: string) => {
 	const hits = await fetch("/api/airlines.json")
-	const data = await hits.json()
-	airlines.value = data as Record<string, Airline>
-	return query ? data[query] : data
+	airlines.value = await hits.json() as Record<string, Airline>
+	return query ? airlines.value[query] : airlines.value
 	// console.log(data.filter(e => e.status === 'active' && e.iata_code).reduce((acc, cur) => {
 	// 	const airline = {
 	// 		id: cur.id,
@@ -559,7 +570,6 @@ const suffixes = (locale: string) => {
 }
 export const formatOrdinals = (n: number, locale = 'de') => {
 	const rule = enOrdinalRules(locale).select(n);
-	console.log(rule)
 	const suffix = suffixes(locale).get(rule);
 	return `${n}${suffix}`;
 };

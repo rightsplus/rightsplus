@@ -1,9 +1,9 @@
 <template>
-  <AccordionItem v-for="claim in claims" :index="claim.uuid" :modelValue="active" @update:modelValue="active = $event"
+  <AccordionItem v-for="claim in claims" :index="claim.id" :modelValue="active" @update:modelValue="active = $event"
     headless :tag="{ outer: 'div', inner: 'div' }" :classes="{ title: 'pb-0 mb-0', content: 'mx-1' }" collapsible>
     <template #title>
-      <CellsFlightCard :key="claim.uuid" :flight="claim.flights.data || undefined" class="w-full" :class="{
-        'rounded-b-none': active?.includes(claim.uuid),
+      <CellsFlightCard :key="claim.id" :flight="claim.flights.data || undefined" class="w-full" :class="{
+        'rounded-b-none': active?.includes(claim.id),
       }" />
     </template>
     <template #content>

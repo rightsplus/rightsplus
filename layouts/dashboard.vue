@@ -2,7 +2,7 @@
   <div class="fixed inset-0 flex overflow-hidden bg-white">
     <div
       data-n-ids='{"dashboard:panel:0":"dashboard:panel:0"}'
-      class="flex-col items-stretch relative w-full border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-800 lg:w-[--width] flex-shrink-0 hidden lg:flex"
+      class="flex-col items-stretch relative w-full border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800 md:w-[--width] flex-shrink-0 hidden md:flex"
       style="--width: 250px"
     >
       <div
@@ -12,7 +12,7 @@
           <div class="flex items-stretch gap-1.5 min-w-0 flex-1">
             <button
               type="button"
-              class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center lg:hidden"
+              class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center md:hidden"
               aria-label="Open sidebar"
             >
               <span
@@ -33,8 +33,9 @@
                 role="button"
                 data-n-ids='{"5yOShZwaZW:0":"5yOShZwaZW:1"}'
               >
-                <button
+                <NuxtLink
                   type="button"
+                  :to="localeRoute('/')"
                   class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center w-full"
                 >
                   <Icon
@@ -46,7 +47,7 @@
                     <span class="font-bold">RightsPlus </span>
                     <span class="font-medium">Flights</span></span
                   >
-                </button>
+                </NuxtLink>
               </div>
             </div>
           </div>
@@ -64,7 +65,7 @@
                 >Search...</span
               >
               <div
-                class="hidden lg:flex items-center gap-0.5 ml-auto -my-1 flex-shrink-0"
+                class="hidden md:flex items-center gap-0.5 ml-auto -my-1 flex-shrink-0"
               >
                 <kbd
                   class="inline-flex items-center justify-center text-gray-900 dark:text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-300 dark:ring-gray-700 ring-inset"
@@ -168,38 +169,43 @@
 <script lang="ts" setup>
 import Logo from "~/assets/logo";
 const localeRoute = useLocaleRoute();
+const { t } = useI18n();
 const user = useSupabaseUser();
 const { auth } = useSupabaseAuthClient();
 const signOut = () => {
   auth.signOut();
   navigateTo("/");
 };
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const menu = [
+  // {
+  //   label: "Home",
+  //   href: "/admin",
+  //   icon: "house",
+  // },
+  // {
+    //   label: "Kunden",
+    //   href: "/admin/clients",
+    //   icon: "user",
+    // },
+    {
+      label: t("claim", 2),
+      href: "admin-claims",
+      icon: "folder-closed",
+      badge: 18,
+    },
   {
-    label: "Home",
-    href: "/admin",
-    icon: "house",
+    label: t("flight", 2),
+    href: "admin-flights",
+    icon: "plane",
   },
   {
-    label: "Fälle",
-    href: "/admin/claims",
-    icon: "folder-closed",
-    badge: 18,
-  },
-  {
-    label: "Kunden",
-    href: "/admin/clients",
-    icon: "user",
-  },
-  {
-    label: "Airlines",
-    href: "/admin/airlines",
+    label: t("airline", 2),
+    href: "admin-airlines",
     icon: "plane-tail",
-  },
-  {
-    label: "Kialo Clone",
-    href: "/admin/kialo",
-    icon: "arrow-right",
   },
 ];
 </script>

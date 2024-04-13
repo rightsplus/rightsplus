@@ -11,7 +11,7 @@
     >
       <div class="flex flex-col">
         <span class="leading-none text-sm font-bold" v-if="route.flight">{{
-          time(route.flight.departure.scheduled)
+          time(route.flight.departure.scheduledTime)
         }}</span>
         <span class="font-bold text-lg text-gray-700">{{
           route.departure.airport.iata
@@ -27,7 +27,7 @@
 
       <div class="flex flex-col text-end">
         <span class="leading-none text-sm font-bold" v-if="route.flight">{{
-          time(route.flight.departure.scheduled)
+          time(route.flight.departure.scheduledTime)
         }}</span>
         <span class="font-bold text-lg text-gray-700">{{
           route.arrival.airport.iata
@@ -43,7 +43,7 @@
       <div
         class="w-5 h-5 flex justify-center items-center bg-white rounded-full"
       >
-      <AirlineLogo :flight="route.flight" size="sm" />
+      <AirlineLogo :airline="route.flight.airline" size="sm" />
       </div>
       <span class="text-sm font-medium">{{ route.flight.airline.name }}</span>
     </div>
@@ -57,7 +57,7 @@ import {
   getWeather,
   isUnsafeToTakeoffOrLand,
 } from "@/utils";
-import type { Airport, Flight } from "@/types";
+import type { Airport, Flight, Leg } from "@/types";
 import { euMember } from "is-european";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightResultAirport from "@/components/organisms/Calculator/FlightResultAirport.vue";
@@ -69,7 +69,7 @@ export default defineComponent({
   },
   props: {
     route: {
-      type: Object as () => Route,
+      type: Object as () => Leg,
       required: true,
     },
   },

@@ -19,6 +19,7 @@
       :suffix-icon-class="$attrs['suffix-icon-class']"
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleEnter"
+      @keydown.tab.exact.prevent="handleTab"
       @keydown.escape.prevent="blur"
       v-bind="attrs"
       floatingLabel
@@ -49,6 +50,7 @@
       :show="!!showDropdown"
       :style="position"
       @input="handleInput"
+      :required="required"
       teleport
     />
   </div>
@@ -72,6 +74,8 @@ const props = defineProps<{
   loading?: boolean;
   disabled?: boolean;
   autocomplete?: string;
+  minLength?: number;
+  required?: boolean;
   options: DropdownItem[];
 }>();
 const emit = defineEmits([
@@ -99,7 +103,9 @@ const inputValue = ref(props.modelValue);
 
 const showDropdown = computed(() => {
   return (
-    inputFocused.value && inputValue.value?.length && !props.errors?.length
+    inputFocused.value &&
+    (inputValue.value?.length || 0) >= (props.minLength || 1) &&
+    !props.errors?.length
   );
 });
 
@@ -123,24 +129,36 @@ function handleEnter() {
   handleInput();
   emit("keydown.enter");
 }
+function handleTab(e: KeyboardEvent) {
+  if (showDropdown.value) {
+    handleInput();
+  } else if (!props.modelValue) {
+    focusNext({ select: true });
+  }
+}
 function handleInput(value?: DropdownItem) {
   const index = typeof value === "number" ? value : highlighted.value;
-  if (props.options[index]) emit("update:modelValue", props.options[index]);
-  if (input.value?.node && !props.options[index].cancel) {
+  if (props.options[index]) {
+    emit("update:modelValue", props.options[index]);
+  }
+  if (input.value?.node && !props.options[index]?.cancel) {
     input.value.node.context?.handlers.DOMInput({
-      target: { value: props.modelValue },
+      target: { value: props.modelValue || inputValue.value },
     });
   }
-  if (!props.options[index].cancel) focusNext({ select: true });
+  if (!props.options[index]?.cancel) focusNext({ select: true });
 }
 function focus() {
   inputFocused.value = true;
   setTimeout(() => {
-    (document.activeElement as HTMLInputElement)?.select();
+    const active = document.activeElement as HTMLInputElement;
+    if (active && typeof active?.select === "function") {
+      active.select();
+    }
   }, 0);
 }
 function blur() {
-  emit('blur')
+  emit("blur");
   if (!inputValue.value?.length) {
     emit("update:modelValue", "");
   }
