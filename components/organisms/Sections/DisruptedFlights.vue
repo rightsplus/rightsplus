@@ -20,7 +20,7 @@
         </p>
       </div>
       <div class="flex gap-3 flex-wrap">
-        <Button secondary to="delayed-and-cancelled-flights" v-if="!page"
+        <Button tertiary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
         <Button primary to="claim-new">{{ $t('checkCompensationNow')}}</Button>
@@ -50,7 +50,7 @@
           actionButton: {
             label: $t('checkClaim'),
             suffixIcon: 'arrow-right',
-            secondary: true,
+            tertiary: true,
             class: 'h-9 text-sm ml-auto',
           }
         }"
@@ -59,7 +59,7 @@
   </section>
 </template>
 <script lang="ts" setup>
-import type { ClaimsForm, Database, FlightsRow, Flight } from "~/types";
+import type { ClaimsForm, Database, RowFlight, Flight } from "~/types";
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAirports } from "@/composables/flight";
@@ -76,7 +76,7 @@ onMounted(async () => {
     .not("data", "is", null)
     .or("delayArrival.gt.180,status.eq.cancelled")
     .limit(20)
-    .returns<FlightsRow[]>();
+    .returns<RowFlight[]>();
 
   flights.value = data?.map(({ data }) => data) || [];
   console.log(flights);

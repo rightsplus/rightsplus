@@ -1,5 +1,5 @@
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
-import type { ClaimsForm } from "~/types";
+import type { ClaimsForm, RowBooking } from "~/types";
 
 export const useSendMail = () => {
 	const send = async (props: SendPDFMailProps) => {
@@ -80,18 +80,18 @@ export const useCompensation = () => {
 }
 
 export const usePrepareClaimSubmission = () => {
-	const { submitFlight, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
+	const { submitFlight, submitBooking, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
 	const claim = useClaim()
 	const { t } = useI18n()
 	const { send } = useSendMail();
 	const statusEmail = useStatusEmail()
-	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, flightId: number) => {
+	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, booking: RowBooking) => {
 		try {
 			if (!passenger.signature) {
 				throw Error('No Signature')
 			}
 
-			const claimResponse = await submitClaim(claim, passengerIndex, flightId);
+			const claimResponse = await submitClaim(claim, passengerIndex, booking.id);
 
 			if (!claimResponse?.id) {
 				throw Error('No Claim ID')
@@ -128,7 +128,7 @@ export const usePrepareClaimSubmission = () => {
 					name: [passenger?.firstName, passenger?.lastName].join(" "),
 					firstName: passenger?.firstName,
 					claimId: formatClaimId(claimResponse.id),
-					bookingNumber: claimResponse.bookingNumber,
+					bookingNumber: booking.number,
 					status: "dataReceived",
 					...statusEmail('dataReceived', { name: passenger?.firstName, reimbursment: 300, }),
 				},
@@ -143,9 +143,9 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
-			const { id } = await submitFlight(claim.flight);
-			const claimWithFlightId = { ...claim, flight_id: id };
-			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, id))
+			const { id: flightId } = await submitFlight(claim.flight);
+			const { id: bookingId } = await submitBooking(claim, flightId);
+			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, bookingId))
 
 		} catch (error) {
 			console.log(error);

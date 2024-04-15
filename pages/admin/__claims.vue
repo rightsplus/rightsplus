@@ -225,7 +225,7 @@ definePageMeta({
   key: "claims",
 });
 
-import type { AirlinesRow, ClaimsRow, Database, FlightsRow } from "@/types";
+import type { RowAirline, RowClaim, Database, RowFlight } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAdminState } from "~/composables/store";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
@@ -243,9 +243,9 @@ const { data: claims } = useAsyncData("claims", async () => {
         `
     )
     .returns<
-      (ClaimsRow & {
-        flights: FlightsRow & {
-          airlines: AirlinesRow;
+      (RowClaim & {
+        flights: RowFlight & {
+          airlines: RowAirline;
         };
       })[]
     >();

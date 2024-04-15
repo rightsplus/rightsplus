@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex"
+    class="flex w-full"
   >
     <div
     class="flex-col items-stretch relative w-full border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-800 lg:w-[--width] flex-shrink-0 flex"
@@ -50,7 +50,9 @@
         ></div>
       </div>
     </div>
-    <div class="flex-1 flex flex-col overflow-y-auto p-0">
+
+    
+    <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
       <div class="flex-col items-stretch relative w-full flex-1 hidden lg:flex">
         <div class="flex flex-col gap-5 p-5 w-full" v-if="currentSelection">
           <div class="flex items-center gap-5 justify-between w-full">
@@ -61,6 +63,7 @@
               <FontAwesomeIcon icon="xmark" />
             </Button>
           </div>
+          <FlightDetails :flight="currentSelection?.data" />
         </div>
       </div>
     </div>
@@ -73,17 +76,17 @@ definePageMeta({
   layout: "dashboard",
   key: "flights",
 });
-import type { Database, AirlinesRow, FlightsRow } from "@/types";
+import type { Database, RowAirline, RowFlight } from "@/types";
 
 const client = useSupabaseClient<Database>();
 const { data: flights } = await useAsyncData("flights", async () => {
   const { data: flights } = await client
-    .from("flights")
+    .from("flight")
     .select("*")
-    .returns<FlightsRow[]>();
+    .returns<RowFlight[]>();
 
   return flights;
 });
 
-const currentSelection = ref<FlightsRow | null>(null);
+const currentSelection = ref<RowFlight | null>(null);
 </script>

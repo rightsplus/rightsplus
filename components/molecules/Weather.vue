@@ -2,7 +2,7 @@
   <div v-if="temperature" class="flex flex-col">
     <div class="flex gap-2 text-base items-center">
       <div
-        v-if="code !== null && weatherIconMap[code]"
+        v-if="code && weatherIconMap[code]"
         :class="getColor(weatherIconMap[code])"
       >
         <FontAwesomeIcon :icon="weatherIconMap[code]" />
@@ -11,6 +11,7 @@
     </div>
     <span class="gap-2 items-center text-xs">{{ $n(wind || 0) }} km/h</span>
   </div>
+  <div v-else>loading</div>
 </template>
 
 <script setup lang="ts">

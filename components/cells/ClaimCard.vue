@@ -232,6 +232,5 @@ const time = (time: string) => {
     minute: "2-digit",
   });
 };
-
 const { compensation, distance, message } = useCompensation();
 </script>

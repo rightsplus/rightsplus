@@ -46,13 +46,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="hidden md:block bg-transparent select-none absolute z-50 group w-[9px] h-full inset-y-0 -right-[5px] cursor-col-resize"
-      >
-        <div
-          class="group-hover:bg-gray-300 dark:group-hover:bg-gray-700 transition duration-200 absolute w-px h-full inset-x-0 mx-auto"
-        ></div>
-      </div>
+      <Separator />
     </div>
     <div class="flex-1 flex flex-col overflow-y-auto p-0">
       <div class="flex-col items-stretch relative w-full flex-1 hidden lg:flex">
@@ -97,14 +91,14 @@ definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
 });
-import type { Database, AirlinesRow } from "@/types";
+import type { Database, RowAirline } from "@/types";
 
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("airlines", async () => {
   const { data: airlines } = await client
-    .from("airlines")
+    .from("airline")
     .select("*")
-    .returns<AirlinesRow[]>();
+    .returns<RowAirline[]>();
 
   return {
     airlines,
@@ -119,8 +113,8 @@ const airlines = computed(() =>
       })
 );
 
-const currentSelection = ref<AirlinesRow | null>(null);
-const localCurrentSelection = ref<AirlinesRow | null>(null);
+const currentSelection = ref<RowAirline | null>(null);
+const localCurrentSelection = ref<RowAirline | null>(null);
 watch(currentSelection, (value) => {
   localCurrentSelection.value = value;
 });
@@ -130,7 +124,7 @@ const success = ref(false);
 const saveChanges = async () => {
   loading.value = true;
   const { data, error, status } = await client
-    .from("airlines")
+    .from("airline")
     .upsert(localCurrentSelection.value);
   console.log(data, status);
   loading.value = false;
@@ -145,17 +139,17 @@ const saveChanges = async () => {
     }, 2000);
   }
 };
-// const airlines = ref<AirlinesRow[]>([]);
+// const airlines = ref<RowAirline[]>([]);
 // watch(query, async () => {
 //   const { data } = await client
-//       .from("airlines")
+//       .from("airline")
 //       .select("*")
 //       .textSearch("name", query.value, {
 //         type: "phrase",
 //         config: "english",
 //       })
 //       .range(0, 10)
-//       .returns<AirlinesRow[]>();
+//       .returns<RowAirline[]>();
 
 //   if (!data) return;
 //   airlines.value = data;

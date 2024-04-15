@@ -1,7 +1,7 @@
 import { library, config, type IconDefinition, type IconPack, type Library, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCircleQuarter, faEuropeanUnion, faTicketAirline, faPlaneTail, faTicketsAirline, faTowerControl } from '@/assets/icons'
+import { faCircleQuarter, faEuropeanUnion, faTicketAirline, faPlaneTail, faTicketsAirline, faTowerControl, faEnvelopeDot } from '@/assets/icons'
 import {
   faArrowLeft,
   faArrowRight,
@@ -97,7 +97,8 @@ import {
   faCalendarXmark,
   prefix,
   faArrowRightLong,
-  faArrowRotateRight
+  faArrowRotateRight,
+  faEnvelope
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -207,7 +208,9 @@ library.add(
   faTicketAirline,
   faTicketsAirline,
   faPlaneTail,
-  faTowerControl
+  faTowerControl,
+  faEnvelopeDot,
+  faEnvelope
 )
 
 config.autoAddCss = false

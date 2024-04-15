@@ -1,18 +1,5 @@
 import { useI18n } from "#i18n"
-
-type Statuses = "dataReceived"
-	| "compensationClaimChecked"
-	| "orderRejected"
-	| "reminderForAssignmentDeclaration"
-	| "assignmentDeclarationReceived"
-	| "airlineContacted"
-	| "lawFirmEngaged"
-	| "compensationClaimSecured"
-	| "lawsuitFiled"
-	| "compensationClaimSecuredLawsuit"
-	| "paymentProcessed"
-	| "legalDisputeLost"
-	| "other"
+import type { CaseStatus } from "~/types"
 
 const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n> }) => {
 	const { t } = i18n
@@ -47,5 +34,5 @@ const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n> }) => {
 
 export const useStatusEmail = () => {
 	const i18n = useI18n()
-	return (status: Statuses, data) => getStatus({ i18n, data })[status]
+	return (status: CaseStatus, data) => getStatus({ i18n, data })[status]
 }

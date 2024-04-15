@@ -1,6 +1,6 @@
 <template>
   <span
-    class="aspect-square flex justify-center items-center bg-white rounded-full shrink-0 overflow-hidden self-center"
+    class="aspect-square flex justify-center items-center bg-white rounded-full shrink-0 overflow-hidden self-center border border-gray-100"
     :class="{
       'w-5': size === 'xs',
       'w-6': size === 'sm',

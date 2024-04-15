@@ -12,7 +12,7 @@
     <Button
       v-if="secondary"
       class="px-2"
-      secondary
+      tertiary
       @click="$emit('secondary')"
       v-bind="secondary"
       >{{ secondary.label }}</Button

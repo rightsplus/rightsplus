@@ -1,6 +1,6 @@
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import { type AirlinesRow, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type FlightPhase } from "@/types";
+import { type RowAirline, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type FlightPhase } from "@/types";
 import { airports } from "~/store";
 import { airlines } from "~/store";
 import type { Airline, VariFlight } from "~/aviation-edge.types";
@@ -74,12 +74,12 @@ export const isExtraordinaryCircumstance = async (flight: Flight | null) => {
 
 	console.log(departureDate.getHours())
 
-	getWeather(departureAirport, departureDate).then((weather) => {
-		circumstance.departure = isUnsafeToTakeoffOrLand(weather, departureDate.getHours())
-	})
-	getWeather(arrivalAirport, arrivalDate).then((weather) => {
-		circumstance.arrival = isUnsafeToTakeoffOrLand(weather, arrivalDate.getHours())
-	})
+	// getWeather(departureAirport, departureDate).then((weather) => {
+	// 	circumstance.departure = isUnsafeToTakeoffOrLand(weather, departureDate.getHours())
+	// })
+	// getWeather(arrivalAirport, arrivalDate).then((weather) => {
+	// 	circumstance.arrival = isUnsafeToTakeoffOrLand(weather, arrivalDate.getHours())
+	// })
 
 
 	return circumstance
@@ -151,7 +151,7 @@ export const useAirlines = () => {
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
-			await client.from('airlines').select('iata, name, isEuMember').eq('iata', iata).returns<AirlinesRow[]>().then(({ data }) => {
+			await client.from('airlines').select('iata, name, isEuMember').eq('iata', iata).returns<RowAirline[]>().then(({ data }) => {
 				const [airline] = data || []
 				console.log(airline)
 				if (airline) airlines.value[iata] = {

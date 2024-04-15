@@ -7,6 +7,22 @@ export type Address<T = string> = {
   city: T;
   country?: T;
 };
+
+
+export type CaseStatus = "dataReceived"
+	| "compensationClaimChecked"
+	| "orderRejected"
+	| "reminderForAssignmentDeclaration"
+	| "assignmentDeclarationReceived"
+	| "airlineContacted"
+	| "lawFirmEngaged"
+	| "compensationClaimSecured"
+	| "lawsuitFiled"
+	| "compensationClaimSecuredLawsuit"
+	| "paymentProcessed"
+	| "legalDisputeLost"
+	| "other"
+
 export interface PassengerDetails<T = string> {
   firstName: T;
   lastName: T;
@@ -178,20 +194,23 @@ export interface Review {
 
 
 /* Database */
+
+interface Row {
+  id: number;
+  createdAt: string;
+}
 export interface UsersTable {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
   email: string;
   iban: string;
   agreed_to_terms: boolean;
 }
-export interface AirlinesRow {
-  id: number;
+export interface RowAirline extends Row {
   iata: string;
   name: string;
   legalName: string | null;
-  created_at: string;
   country: string;
   isEuMember: boolean;
   callsign: string;
@@ -205,12 +224,10 @@ export interface AirlinesRow {
   city: string;
   email: string;
 }
-export interface FlightsRow {
-  id: number;
-  createdAt: string;
+export interface RowFlight extends Row  {
   iata: string;
   status: string;
-  airlineIata: AirlinesRow['iata'];
+  airlineIata: RowAirline['iata'];
   scheduledDeparture: string;
   scheduledArrival: string;
   actualDeparture: string;
@@ -220,22 +237,24 @@ export interface FlightsRow {
   airportArrival: string;
   data: Flight
 }
-export interface ClaimsRow {
-  uuid?: string; // remove?
-  id: string;
-  createdAt: string;
-  status: string;
-  flightId: FlightsRow['id'];
-  flightIata: FlightsRow['iata'];
-  email: string;
-  bookingNumber: string;
-  client: ClaimsForm['client']['passengers'][number];
+export interface RowBooking extends Row  {
+  number: string;
+  flightId: RowFlight['id'];
   disruption: ClaimsForm['disruption'];
 }
-export type ClaimsRowExtended = ClaimsRow & {
-  flight: FlightsRow & {
-    airline: AirlinesRow
-  };
+export interface RowClaim extends Row  {
+  status: ClaimStatus;
+  email: string;
+  bookingId: BookingsRow['id'];
+  client: ClaimsForm['client']['passengers'][number];
+  unread: boolean;
+}
+export type RowClaimExtended = RowClaim & {
+  booking: RowBooking & {
+    flight: RowFlight & {
+      airline: RowAirline
+    }
+  }
 }
 
 export interface Database {
@@ -247,19 +266,19 @@ export interface Database {
         Update: UsersTable
       }
       claims: {
-        Row: ClaimsRow
-        Insert: ClaimsRow
-        Update: ClaimsRow
+        Row: RowClaim
+        Insert: RowClaim
+        Update: RowClaim
       }
       flights: {
-        Row: FlightsRow
-        Insert: FlightsRow
-        Update: FlightsRow
+        Row: RowFlight
+        Insert: RowFlight
+        Update: RowFlight
       }
       airlines: {
-        Row: AirlinesRow
-        Insert: AirlinesRow
-        Update: AirlinesRow
+        Row: RowAirline
+        Insert: RowAirline
+        Update: RowAirline
       }
     }
   }

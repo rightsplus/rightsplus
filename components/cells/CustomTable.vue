@@ -18,7 +18,7 @@
     <!-- <Column field="flight.airportDeparture" header="Ab" sortable />
     <Column field="flight.airportArrival" header="An" sortable /> -->
     <Column header="Flug" field="flight" sortable sortField="flight.number">
-      <template #body="{ data }: { data: ClaimsRowExtended }">
+      <template #body="{ data }: { data: RowClaimExtended }">
         <div class="flex items-center gap-2">
           <!-- <CellsAirlineLogo :airline="data.flight.airline" /> -->
           <span>{{ data.flight.iata }}</span>
@@ -26,7 +26,7 @@
       </template>
     </Column>
     <Column header="Status" field="status" sortable sortField="status">
-      <template #body="{ data }: { data: ClaimsRowExtended }">
+      <template #body="{ data }: { data: RowClaimExtended }">
         <span
           class="text-xs font-medium p-1 rounded"
           :class="getStatus(data.flight.status, data.flight.delayArrival).class"
@@ -37,7 +37,7 @@
       </template>
     </Column>
     <Column header="Verspätung" field="delay" sortable sortField="delay">
-      <template #body="{ data }: { data: ClaimsRowExtended }">
+      <template #body="{ data }: { data: RowClaimExtended }">
         <span
           class="text-xs font-medium"
           :class="
@@ -56,7 +56,7 @@
       sortable
       sortField="created_at"
     >
-      <template #body="{ data }: { data: ClaimsRowExtended }">
+      <template #body="{ data }: { data: RowClaimExtended }">
         {{
           formatRelative(new Date(data.createdAt), new Date(), {
             locale: de,
@@ -123,12 +123,12 @@
 
 <script setup lang="ts">
 import { useStatusEmail } from "~/composables/statusEmail";
-import type { ClaimsRowExtended } from "~/types";
+import type { RowClaimExtended } from "~/types";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import { de } from 'date-fns/locale'
 
 const props = defineProps<{
-  data: ClaimsRowExtended[];
+  data: RowClaimExtended[];
 }>();
 const { t, locale } = useI18n();
 
@@ -154,7 +154,7 @@ const getStatus = (status: string, delay: number) => {
     value: newStatus,
   };
 };
-const selectedRow = ref<ClaimsRowExtended[]>();
+const selectedRow = ref<RowClaimExtended[]>();
 const clickedRow = ref(false);
 const rowSelect = (e) => {
   console.log(e);

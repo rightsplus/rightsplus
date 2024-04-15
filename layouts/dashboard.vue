@@ -55,7 +55,7 @@
       </div>
       <div class="flex flex-col w-full flex-1 relative overflow-hidden">
         <div class="flex-grow flex flex-col min-h-0 gap-y-2 py-2">
-          <div class="w-full flex flex-col px-4">
+          <!-- <div class="w-full flex flex-col px-4">
             <button
               type="button"
               class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 hover:bg-gray-100 disabled:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/50 dark:disabled:bg-gray-800 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center"
@@ -77,7 +77,7 @@
                 </kbd>
               </div>
             </button>
-          </div>
+          </div> -->
           <div class="flex-1 px-4 flex flex-col gap-y-2 overflow-y-auto">
             <ul class="relative !min-h-[auto] !min-w-[auto]">
               <li tag="li" class="!overflow-visible" v-for="(item, i) in menu">
@@ -95,11 +95,7 @@
                   <span class="text-sm truncate relative"
                     ><span class="sr-only">Current page: </span
                     >{{ item.label }}</span
-                  ><span
-                    v-if="item.badge"
-                    class="inline-flex items-center font-medium text-xs px-1.5 py-0.5 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 flex-shrink-0 ml-auto relative rounded"
-                    >{{ item.badge }}</span
-                  ></NuxtLink
+                  ><Badge v-if="item.badge" :content="item.badge" class="ml-auto relative z-1" /></NuxtLink
                 >
               </li>
             </ul>
@@ -168,6 +164,7 @@
 
 <script lang="ts" setup>
 import Logo from "~/assets/logo";
+import type { Database } from "~/types";
 const localeRoute = useLocaleRoute();
 const { t } = useI18n();
 const user = useSupabaseUser();
@@ -179,6 +176,19 @@ const signOut = () => {
 definePageMeta({
   middleware: ["auth"],
 });
+const client = useSupabaseClient<Database>();
+
+const {
+  data: claims
+} = useAsyncData("claims", async () => {
+  const { data: claims, error } = await client
+    .from("claim")
+    .select(`*`, { count: 'exact', head: true })
+    .is(`unread`, true)
+
+  return claims;
+});
+
 
 const menu = [
   // {
@@ -195,7 +205,7 @@ const menu = [
       label: t("claim", 2),
       href: "admin-claims",
       icon: "folder-closed",
-      badge: 18,
+      badge: claims.value?.length,
     },
   {
     label: t("flight", 2),

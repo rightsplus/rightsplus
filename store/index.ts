@@ -1,5 +1,5 @@
 import { reactive, onMounted } from 'vue'
-import type { Flight, ClaimsForm, Review, Airport, Leg, Airline, ClaimsRow } from '@/types'
+import type { Flight, ClaimsForm, Review, Airport, Leg, Airline, RowClaim } from '@/types'
 import nuxtStorage from 'nuxt-storage';
 
 
@@ -13,7 +13,7 @@ export interface State {
   legs: Record<string, Leg>;
 }
 export interface AdminState {
-  claims: ClaimsRow[];
+  claims: RowClaim[];
   clients: any[];
 }
 

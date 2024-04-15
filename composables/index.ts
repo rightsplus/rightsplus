@@ -51,3 +51,24 @@ export const useMask = () => {
 	});
 	return { allCaps }
 }
+
+export function formatDate(date?: string | Date) {
+	const { locale } = useI18n();
+	const today = new Date();
+	const d = new Date(date || today);
+	const diffInDays = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+	
+	// Localize date and time format based on user's locale
+	const options: Intl.DateTimeFormatOptions = {
+		timeStyle: 'short',
+	};
+
+	if (diffInDays <= 2) {
+			return d.toLocaleTimeString(locale.value, options);
+	} else if (diffInDays <= 3) {
+			const weekday = d.toLocaleDateString(locale.value, { weekday: 'long' });
+			return weekday.charAt(0).toUpperCase() + weekday.slice(1);
+	} else {
+			return d.toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: '2-digit' });
+	}
+}

@@ -1,4 +1,4 @@
-import type { ClaimsForm, ClaimsRow, Database, Flight, FlightsRow } from "@/types";
+import type { ClaimsForm, RowClaim, Database, Flight, RowFlight, RowBooking } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 
@@ -110,10 +110,10 @@ export const useSupabaseFunctions = () => {
 			scheduledArrival: flight.arrival.scheduledTime,
 			delayArrival: flight.arrival.delay,
 			data: flight,
-		} as Omit<FlightsRow, 'id' | 'createdAt'>;
+		} as Omit<RowFlight, 'id' | 'createdAt'>;
 
 		try {
-			const { data: existingFlight, error: errExisting } = await client.from("flights").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<FlightsRow>();
+			const { data: existingFlight, error: errExisting } = await client.from("flights").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
 
 			if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
@@ -122,7 +122,7 @@ export const useSupabaseFunctions = () => {
 				.upsert([preparedFlight]
 				)
 				.select()
-				.single<FlightsRow>()
+				.single<RowFlight>()
 			if (error) {
 				throw error
 			}
@@ -134,22 +134,37 @@ export const useSupabaseFunctions = () => {
 			throw error
 		}
 	}
-	const submitClaim = async (claim: ClaimsForm, passengerIndex: number, flightId: number) => {
+	const submitBooking = async (claim: ClaimsForm, flightId: number) => {
+		const preparedBooking = {
+			flightId,
+			bookingNumber: claim.client.bookingNumber,
+			disruption: claim.disruption,
+		} as Omit<RowBooking, 'id' | 'createdAt'>;
+		try {
+			const { data, error } = await client
+				.from("booking")
+				.upsert([preparedBooking])
+				.select()
+				.single<RowBooking>()
+			if (error) throw error
+			return data
+		} catch (error) {
+			throw error
+		}
+	}
+	const submitClaim = async (claim: ClaimsForm, passengerIndex: number, bookingId: number) => {
 		const passenger = claim.client.passengers[passengerIndex];
 		const preparedClaim = {
 			email: passenger.email,
-			flightId: flightId,
-			flightIata: claim.flight?.flight.iata,
-			bookingNumber: claim.client.bookingNumber,
 			client: passenger,
-			disruption: claim.disruption,
-		} as ClaimsRow;
+			bookingId: bookingId
+		} as Omit<RowClaim, 'id' | 'createdAt' | 'status' | 'unread'>;
 		try {
 			const { data, error } = await client
-				.from("claims")
+				.from("claim")
 				.upsert([preparedClaim])
 				.select()
-				.single<ClaimsRow>()
+				.single<RowClaim>()
 			if (error) throw error
 			return data
 		} catch (error) {
@@ -161,6 +176,7 @@ export const useSupabaseFunctions = () => {
 		handleUploadFile,
 		handleUploadSignature,
 		submitFlight,
+		submitBooking,
 		submitClaim,
 		fetchProxy
 	}

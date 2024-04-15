@@ -11,7 +11,7 @@
     </div>
     <div class="flex flex-col leading-none">
       <span class="font-bold text-gray-700"
-        >{{ time(flight.actual) }} Ortszeit</span
+        >{{ time(flight.actualTime) }} Ortszeit</span
       >
       <span
         v-if="cancelled"
@@ -39,19 +39,19 @@
 import type { Airport, Flight, FlightPhase } from "@/types";
 import Weather from "@/components/molecules/Weather.vue";
 import type { WeatherResponse } from "~~/utils";
-const weather = ref(null as null | Partial<WeatherResponse<number, string>>);
 
 const props = defineProps<{
   label: string;
   flight?: FlightPhase;
+  weather?: WeatherResponse<number, string>;
   cancelled?: boolean;
 }>();
 const city = ref()
 const { locale } = useI18n();
 onMounted(() => getCities([props.flight?.iata], locale.value).then(([c]) => city.value = c));
-getHumanReadableWeather(props.flight).then((data) => {
-  weather.value = data;
-});
+// getHumanReadableWeather(props.flight).then((data) => {
+//   weather.value = data;
+// });
 const time = (date?: string | null) => {
   if (!date) return;
   return new Date(date).toLocaleTimeString(useI18n().locale.value, {
