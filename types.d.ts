@@ -8,11 +8,12 @@ export type Address<T = string> = {
   country?: T;
 };
 
+export type NextAction = "evaluateCase" | "awaitAirlineResponse" | "negotiate"
+
 
 export type CaseStatus = "dataReceived"
-	| "compensationClaimChecked"
-	| "orderRejected"
-	| "reminderForAssignmentDeclaration"
+	| "caseRejected"
+	| "caseAccepted"
 	| "assignmentDeclarationReceived"
 	| "airlineContacted"
 	| "lawFirmEngaged"
@@ -22,6 +23,19 @@ export type CaseStatus = "dataReceived"
 	| "paymentProcessed"
 	| "legalDisputeLost"
 	| "other"
+// export type CaseStatus = "dataReceived"
+// 	| "compensationClaimChecked"
+// 	| "orderRejected"
+// 	| "reminderForAssignmentDeclaration"
+// 	| "assignmentDeclarationReceived"
+// 	| "airlineContacted"
+// 	| "lawFirmEngaged"
+// 	| "compensationClaimSecured"
+// 	| "lawsuitFiled"
+// 	| "compensationClaimSecuredLawsuit"
+// 	| "paymentProcessed"
+// 	| "legalDisputeLost"
+// 	| "other"
 
 export interface PassengerDetails<T = string> {
   firstName: T;
@@ -243,7 +257,7 @@ export interface RowBooking extends Row  {
   disruption: ClaimsForm['disruption'];
 }
 export interface RowClaim extends Row  {
-  status: ClaimStatus;
+  status: CaseStatus;
   email: string;
   bookingId: BookingsRow['id'];
   client: ClaimsForm['client']['passengers'][number];

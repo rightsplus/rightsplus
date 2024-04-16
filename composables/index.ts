@@ -63,9 +63,9 @@ export function formatDate(date?: string | Date) {
 		timeStyle: 'short',
 	};
 
-	if (diffInDays <= 2) {
+	if (diffInDays < 1) {
 			return d.toLocaleTimeString(locale.value, options);
-	} else if (diffInDays <= 3) {
+	} else if (diffInDays <= 6) {
 			const weekday = d.toLocaleDateString(locale.value, { weekday: 'long' });
 			return weekday.charAt(0).toUpperCase() + weekday.slice(1);
 	} else {

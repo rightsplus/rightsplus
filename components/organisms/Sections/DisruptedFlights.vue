@@ -71,7 +71,7 @@ const flights = ref<Flight[]>([]);
 const props = defineProps<{ page?: boolean }>();
 onMounted(async () => {
   const { data } = await client
-    .from("flights")
+    .from("flight")
     .select("data")
     .not("data", "is", null)
     .or("delayArrival.gt.180,status.eq.cancelled")
@@ -81,7 +81,7 @@ onMounted(async () => {
   flights.value = data?.map(({ data }) => data) || [];
   console.log(flights);
 });
-import claimMachine from "@/machines/claim";
+import claimMachine from "~/machines/claimSubmission";
 const { send, state, invoke, messages } = useMachine<ClaimsForm>(claimMachine, claim);
 const { query, airports } = useAirports();
 const localePath = useLocalePath();

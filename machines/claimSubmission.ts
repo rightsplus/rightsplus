@@ -1,5 +1,4 @@
 import IBAN from "iban";
-import { ExitStatus } from "typescript";
 import type { Machine } from "~/composables/machine";
 import type { ClaimsForm } from "~/types";
 import { nextLeg } from "~/utils";

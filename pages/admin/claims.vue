@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full">
+  <div class="flex w-full" ref="container">
     <Transition name="fade">
       <span
         v-if="pending"
@@ -29,7 +29,7 @@
           more
         </div>
       </div>
-      <div class="flex-1 flex flex-col overflow-y-auto p-0 h-full">
+      <div class="flex-1 flex flex-col overflow-y-auto p-2 h-full">
         <DashboardListItem
           v-for="claim in claims"
           :title="formatClaimId(claim.id, true)"
@@ -37,28 +37,24 @@
           :date="claim.createdAt"
           :active="claim.id === activeClaimId"
           :unread="claim.unread"
-          :badge="claim.status && $t(`status.${claim.status}`)"
           @click="
             activeClaimId = activeClaimId !== claim.id ? claim.id : undefined
           "
         >
-        <template #prefix>
-            <p class="flex items-center gap-2 mr-3">
-              <AirlineLogo
-                :airline="claim.booking.flight.airline"
-              />
-            </p>
-          </template>
-          <!-- <template #suffix>
+          <div class="flex items-center gap-2 justify-between">
+            <div class="flex items-center gap-2 text-neutral-400">
+              <AirlineLogo size="sm" :airline="operatingAirline(claim)" />
+              <span>{{ operatingAirline(claim).name }}</span>
+            </div>
             <ClaimStatus :status="claim.status" />
-            </template> -->
+          </div>
         </DashboardListItem>
       </div>
     </div>
-    <DashboardSeparator vertical @drag="width = $event.x - 249" />
+    <DashboardSeparator vertical @drag="width = $event.x - offset" />
     <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
       <div class="flex-col items-stretch relative w-full flex-1">
-        <div class="flex-1 p-5 w-full">
+        <div class="flex-1 p-5 w-full h-full">
           <div v-if="activeClaim" class="w-full">
             <div class="flex justify-between w-full">
               <h1 class="text-2xl font-bold">
@@ -106,11 +102,15 @@
           >status</span
         > -->
           </div>
-          <FontAwesomeIcon
+          <div
             v-else
-            icon="folder-closed"
-            class="text-7xl text-gray-400 dark:text-gray-500"
-          />
+            class="relative inset-0 h-full flex items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon="folder-closed"
+              class="text-7xl text-gray-300"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -123,11 +123,17 @@ definePageMeta({
   key: "claims",
 });
 
-import type { Database, RowClaim, RowClaimExtended } from "@/types";
+import type { ClaimsForm, Database, RowClaim, RowClaimExtended } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAdminState } from "~/composables/store";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
+const container = ref();
 const width = ref(400);
+const offset = ref(0);
+onMounted(() => {
+  const { left } = container.value.getBoundingClientRect();
+  offset.value = left;
+});
 
 const client = useSupabaseClient<Database>();
 const { locale } = useI18n();
@@ -206,5 +212,10 @@ const sendEmailToAirline = () => {
     subject: `Claim ${activeClaim.value?.id}`,
     text: `Dear ${activeClaim.value?.booking.flight.airline.name},\n\nWe have a claim for you.\n\nBest regards,\n\nYour team`,
   });
+};
+
+const operatingAirline = (claim: RowClaimExtended) => {
+  const { codeshared, airline } = claim.booking.flight.data || {};
+  return codeshared?.airline || airline;
 };
 </script>

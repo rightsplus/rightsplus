@@ -2,17 +2,17 @@
   <div class="fixed inset-0 flex overflow-hidden bg-white">
     <div
       data-n-ids='{"dashboard:panel:0":"dashboard:panel:0"}'
-      class="flex-col items-stretch relative w-full border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800 md:w-[--width] flex-shrink-0 hidden md:flex"
-      style="--width: 250px"
+      class="flex-col items-stretch relative w-full border-b md:border-b-0 border-gray-100 dark:border-gray-800 md:w-[--width] flex-shrink-0 hidden md:flex"
+      :style="`--width: ${width}px`"
     >
       <div
-        class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 dark:border-gray-800 px-4 gap-x-4 min-w-0 !border-transparent"
+        class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0 !border-transparent"
       >
         <div class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0">
           <div class="flex items-stretch gap-1.5 min-w-0 flex-1">
             <button
               type="button"
-              class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center md:hidden"
+              class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 inline-flex items-center md:hidden"
               aria-label="Open sidebar"
             >
               <span
@@ -90,13 +90,15 @@
                   <FontAwesomeIcon
                     :icon="item.icon"
                     fixed-width
-                    class="relative"
-                  />
+                    class="relative shrink-0" />
                   <span class="text-sm truncate relative"
                     ><span class="sr-only">Current page: </span
                     >{{ item.label }}</span
-                  ><Badge v-if="item.badge" :content="item.badge" class="ml-auto relative z-1" /></NuxtLink
-                >
+                  ><Badge
+                    v-if="item.badge"
+                    :content="item.badge"
+                    class="ml-auto relative z-1"
+                /></NuxtLink>
               </li>
             </ul>
             <div
@@ -106,9 +108,9 @@
                 class="flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
               ></div>
             </div>
-          <div
-            class="mt-auto flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
-          ></div>
+            <div
+              class="mt-auto flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
+            ></div>
           </div>
 
           <div
@@ -146,15 +148,8 @@
           </div>
         </div>
       </div>
-
-      <div
-        class="hidden md:block bg-transparent select-none absolute z-50 group w-[9px] h-full inset-y-0 -right-[5px] cursor-col-resize"
-      >
-        <div
-          class="group-hover:bg-gray-300 dark:group-hover:bg-gray-700 transition duration-200 absolute w-px h-full inset-x-0 mx-auto"
-        ></div>
-      </div>
     </div>
+    <DashboardSeparator vertical @drag="width = $event.x" />
 
     <div class="flex flex-1 w-full min-w-0">
       <slot />
@@ -169,6 +164,7 @@ const localeRoute = useLocaleRoute();
 const { t } = useI18n();
 const user = useSupabaseUser();
 const { auth } = useSupabaseAuthClient();
+const width = ref(250);
 const signOut = () => {
   auth.signOut();
   navigateTo("/");
@@ -178,35 +174,27 @@ definePageMeta({
 });
 const client = useSupabaseClient<Database>();
 
-const {
-  data: claims
-} = useAsyncData("claims", async () => {
+const { data: claims } = useAsyncData("claims", async () => {
   const { data: claims, error } = await client
     .from("claim")
-    .select(`*`, { count: 'exact', head: true })
-    .is(`unread`, true)
+    .select(`*`, { count: "exact", head: true })
+    .is(`unread`, true);
 
   return claims;
 });
 
-
 const menu = [
-  // {
-  //   label: "Home",
-  //   href: "/admin",
-  //   icon: "house",
-  // },
-  // {
-    //   label: "Kunden",
-    //   href: "/admin/clients",
-    //   icon: "user",
-    // },
-    {
-      label: t("claim", 2),
-      href: "admin-claims",
-      icon: "folder-closed",
-      badge: claims.value?.length,
-    },
+  {
+    label: t("claim", 2),
+    href: "admin-claims",
+    icon: "folder-closed",
+    badge: claims.value?.length,
+  },
+  {
+    label: t("booking", 2),
+    href: "admin-bookings",
+    icon: "tickets-airline",
+  },
   {
     label: t("flight", 2),
     href: "admin-flights",

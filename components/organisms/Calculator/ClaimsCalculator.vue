@@ -324,7 +324,7 @@ import FlightCard from "@/components/cells/FlightCard.vue";
 import ClaimCard from "@/components/cells/ClaimCard.vue";
 import AddDisruptionComment from "@/components/organisms/Calculator/Forms/AddDisruptionComment.vue";
 
-import claimMachine from "@/machines/claim";
+import claimMachine from "~/machines/claimSubmission";
 import type { ClaimsForm, Airport, Flight } from "~/types";
 import AddBookingNumber from "./Forms/AddBookingNumber.vue";
 import PassengerForm from "./Forms/PassengerForm.vue";

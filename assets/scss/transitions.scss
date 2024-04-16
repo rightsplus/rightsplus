@@ -86,6 +86,19 @@
   opacity: 0;
   transform: translateY(var(--offset, 2%));
 }
+.scale-move,
+.scale-enter-active,
+.scale-leave-active {
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  transition-property: opacity, transform;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
+}
 
 .move-container,
 /* apply transition to moving elements */

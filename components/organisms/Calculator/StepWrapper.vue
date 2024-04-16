@@ -11,7 +11,7 @@
           {{ title || $t(state.value + ".title") }}
         </h2>
         <h3
-          class="text-base sm:text-lg leading-tight sm:leading-tight"
+        class="text-base sm:text-lg leading-tight sm:leading-tight"
           :key="state.value"
         >
           {{ description || $t(state.value + ".description") }}
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import claimMachine from "~/machines/claim";
+import claimMachine from "~/machines/claimSubmission";
 import type { ClaimsForm } from "~/types";
 const loading = ref(true);
 defineProps<{

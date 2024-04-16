@@ -106,7 +106,7 @@
 import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Logo from "~/assets/logo";
 import type { Database } from "@/types";
-import claimMachine from "@/machines/claim";
+import claimMachine from "~/machines/claimSubmission";
 const { auth } = useSupabaseAuthClient();
 const localePath = useLocalePath();
 interface Route {

@@ -1,5 +1,6 @@
 {
   "status.dataReceived": "Daten erhalten",
+  "booking": "Buchung | Buchungen",
   "flight": "Flug | Flüge",
   "claim": "Anspruch | Ansprüche",
   "airline": "Fluggesellschaft | Fluggesellschaften",
@@ -198,7 +199,7 @@
   "bookingNumber.description": "Bitte gib deine Buchungsnummer ein",
   "passengers.title": "Passagiere",
   "passengers.description": "Mit wem bist du verreist?",
-  "assignmentAgreement.title": "Abtrittserklärung",
+  "assignmentAgreement.title": "Abtretungserklärung",
   "assignmentAgreement.description": "Damit wir deinen Anspruch im Notfall vor Gericht erstreiten können, musst du den Anspruch an uns abtreten",
   "flightDelayedOrCancelled": "Flug verspätet oder annulliert?",
   "checkCompensationNow": "Jetzt Anspruch Prüfen!",

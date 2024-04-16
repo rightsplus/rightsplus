@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import claimMachine from "~/machines/claim";
+import claimMachine from "~/machines/claimSubmission";
 import AirportInput from "./AirportInput.vue";
 import type { ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
