@@ -4,6 +4,12 @@
     v-if="flight"
   >
     <!-- Compensation -->
+    <!-- {{ message }} -->
+    <!-- {{ compensation }} // {{ distance }} -->
+    <div
+      v-if="!certain"
+      class="flex flex-col"
+      >
     <div
       class="flex flex-col justify-center text-center items-center gap-3 p-3"
     >
@@ -28,8 +34,9 @@
         }}</span>
       </div>
     </div>
+      <hr class="w-full"/>
+    </div>
 
-    <hr />
     <div class="flex flex-wrap @md:flex-nowrap gap-3 sm:gap-5">
       <div class="grid flex-col @md:basis-1/2 w-full grow">
         <!-- <span
@@ -105,19 +112,19 @@
           }}</span>
           <div
             class="font-bold flex text-sm gap-3 flex-col"
-            v-if="flight.arrival.actualTime || flight.arrival.estimatedTime"
+            v-if="arrivalTime"
           >
             <div class="flex items-center gap-3">
               <span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
                   date(
-                    flight.arrival.actualTime || flight.arrival.estimatedTime
+                    arrivalTime
                   )
                 }}</span
               ><span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
                   time(
-                    flight.arrival.actualTime || flight.arrival.estimatedTime
+                    arrivalTime
                   )
                 }}</span
               >
@@ -200,6 +207,7 @@ import AirlineLogo from "./AirlineLogo.vue";
 const props = defineProps<{
   claim: ClaimsForm;
   airports?: boolean;
+  certain?: boolean
 }>();
 const { locale } = useI18n();
 const flight = computed(() => props.claim.flight);
@@ -210,19 +218,6 @@ const city = useCities({
   arrival: flight.value?.arrival?.iata,
 });
 
-const overNight = (flight: Flight) => {
-  const getTime = (date: string) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-  };
-  const timeDifferenceDays =
-    (getTime(flight.arrival.scheduledTime) -
-      getTime(flight.departure?.scheduledTime)) /
-    (1000 * 60 * 60 * 24);
-
-  return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
-};
 const date = (time: string) => {
   return new Date(time).toLocaleDateString(locale.value);
 };
@@ -233,4 +228,9 @@ const time = (time: string) => {
   });
 };
 const { compensation, distance, message } = useCompensation();
+
+const arrivalTime = computed(() => {
+  const { actualTime, estimatedTime } = flight.value?.arrival || {}
+  return actualTime || estimatedTime
+})
 </script>

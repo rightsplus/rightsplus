@@ -148,7 +148,7 @@ export default {
           },
           {
             guard: "hasItinerary",
-            target: "ineligable",
+            target: "eligibility",
           },
         ],
       },
@@ -165,7 +165,7 @@ export default {
           guard: "hasEUAirport"
         },
         {
-          target: "ineligable",
+          target: "eligibility",
         },],
       },
     },
@@ -269,7 +269,7 @@ export default {
           target: "disruptionReason",
           guard: ["replacementRelevant", "isCancelledType"],
         }, {
-          target: "ineligable",
+          target: "eligibility",
         }],
       },
     },
@@ -286,7 +286,7 @@ export default {
             guard: ["connectionRelevant", "isDelayedType"],
           },
           {
-            target: "ineligable",
+            target: "eligibility",
             guard: ["tooLittleDelay", "isDelayedType"],
           },
           {
@@ -304,7 +304,7 @@ export default {
       on: {
         next: [
           {
-            target: "ineligable",
+            target: "eligibility",
             guard: ["hasDisruptionReason", "hasDisruptionComment", "isSelfInflicted"],
           },
           {
@@ -312,7 +312,7 @@ export default {
             guard: ["hasDisruptionReason", "hasDisruptionComment", "connectionRelevant", "isDelayedType"],
           },
           {
-            target: "ineligable",
+            target: "eligibility",
             guard: ["hasDisruptionReason", "hasDisruptionComment", "tooLittleDelay", "isDelayedType"],
           },
           {
@@ -320,7 +320,7 @@ export default {
             guard: ["hasDisruptionReason", "hasDisruptionComment", "replacementRelevant", "isCancelledType"],
           },
           {
-            target: "eligable",
+            target: "eligibility",
             guard: ["hasDisruptionReason", "hasDisruptionComment"]
           },
         ],
@@ -332,7 +332,7 @@ export default {
           target: "replacementFlightDetails",
         },
         no: {
-          target: "eligable",
+          target: "eligibility",
         },
       },
     },
@@ -342,7 +342,7 @@ export default {
           target: "connectionFlightDetails",
         },
         no: {
-          target: "ineligable",
+          target: "eligibility",
         },
       },
     },
@@ -353,29 +353,26 @@ export default {
         },
       },
     },
-    eligable: {
+    eligibility: {
       on: {
-        next: {
-          target: "bookingNumber",
-        },
-      },
-    },
-    ineligable: {
-      on: {
-        next: {
-          target: "exit",
-          actions: "reset",
-        },
-        restart: {
-          target: "itinerary",
-          actions: "reset",
-        },
+        next: [
+          {
+            target: "bookingNumber",
+            guard: "isEligible"
+          },
+        ],
+        reset: [
+          {
+            target: "itinerary",
+            actions: "reset",
+          }
+        ],
       },
     },
     connectionFlight: {
       on: {
         next: {
-          target: "eligable",
+          target: "eligibility",
         },
       },
     },
@@ -407,10 +404,10 @@ export default {
     replacementFlight: {
       on: {
         next: [{
-          target: "ineligable",
+          target: "eligibility",
           guard: "isReplacementWithinTimeFrame",
         }, {
-          target: "eligable",
+          target: "eligibility",
         }],
       },
     },

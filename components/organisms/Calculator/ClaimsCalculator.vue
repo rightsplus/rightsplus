@@ -98,18 +98,18 @@
         </StepWrapper>
         <StepWrapper
           v-else-if="state?.matches('disruptionDetected')"
-          :title="eligableDisruption.title"
-          :description="eligableDisruption.descriptions"
+          :title="eligibleDisruption.title"
+          :description="eligibleDisruption.description"
         >
           <div v-if="claimState.flight">
             <ClaimCard :claim="claimState" />
           </div>
           <ButtonGroup
             :stack="stackButtons(640)"
-            @primary="eligableDisruption.primary.event"
-            :primary="eligableDisruption.primary"
-            @secondary="eligableDisruption.secondary.event"
-            :secondary="eligableDisruption.secondary"
+            @primary="eligibleDisruption.primary.event"
+            :primary="eligibleDisruption.primary"
+            @secondary="eligibleDisruption.secondary.event"
+            :secondary="eligibleDisruption.secondary"
           />
         </StepWrapper>
         <StepWrapper
@@ -150,6 +150,7 @@
         <StepWrapper
           v-else-if="state?.matches('delayDetails')"
           :title="$t('delay')"
+          :description="$t('delayDetails.description', { arrival: city.arrival })"
         >
           <SelectDisruptionDetails
             :modelValue="claimState"
@@ -217,7 +218,6 @@
             :arrival="claimState.airport.arrival.iata"
             :date="claimState.replacement.date"
             :number="claimState.replacement.number"
-            :loading="loadingFlights"
             :modelValue="claimState.replacement.flight"
             @select="selectReplacementFlight"
             :flight-card="{
@@ -231,7 +231,6 @@
             :arrival="claimState.connection.arrival.iata"
             :date="claimState.connection.date"
             :number="claimState.connection.number"
-            :loading="loadingFlights"
             :modelValue="claimState.connection.flight"
             @update:modalValue="claimState.connection.flight = $event"
             @select="send('next')"
@@ -240,19 +239,21 @@
             }"
           />
         </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('ineligable')">
+        <StepWrapper v-else-if="state?.matches('eligibility')"
+        :title="eligibleCompensation.title"
+        :description="eligibleCompensation.description"
+        >
           <div v-if="claimState.flight">
-            <ClaimCard :claim="claimState" />
-          </div>
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('eligable')">
-          <div v-if="claimState.flight">
-            <ClaimCard :claim="claimState" />
+            <ClaimCard :claim="claimState" certain />
           </div>
           <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
+            @primary="eligibleCompensation.primary?.event"
+            :primary="eligibleCompensation.primary && {
+              label: eligibleCompensation.primary.label,
+            }"
+            @secondary="eligibleCompensation.secondary?.event"
+            :secondary="eligibleCompensation.secondary && {
+              label: eligibleCompensation.secondary.label,
             }"
           />
         </StepWrapper>
@@ -346,10 +347,10 @@ const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
-const eligableDisruption = computed(() => {
+const eligibleDisruption = computed(() => {
   const cancelled = claimState.flight?.status === "cancelled";
   const delayed = (claimState.flight?.arrival.delay || 0) > 180;
-  const eligable = cancelled || delayed;
+  const eligible = cancelled || delayed;
   const props = (primary?: boolean) => ({
     event: () => send(primary ? "continue" : "next"),
     label: primary
@@ -359,23 +360,41 @@ const eligableDisruption = computed(() => {
       : t("Anspruch aus anderem Grund"),
   });
   return {
-    statement: eligable
+    statement: eligible
       ? t("Anspruch auf Entschädigung")
       : t("Kein Anspruch auf Entschädigung"),
     title: t(cancelled ? "cancelled" : "delayed"),
-    descriptions: cancelled
+    description: cancelled
       ? t("disruptionDetected.cancelled.description")
       : t("disruptionDetected.delayed.description", {
           delay: getDuration(claimState.flight?.arrival.delay || 0),
           arrival: city.value.arrival,
         }),
     primary: {
-      event: props(eligable).event,
-      label: props(eligable).label,
+      event: props(eligible).event,
+      label: props(eligible).label,
     },
     secondary: {
-      event: props(!eligable).event,
-      label: props(!eligable).label,
+      event: props(!eligible).event,
+      label: props(!eligible).label,
+    },
+  };
+});
+const { compensation, distance, message } = useCompensation();
+
+const eligibleCompensation = computed(() => {
+  console.log(compensation)
+  const eligible = !!compensation.value;
+  return {
+    title: t(eligible ? "eligible.title" : "ineligible.title"),
+    description: t(eligible ? "eligible.description" : "ineligible.description"),
+    primary: eligible ? {
+      event: 'next',
+      label: t('next'),
+    } : undefined,
+    secondary: eligible ? undefined : {
+      event: 'reset',
+      label: t('checkOtherFlight'),
     },
   };
 });

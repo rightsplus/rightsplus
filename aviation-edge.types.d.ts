@@ -51,7 +51,7 @@ export interface VariFlight {
 }
 
 
-export interface Flight {
+export interface FlightAviationEdge {
   type: "arrival" | "departure";
   status: "landed" | "scheduled" | "cancelled" | "active" | "unknown";
   departure: {
@@ -101,7 +101,7 @@ export interface Flight {
   };
 }
 
-export interface Airline {
+export interface AirlineAviationEdge {
   airlineId: string;
   nameAirline: string;
   codeIataAirline: string;

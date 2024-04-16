@@ -48,6 +48,8 @@ export interface PassengerDetails<T = string> {
   isMinor?: boolean;
   signature?: SignatureData
 }
+export type DisruptionType = 'cancelled' | 'delayed' | 'noBoarding'
+export type DisruptionDetail = '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14'
 export interface ClaimsForm {
   id?: number;
   airport: {
@@ -64,8 +66,8 @@ export interface ClaimsForm {
   connectingFlight: Flight | null;
   date: string | null;
   disruption: {
-    type: 'cancelled' | 'delayed' | 'noBoarding' | null;
-    details: '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14' | null;
+    type: DisruptionType | null;
+    details: DisruptionDetail | null;
     reason: string | null;
     comment: string | null;
     selfInflicted?: boolean;
@@ -174,8 +176,7 @@ export interface Leg extends Record<'departure' | 'arrival', {
   flight?: Flight;
   date: string;
 }
-export { Flight as FlightAviationEdge } from "./aviation-edge.types"
-export { Airline as AirlineAviationEdge } from "./aviation-edge.types"
+export { FlightAviationEdge, AirlineAviationEdge, VariFlight } from "./aviation-edge.types"
 /* Airline */
 export interface Airline {
   id: string;

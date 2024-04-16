@@ -45,7 +45,7 @@
 import { useElementSize } from "@vueuse/core";
 import Stepper from "~/components/cells/Stepper.vue";
 import { next, prev } from "@/composables/steps";
-import Callout from "@/components/molecules/Callout.vue";
+import Callout from "~/components/core/Callout.vue";
 const { steps, index } = useSteps();
 defineProps<{
   previousDisabled?: boolean;

@@ -22,7 +22,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import Callout from "@/components/molecules/Callout.vue";
+import Callout from "~/components/core/Callout.vue";
 import type { ClaimsForm } from "@/types";
 
 const props = defineProps<{

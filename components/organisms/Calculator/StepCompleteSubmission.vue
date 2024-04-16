@@ -25,7 +25,7 @@ import type { Database, ClaimsForm } from "@/types";
 import PassengerForm from "./Forms/PassengerForm.vue";
 import { uuid } from "vue-uuid";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import Callout from "~/components/molecules/Callout.vue";
+import Callout from "~/components/core/Callout.vue";
 import { claim } from "~/store";
 const client = useSupabaseClient<Database>();
 const user = useSupabaseUser();

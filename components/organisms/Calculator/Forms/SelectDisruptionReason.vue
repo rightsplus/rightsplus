@@ -3,18 +3,12 @@
     label="Welchen Grund hat die Airline angegeben?"
     name="actualArrivalTime"
     v-model="modelValue.disruption.reason"
-    :options="
-      modelValue.disruption.type === 'noBoarding'
-        ? noBoardingReasons
-        : cancelledDelayedReasons
-    "
+    :options="reasonOptions"
     prefix-icon="clock"
   />
 </template>
 
 <script setup lang="ts">
-import SectionSubHeader from "@/components/organisms/Calculator/SectionSubHeader.vue";
-import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import type { ClaimsForm } from "@/types";
 
@@ -23,23 +17,27 @@ const props = defineProps<{
 }>();
 
 const { noBoardingReasons, cancelledDelayedReasons } = useDisruption(
-  props.modelValue.flight
+  props.modelValue
+);
+
+const reasonOptions = computed(() =>
+  props.modelValue.disruption.type === "noBoarding"
+    ? noBoardingReasons
+    : cancelledDelayedReasons
 );
 
 watch(
   () => props.modelValue.disruption.reason,
-  () => {
+  (value) => {
     if (props.modelValue.disruption.type === "noBoarding") {
-      console.log(
-        noBoardingReasons.find(
-          (e) => e.value === props.modelValue.disruption.reason
-        )
-      );
       props.modelValue.disruption.selfInflicted = noBoardingReasons.find(
-        (e) => e.value === props.modelValue.disruption.reason
+        (e) => e.value === value
       )?.selfInflicted;
     } else {
       delete props.modelValue.disruption.selfInflicted;
+    }
+    if (!reasonOptions.value.find((e) => e.value === value)) {
+      props.modelValue.disruption.reason = null;
     }
   },
   { immediate: true }

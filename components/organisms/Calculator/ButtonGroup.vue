@@ -17,16 +17,21 @@
       v-bind="secondary"
       >{{ secondary.label }}</Button
     >
-    <Button class="px-2" primary @click="$emit('primary')" v-bind="primary">{{
-      primary.label
-    }}</Button>
+    <Button
+      v-if="primary"
+      class="px-2"
+      primary
+      @click="$emit('primary')"
+      v-bind="primary"
+      >{{ primary.label }}</Button
+    >
   </div>
 </template>
 <script setup lang="ts">
 import Button, { type ButtonProps } from "@/components/core/Button.vue";
 const props = defineProps<{
-  secondary?: ButtonProps;
-  primary: ButtonProps;
+  secondary?: ButtonProps | false;
+  primary?: ButtonProps | false;
   stack?: boolean;
 }>();
 defineEmits(["primary", "secondary"]);

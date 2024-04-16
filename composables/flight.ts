@@ -1,9 +1,8 @@
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import { type RowAirline, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type FlightPhase } from "@/types";
+import type { Airline, RowAirline, Airport, ClaimsForm, Flight, FlightAviationEdge, VariFlight, FlightPhase } from "@/types";
 import { airports } from "~/store";
 import { airlines } from "~/store";
-import type { Airline, VariFlight } from "~/aviation-edge.types";
 import type { UnwrapRef } from "vue"
 
 
@@ -147,7 +146,7 @@ export const useAirlines = () => {
 	const client = useSupabaseClient()
 	async function query(iata: string): Promise<Airline>
 	async function query(iata: string[]): Promise<Record<string, Airline>>
-	async function query(iata: string | string[]) {
+	async function query(iata: string | string[]): Promise<Airline | Record<string, Airline>> {
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
@@ -187,42 +186,41 @@ export const useAirports = () => {
 }
 
 
-export const useDisruption = (claim: ClaimsForm) => {
+export const useDisruption = (claim: ClaimsForm | null) => {
 	const { t, locale } = useI18n()
 	const { airports } = useAirports()
 
 	try {
 		const format = new Intl.NumberFormat(locale.value);
 		const delayedDetails = [
-			{ value: "<3", preLabel: t("fewerThan").trim(), label: t("hours", 3) },
-			{ value: "3-4", label: t("hours", { n: format.formatRange(3, 4) }, 3) }, // bei +3500 km: Vergütung 50%
-			{ value: ">4", preLabel: t("moreThan").trim(), label: t("hours", 4) },
+			{ value: "<3" as ClaimsForm['disruption']['details'], preLabel: t("fewerThan").trim(), label: t("hours", 3) },
+			{ value: "3-4" as ClaimsForm['disruption']['details'], label: t("hours", { n: format.formatRange(3, 4) }, 3) }, // bei +3500 km: Vergütung 50%
+			{ value: ">4" as ClaimsForm['disruption']['details'], preLabel: t("moreThan").trim(), label: t("hours", 4) },
 		];
 		const cancelledDetails = [
-			{ value: "<8", preLabel: t("fewerThan").trim(), label: t("days", 7) },
-			{ value: "8-14", label: t("days", { n: format.formatRange(8, 14) }, 8) },
-			{ value: ">14", preLabel: t("moreThan").trim(), label: t("days", 14) },
+			{ value: "<8" as ClaimsForm['disruption']['details'], preLabel: t("fewerThan").trim(), label: t("days", 7) },
+			{ value: "8-14" as ClaimsForm['disruption']['details'], label: t("days", { n: format.formatRange(8, 14) }, 8) },
+			{ value: ">14" as ClaimsForm['disruption']['details'], preLabel: t("moreThan").trim(), label: t("days", 14) },
 		];
 		const disruptions = [
 			{
-				value: "delayed",
+				value: "delayed" as ClaimsForm['disruption']['type'],
 				label: t("disruptions.delayed.label"),
-				sublabel: t("disruptions.delayed.sublabel", { city: airports.value[claim.flight?.arrival?.iata || '']?.city || t('itsDestination') }),
+				sublabel: t("disruptions.delayed.sublabel", { city: airports.value[claim?.flight?.arrival?.iata || '']?.city || t('itsDestination') }),
 				icon: "clock",
 			},
 			{
-				value: "cancelled",
+				value: "cancelled" as ClaimsForm['disruption']['type'],
 				label: t("disruptions.cancelled.label"),
 				sublabel: t("disruptions.cancelled.sublabel"),
 				icon: "arrow-right-arrow-left",
 			},
 			{
-				value: "noBoarding",
+				value: "noBoarding" as ClaimsForm['disruption']['type'],
 				label: t("disruptions.noBoarding.label"),
 				sublabel: t("disruptions.noBoarding.sublabel"),
 				icon: "ban",
 			},
-			// { value: "other", label: t('other'), icon: "question" },
 		];
 		const noBoardingReasons = [
 			{

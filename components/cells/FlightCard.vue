@@ -60,6 +60,10 @@
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
+        <span
+          class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
+          >{{ status.text }}</span
+        >
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
