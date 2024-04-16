@@ -24,15 +24,17 @@
       ></span
     >
     <div class="flex gap-3 w-full">
-    <div class="flex items-center gap-3 bg-neutral-100 rounded-lg p-3 grow" v-for="{name, label, value, icon} in resultTiles" :key="name">
-      <FontAwesomeIcon :icon="icon" fixed-width />
       <div
-        class="flex flex-col gap-1 font-medium"
+        class="flex items-center gap-3 bg-neutral-100 rounded-lg p-3 grow"
+        v-for="{ name, label, value, icon } in resultTiles"
+        :key="name"
       >
-        <span class="text-sm leading-none text-gray-500">{{label}}</span>
-        <span class="text-base leading-none">{{ value }}</span>
+        <FontAwesomeIcon :icon="icon" fixed-width />
+        <div class="flex flex-col gap-1 font-medium">
+          <span class="text-sm leading-none text-gray-500">{{ label }}</span>
+          <span class="text-base leading-none">{{ value }}</span>
+        </div>
       </div>
-    </div>
     </div>
     <!-- <ol class="pl-4 list-decimal text-sm">
 			<li><b>Verjährt:</b> {{ status.barred?.label }}</li>
@@ -61,12 +63,11 @@ const potentialReimbursment = computed(() => {
     return 0;
   const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
-  return reimbursementByDistance(
+  return reimbursementByDistance({
     distance,
     delay,
-    undefined,
-    useClaim().client.passengerCount
-  ).youGet;
+    passengers: useClaim().client.passengers?.length,
+  }).youGet;
 });
 const youGet = reactive({
   number: potentialReimbursment.value,
@@ -85,24 +86,23 @@ watch(potentialReimbursment, (n) => {
 const resultTiles = computed(() => {
   return [
     {
-      name: 'distance',
-      label: 'Distanz',
-      value: n(getDistance(useClaim()), 'km'),
-      icon: 'route'
+      name: "distance",
+      label: "Distanz",
+      value: n(getDistance(useClaim()), "km"),
+      icon: "route",
     },
     {
-      name: 'status',
-      label: 'Flugstatus',
+      name: "status",
+      label: "Flugstatus",
       value: t(useClaim().disruption.type),
-      icon: 'triangle-exclamation'
+      icon: "triangle-exclamation",
     },
     {
-      name: 'eu',
-      label: 'Rechtsraum',
-      value: 'EU',
-      icon: 'earth-europe'
+      name: "eu",
+      label: "Rechtsraum",
+      value: "EU",
+      icon: "earth-europe",
     },
-  ]
-})
-
+  ];
+});
 </script>

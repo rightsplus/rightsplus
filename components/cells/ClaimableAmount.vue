@@ -17,12 +17,11 @@ const potentialReimbursment = computed(() => {
   if (!processClaim.value.eligible) return 0;
   const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
-  const { total, youGet } = reimbursementByDistance(
+  const { total, youGet } = reimbursementByDistance({
     distance,
     delay,
-    undefined,
-    useClaim().client.passengers.length
-  );
+    passengers: useClaim().client.passengers.length,
+  });
   return props.full ? total : youGet;
 });
 const youGet = reactive({

@@ -122,7 +122,10 @@ const distances = ref([
   },
 ]);
 const compensation = computed(() =>
-  reimbursementByDistance(distance.value, undefined, withinEU.value)
+  reimbursementByDistance({
+    distance: distance.value,
+    withinEU: withinEU.value,
+  })
 );
 
 const total = reactive({

@@ -85,10 +85,10 @@ export const nextLeg = (claim: ClaimsForm) => {
 
 const commission = 0.25;
 const vatRate = 0; // 0.19
-export const reimbursementByDistance = (distance: number, delay = 180, withinEU = false, passengers = 1) => {
+export const reimbursementByDistance = ({ distance, delay, withinEU, passengers }: { distance?: number; delay?: number; withinEU?: boolean; passengers?: number; claim?: ClaimsForm }) => {
 	let total = 250
 	if ((distance || 0) > 1500) total = 400
-	const beyondEU = !withinEU && [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261)
+	const beyondEU = !withinEU || (claim && [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261))
 	if ((distance || 0) > 3500 && beyondEU) total = 600
 	total = total * (passengers || 1)
 	const weGet = total * commission
