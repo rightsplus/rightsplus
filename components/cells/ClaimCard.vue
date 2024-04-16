@@ -197,6 +197,8 @@
     </div>
   </div>
   <div v-else>{{ flight }}</div>
+
+  <pre>{{ flight }}</pre>
 </template>
 
 <script setup lang="ts">
