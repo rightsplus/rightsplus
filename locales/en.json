@@ -31,7 +31,7 @@
   "disruptions.cancelled.sublabel": "Your flight was cancelled or you were rebooked on another flight",
   "itsDestination": "its Destination",
   "disruptions.delayed.label": "@:delayed",
-  "disruptions.delayed.sublabel": "Your flight arrived at {city} later than planned",
+  "disruptions.delayed.sublabel": "Your flight arrived at its destination later than planned",
   "disruptions.noBoarding.label": "Boarding Denied / Missed",
   "disruptions.noBoarding.sublabel": "You were denied boarding at the gate",
   "reasons.missingOrInvalidTravelDocuments.label": "Missing or Invalid Travel Documents",

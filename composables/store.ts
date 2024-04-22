@@ -21,7 +21,7 @@ const initialResults: ProcessClaimResponse = {
   sectionComplete: 0
 }
 export const useProcessClaim = () => {
-  const { noBoardingReasons } = useDisruption(useClaim())
+  const { noBoardingReasons } = useDisruption()
   const airline = ref<Airline>()
 
   const result = ref<ProcessClaimResponse>(initialResults)

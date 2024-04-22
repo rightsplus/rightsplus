@@ -1,6 +1,6 @@
 import IBAN from "iban";
 import type { Machine } from "~/composables/machine";
-import type { ClaimsForm } from "~/types";
+import type { ClaimState, ClaimsForm } from "~/types";
 import { nextLeg } from "~/utils";
 
 // import { createMachine } from 'xstate'
@@ -9,6 +9,7 @@ import { nextLeg } from "~/utils";
 
 // })
 export default {
+  id: "claimSubmission",
   initial: "itinerary",
   loading: "loading",
   guards: {
@@ -18,7 +19,7 @@ export default {
       const { departure, arrival } = context.airport.trip
       return !!departure?.iata && !!arrival?.iata && departure?.iata !== arrival?.iata
     },
-    hasDisruptionReason: ({ context , messages }) => {
+    hasDisruptionReason: ({ context, messages }) => {
       messages.value.hasDisruptionReason = "Please provide a reason"
 
       return !!context.disruption.reason
@@ -42,10 +43,18 @@ export default {
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
     isDelayed: ({ context }) => {
-      return (context.flight?.arrival.delay || 0) > 0
+      const { delay } = context.flight?.arrival || { delay: 0 }
+      const delayed = delay > 0
+      if (delayed) {
+        context.disruption.type = 'delayed'
+        context.disruption.details = delay < 180 ? '<3' : delay > 240 ? '>4' : '3-4'
+      }
+      return delayed
     },
     isCancelled: ({ context }) => {
-      return context.flight?.status === "cancelled"
+      const cancelled = context.flight?.status === "cancelled"
+      if (cancelled) context.disruption.type = 'cancelled'
+      return cancelled
     },
     isDelayedType: ({ context }) => {
       return context.disruption.type === 'delayed'
@@ -58,6 +67,10 @@ export default {
     },
     isReplacementWithinTimeFrame: ({ context }) => {
       return isReplacementFlightWithinBounds(context)
+    },
+    isEligible: ({ context }) => {
+      const { eligible } = useCompensation()
+      return !!eligible
     },
     connectionRelevant: ({ context }) => {
       const { delay } = context.flight?.arrival || { delay: 0 }
@@ -99,24 +112,22 @@ export default {
     }
   },
   actions: {
-    setHistory: ({ history, target }) => {
-      history.value = target ? [target] : []
-      return history.value
+    setHistory: ({ states, target }) => {
+      states.value = target ? [target] : []
+      return states.value
     },
-    go: ({ state, machine, target }) => {
-      state.value = target || machine.initial
+    go: ({ states, machine, target }) => {
+      states.value.push(target || machine.initial)
     },
-    back: ({ history, state, machine }) => {
+    back: ({ states, machine }) => {
       try {
-        const current = history.value?.pop();
-        state.value = current || machine.initial
+        states.value?.pop();
       } catch (error) {
-        state.value = machine.initial
+        states.value = [machine.initial]
       }
     },
-    reset: ({ history, state, machine }) => {
-      history.value = []
-      state.value = machine.initial
+    reset: ({ states, machine }) => {
+      states.value = [machine.initial]
     },
     setDelayed: ({ context }) => {
       context.disruption.type = 'delayed'
@@ -336,6 +347,23 @@ export default {
         },
       },
     },
+    replacementFlightDetails: {
+      on: {
+        next: {
+          target: "replacementFlight",
+        },
+      },
+    },
+    replacementFlight: {
+      on: {
+        next: [{
+          target: "eligibility",
+          guard: "isReplacementWithinTimeFrame",
+        }, {
+          target: "eligibility",
+        }],
+      },
+    },
     connectionFlightYN: {
       on: {
         yes: {
@@ -358,7 +386,7 @@ export default {
         next: [
           {
             target: "bookingNumber",
-            guard: "isEligible"
+            // guard: "isEligible"
           },
         ],
         reset: [
@@ -383,32 +411,12 @@ export default {
         },
       },
     },
-    exit: {
-      type: "final",
-    },
-    replacementFlightDetails: {
-      on: {
-        next: {
-          target: "replacementFlight",
-        },
-      },
-    },
     passengers: {
       on: {
         next: {
           target: "assignmentAgreement",
           guard: "passengersComplete"
         },
-      },
-    },
-    replacementFlight: {
-      on: {
-        next: [{
-          target: "eligibility",
-          guard: "isReplacementWithinTimeFrame",
-        }, {
-          target: "eligibility",
-        }],
       },
     },
     assignmentAgreement: {
@@ -422,12 +430,9 @@ export default {
     summary: {
       on: {
         next: {
-          target: "finish",
+          target: "summary",
         },
       },
     },
-    finish: {
-      type: "final",
-    },
   }
-} as Machine<ClaimsForm>;
+} as Machine<ClaimState, ClaimsForm>;

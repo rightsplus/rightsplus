@@ -16,9 +16,7 @@ const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 
-const { noBoardingReasons, cancelledDelayedReasons } = useDisruption(
-  props.modelValue
-);
+const { noBoardingReasons, cancelledDelayedReasons } = useDisruption();
 
 const reasonOptions = computed(() =>
   props.modelValue.disruption.type === "noBoarding"

@@ -37,7 +37,7 @@ const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const emit = defineEmits(["select"]);
-const { disruptions } = useDisruption(props.modelValue);
+const { disruptions } = useDisruption();
 const handleSelect = (value: ClaimsForm['disruption']['type']) => {
   props.modelValue.disruption.type = value;
   emit("select", value);

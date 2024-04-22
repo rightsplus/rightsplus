@@ -177,12 +177,9 @@ const filteredFlights = computed(() =>
     .sort(sortByScheduled)
 );
 const filteredAirlines = computed(() => {
-  const airlines = Object.values(
-    allFlights.value.reduce(
-      (acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
-      {} as Record<string, Flight>
-    )
-  ).sort((a, b) => a.airline.name.localeCompare(b.airline.name));
+  const airlines = airlinesByFlights(allFlights.value).sort((a, b) =>
+    a.airline.name.localeCompare(b.airline.name)
+  );
   return airlines;
 });
 const loading = ref(true);

@@ -1,6 +1,9 @@
 <template>
   <Transition name="slide-in" style="--offset: 300px" class="">
-    <div v-if="show" class="duration-500 z-50 fixed top-auto inset-0 m-3 sm:m-5">
+    <div
+      v-if="show"
+      class="duration-500 z-50 fixed top-auto inset-0 m-3 sm:m-5"
+    >
       <div
         class="flex flex-col gap-3 max-w-3xl mx-auto rounded-3xl bg-white shadow-xl ease-out p-5"
       >
@@ -33,7 +36,7 @@
             primary
             suffixIcon="angle-right"
             class="shrink-0"
-            >{{$t('checkClaim')}}</Button
+            >{{ $t("checkClaim") }}</Button
           >
         </div>
       </div>
@@ -49,7 +52,9 @@ import Button from "@/components/core/Button.vue";
 const emit = defineEmits(["submit"]);
 const { push } = useRouter();
 const claimState = useClaim();
-const { invoke } = useMachine<ClaimsForm>(claimMachine, claimState);
+const { invoke } = useMachine<ClaimsForm>(claimMachine, {
+  context: claimState,
+});
 const localePath = useLocalePath();
 const start = () => {
   invoke("reset");

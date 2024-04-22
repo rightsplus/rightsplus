@@ -42,12 +42,12 @@
             class="ml-auto @md:hidden"
           />
           <div class="">
-            <span>{{ flight.airline?.name }}</span
+            <span>{{ airline?.name }}</span
             >{{ " "
-            }}<span v-if="flight?.codeshared?.airline.name" class="opacity-50">
+            }}<span v-if="codesharedAirline?.name" class="opacity-50">
               {{
                 $t("operatedBy", {
-                  airline: flight?.codeshared?.airline.name,
+                  airline: codesharedAirline?.name,
                 })
               }}</span
             >
@@ -60,10 +60,10 @@
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
-        <span
+        <!-- <span
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
-          >{{ status.text }}</span
-        >
+          >{{ flight.status }}</span
+        > -->
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
@@ -138,6 +138,8 @@ const city = useCities({
   departure: props.flight.departure?.iata,
   arrival: props.flight.arrival?.iata,
 });
+const airline = useAirline(props.flight?.airline);
+const codesharedAirline = useAirline(props.flight?.codeshared?.airline);
 
 const overNight = (flight: Flight) => {
   const getTime = (date: string) => {

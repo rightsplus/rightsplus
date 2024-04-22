@@ -1,7 +1,5 @@
-import IBAN from "iban";
 import type { Machine } from "~/composables/machine";
-import type { ClaimsForm, RowClaimExtended } from "~/types";
-import { nextLeg } from "~/utils";
+import type { CaseStatus, RowClaimExtended } from "~/types";
 
 // import { createMachine } from 'xstate'
 
@@ -9,35 +7,31 @@ import { nextLeg } from "~/utils";
 
 // })
 export default {
+  id: "claimProcessing",
   initial: "dataReceived",
   loading: "loading",
   guards: {
     hasItinerary: ({ context, messages }) => {
-      messages.value.hasItinerary = "Please provide a valid itinerary"
-
-      const { departure, arrival } = context.airport.trip
-      return !!departure?.iata && !!arrival?.iata && departure?.iata !== arrival?.iata
+      return true
     },
   },
   actions: {
-    setHistory: ({ history, target }) => {
-      history.value = target ? [target] : []
-      return history.value
+    setHistory: ({ states, target }) => {
+      states.value = target ? [target] : []
+      return states.value
     },
-    go: ({ state, machine, target }) => {
-      state.value = target || machine.initial
+    go: ({ states, machine, target }) => {
+      states.value.push(target || machine.initial)
     },
-    back: ({ history, state, machine }) => {
+    back: ({ states, machine }) => {
       try {
-        const current = history.value?.pop();
-        state.value = current || machine.initial
+        states.value?.pop();
       } catch (error) {
-        state.value = machine.initial
+        states.value = [machine.initial]
       }
     },
-    reset: ({ history, state, machine }) => {
-      history.value = []
-      state.value = machine.initial
+    reset: ({ states, machine }) => {
+      states.value = [machine.initial]
     },
   },
   states: {
@@ -45,11 +39,9 @@ export default {
       on: {
         accept: {
           target: "awaitInitialAirlineResponse",
-          actions: "acceptCase",
         },
         reject: {
           target: "rejected",
-          actions: "rejectCase",
         },
       },
     },
@@ -57,7 +49,6 @@ export default {
       on: {
         accept: {
           target: "awaitAirlinePayment",
-          actions: "acceptCase",
         },
         reject: [
           {
@@ -114,7 +105,7 @@ export default {
     awaitAirlinePayment: {
       on: {
         receivePayment: {
-          target: "paymentReceived",
+          target: "receivePayment",
         },
       },
     },
@@ -138,4 +129,4 @@ export default {
       type: "final"
     }
   }
-} as Machine<RowClaimExtended>;
+} as Machine<CaseStatus, RowClaimExtended>;

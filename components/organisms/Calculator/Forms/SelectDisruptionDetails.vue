@@ -27,9 +27,7 @@ const props = defineProps<{
   type: 'cancelled' | 'delayed'
 }>();
 
-const { delayedDetails, cancelledDetails } = useDisruption(
-  props.modelValue.flight
-);
+const { delayedDetails, cancelledDetails } = useDisruption();
 onMounted(() => {
   props.modelValue.disruption.details = null
 })

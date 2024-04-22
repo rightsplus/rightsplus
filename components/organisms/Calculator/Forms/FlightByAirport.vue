@@ -31,7 +31,7 @@ import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
 const { push } = useRouter();
 const claimState = useClaim();
-const { invoke, send } = useMachine<ClaimsForm>(claimMachine, claimState);
+const { invoke, send } = useMachine<ClaimsForm>(claimMachine, {context: claimState});
 const localePath = useLocalePath()
 const start = () => {
   invoke("reset");

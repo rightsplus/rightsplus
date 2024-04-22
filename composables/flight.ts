@@ -1,6 +1,6 @@
 import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import type { Airline, RowAirline, Airport, ClaimsForm, Flight, FlightAviationEdge, VariFlight, FlightPhase } from "@/types";
+import { type Airline, type RowAirline, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type VariFlight, type FlightPhase, RowFlight, type AirlineInfo } from "@/types";
 import { airports } from "~/store";
 import { airlines } from "~/store";
 import type { UnwrapRef } from "vue"
@@ -144,15 +144,14 @@ export const useFlightStatus = (flight: Flight | null) => {
 
 export const useAirlines = () => {
 	const client = useSupabaseClient()
-	async function query(iata: string): Promise<Airline>
-	async function query(iata: string[]): Promise<Record<string, Airline>>
-	async function query(iata: string | string[]): Promise<Airline | Record<string, Airline>> {
+	async function query(iata: string): Promise<RowAirline>
+	async function query(iata: string[]): Promise<Record<string, RowAirline>>
+	async function query(iata: string | string[]): Promise<RowAirline | Record<string, RowAirline>> {
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
-			await client.from('airlines').select('iata, name, isEuMember').eq('iata', iata).returns<RowAirline[]>().then(({ data }) => {
+			await client.from('airline').select('*').eq('iata', iata).returns<RowAirline[]>().then(({ data }) => {
 				const [airline] = data || []
-				console.log(airline)
 				if (airline) airlines.value[iata] = {
 					...airline,
 					id: airline.id?.toString()
@@ -166,6 +165,13 @@ export const useAirlines = () => {
 		query
 	}
 }
+
+export const airlinesByFlights = (flights: Flight[]) => Object.values(
+	flights.reduce(
+		(acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
+		{} as Record<string, Flight>
+	)
+)
 
 export const useAirports = () => {
 	async function query(iata: string): Promise<Airport>
@@ -186,9 +192,8 @@ export const useAirports = () => {
 }
 
 
-export const useDisruption = (claim: ClaimsForm | null) => {
+export const useDisruption = () => {
 	const { t, locale } = useI18n()
-	const { airports } = useAirports()
 
 	try {
 		const format = new Intl.NumberFormat(locale.value);
@@ -206,7 +211,7 @@ export const useDisruption = (claim: ClaimsForm | null) => {
 			{
 				value: "delayed" as ClaimsForm['disruption']['type'],
 				label: t("disruptions.delayed.label"),
-				sublabel: t("disruptions.delayed.sublabel", { city: airports.value[claim?.flight?.arrival?.iata || '']?.city || t('itsDestination') }),
+				sublabel: t("disruptions.delayed.sublabel"),
 				icon: "clock",
 			},
 			{
@@ -414,61 +419,6 @@ export const transformVariFlight = (flightObject: VariFlight) => {
 
 
 
-const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Flight => {
-	const airline: Flight['airline'] = {
-		name: ucfirst(aviationEdgeFlight.airline.name),
-		iata: aviationEdgeFlight.airline.iataCode.toUpperCase(),
-	};
-
-	const flight: Flight['flight'] = {
-		number: aviationEdgeFlight.flight.number,
-		iata: aviationEdgeFlight.flight.iataNumber.toUpperCase(),
-	};
-
-	const departure: Flight['departure'] = {
-		iata: aviationEdgeFlight.departure.iataCode.toUpperCase(),
-		delay: aviationEdgeFlight.departure.delay,
-		scheduledTime: aviationEdgeFlight.departure.scheduledTime,
-		estimatedTime: aviationEdgeFlight.departure.estimatedTime,
-		actualTime: aviationEdgeFlight.departure.actualTime,
-		estimatedRunway: aviationEdgeFlight.departure.estimatedRunway,
-		actualRunway: aviationEdgeFlight.departure.actualRunway,
-	};
-
-	const arrival: Flight['arrival'] = {
-		iata: aviationEdgeFlight.arrival.iataCode.toUpperCase(),
-		delay: aviationEdgeFlight.arrival.delay || 0, // Ensure delay is a number
-		scheduledTime: aviationEdgeFlight.arrival.scheduledTime,
-		estimatedTime: aviationEdgeFlight.arrival.estimatedTime,
-		actualTime: aviationEdgeFlight.arrival.actualTime,
-		estimatedRunway: aviationEdgeFlight.arrival.estimatedRunway,
-		actualRunway: aviationEdgeFlight.arrival.actualRunway,
-	};
-
-	const transformedFlight: Flight = {
-		type: aviationEdgeFlight.type,
-		status: aviationEdgeFlight.status,
-		departure,
-		arrival,
-		airline,
-		flight,
-	};
-
-	if (aviationEdgeFlight.codeshared) {
-		transformedFlight.codeshared = {
-			airline: {
-				name: ucfirst(aviationEdgeFlight.codeshared.airline.name),
-				iata: aviationEdgeFlight.codeshared.airline.iataCode.toUpperCase(),
-			},
-			flight: {
-				number: aviationEdgeFlight.codeshared.flight.number,
-				iata: aviationEdgeFlight.codeshared.flight.iataNumber.toUpperCase(),
-			},
-		}
-	}
-	return transformedFlight
-}
-
 
 const queries = ref([] as string[]);
 let savedFlights = []
@@ -479,11 +429,10 @@ if (typeof localStorage !== 'undefined') {
 }
 const flights = ref<Flight[]>(savedFlights)
 export const useFlights = () => {
-	const { fetchProxy } = useSupabaseFunctions()
+	const { fetchProxy, fetchFlights: fetchFlightsSupabase } = useSupabaseFunctions()
 	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
 	const { airlines, query: queryAirlines } = useAirlines()
-	queryAirlines('LH').then(console.log)
 	const ATTEMPTS = 3
 
 	const fetchFlights = async (props: {
@@ -516,6 +465,7 @@ export const useFlights = () => {
 
 			const url = new URL(`https://aviation-edge.com/v2/public/${api}`);
 			url.searchParams.append("code", departure);
+			url.searchParams.append("iataCode", departure);
 			url.searchParams.append("type", 'departure');
 			url.searchParams.append('date_from', date);
 			// console.log('fetching started', date)
@@ -551,12 +501,18 @@ export const useFlights = () => {
 
 			// const res = await fetch(url.href)
 			// const data: FlightAviationEdge[] = await (res)?.json()
-			const timeStamp = Date.now()
-			console.log("fetchhh");
-			const data = await fetchProxy<FlightAviationEdge[]>(url.href)
-			console.log(`Fetched from API in ${Date.now() - timeStamp}ms`, data);
+			// const timeStamp = Date.now()
+			// console.log("fetchhh");
+			// const data = await fetchProxy<FlightAviationEdge[]>(url.href)
+			// console.log(`Fetched from API in ${Date.now() - timeStamp}ms`, data);
 
 
+
+			const data = await fetchFlightsSupabase<Flight[]>({
+				departure,
+				arrival,
+				date,
+			})
 
 
 
@@ -566,7 +522,6 @@ export const useFlights = () => {
 			)
 
 			flights.value = data
-				.map((flight) => transformAviationEdgeFlight(flight))
 				.map(flight => {
 					if (departure !== flight.departure.iata || arrival !== flight.arrival.iata) return flight
 					return {
@@ -644,6 +599,25 @@ export const useCities = <T extends { arrival?: string; departure?: string;[x: s
 	}
 	watch(iataCodes, assign, { immediate: true, deep: true })
 	return cities
+}
+export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): Ref<AirlineInfo> => {
+	const airline = ref<AirlineInfo>({} as AirlineInfo);
+	const { airlines, query } = useAirlines()
+	const assign = () => {
+		if (!airlineInfo) return
+		airline.value = airlineInfo
+		if (airlines.value[airlineInfo.iata]) {
+			airline.value = airlines.value[airlineInfo.iata]
+			return
+		}
+		query(airlineInfo.iata)
+			.then((e) => {
+				if (e && airlines.value) airline.value = e
+			})
+			.catch((error) => console.error(error))
+	}
+	watch(() => airlineInfo, assign, { immediate: true, deep: true })
+	return airline
 }
 
 

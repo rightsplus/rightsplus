@@ -33,19 +33,22 @@ const calendar = ref(null)
 const { width } = useElementSize(calendar)
 const columns = computed(() => width.value < 540 ? 1 : 2)
 
-defineProps<{
-  modelValue: string;
+const props = defineProps<{
+  modelValue: string | null;
   minDate?: string | Date;
   name?: string;
   label?: string;
 }>();
 const emit = defineEmits(['update:modelValue', 'update:page', 'select']);
-const updateModelValue = (value: Date) => {
+const updateModelValue = (value?: Date) => {
   emit('update:modelValue', value ? getISODate(value) : undefined);
 };
 const dayClick = (value: Date) => {
   emit('select')
 };
+ onMounted(() => {
+  if (!props.modelValue) updateModelValue()
+ })
 </script>
 <style lang="scss">
 .vc-weekdays {

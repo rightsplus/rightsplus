@@ -5,7 +5,7 @@
       @submit.prevent
       ref="form"
     >
-    <!-- {{ messages }} -->
+      {{ state.value }}
       <button
         @click.prevent="
           () => {
@@ -150,7 +150,9 @@
         <StepWrapper
           v-else-if="state?.matches('delayDetails')"
           :title="$t('delay')"
-          :description="$t('delayDetails.description', { arrival: city.arrival })"
+          :description="
+            $t('delayDetails.description', { arrival: city.arrival })
+          "
         >
           <SelectDisruptionDetails
             :modelValue="claimState"
@@ -219,7 +221,7 @@
             :date="claimState.replacement.date"
             :number="claimState.replacement.number"
             :modelValue="claimState.replacement.flight"
-            @select="selectReplacementFlight"
+            @select="handleSelectReplacement"
             :flight-card="{
               is: 'button',
             }"
@@ -232,29 +234,33 @@
             :date="claimState.connection.date"
             :number="claimState.connection.number"
             :modelValue="claimState.connection.flight"
-            @update:modalValue="claimState.connection.flight = $event"
-            @select="send('next')"
+            @select="handleSelectConnection"
             :flight-card="{
               is: 'button',
             }"
           />
         </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('eligibility')"
-        :title="eligibleCompensation.title"
-        :description="eligibleCompensation.description"
+        <StepWrapper
+          v-else-if="state?.matches('eligibility')"
+          :title="eligibleCompensation.title"
+          :description="eligibleCompensation.description"
         >
           <div v-if="claimState.flight">
             <ClaimCard :claim="claimState" certain />
           </div>
           <ButtonGroup
             @primary="eligibleCompensation.primary?.event"
-            :primary="eligibleCompensation.primary && {
-              label: eligibleCompensation.primary.label,
-            }"
+            :primary="
+              eligibleCompensation.primary && {
+                label: eligibleCompensation.primary.label,
+              }
+            "
             @secondary="eligibleCompensation.secondary?.event"
-            :secondary="eligibleCompensation.secondary && {
-              label: eligibleCompensation.secondary.label,
-            }"
+            :secondary="
+              eligibleCompensation.secondary && {
+                label: eligibleCompensation.secondary.label,
+              }
+            "
           />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('bookingNumber')">
@@ -338,10 +344,8 @@ const route = useRoute();
 const { t, locale } = useI18n();
 const form = ref<HTMLElement>();
 const localePath = useLocalePath();
-const { state, send, transition, subscribe, invoke, messages } = useMachine<ClaimsForm>(
-  claimMachine,
-  claimState
-);
+const { state, send, transition, subscribe, invoke, messages } =
+  useMachine<ClaimsForm>(claimMachine, { context: claimState });
 const { getFilteredFlights } = useFlights();
 const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
@@ -380,27 +384,36 @@ const eligibleDisruption = computed(() => {
     },
   };
 });
-const { compensation, distance, message } = useCompensation();
+const { compensation, eligible, message } = useCompensation();
 
 const eligibleCompensation = computed(() => {
-  console.log(compensation)
-  const eligible = !!compensation.value;
+  console.log(eligible.value);
   return {
-    title: t(eligible ? "eligible.title" : "ineligible.title"),
-    description: t(eligible ? "eligible.description" : "ineligible.description"),
-    primary: eligible ? {
-      event: 'next',
-      label: t('next'),
-    } : undefined,
-    secondary: eligible ? undefined : {
-      event: 'reset',
-      label: t('checkOtherFlight'),
-    },
+    title: t(eligible.value ? "eligible.title" : "ineligible.title"),
+    description: t(
+      eligible.value ? "eligible.description" : "ineligible.description"
+    ),
+    primary: eligible.value
+      ? {
+          event: () => send("next"),
+          label: t("next"),
+        }
+      : undefined,
+    secondary: eligible.value
+      ? undefined
+      : {
+          event: () => send("reset"),
+          label: t("checkOtherFlight"),
+        },
   };
 });
-const selectReplacementFlight = (flight: Flight) => {
+const handleSelectConnection = (flight: Flight) => {
+  claimState.connection.flight = flight;
+  send("next");
+};
+const handleSelectReplacement = (flight: Flight) => {
   claimState.replacement.flight = flight;
-  setTimeout(() => send("next"));
+  send("next");
 };
 // off('next', subscription)
 const filteredFlights = computed(() => {

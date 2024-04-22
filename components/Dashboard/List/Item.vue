@@ -15,12 +15,13 @@
         '!bg-primary-100': active,
       }"
     >
-      <div class="w-5 flex items-center aspect-square self-start">
+      <div class="w-5 flex items-center aspect-square self-start" v-if="unread !== null">
         <Transition name="scale">
           <Badge primary v-if="unread" />
         </Transition>
       </div>
 
+      <slot name="prepend" />
       <div class="flex flex-col gap-3 w-full font-medium">
         <div class="flex flex-col">
           <div class="flex items-center justify-between">
@@ -29,13 +30,13 @@
             >
               <span>{{ title }}</span>
             </span>
-            <div class="flex flex-col items-end">
+            <div class="flex flex-col items-end" v-if="date">
               <span class="text-neutral-400 flex items-center gap-2"
                 ><span>{{ formatDate(date) }}</span></span
               >
             </div>
           </div>
-          <p class="text-neutral-500">{{ content }}</p>
+          <p class="text-neutral-500" v-if="content">{{ content }}</p>
         </div>
 
         <slot />
@@ -47,10 +48,10 @@
 <script setup lang="ts">
 defineProps<{
   title: string;
-  date: string | Date;
-  content: string;
   active: boolean;
-  unread: boolean;
+  content?: string;
+  date?: string | Date;
+  unread?: boolean | null;
   badge?: string;
 }>();
 </script>

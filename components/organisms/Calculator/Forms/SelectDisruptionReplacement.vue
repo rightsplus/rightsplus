@@ -122,9 +122,6 @@ const props = defineProps<{
 }>();
 
 const { locale } = useI18n();
-const { delayedDetails, cancelledDetails } = useDisruption(
-  props.modelValue.flight
-);
 const { getFilteredFlights } = useFlights()
 
 const arrivalCity = ref();

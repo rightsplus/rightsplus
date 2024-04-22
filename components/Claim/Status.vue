@@ -1,30 +1,47 @@
 <template>
   <span
-    class="rounded-full px-2.5 py-1.5 textsm leading-none font-medium"
+    class="rounded-full px-2.5 py-1.5 text-sm leading-none font-medium flex gap-2 items-center ring-1 ring-white"
     v-if="status"
     :class="{
-      'bg-red-100 text-red-700': actionRequired,
-      'bg-blue-100 text-blue-700': !actionRequired,
+      'bg-orange-100 text-orange-700':
+        !props.status.includes('await') &&
+        !['rejected', 'caseWithdrawn', 'caseLost', 'completed'].includes(
+          props.status
+        ),
+      'bg-blue-100 text-blue-700': props.status.includes('await'),
+      'bg-green-100 text-green-700': [
+        'completed',
+      ].includes(props.status),
+
+      'bg-red-100 text-red-700':
+        ['rejected', 'caseWithdrawn', 'caseLost'].includes(
+          props.status
+        ),
     }"
-    >{{ $t(`status.${status}`) }}</span
+    ><FontAwesomeIcon :icon="icon" /><span>{{
+      $t(`status.${status}`)
+    }}</span></span
   >
 </template>
 
 <script setup lang="ts">
-import type { CaseStatus } from "@/types"
+import type { CaseStatus } from "@/types";
 
-const props = defineProps<{ status: CaseStatus }>()
-const actionRequired = computed(() => {
-	switch (props.status) {
-		case "compensationClaimChecked":
-		case "lawFirmEngaged":
-		case "paymentProcessed":
-			return false
-		case "dataReceived":
-		case "compensationClaimSecured":
-		case "legalDisputeLost":
-		default:
-			return true
-	}
-})
+const props = defineProps<{ status: CaseStatus }>();
+const icon = computed(() => {
+  if (props.status.includes("await")) return "clock";
+  if (
+    ["completed"].includes(
+      props.status
+    )
+  )
+    return "circle-check";
+  if (
+    ["rejected", "caseWithdrawn", "caseLost"].includes(
+      props.status
+    )
+  )
+    return "circle-xmark";
+  return "bolt";
+});
 </script>

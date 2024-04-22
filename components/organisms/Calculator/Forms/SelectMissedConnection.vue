@@ -65,7 +65,7 @@ import type { ClaimsForm } from "@/types";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-const { disruptions } = useDisruption(props.modelValue.flight);
+const { disruptions } = useDisruption();
 const { getFilteredFlights } = useFlights()
 
 const filterConnectionFlights = (flight: Flight) => {

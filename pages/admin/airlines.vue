@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex w-full">
     <div
       class="flex-col items-stretch relative w-full border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-800 lg:w-[--width] flex-shrink-0 flex"
       style="--width: 400px"
@@ -18,67 +18,114 @@
           <input
             v-model="query"
             placeholder="Filter ..."
-            class="ml-auto rounded-xl p-1 px-3"
+            class="ml-auto rounded-lg p-1 px-3 border-neutral-300"
           />
         </div>
       </div>
-      <div class="flex-1 flex flex-col overflow-y-auto p-0">
-        <div>
-          <div
-            class="p-4 text-sm cursor-pointer border-l-2 text-gray-900 dark:text-white border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10"
-            v-for="airline in airlines?.slice(0, 100)"
-            @click="currentSelection = airline"
-          >
-            <div class="flex items-center justify-between font-semibold">
-              <div class="flex items-center gap-3">
-                <CellsAirlineLogo :airline="airline" />
-                <span>{{ airline.name }}</span>
-              </div>
-              <span>{{ airline.iata }}</span>
+      <div
+        class="flex-1 flex flex-col overflow-y-auto p-3"
+        :class="{ 'pb-20': Math.ceil((airlines?.length || 0) / limit) > 1 }"
+      >
+        <DashboardListItem
+          v-for="(airline, index) in airlines?.slice(
+            (currentPage - 1) * limit,
+            currentPage * limit
+          )"
+          :title="airline.name"
+          :content="airline.iata"
+          :active="airline.id === activeAirlineId"
+          @click="
+            activeAirlineId =
+              activeAirlineId !== airline.id ? airline.id : undefined
+          "
+          :unread="null"
+        >
+          <template #prepend>
+            <div class="flex items-center gap-2 text-neutral-400 mr-3">
+              <CellsAirlineLogo :airline="airline" />
             </div>
-          </div>
-          <div
-            class="flex items-center align-center text-center w-full flex-row"
-          >
-            <div
-              class="flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
-            ></div>
-          </div>
-        </div>
+          </template>
+        </DashboardListItem>
+      </div>
+      <div
+        class="absolute w-full bottom-0 mx-auto my-8 z-50 flex justify-center"
+        v-show="Math.ceil((airlines?.length || 0) / limit) > 1"
+      >
+        <Pagination
+          :pages="Math.ceil((airlines?.length || 0) / limit)"
+          v-model:currentPage="currentPage"
+          class="mx-auto"
+        />
       </div>
       <Separator />
     </div>
     <div class="flex-1 flex flex-col overflow-y-auto p-0">
       <div class="flex-col items-stretch relative w-full flex-1 hidden lg:flex">
-        <div
-          class="flex flex-col gap-5 p-5 w-full"
-          v-if="localCurrentSelection"
-        >
-          <div class="flex items-center gap-5 justify-between w-full">
-            <div class="flex items-center gap-5">
-              <CellsAirlineLogo :airline="localCurrentSelection" />
-              <h2 class="text-lg font-bold">
-                {{ localCurrentSelection.name }}
-              </h2>
+        <div class="flex flex-col gap-5 p-5 w-full" v-if="currentAirline">
+          <div class="flex items-center gap-5 justify-between grow">
+            <div class="flex items-center gap-5 grow">
+              <CellsAirlineLogo :airline="currentAirline" size="lg" />
+              <div class="flex flex-col grow">
+                <InputShapeless
+                  v-model="currentAirline.name"
+                  class="text-2xl font-bold"
+                />
+              </div>
             </div>
-            <Button @click="localCurrentSelection = null">
-              <FontAwesomeIcon icon="xmark" />
-            </Button>
+            <div class="flex items-center gap-2">
+              <Transition name="scale">
+                <Button
+                  @click="saveChanges"
+                  class="shrink-0 !p-1"
+                  v-if="
+                    JSON.stringify(currentAirline) !==
+                      JSON.stringify(activeAirline) ||
+                    loading ||
+                    success
+                  "
+                >
+                  <FontAwesomeIcon
+                    :icon="
+                      loading
+                        ? 'circle-quarter'
+                        : success
+                        ? 'circle-check'
+                        : 'check'
+                    "
+                    :class="{
+                      'animate-revolve': loading,
+                      'text-green-500': success,
+                    }"
+                  />
+                </Button>
+              </Transition>
+              <Button
+                @click="activeAirlineId = undefined"
+                class="shrink-0 !p-1"
+              >
+                <FontAwesomeIcon icon="xmark" />
+              </Button>
+            </div>
           </div>
-          <FormKit v-model="localCurrentSelection.email" :label="$t('email')" />
+          <!-- :modelValue="{
+              firstName: currentAirline.name,
+              email: currentAirline.email,
+              phone: currentAirline.phone,
+              address: {
+                street: currentAirline.address,
+                postalCode: currentAirline.postalCode,
+                city: currentAirline.city,
+                country: currentAirline.country,
+              },
+            }" -->
           <FormKit
-            type="button"
-            @click.prevent="saveChanges"
-            :suffix-icon="
-              loading ? 'circle-quarter' : success ? 'circle-check' : 'error'
-            "
-            label="Save Changes"
-            :errors="errors"
-            :classes="{
-              outer: !loading ? '[&_.formkit-suffix-icon]' : '',
-              input: success ? '!bg-green-500' : '',
-              suffixIcon: loading ? '[&>svg]:animate-revolve' : '',
-            }"
+            :label="$t('legalName')"
+            v-model="currentAirline.legalName"
+          />
+          <FormPersonalInfo
+            v-model:email="currentAirline.email"
+            v-model:phone="currentAirline.phone"
+            v-model:address="currentAirline.address"
           />
         </div>
       </div>
@@ -87,56 +134,87 @@
 </template>
 
 <script setup lang="ts">
+import type { Database, RowAirline } from "@/types";
+
 definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
 });
-import type { Database, RowAirline } from "@/types";
 
 const client = useSupabaseClient<Database>();
 const { data } = await useAsyncData("airlines", async () => {
-  const { data: airlines } = await client
-    .from("airline")
-    .select("*")
-    .returns<RowAirline[]>();
+  try {
+    const { data: airlines } = await client
+      .from("airline")
+      .select("*")
+      .order("name", { ascending: false })
+      .returns<RowAirline[]>();
 
-  return {
-    airlines,
-  };
+    return {
+      airlines: airlines?.sort((a, b) => (a.iata.includes("*") ? 1 : -1)),
+    };
+  } catch (err) {
+    console.error(err);
+  }
 });
+const currentPage = ref(1);
+const limit = 10;
 const query = ref("");
 const airlines = computed(() =>
   !query.value
     ? data.value?.airlines
     : data.value?.airlines?.filter((airline) => {
-        return airline.name.toLowerCase().includes(query.value.toLowerCase());
+        return (
+          airline.iata?.toLowerCase().includes(query.value?.toLowerCase()) ||
+          airline.name?.toLowerCase().includes(query.value?.toLowerCase()) || 
+          query.value?.toLowerCase().includes(airline.name?.toLowerCase())
+        );
       })
 );
 
-const currentSelection = ref<RowAirline | null>(null);
-const localCurrentSelection = ref<RowAirline | null>(null);
-watch(currentSelection, (value) => {
-  localCurrentSelection.value = value;
-});
+const activeAirlineId = ref<RowAirline["id"]>();
+const activeAirline = computed(() =>
+  activeAirlineId.value !== undefined
+    ? airlines.value?.find((e) => e.id === activeAirlineId.value)
+    : undefined
+);
+const currentAirline = ref<RowAirline>();
+watch(
+  activeAirlineId,
+  () =>
+    activeAirline.value && (currentAirline.value = { ...activeAirline.value })
+);
+const compare = () => {};
 const loading = ref(false);
 const errors = ref<string[]>([]);
 const success = ref(false);
 const saveChanges = async () => {
+  if (!currentAirline?.value) return;
   loading.value = true;
-  const { data, error, status } = await client
-    .from("airline")
-    .upsert(localCurrentSelection.value);
-  console.log(data, status);
-  loading.value = false;
-  if (error) {
+  try {
+    const { data, error, status } = await client
+      .from("airline")
+      .upsert(currentAirline.value)
+      .select();
+    loading.value = false;
+
+    if (error) {
+      throw error.message;
+    } else {
+      if (airlines.value && activeAirlineId.value) {
+        const index = airlines.value.findIndex(
+          (e) => e.id === activeAirlineId.value
+        );
+        airlines.value[index] = { ...currentAirline.value };
+      }
+      success.value = true;
+      setTimeout(() => {
+        success.value = false;
+      }, 2000);
+    }
+  } catch (error: string) {
     console.error(error);
-    errors.value.push(error.message);
-    return;
-  } else {
-    success.value = true;
-    setTimeout(() => {
-      success.value = false;
-    }, 2000);
+    errors.value.push(error);
   }
 };
 // const airlines = ref<RowAirline[]>([]);

@@ -6,6 +6,83 @@ export const useSupabaseFunctions = () => {
 	const client = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
 
+	async function fetchFlights<T>(body: {
+		date: string;
+		type: "departure";
+		departure: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: {
+		date: string;
+		type: "arrival";
+		arrival: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: {
+		date: string;
+		arrival: string;
+		departure: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: {
+		date: string;
+		iata: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: {
+		date: string
+		departure?: string
+		arrival?: string
+		type?: "departure" | "arrival",
+		iata?: string
+	}): Promise<T> {
+		console.time('fetching supabase')
+		const { date, departure, arrival, type, iata } = body
+		let match = {}
+		if (iata) {
+			match = {
+				dateDeparture: date,
+				iata
+			}
+		} else if (type === 'departure' && departure) {
+			match = {
+				dateDeparture: date,
+				airportDeparture: departure
+			}
+		} else if (type === 'arrival' && arrival) {
+			match = {
+				dateArrival: date,
+				airportArrival: arrival
+			}
+		} else if (departure && arrival) {
+			match = {
+				dateDeparture: date,
+				airportDeparture: departure,
+				airportArrival: arrival
+			}
+		} else {
+			throw 'supply iata OR type and dep/arr OR dep and arr'
+		}
+		console.log('match...', match)
+
+		const { data: flights, error: errFlights } = await client
+			.from('flight')
+			.select('data')
+			.match(match)
+
+
+
+		console.log('data', flights)
+		console.log('error', errFlights)
+
+		const mappedFlights = flights?.map(e => e.data)
+		console.timeEnd('fetching supabase')
+		if (mappedFlights?.length) return mappedFlights as T
+		
+		console.time('fetching aviation edge')
+		const { data, error } = await client.functions.invoke("flights", { body })
+		console.timeEnd('fetching aviation edge')
+		if (error) {
+			throw error;
+		}
+		return data as T;
+	}
 	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
 		console.log('proxy', client)
 		client.functions.invoke("proxy", {
@@ -113,12 +190,11 @@ export const useSupabaseFunctions = () => {
 		} as Omit<RowFlight, 'id' | 'createdAt'>;
 
 		try {
-			const { data: existingFlight, error: errExisting } = await client.from("flights").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
-
+			const { data: existingFlight, error: errExisting } = await client.from("flight").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
 			if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
 			const { data: addedFlight, error } = await client
-				.from("flights")
+				.from("flight")
 				.upsert([preparedFlight]
 				)
 				.select()
@@ -178,6 +254,7 @@ export const useSupabaseFunctions = () => {
 		submitFlight,
 		submitBooking,
 		submitClaim,
-		fetchProxy
+		fetchProxy,
+		fetchFlights
 	}
 }

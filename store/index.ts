@@ -17,7 +17,6 @@ export interface AdminState {
   clients: any[];
 }
 
-
 export const defaultClaim = {
   airport: {
     departure: {} as Airport,
@@ -30,7 +29,6 @@ export const defaultClaim = {
   },
   leg: null,
   flight: null,
-  connectingFlight: null,
   date: '',
   client: {
     passengers: [{

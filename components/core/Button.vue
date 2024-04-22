@@ -13,9 +13,13 @@
       'bg-green-500 hover:bg-green-600': primary && success,
       'text-green-500 bg-transparent hover:text-green-600 hover:bg-green-100':
         secondary && success,
+      'bg-green-100 text-green-500 hover:text-green-600 hover:bg-green-200':
+        tertiary && success,
       'bg-red-500 hover:bg-red-600': primary && alert,
       'text-red-500 bg-transparent hover:text-red-600 hover:bg-red-100':
       secondary && alert,
+      'bg-red-100 text-red-500 hover:text-red-600 hover:bg-red-200':
+        tertiary && alert,
       'bg-neutral-200 hover:bg-neutral-300': tertiary,
       'pointer-events-none opacity-50': disabled,
     }"

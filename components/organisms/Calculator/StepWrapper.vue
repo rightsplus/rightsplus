@@ -11,7 +11,7 @@
           {{ title || $t(state.value + ".title") }}
         </h2>
         <h3
-        class="text-base sm:text-lg leading-tight sm:leading-tight"
+          class="text-base sm:text-lg leading-tight sm:leading-tight"
           :key="state.value"
         >
           {{ description || $t(state.value + ".description") }}
@@ -33,6 +33,6 @@ defineProps<{
   description?: string;
 }>();
 const claim = useClaim();
-const { state } = useMachine<ClaimsForm>(claimMachine, claim);
+const { state } = useMachine<ClaimsForm>(claimMachine, { context: claim });
 onMounted(() => (loading.value = false));
 </script>

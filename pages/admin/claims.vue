@@ -29,7 +29,7 @@
           more
         </div>
       </div>
-      <div class="flex-1 flex flex-col overflow-y-auto p-2 h-full">
+      <div class="flex-1 flex flex-col overflow-y-auto p-2 h-full" @click.self="activeClaimId = undefined">
         <DashboardListItem
           v-for="claim in claims"
           :title="formatClaimId(claim.id, true)"
@@ -55,62 +55,10 @@
     <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
       <div class="flex-col items-stretch relative w-full flex-1">
         <div class="flex-1 p-5 w-full h-full">
-          <div v-if="activeClaim" class="w-full">
-            <div class="flex justify-between w-full">
-              <h1 class="text-2xl font-bold">
-                {{ formatClaimId(activeClaim.id) }}
-              </h1>
-              <span class="flex gap-2 items-center"
-                ><span class="text-xl font-bold">{{
-                  activeClaim.booking.flight.airportDeparture
-                }}</span
-                ><FontAwesomeIcon
-                  icon="plane"
-                  class="text-gray-400 dark:text-gray-500"
-                /><span class="text-xl font-bold">{{
-                  activeClaim.booking.flight.airportArrival
-                }}</span></span
-              >
-            </div>
-            <hr class="my-5" />
-            <div class="flex gap-3 flex-wrap">
-              <Button
-                secondary
-                alert
-                @click="updateData(activeClaimId, { status: 'done' })"
-              >
-                Fall ablehnen
-              </Button>
-              <Button
-                success
-                primary
-                @click="updateData(activeClaimId, { status: 'done' })"
-              >
-                Fall annehmen
-              </Button>
-
-              <Button
-                class="bg-blue-50 hover:bg-blue-100 text-blue-600 text-xl"
-                :prefix-icon="activeClaim?.unread ? 'envelope' : 'envelope-dot'"
-                @click="
-                  updateData(activeClaimId, { unread: !activeClaim?.unread })
-                "
-              />
-            </div>
-            <!-- <span
-          class="bg-orange-100 text-orange-600 rounded-full px-3 py-2 font-medium"
-          >status</span
-        > -->
-          </div>
-          <div
-            v-else
-            class="relative inset-0 h-full flex items-center justify-center"
-          >
-            <FontAwesomeIcon
-              icon="folder-closed"
-              class="text-7xl text-gray-300"
-            />
-          </div>
+          <ClaimManagment
+            :claim="activeClaim"
+            @update="updateData"
+          />
         </div>
       </div>
     </div>
@@ -123,10 +71,15 @@ definePageMeta({
   key: "claims",
 });
 
-import type { ClaimsForm, Database, RowClaim, RowClaimExtended } from "@/types";
+import type { CaseStatus, Database, RowClaimExtended } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useAdminState } from "~/composables/store";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
+import { admin } from "~/store";
+
+// watch(state.value, ({ value }) =>
+//   updateData(activeClaimId.value, { status: value as CaseStatus })
+// );
+
 const container = ref();
 const width = ref(400);
 const offset = ref(0);
@@ -137,7 +90,8 @@ onMounted(() => {
 
 const client = useSupabaseClient<Database>();
 const { locale } = useI18n();
-const state = useAdminState();
+const { query, airlines } = useAirlines();
+const claimQuery = `*, booking ( flight ( *, airline ( * ) ) )`;
 
 const {
   data: claims,
@@ -146,57 +100,49 @@ const {
 } = useAsyncData("claims", async () => {
   const { data: claims, error } = await client
     .from("claim")
-    .select(
-      `*,
-        booking ( flight ( *, airline ( * ) ) )
-        `
-    )
+    .select(claimQuery)
     // .or(`status.is.null,status.neq.done`)
     .order("createdAt", { ascending: false })
     .returns<RowClaimExtended[]>();
 
+  console.log(claims, error);
+  if (claims) {
+    console.log(claims.map((e) => e.booking.flight.data));
+    console.log(airlinesByFlights(claims.map((e) => e.booking.flight.data)));
+    query(
+      airlinesByFlights(claims.map((e) => e.booking.flight.data)).map(
+        (e) => e.airline.iata
+      )
+    );
+  }
   console.log(claims);
-
-  // const { data: bookings } = await client.from("bookings").select();
-  // bookings?.forEach((booking) => {
-  //   client
-  //     .from("claims")
-  //     .update({ bookingId: booking.id })
-  //     .eq("bookingNumber", booking.bookingNumber)
-  //     .then(console.log);
-  // });
-  // const res = await client
-  //   .from("bookings")
-  //   .insert(
-  //     claims?.map((claim) => ({
-  //       bookingNumber: claim.bookingNumber,
-  //       flightId: claim.flightId,
-  //       disruption: claim.disruption,
-
-  //     }))
-  //   )
-  //   .select();
-  // if (claims) state.claims = claims;
   return claims;
 });
 
-const updateData = (
-  id?: RowClaimExtended["id"],
-  data: Partial<RowClaimExtended>
-) => {
-  if (!id) return;
+const updateData = (props: {
+  id?: RowClaimExtended["id"];
+  data?: Partial<RowClaimExtended>;
+}) => {
+  const { id, data } = props;
+  console.log(id, data);
+  if (!id || !data) return;
   client
     .from("claim")
     .update(data)
     .eq("id", id)
-    .then(() => refresh());
+    .select(claimQuery)
+    .single()
+    .then(({ data: claim }) => {
+      Object.assign(claims.value?.find((e) => e.id === claim.id) || {}, claim);
+    });
 };
-
 const activeClaimId = ref<RowClaimExtended["id"]>();
-watch(activeClaimId, (id) => updateData(id, { unread: false }));
-const activeClaim = computed(() =>
-  claims.value?.find((e) => e.id === activeClaimId.value)
-);
+const activeClaim = ref<RowClaimExtended>();
+watch(activeClaimId, (id) => {
+  const nextClaim = claims.value?.find((e) => e.id === id);
+  console.log(nextClaim);
+  activeClaim.value = nextClaim;
+});
 const date = (d: string) => new Date(d).toLocaleDateString(locale.value);
 const time = (d: string) =>
   new Date(d).toLocaleString(locale.value, {
@@ -204,18 +150,18 @@ const time = (d: string) =>
     timeStyle: "short",
   });
 const logo = getAirlineLogo || (() => "");
-const { send } = useSendMail();
+const { send: sendMail } = useSendMail();
 const sendEmailToAirline = () => {
   if (!activeClaim.value) return;
-  send({
-    to: activeClaim.value?.booking.flight.airline.email,
+  sendMail({
+    to: activeClaim.value?.booking?.flight.airline.email,
     subject: `Claim ${activeClaim.value?.id}`,
-    text: `Dear ${activeClaim.value?.booking.flight.airline.name},\n\nWe have a claim for you.\n\nBest regards,\n\nYour team`,
+    text: `Dear ${activeClaim.value?.booking?.flight.airline.name},\n\nWe have a claim for you.\n\nBest regards,\n\nYour team`,
   });
 };
-
 const operatingAirline = (claim: RowClaimExtended) => {
-  const { codeshared, airline } = claim.booking.flight.data || {};
-  return codeshared?.airline || airline;
+  const { codeshared, airline } = claim.booking?.flight.data || {};
+  const { iata } = codeshared?.airline || airline;
+  return airlines.value[iata] || {};
 };
 </script>

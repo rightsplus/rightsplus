@@ -210,7 +210,6 @@
 </template>
 
 <script setup lang="ts">
-import InputIBAN from "~~/components/molecules/InputIBAN.vue";
 import AccordionItem from "../../Accordion/AccordionItem.vue";
 import AddressInput from "./AddressInput.vue";
 import type { PassengerDetails } from "@/types";

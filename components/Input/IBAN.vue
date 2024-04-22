@@ -43,7 +43,10 @@
         }}</label
       >
       <label
-        v-if="((isFocused || !valid) && suffixIconComputed) || (touched && !modelValue)"
+        v-if="
+          ((isFocused || !valid) && suffixIconComputed) ||
+          (touched && !modelValue)
+        "
         :class="[
           'formkit-suffix-icon w-10 pr-2 -ml-3 flex self-stretch grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 formkit-icon',
         ]"
@@ -54,8 +57,20 @@
             : 'Irgendetwas stimmt nicht mit deiner IBAN'
         "
         ><FontAwesomeIcon
-          :icon="valid ? 'check-circle' : touched && !modelValue ? 'triangle-exclamation' : 'circle-xmark'"
-          :class="valid ? 'text-green-500' : touched && !modelValue ? 'text-yellow-500' : 'text-red-500'"
+          :icon="
+            valid
+              ? 'check-circle'
+              : touched && !modelValue
+              ? 'triangle-exclamation'
+              : 'circle-xmark'
+          "
+          :class="
+            valid
+              ? 'text-green-500'
+              : touched && !modelValue
+              ? 'text-yellow-500'
+              : 'text-red-500'
+          "
       /></label>
     </div>
     <div

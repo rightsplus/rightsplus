@@ -20,12 +20,8 @@
       @update:modelValue="modelValue.departure = $event"
       floatingLabel
       class="mb-5"
-  />
-    <InputDate
-      :modelValue="modelValue.date"
-      @update:modelValue="modelValue.date = $event"
-      label="Datum"
     />
+    <InputDate v-model="model.date!" label="Datum" />
   </div>
 </template>
 
@@ -33,15 +29,19 @@
 import AirportInput from "@/components/organisms/Calculator/Forms/AirportInput.vue";
 import type { ClaimsForm } from "@/types";
 import { vMaska } from "maska";
-import InputDate from "~/components/molecules/InputDate.vue";
-const { allCaps } = useMask()
+const { allCaps } = useMask();
+const model = defineModel<ClaimsForm["connection" | "replacement"]>({
+  required: true,
+});
 
-defineProps<{
-  modelValue: ClaimsForm['connection' | 'replacement'];
-}>();
 const container = ref<HTMLElement>();
 
 onMounted(() => {
+  if (!model.value.date) {
+    Object.assign(model.value, {
+      date: new Date().toISOString(),
+    });
+  }
   focusFirst({ select: true, empty: true, scope: container.value });
 });
 </script>

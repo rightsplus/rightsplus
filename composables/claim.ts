@@ -47,14 +47,81 @@ export const useGeneratePDF = () => {
 	return { generate };
 }
 
-
-
-export const useCompensation = () => {
-	const claim = useClaim()
+export const useCompensation = (estimate = false) => {
 	const { t } = useI18n()
+	const claim = useClaim()
+	const { airlines } = useAirlines()
+	const { noBoardingReasons } = useDisruption()
+
+	const eligible = ref<boolean | null>(null);
 	const compensation = ref(0);
 	const distance = ref(0);
 	const message = ref<string>();
+
+	const getError = () => {
+		eligible.value = null
+		if (!claim) return 'noClaim' // No claim
+		const { airport, leg, flight, disruption, replacement, connection } = claim
+
+		// TRIP
+		const { departure, arrival, trip } = airport || {}
+		if (!departure || !arrival) return 'airport.missing'
+		if (departure.iata === arrival.iata) return 'airport.identical'
+		if (!departure.ec261 && !arrival.ec261) return 'ec261.airport'
+		if (!leg || !generateLegs(trip)[leg]) return 'leg.missing'
+
+		// FLIGHT
+		if (!flight) return 'flight.missing'
+		const airline = airlines.value[flight.airline.iata]
+		// if (!airline) return 'airline.missing'
+
+		if (!departure.ec261 && !airline?.isEuMember) {
+			eligible.value = false
+			return 'ec261.airline' // ineligible
+		}
+
+
+
+
+		// DISRUPTION
+
+		if (!disruption || !disruption.type) return 'disruption.missing'
+
+		if (disruption.type === "delayed") {
+			if (!disruption.details) return 'disruption.detail.delay'
+			if (disruption.details === "<3") {
+				if (!connection) {
+					eligible.value = false
+					return 'delay.<3'
+				}
+				if (!connection.flight) return 'connectionFlight.missing'
+				if (reachedConnectionFlight(claim)) {
+					eligible.value = false
+					return 'connection.reached'
+				}
+			}
+		} else if (disruption.type === "cancelled") {
+			console.log(disruption.details)
+			if (!disruption.details) return 'disruption.detail.cancelled'
+			if (disruption.details === '>14') {
+				eligible.value = false
+				return 'cancelled.>14'
+			}
+			if (replacement) {
+				if (!replacement.flight) return 'replacement.missing'
+				if (isReplacementFlightWithinBounds(claim)) {
+					eligible.value = false
+					return 'replacement.withinBounds'
+				}
+			}
+		} else if (disruption.type === "noBoarding") {
+			if (noBoardingReasons.find(e => e.value === disruption.reason)?.selfInflicted) {
+				eligible.value = false
+				return 'disruption.selfInflicted'
+			}
+		}
+		eligible.value = true
+	}
 
 	const getCompensation = () => {
 		const distance = getDistance(claim)
@@ -63,6 +130,15 @@ export const useCompensation = () => {
 			message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
 			return { compensation: 0, distance, message }
 		}
+		if (!estimate && getError()) {
+			const errorCode = getError()
+			if (errorCode) {
+				message = t(errorCode)
+				return { compensation: 0, distance, message }
+
+			}
+		}
+
 		let compensation = 250
 		if (distance > 1500) compensation = 400
 		const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)
@@ -76,7 +152,8 @@ export const useCompensation = () => {
 		distance.value = d
 		message.value = m
 	}, { immediate: true, deep: true })
-	return { compensation, distance, message }
+
+	return { compensation, distance, message, eligible }
 }
 
 export const usePrepareClaimSubmission = () => {
@@ -144,8 +221,8 @@ export const usePrepareClaimSubmission = () => {
 		try {
 			if (!claim.flight) return;
 			const { id: flightId } = await submitFlight(claim.flight);
-			const { id: bookingId } = await submitBooking(claim, flightId);
-			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, bookingId))
+			const booking = await submitBooking(claim, flightId);
+			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, booking))
 
 		} catch (error) {
 			console.log(error);

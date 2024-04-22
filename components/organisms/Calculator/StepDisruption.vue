@@ -116,7 +116,7 @@ const {
   disruptions,
   noBoardingReasons,
   cancelledDelayedReasons,
-} = useDisruption(props.modelValue.flight);
+} = useDisruption();
 
 const processClaim = useProcessClaim();
 const hasSwitched = ref(false);

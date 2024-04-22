@@ -1,5 +1,4 @@
 import { corsHeaders } from '../_shared/cors.ts'
-import fetchFlight from '../_shared/fetchFlight.ts'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {

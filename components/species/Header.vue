@@ -47,7 +47,7 @@
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLink
-            :to="localePath('/')"
+            :to="useLocalePath()('/')"
             class="flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
             @click="clickLink"
@@ -108,7 +108,7 @@ import Logo from "~/assets/logo";
 import type { Database } from "@/types";
 import claimMachine from "~/machines/claimSubmission";
 const { auth } = useSupabaseAuthClient();
-const localePath = useLocalePath();
+// const localePath = useLocalePath();
 interface Route {
   name: string;
   path: string;
@@ -135,7 +135,7 @@ const isAdmin =
       .single()
   ).data?.role === "admin";
 
-const { invoke } = useMachine(claimMachine, claim);
+const { invoke } = useMachine(claimMachine, { context: claim });
 const links = [
   {
     path: "delayed-and-cancelled-flights",

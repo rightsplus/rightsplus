@@ -95,9 +95,9 @@ import {
   faTriangleExclamation,
   faCircle,
   faCalendarXmark,
-  prefix,
   faArrowRightLong,
   faArrowRotateRight,
+  faArrowRotateLeft,
   faEnvelope
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -109,6 +109,7 @@ library.add(
   faArrowRightArrowLeft,
   faArrowRightLong,
   faArrowRotateRight,
+  faArrowRotateLeft,
   faInbox,
   faBuilding,
   faGavel,

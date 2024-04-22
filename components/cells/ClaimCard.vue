@@ -4,37 +4,34 @@
     v-if="flight"
   >
     <!-- Compensation -->
-    <!-- {{ message }} -->
+    {{ message }}
     <!-- {{ compensation }} // {{ distance }} -->
-    <div
-      v-if="!certain"
-      class="flex flex-col"
-      >
-    <div
+    <div v-if="!certain" class="flex flex-col">
+      <div
       class="flex flex-col justify-center text-center items-center gap-3 p-3"
-    >
-      <FontAwesomeIcon
-        class="shrink-0 text-xl"
-        v-if="compensation"
-        :icon="compensation ? 'money-bill-1-wave' : 'xmark'"
-        :class="{ 'text-green-500': compensation }"
-      />
-      <div class="flex flex-col gap-2">
-        <span class="text-xs text-neutral-500 leading-none">{{
-          $t(
-            compensation
-              ? "potentialCompensationFromAirline"
-              : "noPotentialCompensationFromAirline"
-          )
-        }}</span>
-        <span class="font-bold sm:text-xl leading-none" v-if="compensation">{{
-          $t("perPerson", {
-            value: $n(compensation, "currency", { maximumFractionDigits: 0 }),
-          })
-        }}</span>
+      >
+        <FontAwesomeIcon
+          class="shrink-0 text-xl"
+          v-if="compensation"
+          :icon="compensation ? 'money-bill-1-wave' : 'xmark'"
+          :class="{ 'text-green-500': compensation }"
+        />
+        <div class="flex flex-col gap-2">
+          <span class="text-xs text-neutral-500 leading-none">{{
+            $t(
+              compensation
+                ? "potentialCompensationFromAirline"
+                : "noPotentialCompensationFromAirline"
+            )
+          }}</span>
+          <span class="font-bold sm:text-xl leading-none" v-if="compensation">{{
+            $t("perPerson", {
+              value: $n(compensation, "currency", { maximumFractionDigits: 0 }),
+            })
+          }}</span>
+        </div>
       </div>
-    </div>
-      <hr class="w-full"/>
+      <hr class="w-full" />
     </div>
 
     <div class="flex flex-wrap @md:flex-nowrap gap-3 sm:gap-5">
@@ -68,13 +65,13 @@
           <AirlineLogo :airline="flight.airline" size="sm" />
           <div class="flex flex-col gap-1">
             <span class="flex flex-col gap-1">
-              <span class="font-bold">{{ flight.airline?.name }}</span>
+              <span class="font-bold">{{ airline?.name }}</span>
               <span
-                v-if="flight.codeshared?.airline.name"
+                v-if="codesharedAirline?.name"
                 class="opacity-50 text-xs leading-none"
                 >{{
                   $t("operatedBy", {
-                    airline: flight.codeshared?.airline.name,
+                    airline: codesharedAirline?.name,
                   })
                 }}</span
               >
@@ -110,22 +107,15 @@
           <span class="text-sm text-neutral-500">{{
             $t("actualArrivalTime")
           }}</span>
-          <div
-            class="font-bold flex text-sm gap-3 flex-col"
-            v-if="arrivalTime"
-          >
+          <div class="font-bold flex text-sm gap-3 flex-col" v-if="arrivalTime">
             <div class="flex items-center gap-3">
               <span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
-                  date(
-                    arrivalTime
-                  )
+                  date(arrivalTime)
                 }}</span
               ><span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
-                  time(
-                    arrivalTime
-                  )
+                  time(arrivalTime)
                 }}</span
               >
             </div>
@@ -164,13 +154,7 @@
                 'text-red-700 bg-red-200': flight.status === 'cancelled',
               }"
               >{{
-                $t(
-                  flight.status === "cancelled"
-                    ? "cancelled"
-                    : flight.arrival.delay
-                    ? "delayed"
-                    : "landed"
-                )
+                $t(flight.status)
               }}</span
             >
           </span>
@@ -209,7 +193,7 @@ import AirlineLogo from "./AirlineLogo.vue";
 const props = defineProps<{
   claim: ClaimsForm;
   airports?: boolean;
-  certain?: boolean
+  certain?: boolean;
 }>();
 const { locale } = useI18n();
 const flight = computed(() => props.claim.flight);
@@ -219,6 +203,8 @@ const city = useCities({
   departure: flight.value?.departure?.iata,
   arrival: flight.value?.arrival?.iata,
 });
+const airline = useAirline(flight.value?.airline);
+const codesharedAirline = useAirline(flight.value?.codeshared?.airline);
 
 const date = (time: string) => {
   return new Date(time).toLocaleDateString(locale.value);
@@ -232,7 +218,7 @@ const time = (time: string) => {
 const { compensation, distance, message } = useCompensation();
 
 const arrivalTime = computed(() => {
-  const { actualTime, estimatedTime } = flight.value?.arrival || {}
-  return actualTime || estimatedTime
-})
+  const { actualTime, estimatedTime } = flight.value?.arrival || {};
+  return actualTime || estimatedTime;
+});
 </script>

@@ -166,7 +166,6 @@ import SectionHeader from "./SectionHeader.vue";
 import SectionSubHeader from "./SectionSubHeader.vue";
 import FlightList from "./FlightList.vue";
 import type { ClaimsForm, Flight } from "@/types";
-import InputDate from "@/components/molecules/InputDate.vue";
 import Callout from "~/components/core/Callout.vue";
 import { get24HTime } from "@/utils";
 import AccordionItem from "../Accordion/AccordionItem.vue";

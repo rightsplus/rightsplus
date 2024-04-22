@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 import type { ClaimsForm } from "@/types";
-import InputDate from "@/components/molecules/InputDate.vue";
 import type { Page } from "v-calendar/dist/types/src/utils/page.js";
 import TransitionExpand from "@/components/molecules/TransitionExpand.vue";
 const props = defineProps<{

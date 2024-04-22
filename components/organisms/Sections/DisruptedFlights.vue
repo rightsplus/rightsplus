@@ -23,7 +23,7 @@
         <Button tertiary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
-        <Button primary to="claim-new">{{ $t('checkCompensationNow')}}</Button>
+        <Button primary to="claim-new">{{ $t("checkCompensationNow") }}</Button>
       </div>
     </div>
     <div class="flex flex-col gap-5">
@@ -52,7 +52,7 @@
             suffixIcon: 'arrow-right',
             tertiary: true,
             class: 'h-9 text-sm ml-auto',
-          }
+          },
         }"
       />
     </div>
@@ -82,7 +82,9 @@ onMounted(async () => {
   console.log(flights);
 });
 import claimMachine from "~/machines/claimSubmission";
-const { send, state, invoke, messages } = useMachine<ClaimsForm>(claimMachine, claim);
+const { send, state, invoke, messages } = useMachine<ClaimsForm>(claimMachine, {
+  context: claim,
+});
 const { query, airports } = useAirports();
 const localePath = useLocalePath();
 const handleSelect = async (flight: Flight) => {
@@ -98,9 +100,7 @@ const handleSelect = async (flight: Flight) => {
     console.log(state.value.value);
     return;
   }
-  claim.date = getISODate(
-    flight.departure.scheduledTime
-  );
+  claim.date = getISODate(flight.departure.scheduledTime);
   console.log("is in flightDate");
   send("next");
   if (!state.value.matches("flight")) return;

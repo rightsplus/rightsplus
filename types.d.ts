@@ -10,20 +10,41 @@ export type Address<T = string> = {
 
 export type NextAction = "evaluateCase" | "awaitAirlineResponse" | "negotiate"
 
+export type ClaimState = "loading"
+  | "itinerary"
+  | "chooseLeg"
+  | "flightDate"
+  | "flight"
+  | "disruptionDetected"
+  | "disruptionType"
+  | "cancellationDetails"
+  | "delayDetails"
+  | "disruptionReason"
+  | "replacementFlightYN"
+  | "replacementFlightDetails"
+  | "replacementFlight"
+  | "connectionFlightYN"
+  | "connectionFlightDetails"
+  | "connectionFlight"
+  | "bookingNumber"
+  | "passengers"
+  | "assignmentAgreement"
+  | "eligibility"
+  | "summary"
 
 export type CaseStatus = "dataReceived"
-	| "caseRejected"
-	| "caseAccepted"
-	| "assignmentDeclarationReceived"
-	| "airlineContacted"
-	| "lawFirmEngaged"
-	| "compensationClaimSecured"
-	| "lawsuitFiled"
-	| "compensationClaimSecuredLawsuit"
-	| "paymentProcessed"
-	| "legalDisputeLost"
-	| "other"
-// export type CaseStatus = "dataReceived"
+	| "awaitInitialAirlineResponse"
+	| "airlineRejected"
+  | "awaitLawyerResponse"
+  | "airlineRejectedAfterLawyer"
+  | "awaitCourtDecision"
+  | "awaitAirlinePayment"
+  | "receivePayment"
+  | "rejected"
+  | "caseWithdrawn"
+  | "caseLost"
+  | "completed"
+  // export type CaseStatus = "dataReceived"
 // 	| "compensationClaimChecked"
 // 	| "orderRejected"
 // 	| "reminderForAssignmentDeclaration"
@@ -63,7 +84,6 @@ export interface ClaimsForm {
   };
   leg: string | null;
   flight: Flight | null;
-  connectingFlight: Flight | null;
   date: string | null;
   disruption: {
     type: DisruptionType | null;
@@ -137,7 +157,7 @@ export interface Airport {
 }
 
 /* Flight */
-type AirlineInfo = {
+export type AirlineInfo = {
   name: string;
   iata: string;
 }
@@ -184,11 +204,6 @@ export interface Airline {
   name: string;
   country: string;
   isEuMember: boolean;
-  callsign: string;
-  hubCode: string | null;
-  dateFounded: string;
-  iataPrefixAccounting: string;
-  fleetSize: string;
   type: string[];
 }
 
@@ -226,22 +241,20 @@ export interface RowAirline extends Row {
   iata: string;
   name: string;
   legalName: string | null;
-  country: string;
   isEuMember: boolean;
-  callsign: string;
-  hubCode: string | null;
-  dateFounded: string;
-  iataPrefixAccounting: string;
-  fleetSize: string;
   type: string[];
   address: string;
   postalCode: string;
   city: string;
+  country: string;
   email: string;
+  phone: string;
+  active: boolean;
 }
 export interface RowFlight extends Row  {
   iata: string;
   status: string;
+  date: string;
   airlineIata: RowAirline['iata'];
   scheduledDeparture: string;
   scheduledArrival: string;

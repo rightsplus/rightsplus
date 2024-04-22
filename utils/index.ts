@@ -10,11 +10,11 @@ export const uuid = () => vueUuid.v4()
 
 export const getAirlineLogo = (iata?: string, size = 100) => {
 	if (!iata) return;
-	let code = iata
-	switch (iata) {
-		case 'GEC': code = 'LH'
-		case 'D0': code = 'LH'
-	}
+	let code = iata;
+	// switch (iata) {
+	// 	case 'GEC': code = 'LH'
+	// 	case 'D0': code = 'LH'
+	// }
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${code}.png?crop=false&width=${size}&height=${size}`;
 	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${code}_1x.png`
 }
@@ -375,6 +375,22 @@ export const isReplacementFlightWithinBounds = (claim: ClaimsForm) => {
 		departureBuffer
 	);
 };
+export const reachedConnectionFlight = (claim: ClaimsForm) => {
+	if (!claim.flight) return false;
+	const connectionFlight = claim.connection.flight
+	if (!connectionFlight || connectionFlight.flight.iata?.toUpperCase() === claim.flight.flight.iata)
+		return false;
+	const { details } = claim.disruption;
+	const { actualTime, estimatedTime } = claim.flight.arrival
+	// 30 min
+	const layoverBuffer = 1800000
+
+	return (
+		!!details &&
+		["<3"].includes(details) &&
+		(new Date(actualTime || estimatedTime).getTime() + layoverBuffer) < new Date(connectionFlight.departure.scheduledTime).getTime()
+	);
+};
 
 
 export const convertAssignmentAgreementData = (claim: ClaimsForm) => {
@@ -439,3 +455,5 @@ export const formatOrdinals = (n: number, locale = 'de') => {
 };
 
 
+
+export const closest = (number: number, array: number[]) => array.reduce((prev, curr) => (Math.abs(curr - number) < Math.abs(prev - number) ? curr : prev));
