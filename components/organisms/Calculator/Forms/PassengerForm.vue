@@ -312,7 +312,8 @@ const completed = computed(() => {
   const complete = Object.values(props.modelValue).every(Boolean);
   const validEmail = validateEmail(props.modelValue.email);
   const validIBAN = IBAN.isValid(props.modelValue.iban);
-  return complete && validEmail && validIBAN;
+  const validBoardingPass = !!props.modelValue.boardingPass?.length;
+  return complete && validEmail && validIBAN && validBoardingPass;
 });
 const passenger = (index: number) => {
   return index === 0 ? "Deine Angaben" : `${index + 1}. Passagier`;

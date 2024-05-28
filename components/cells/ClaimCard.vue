@@ -6,7 +6,7 @@
     <!-- Compensation -->
     {{ message }}
     <!-- {{ compensation }} // {{ distance }} -->
-    <div v-if="!certain" class="flex flex-col">
+    <div v-if="certain" class="flex flex-col">
       <div
         class="flex flex-col justify-center text-center items-center gap-3 p-3"
       >
@@ -17,7 +17,7 @@
           :class="{ 'text-green-500': compensation }"
         />
         <div class="flex flex-col gap-2">
-          <span class="text-xs text-neutral-500 leading-none">{{
+          <span class="text-xs text-neutral-500 leading-none" v-if="!certain">{{
             $t(
               compensation
                 ? "potentialCompensationFromAirline"
@@ -103,7 +103,7 @@
             >
           </span>
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
           <span class="text-sm text-neutral-500">{{
             $t("actualArrivalTime")
           }}</span>
@@ -143,21 +143,6 @@
       </div>
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-1">
-          <span class="text-sm text-neutral-500">{{ $t("flightStatus") }}</span>
-          <span class="font-medium flex items-center text-sm gap-3"
-            ><span
-              class="leading-0 flex items-center gap-2 rounded-full px-2 py-0.5"
-              :class="{
-                'text-green-700 bg-green-100':
-                  !flight.arrival.delay && flight.status !== 'cancelled',
-                'text-orange-600 bg-orange-100': flight.arrival.delay,
-                'text-red-700 bg-red-200': flight.status === 'cancelled',
-              }"
-              >{{ $t(flight.status) }}</span
-            >
-          </span>
-        </div>
-        <div class="flex flex-col gap-1">
           <span class="text-sm text-neutral-500"
             >{{ $t("flightDistance") }} ({{
               $t("fromTo", {
@@ -175,6 +160,22 @@
             >
           </span>
         </div>
+        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
+          <span class="text-sm text-neutral-500">{{ $t("flightStatus") }}</span>
+          <span class="font-medium flex items-center text-sm gap-3"
+            ><span
+              class="leading-0 flex items-center gap-2 rounded-full px-2 py-0.5"
+              :class="{
+                'text-green-700 bg-green-100':
+                  !flight.arrival.delay && flight.status !== 'cancelled',
+                'text-orange-600 bg-orange-100': flight.arrival.delay,
+                'text-red-700 bg-red-200': flight.status === 'cancelled',
+              }"
+              >{{ $t(flight.status) }}</span
+            >
+          </span>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -215,10 +216,10 @@ const time = (time: string) => {
     minute: "2-digit",
   });
 };
-const { compensation, distance, message } = useCompensation();
+const { compensation, distance, message } = useCompensation(!props.certain);
 
 const arrivalTime = computed(() => {
-  const { actualTime, estimatedTime } = flight.value?.arrival || {};
-  return actualTime || estimatedTime;
+  const { actualTime } = flight.value?.arrival || {};
+  return actualTime;
 });
 </script>

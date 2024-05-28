@@ -17,7 +17,7 @@ export default {
   guards: {
     hasItinerary: ({ context, messages }) => {
       messages.value.hasItinerary = "Please provide a valid itinerary"
-      
+
       const { departure, arrival } = context.airport.trip
 
       return !!departure?.iata && !!arrival?.iata && departure?.iata !== arrival?.iata
@@ -47,6 +47,7 @@ export default {
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
     isDelayed: ({ context }) => {
+      if (context.flight?.status === 'active') return false
       const { delay } = context.flight?.arrival || { delay: 0 }
       const delayed = delay > 0
       if (delayed) {
@@ -56,6 +57,7 @@ export default {
       return delayed
     },
     isCancelled: ({ context }) => {
+      if (context.flight?.status === 'active') return false
       const cancelled = context.flight?.status === "cancelled"
       if (cancelled) context.disruption.type = 'cancelled'
       return cancelled
@@ -77,10 +79,10 @@ export default {
       return !!eligible
     },
     connectionRelevant: ({ context }) => {
-      const { delay } = context.flight?.arrival || { delay: 0 }
+
+      const delay = context.disruption.type === 'delayed' && context.disruption.details === '<3' ? 60 : context.flight?.arrival.delay || 0
       const { departure, arrival } = nextLeg(context)
 
-      console.log(departure, arrival)
       if (!departure || !arrival) return false
       // @todo: make action
       context.connection.departure = departure
@@ -89,10 +91,14 @@ export default {
         context.connection.date = new Date(context.flight?.arrival.scheduledTime).toISOString().split('T')[0]
       }
 
+
       return delay > 0 && delay < 180 && departure
     },
     tooLittleDelay: ({ context }) => {
-      const { delay } = context.flight?.arrival || { delay: 0 }
+      const delay = context.disruption.type === 'delayed' && context.disruption.details === '<3' ? 60 : context.flight?.arrival.delay || 0
+
+      console.log('delay', delay < 180)
+
       return delay < 180
     },
     replacementRelevant: ({ context }) => {
@@ -107,11 +113,11 @@ export default {
         const complete = Object.values(passenger).every(Boolean);
         const validEmail = validateEmail(passenger.email)
         const validIBAN = IBAN.isValid(passenger.iban)
-        return complete && validEmail && validIBAN
+        const validBoardingPass = !!passenger.boardingPass?.length;
+        return complete && validEmail && validIBAN && validBoardingPass;
       })
     },
     agreedToTerms: ({ context }) => {
-      console.log(context.client.passengers.map(passenger => passenger.signature))
       return context.client.passengers.every(passenger => passenger.signature)
     }
   },
@@ -312,10 +318,12 @@ export default {
           {
             target: "connectionFlightYN",
             guard: ["connectionRelevant", "isDelayedType"],
+            guardType: "and"
           },
           {
             target: "eligibility",
             guard: ["tooLittleDelay", "isDelayedType"],
+            guardType: "and"
           },
           {
             target: "disruptionReason",
@@ -441,8 +449,14 @@ export default {
       on: {
         next: {
           guard: "agreedToTerms",
+          target: "success",
           actions: "submitClaim",
         },
+      },
+    },
+    success: {
+      on: {
+        next: {},
       },
     },
   }

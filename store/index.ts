@@ -42,7 +42,9 @@ export const defaultClaim = {
         country: '',
       },
       iban: '',
+      boardingPass: undefined,
     }],
+    bookingNumber: '',
     agreedToTerms: false,
   },
   disruption: {
@@ -53,12 +55,14 @@ export const defaultClaim = {
   },
   replacement: {
     departure: {} as Airport,
+    arrival: {} as Airport,
     date: '',
     number: '',
     flight: null,
   },
   connection: {
     departure: {} as Airport,
+    arrival: {} as Airport,
     date: '',
     number: '',
     flight: null,

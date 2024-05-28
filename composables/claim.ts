@@ -81,8 +81,6 @@ export const useCompensation = (estimate = false) => {
 		}
 
 
-
-
 		// DISRUPTION
 
 		if (!disruption || !disruption.type) return 'disruption.missing'
@@ -90,9 +88,11 @@ export const useCompensation = (estimate = false) => {
 		if (disruption.type === "delayed") {
 			if (!disruption.details) return 'disruption.detail.delay'
 			if (disruption.details === "<3") {
-				if (!connection) {
+				console.log('connection', connection)
+				const { departure, arrival } = nextLeg(claim)
+				if (!connection || !(departure || arrival)) {
 					eligible.value = false
-					return 'delay.<3'
+					return 'eligible.reason.delay.<3'
 				}
 				if (!connection.flight) return 'connectionFlight.missing'
 				if (reachedConnectionFlight(claim)) {
@@ -101,7 +101,6 @@ export const useCompensation = (estimate = false) => {
 				}
 			}
 		} else if (disruption.type === "cancelled") {
-			console.log(disruption.details)
 			if (!disruption.details) return 'disruption.detail.cancelled'
 			if (disruption.details === '>14') {
 				eligible.value = false
@@ -123,16 +122,12 @@ export const useCompensation = (estimate = false) => {
 	const getCompensation = () => {
 		const distance = getDistance(claim)
 		let message = ""
-		if (claim.flight && claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
-			message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
-			return { compensation: 0, distance, message }
-		}
+
 		if (!estimate && getError()) {
 			const errorCode = getError()
 			if (errorCode) {
 				message = t(errorCode)
 				return { compensation: 0, distance, message }
-
 			}
 		}
 
@@ -206,7 +201,7 @@ export const usePrepareClaimSubmission = () => {
 					claimId: formatClaimId(claimResponse.id),
 					bookingNumber: booking.number,
 					status: "dataReceived",
-					...statusEmail('dataReceived', { name: passenger?.firstName, reimbursment: 300, }),
+					...statusEmail('dataReceived', claimResponse),
 				},
 			});
 		} catch (error) {
@@ -219,8 +214,12 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
+			console.log('submitting flight...')
 			const { id: flightId } = await submitFlight(claim.flight);
+			console.log('success')
+			console.log('submitting booking...')
 			const booking = await submitBooking(claim, flightId);
+			console.log('success')
 			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, booking))
 
 		} catch (error) {

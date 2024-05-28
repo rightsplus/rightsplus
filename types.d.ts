@@ -30,6 +30,7 @@ export type ClaimState = "loading"
   | "passengers"
   | "assignmentAgreement"
   | "eligibility"
+  | "success"
 
 export type CaseStatus = "dataReceived"
 	| "awaitInitialAirlineResponse"
@@ -69,7 +70,7 @@ export interface PassengerDetails<T = string> {
   email: T;
   iban: T;
   phone?: T;
-  boardingPass?: FileList;
+  boardingPass?: File[];
   isMinor?: boolean;
   signature?: SignatureData
 }
@@ -104,7 +105,6 @@ export interface ClaimsForm {
     flight: Flight | null;
   }
   connection: {
-    offered: boolean;
     departure: Airport;
     arrival: Airport;
     date: string | null;

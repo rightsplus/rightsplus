@@ -67,6 +67,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
   const history = machine.persist ? useLocalStorage<States[]>(`${machine.id}-history`, []) : ref<States[]>([]) as Ref<States[]>
   const transition = machine.persist ? useLocalStorage<'forward' | 'back'>(`${machine.id}-transition`, 'forward') : ref<'forward' | 'back'>('forward') as Ref<'forward' | 'back'>
 
+  console.log(transition.value)
 
   const current = computed(() => states.value.at(-1) || initial)
 
@@ -98,6 +99,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     }
 
     if (guardType === 'not') return !clause(guard)
+
     return clause(guard)
   }
 
@@ -167,7 +169,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
 
   watch(states, () => {
     if (history.value.length === states.value.length) return
-    transition.value = states.value.length > (history.value?.length || 0) ? 'forward' : 'back'
+    transition.value = states.value.length < (history.value?.length || 0) ? 'back' : 'forward'
     history.value = states.value
   }, { deep: true });
 

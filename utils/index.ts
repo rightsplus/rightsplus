@@ -481,3 +481,5 @@ export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
 		return (sizeInBytes / GB).toFixed(decimalPoint) + ' GB';
 	}
 }
+
+export const getExtendedClaimQuery = () => `*, booking ( flight ( *, airline ( * ) ) )`;

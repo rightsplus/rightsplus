@@ -134,7 +134,7 @@ const isAdmin =
   ).data?.role === "admin";
 
 const { invoke } = useMachine(claimMachine, { context: claim });
-const links = [
+const links = computed(() => [
   {
     path: "delayed-and-cancelled-flights",
     name: "disrupted-flights",
@@ -160,7 +160,7 @@ const links = [
   //   critical: true,
   //   hidden: !user.value,
   // },
-];
+]);
 
 const clickLink = (item: Route) => {
   item.onClick?.();

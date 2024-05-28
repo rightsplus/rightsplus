@@ -93,7 +93,6 @@ onMounted(() => {
 const client = useSupabaseClient<Database>();
 const { locale } = useI18n();
 const { query, airlines } = useAirlines();
-const claimQuery = `*, booking ( flight ( *, airline ( * ) ) )`;
 
 const {
   data: claims,
@@ -102,7 +101,7 @@ const {
 } = useAsyncData("claims", async () => {
   const { data: claims, error } = await client
     .from("claim")
-    .select(claimQuery)
+    .select(getExtendedClaimQuery())
     // .or(`status.is.null,status.neq.done`)
     .order("createdAt", { ascending: false })
     .returns<RowClaimExtended[]>();

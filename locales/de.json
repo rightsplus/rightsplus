@@ -217,6 +217,7 @@
   "eligible.description": "Du hast gute Aussichten auf eine Entschädigungszahlung!",
   "ineligible.title": "Sorry!",
   "ineligible.description": "Leider gibt es für deinen Flug keine Entschädigung.",
+  "eligible.reason.delay.<3": "Du hast dein Ziel mit einer Verspätung von weniger als 3 Stunden erreicht und deshalb keinen Anspruch auf Entschädigung.",
   "bookingNumber.title": "Buchungsnummer",
   "bookingNumber.description": "Bitte gib deine Buchungsnummer ein",
   "passengers.title": "Passagiere",

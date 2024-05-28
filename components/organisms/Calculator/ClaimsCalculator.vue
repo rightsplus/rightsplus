@@ -5,26 +5,19 @@
       @submit.prevent
       ref="form"
     >
-    <!-- {{ eligible }} // {{ message }} -->
-      <button
-        @click.prevent="
-          () => {
-            if (state.matches(state.initial)) {
-              invoke('reset');
-              navigateTo(localePath('/'));
-            } else {
-              invoke('back');
-            }
+      <!-- {{ eligible }} // {{ message }} -->
+      <ButtonBack
+        :showClose="
+          !!state.matches(state.initial) || !!state.matches('success')
+        "
+        @back="invoke('back')"
+        @close="
+          {
+            invoke('reset');
+            navigateTo(useLocalePath()('/'));
           }
         "
-        class="leading-none text-2xl self-start -mx-2 aspect-square w-10 h-10 flex items-center justify-center focus-ring rounded-lg"
-      >
-        <FontAwesomeIcon v-show="state.matches(state.initial)" icon="xmark" />
-        <FontAwesomeIcon
-          v-show="!state.matches(state.initial)"
-          icon="arrow-left"
-        />
-      </button>
+      />
       <Transition
         :name="transition === 'forward' ? 'step-next' : 'step-prev'"
         class="w-full"
@@ -301,6 +294,12 @@
             }"
           />
         </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('success')"
+          title="Deine Anfrage wurde erfolgreich eingereicht!"
+          description="Wir prüfen jetzt einen möglichen Entschädigungsanspruch aufgrund deiner Angaben und melden uns nach Abschluss der Prüfung bei dir."
+        >
+        </StepWrapper>
       </Transition>
     </form>
   </div>
@@ -309,8 +308,8 @@
 <script setup lang="ts">
 import StepWrapper from "@/components/organisms/Calculator/StepWrapper.vue";
 import ButtonGroup from "@/components/organisms/Calculator/ButtonGroup.vue";
+import ButtonBack from "@/components/organisms/Calculator/ButtonBack.vue";
 import SelectItinerary from "@/components/organisms/Calculator/Forms/SelectItinerary.vue";
-import SelectLayover from "@/components/organisms/Calculator/Forms/SelectLayover.vue";
 import SelectLeg from "~/components/organisms/Calculator/Forms/SelectLeg.vue";
 import SelectFlightDate from "@/components/organisms/Calculator/Forms/SelectFlightDate.vue";
 import SelectDisruptionType from "@/components/organisms/Calculator/Forms/SelectDisruptionType.vue";
@@ -319,31 +318,31 @@ import SelectDisruptionReason from "@/components/organisms/Calculator/Forms/Sele
 import FlightDetails from "@/components/organisms/Calculator/Forms/FlightDetails.vue";
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
-import FlightCard from "@/components/cells/FlightCard.vue";
 import ClaimCard from "@/components/cells/ClaimCard.vue";
 import AddDisruptionComment from "@/components/organisms/Calculator/Forms/AddDisruptionComment.vue";
 
 import claimMachine from "~/machines/claimSubmission";
 import type { ClaimsForm, ClaimState, Airport, Flight } from "~/types";
 import AddBookingNumber from "./Forms/AddBookingNumber.vue";
-import PassengerForm from "./Forms/PassengerForm.vue";
 import StepPassengers from "./StepPassengers.vue";
 import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
-import { Container } from "postcss";
 import { useElementSize } from "@vueuse/core";
 const claimState = useClaim();
 const route = useRoute();
-const { t, locale } = useI18n();
+const supabase = useSupabaseClient();
+const { t } = useI18n();
 const form = ref<HTMLElement>();
-const localePath = useLocalePath();
-const { state, send, transition, subscribe, invoke } =
-  useMachine<ClaimState, ClaimsForm>(claimMachine, { context: claimState });
+const { state, send, transition, subscribe, invoke } = useMachine<
+  ClaimState,
+  ClaimsForm
+>(claimMachine, { context: claimState });
 const { getFilteredFlights } = useFlights();
-const subscription = subscribe((e) => {
+subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
 const eligibleDisruption = computed(() => {
+  const active = claimState.flight?.status === "active";
   const cancelled = claimState.flight?.status === "cancelled";
   const delayed = (claimState.flight?.arrival.delay || 0) > 180;
   const eligible = cancelled || delayed;
@@ -376,10 +375,9 @@ const eligibleDisruption = computed(() => {
     },
   };
 });
-const { compensation, eligible, message } = useCompensation();
+const { eligible } = useCompensation();
 
 const eligibleCompensation = computed(() => {
-  console.log(eligible.value);
   return {
     title: t(eligible.value ? "eligible.title" : "ineligible.title"),
     description: t(
@@ -422,51 +420,19 @@ const filteredFlights = computed(() => {
 });
 
 const city = useCities({ arrival: claimState.airport.trip.arrival?.iata });
-// watch(
-//   () => claimState.date || claimState.airport,
-//   () => {
-//     const { departure, arrival } = claimState.airport;
-//     if (!claimState.date || !departure || !arrival) return;
-//     loadingFlights.value = true;
-//     console.log('fetching ... ')
-//     fetchFlights({
-//       departure: departure?.iata,
-//       arrival: arrival?.iata,
-//       date: claimState.date,
-//       locale: locale.value,
-//     }).finally(() => (loadingFlights.value = false));
-//     // .catch(() => (error.value = true))
-//   },
-//   { immediate: true, deep: true }
-// );
-// watch(
-//   () => claimState.replacement,
-//   () => {
-//     const { departure, number, date } = claimState.replacement;
-//     if (!departure || !date || !number) return;
-//     loadingFlights.value = true;
-//     fetchFlights({
-//       departure: departure?.iata,
-//       arrival: claimState?.airport.trip.arrival?.iata,
-//       number,
-//       date,
-//       locale: locale.value,
-//     }).finally(() => (loadingFlights.value = false));
-//     // .catch(() => (error.value = true))
-//   },
-//   { deep: true }
-// );
 
-onBeforeMount(() => {
-  // if (!route.query.resume) invoke("reset");
-});
 
 const { prepareClaimSubmission } = usePrepareClaimSubmission();
 const submit = async () => {
-  const submission = await prepareClaimSubmission(claimState);
-  console.log(submission);
-  // await client.from("claims").insert(submission);
-  // router.push(localePath("claim-thank-you"));
+  console.log("submitting");
+  try {
+    const submission = await prepareClaimSubmission(claimState);
+    console.log(submission);
+    await supabase.from("claims").insert(submission).then(console.log);
+    send("next");
+  } catch (error: string) {
+    console.error(error);
+  }
 };
 const { width } = useElementSize(form);
 
