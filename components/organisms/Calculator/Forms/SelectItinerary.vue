@@ -61,7 +61,7 @@ watch(
   },
   { deep: true, immediate: true }
 );
-watch(props.modelValue.airport.trip, assignLeg, {
+watch(() => props.modelValue.airport.trip, assignLeg, {
   deep: true,
   immediate: true,
 });

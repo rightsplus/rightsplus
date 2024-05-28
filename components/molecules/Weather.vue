@@ -1,5 +1,5 @@
 <template>
-  <div v-if="temperature" class="flex flex-col">
+  <div vclass="flex flex-col">
     <div class="flex gap-2 text-base items-center">
       <div
         v-if="code && weatherIconMap[code]"
@@ -7,11 +7,28 @@
       >
         <FontAwesomeIcon :icon="weatherIconMap[code]" />
       </div>
-      <span class="font-bold">{{ $n(temperature, "celsius") }}</span>
+      <div v-else-if="temperature" class="text-gray-400">
+        <FontAwesomeIcon icon="cloud-slash" />
+      </div>
+      <div v-else>
+        <FontAwesomeIcon
+          icon="circle-quarter"
+          class="text-gray-400 animate-revolve"
+        />
+      </div>
+      <span class="font-bold" v-if="temperature">{{
+        $n(temperature, "celsius")
+      }}</span>
+      <span class="font-bold text-neutral-300 bg-neutral-300 rounded" v-else
+        >0,0 ºC</span
+      >
     </div>
-    <span class="gap-2 items-center text-xs">{{ $n(wind || 0) }} km/h</span>
+    <span
+      class="gap-2 items-center text-xs"
+      :class="{ 'text-neutral-200 bg-neutral-200 rounded': !wind }"
+      >{{ $n(wind || 0) }} km/h</span
+    >
   </div>
-  <div v-else>loading</div>
 </template>
 
 <script setup lang="ts">
@@ -83,7 +100,7 @@ const weatherIconMap = [
   "smog",
   "smog",
   "smog",
-  "smog"
+  "smog",
 ];
 </script>
 

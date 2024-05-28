@@ -107,17 +107,6 @@
               </Button>
             </div>
           </div>
-          <!-- :modelValue="{
-              firstName: currentAirline.name,
-              email: currentAirline.email,
-              phone: currentAirline.phone,
-              address: {
-                street: currentAirline.address,
-                postalCode: currentAirline.postalCode,
-                city: currentAirline.city,
-                country: currentAirline.country,
-              },
-            }" -->
           <FormKit
             :label="$t('legalName')"
             v-model="currentAirline.legalName"
@@ -135,21 +124,25 @@
 
 <script setup lang="ts">
 import type { Database, RowAirline } from "@/types";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
 });
 
-const client = useSupabaseClient<Database>();
+const supabase = useSupabaseClient<Database>();
+
 const { data } = await useAsyncData("airlines", async () => {
+  console.log("fetching airlines");
   try {
-    const { data: airlines } = await client
+    const { data: airlines } = await supabase
       .from("airline")
       .select("*")
       .order("name", { ascending: false })
       .returns<RowAirline[]>();
 
+    console.log(airlines);
     return {
       airlines: airlines?.sort((a, b) => (a.iata.includes("*") ? 1 : -1)),
     };
@@ -157,19 +150,43 @@ const { data } = await useAsyncData("airlines", async () => {
     console.error(err);
   }
 });
+supabase
+  .channel("custom-all-channel")
+  .on<RowAirline>(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "airline" },
+    (payload) => {
+      if (!data.value?.airlines) return;
+      if (payload.eventType === "INSERT") {
+        data.value.airlines.push(payload.new);
+        return;
+      }
+      const i = data.value.airlines.findIndex(({iata}) => iata === payload.old.iata);
+      if (payload.eventType === "DELETE") {
+        data.value.airlines.splice(i, 1);
+        return;
+      }
+      data.value.airlines[i] = payload.new;
+      currentAirline.value = payload.new;
+    }
+  )
+  .subscribe();
+
 const currentPage = ref(1);
 const limit = 10;
 const query = ref("");
 const airlines = computed(() =>
-  !query.value
+{
+  return !query.value
     ? data.value?.airlines
     : data.value?.airlines?.filter((airline) => {
         return (
           airline.iata?.toLowerCase().includes(query.value?.toLowerCase()) ||
-          airline.name?.toLowerCase().includes(query.value?.toLowerCase()) || 
+          airline.name?.toLowerCase().includes(query.value?.toLowerCase()) ||
           query.value?.toLowerCase().includes(airline.name?.toLowerCase())
         );
       })
+}
 );
 
 const activeAirlineId = ref<RowAirline["id"]>();
@@ -191,22 +208,19 @@ const success = ref(false);
 const saveChanges = async () => {
   if (!currentAirline?.value) return;
   loading.value = true;
+  console.log("saving airline");
   try {
-    const { data, error, status } = await client
+    console.log(currentAirline.value);
+    console.log(currentAirline.value)
+    const { data, error, status } = await supabase
       .from("airline")
       .upsert(currentAirline.value)
       .select();
     loading.value = false;
-
+    console.log(data, error, status);
     if (error) {
       throw error.message;
     } else {
-      if (airlines.value && activeAirlineId.value) {
-        const index = airlines.value.findIndex(
-          (e) => e.id === activeAirlineId.value
-        );
-        airlines.value[index] = { ...currentAirline.value };
-      }
       success.value = true;
       setTimeout(() => {
         success.value = false;
@@ -215,6 +229,9 @@ const saveChanges = async () => {
   } catch (error: string) {
     console.error(error);
     errors.value.push(error);
+  } finally {
+    console.log("done");
+    loading.value = false;
   }
 };
 // const airlines = ref<RowAirline[]>([]);

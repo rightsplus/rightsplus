@@ -11,7 +11,8 @@ definePageMeta({
 });
 const user = useSupabaseUser();
 const router = useRouter();
+const route = useRoute()
 watch(user, (val) => {
-  if (val) router.push("/claim");
+  if (val) router.push(useLocalePath()(route.query.redirect as string || "/"));
 });
 </script>

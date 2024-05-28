@@ -30,7 +30,7 @@
           >
           <template v-slot:rightsPlus><strong>RightsPlus GbR</strong></template>
         </i18n-t>
-        <p>{{ t("assignmentLetter.reimbursement") }}</p>
+        <p>{{ t("assignmentLetter.compensation") }}</p>
         <p>{{ t("assignmentLetter.claimant") }}</p>
         <p>
           {{

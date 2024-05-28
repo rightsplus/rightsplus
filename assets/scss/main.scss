@@ -16,6 +16,10 @@
    
   }
 }
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-1 ring-primary-500 ring-offset-2
+}
 * {
   min-width: 0;
 }

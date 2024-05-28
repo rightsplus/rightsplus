@@ -1,7 +1,7 @@
 import { library, config, type IconDefinition, type IconPack, type Library, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCircleQuarter, faEuropeanUnion, faTicketAirline, faPlaneTail, faTicketsAirline, faTowerControl, faEnvelopeDot } from '@/assets/icons'
+import { faCircleQuarter, faEuropeanUnion, faTicketAirline, faPlaneTail, faTicketsAirline, faTowerControl, faEnvelopeDot, faCloudSlash } from '@/assets/icons'
 import {
   faArrowLeft,
   faArrowRight,
@@ -98,7 +98,9 @@ import {
   faArrowRightLong,
   faArrowRotateRight,
   faArrowRotateLeft,
-  faEnvelope
+  faEnvelope,
+  faFileArrowUp,
+  faCloudArrowUp
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -110,6 +112,7 @@ library.add(
   faArrowRightLong,
   faArrowRotateRight,
   faArrowRotateLeft,
+  faFileArrowUp,
   faInbox,
   faBuilding,
   faGavel,
@@ -164,6 +167,7 @@ library.add(
   faCircleXmark,
   faEuropeanUnion,
   faCircleQuarter,
+  faCloudArrowUp,
   faInfoCircle,
   faSun,
   faCloudRain,
@@ -211,7 +215,8 @@ library.add(
   faPlaneTail,
   faTowerControl,
   faEnvelopeDot,
-  faEnvelope
+  faEnvelope,
+  faCloudSlash
 )
 
 config.autoAddCss = false

@@ -26,16 +26,13 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   vertical?: boolean;
 }>();
 
 const emit = defineEmits<{
   drag: [
-    value: {
-      x: number;
-      y: number;
-    }
+    value: number
   ];
 }>();
 const dragging = ref(false);
@@ -43,10 +40,7 @@ onMounted(() => {
   window.addEventListener("mouseup", () => (dragging.value = false));
   window.addEventListener("mousemove", (e: MouseEvent) =>
     dragging.value
-      ? emit("drag", {
-          x: e.clientX,
-          y: e.clientY,
-        })
+      ? emit("drag", props.vertical ? e.clientX : e.clientY)
       : null
   );
 });

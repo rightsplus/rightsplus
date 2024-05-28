@@ -83,13 +83,13 @@ const options: ModuleOptions = {
 			"fr": "/vols-retardes-et-annules",
 			"nl": "/vertraagde-en-geannuleerde-vluchten"
 		},
-		"claim-new": {
+		"claim/new": {
 			"en": "/claim/new",
 			"de": "/anspruch/neu",
 			"fr": "/demande/nouvelle",
 			"nl": "/claim/nieuw"
 		},
-		"claim-id": {
+		"claim/id": {
 			"en": "/claim/[id]",
 			"de": "/anspruch/[id]",
 			"fr": "/demande/[id]",
@@ -99,13 +99,17 @@ const options: ModuleOptions = {
 			"en": "/admin/claims",
 			"de": "/admin/ansprueche",
 		},
+		"admin-bookings": {
+			"en": "/admin/bookings",
+			"de": "/admin/buchungen",
+		},
 		"admin-flights": {
 			"en": "/admin/flights",
 			"de": "/admin/fluege",
 		},
 		"admin-airlines": {
 			"en": "/admin/airlines",
-			"de": "/admin/fluggesellschaften",
+			"de": "/admin/airlines",
 		}
 	}
 } as ModuleOptions

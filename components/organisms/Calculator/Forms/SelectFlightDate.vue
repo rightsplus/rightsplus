@@ -34,11 +34,6 @@ const props = defineProps<{
 const minDate = computed(() => new Date(new Date().getFullYear() - 3, 0));
 const pages = ref<Page[]>([]);
 const showNotice = computed(() => {
-  console.log(
-    pages.value,
-    minDate.value.getFullYear(),
-    minDate.value.getMonth()
-  );
   return pages.value.some(
     (e) =>
       e.year === minDate.value.getFullYear() &&

@@ -1,6 +1,7 @@
 import IBAN from "iban";
 import type { Machine } from "~/composables/machine";
-import type { ClaimState, ClaimsForm } from "~/types";
+import { defaultClaim } from "~/store";
+import type { Airport, ClaimState, ClaimsForm } from "~/types";
 import { nextLeg } from "~/utils";
 
 // import { createMachine } from 'xstate'
@@ -10,13 +11,15 @@ import { nextLeg } from "~/utils";
 // })
 export default {
   id: "claimSubmission",
+  persist: true,
   initial: "itinerary",
   loading: "loading",
   guards: {
     hasItinerary: ({ context, messages }) => {
       messages.value.hasItinerary = "Please provide a valid itinerary"
-
+      
       const { departure, arrival } = context.airport.trip
+
       return !!departure?.iata && !!arrival?.iata && departure?.iata !== arrival?.iata
     },
     hasDisruptionReason: ({ context, messages }) => {
@@ -39,6 +42,7 @@ export default {
       return !!context.flight
     },
     hasEUAirport: ({ context, messages }) => {
+      console.log([context.airport.departure, context.airport.arrival])
       messages.value.hasEUAirport = "Please provide at least one EU airport"
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
@@ -114,28 +118,40 @@ export default {
   actions: {
     setHistory: ({ states, target }) => {
       states.value = target ? [target] : []
+      console.log('setting history ...', states.value)
       return states.value
     },
     go: ({ states, machine, target }) => {
+      console.log('go ...', target || machine.initial)
       states.value.push(target || machine.initial)
     },
     back: ({ states, machine }) => {
+      console.log('go back ...')
       try {
-        states.value?.pop();
+        states.value = states.value.slice(0, -1)
       } catch (error) {
         states.value = [machine.initial]
       }
     },
-    reset: ({ states, machine }) => {
+    reset: ({ states, machine, context }) => {
+      console.log('resetting ... ')
+      console.log(context, defaultClaim)
+      // context.airport = defaultClaim.airport
+      Object.assign(context, JSON.parse(JSON.stringify(defaultClaim)))
       states.value = [machine.initial]
+    },
+    submitClaim: ({ context }) => {
+      console.log('submitting claim ...', context)
     },
     setDelayed: ({ context }) => {
       context.disruption.type = 'delayed'
     },
     setCancelled: ({ context }) => {
       context.disruption.type = 'cancelled'
-      console.log(context.disruption.type)
     },
+    removeReplacementFlight: ({ context }) => {
+      context.replacement.flight = null
+    }
   },
   states: {
     loading: {
@@ -156,6 +172,7 @@ export default {
           {
             target: "flightDate",
             guard: ["hasItinerary", "hasEUAirport"],
+            guardType: "and"
           },
           {
             guard: "hasItinerary",
@@ -344,6 +361,7 @@ export default {
         },
         no: {
           target: "eligibility",
+          actions: ["removeReplacementFlight"]
         },
       },
     },
@@ -422,15 +440,8 @@ export default {
     assignmentAgreement: {
       on: {
         next: {
-          target: "summary",
-          guard: "agreedToTerms"
-        },
-      },
-    },
-    summary: {
-      on: {
-        next: {
-          target: "summary",
+          guard: "agreedToTerms",
+          actions: "submitClaim",
         },
       },
     },

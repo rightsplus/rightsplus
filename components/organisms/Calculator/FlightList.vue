@@ -25,7 +25,10 @@
       >
     </div>
     <div class="flex flex-col gap-5" v-else>
-      <div class="flex gap-2 flex-wrap" v-if="allFlights.length > 12">
+      <div
+        class="flex gap-2 flex-wrap"
+        v-if="allFlights.length > 12 && showFilter"
+      >
         <DropdownButton
           v-model="selectedAirline"
           name="airline"
@@ -140,6 +143,7 @@ const props = defineProps<{
   modelValue?: Flight | null;
   limit?: number;
   flightCard?: Partial<FlightCardProps>;
+  showFilter?: boolean;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const show = ref(false);
@@ -187,7 +191,11 @@ const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
 const fetch = () => {
   loading.value = true;
-  console.log("fetching flights");
+  if (!props.date) {
+    loading.value = false;
+    return;
+  }
+
   fetchFlights({
     departure: props.departure,
     arrival: props.arrival,
@@ -195,7 +203,6 @@ const fetch = () => {
   }).finally(() => (loading.value = false));
 };
 onMounted(() => {
-  console.log("flight list mounted");
   fetch();
 });
 

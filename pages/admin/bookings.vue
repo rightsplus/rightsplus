@@ -7,7 +7,6 @@
         ><FontAwesomeIcon icon="circle-quarter" class="animate-revolve" />
       </span>
     </Transition>
-
     <div
       class="flex flex-col h-full w-[--width] min-w-64"
       :style="`--width: ${width}px`"
@@ -23,8 +22,7 @@
               <span class="truncate">{{ $t("claim", 2) }}</span>
             </h1>
             <Badge
-              v-if="claims?.filter((e) => e.unread).length"
-              :content="claims?.filter((e) => e.unread).length.toString()"
+              :content="bookings?.filter((e) => e.unread).length.toString()"
               primary
             />
           </div>
@@ -33,24 +31,10 @@
       </div>
       <div class="flex-1 flex flex-col overflow-y-auto p-2 h-full" @click.self="activeClaimId = undefined">
         <DashboardListItem
-          v-for="claim in claims"
-          :title="formatClaimId(claim.id, true)"
-          :content="[claim.client.firstName, claim.client.lastName].join(' ')"
-          :date="claim.createdAt"
-          :active="claim.id === activeClaimId"
-          :unread="claim.unread"
-          @click="
-            activeClaimId = activeClaimId !== claim.id ? claim.id : undefined
-          "
-        >
-          <div class="flex items-center gap-2 justify-between">
-            <div class="flex items-center gap-2 text-neutral-400">
-              <AirlineLogo size="sm" :airline="operatingAirline(claim)" />
-              <span>{{ operatingAirline(claim).name }}</span>
-            </div>
-            <ClaimStatus :status="claim.status" />
-          </div>
-        </DashboardListItem>
+          v-for="booking in bookings"
+          :title="booking.bookingNumber"
+          :date="booking.createdAt"
+        />
       </div>
     </div>
     <DashboardSeparator vertical @drag="width = $event - offset" />
@@ -59,7 +43,6 @@
         <div class="flex-1 p-5 w-full h-full">
           <ClaimManagment
             :claim="activeClaim"
-            @update="updateData"
           />
         </div>
       </div>
@@ -93,55 +76,24 @@ onMounted(() => {
 const client = useSupabaseClient<Database>();
 const { locale } = useI18n();
 const { query, airlines } = useAirlines();
-const claimQuery = `*, booking ( flight ( *, airline ( * ) ) )`;
 
 const {
-  data: claims,
+  data: bookings,
   refresh,
   pending,
-} = useAsyncData("claims", async () => {
-  const { data: claims, error } = await client
-    .from("claim")
-    .select(claimQuery)
-    // .or(`status.is.null,status.neq.done`)
+} = useAsyncData("bookings", async () => {
+  const { data: bookings, error } = await client
+    .from("booking")
+    .select('*')
     .order("createdAt", { ascending: false })
-    .returns<RowClaimExtended[]>();
 
-  // console.log(claims, error);
-  if (claims) {
-    // console.log(claims.map((e) => e.booking.flight.data));
-    // console.log(airlinesByFlights(claims.map((e) => e.booking.flight.data)));
-    query(
-      airlinesByFlights(claims.map((e) => e.booking.flight.data)).map(
-        (e) => e.airline.iata
-      )
-    );
-  }
-  // console.log(claims);
-  return claims;
+  return bookings;
 });
 
-const updateData = (props: {
-  id?: RowClaimExtended["id"];
-  data?: Partial<RowClaimExtended>;
-}) => {
-  const { id, data } = props;
-  console.log(id, data);
-  if (!id || !data) return;
-  client
-    .from("claim")
-    .update(data)
-    .eq("id", id)
-    .select(claimQuery)
-    .single()
-    .then(({ data: claim }) => {
-      Object.assign(claims.value?.find((e) => e.id === claim.id) || {}, claim);
-    });
-};
 const activeClaimId = ref<RowClaimExtended["id"]>();
 const activeClaim = ref<RowClaimExtended>();
 watch(activeClaimId, (id) => {
-  const nextClaim = claims.value?.find((e) => e.id === id);
+  const nextClaim = bookings.value?.find((e) => e.id === id);
   console.log(nextClaim);
   activeClaim.value = nextClaim;
 });

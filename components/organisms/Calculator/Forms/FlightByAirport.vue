@@ -24,17 +24,13 @@
 </template>
 
 <script setup lang="ts">
-import claimMachine from "~/machines/claimSubmission";
 import AirportInput from "./AirportInput.vue";
 import type { ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
 const { push } = useRouter();
-const claimState = useClaim();
-const { invoke, send } = useMachine<ClaimsForm>(claimMachine, {context: claimState});
 const localePath = useLocalePath()
 const start = () => {
-  invoke("reset");
   push(localePath("claim-new"));
 };
 </script>

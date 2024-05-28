@@ -11,16 +11,16 @@
     :style="`--total: ${links?.length}`"
   >
     <div
-      v-if="useRouter().currentRoute.value.path !== '/admin'"
+      v-if="useRouter().currentRoute.value.path !== '/admin' && isAdmin"
       role="banner"
       class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
     >
       <div class="p-3 flex items-center gap-3">
-        <span class="">Angeldet als Admin</span>
-        <NuxtLink
+        <span class="">Angemeldet als Admin</span>
+        <NuxtLinkLocale
           class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
-          :to="useLocaleRoute()('admin-claims')"
-          >Zum Dashboard</NuxtLink
+          to="admin-claims"
+          >Zum Dashboard</NuxtLinkLocale
         >
       </div>
     </div>
@@ -46,8 +46,8 @@
         class="w-full flex flex-col md:flex-row gap-x-6 gap-y-2 landscape:gap-y-[1vh] relative"
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
-          <NuxtLink
-            :to="useLocalePath()('/')"
+          <NuxtLinkLocale
+            to="/"
             class="flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
             @click="clickLink"
@@ -60,7 +60,7 @@
               <span class="font-bold">RightsPlus</span
               ><span class="font-medium">Flights</span>
             </span>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </li>
         <li
           v-for="(item, i) in links"
@@ -120,10 +120,8 @@ interface Route {
 }
 const user = useSupabaseUser();
 const client = useSupabaseClient<Database>();
-const state = useAppState();
 const claim = useClaim();
 const { t } = useI18n();
-
 const menuOpen = ref(false);
 const isAdmin =
   user.value?.email &&
@@ -154,14 +152,14 @@ const links = [
     title: t("checkClaim"),
     type: "button",
   },
-  {
-    name: "sign-out",
-    onClick: () => auth.signOut(),
-    type: "button",
-    icon: "door-open",
-    critical: true,
-    hidden: !user.value,
-  },
+  // {
+  //   name: "sign-out",
+  //   onClick: () => auth.signOut(),
+  //   type: "button",
+  //   icon: "door-open",
+  //   critical: true,
+  //   hidden: !user.value,
+  // },
 ];
 
 const clickLink = (item: Route) => {

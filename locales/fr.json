@@ -131,7 +131,7 @@
   "demandLetter.lawsuit": "Si vous ne répondez pas à la demande de paiement, nous intenterons une action en justice sans préavis.",
   "assignmentLetter.title": "Accord de cession",
   "assignmentLetter.main": "Je, {addressBlock}, déclare par la présente céder ma demande d'indemnisation conformément au Règlement (CE) n° 261/2004 concernant le vol {flight} {airports} à {rightsPlus}, de manière inconditionnelle et irrévocable.",
-  "assignmentLetter.reimbursement": "Le cédant recevra un paiement pour sa demande conformément aux conditions générales et à la liste de tarifs en vigueur.",
+  "assignmentLetter.compensation": "Le cédant recevra un paiement pour sa demande conformément aux conditions générales et à la liste de tarifs en vigueur.",
   "assignmentLetter.claimant": "Le cédant déclare être le titulaire légitime de la demande au moment de la cession.",
   "assignmentLetter.declaration": "{rightsPlus}, représentée par le gérant {partner}, accepte par la présente la cession.",
   "myDestination": "ma destination",

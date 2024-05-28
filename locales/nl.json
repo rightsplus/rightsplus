@@ -131,7 +131,7 @@
   "demandLetter.lawsuit": "Als je niet aan het betalingsverzoek voldoet, zullen wij zonder aankondiging een rechtszaak starten.",
   "assignmentLetter.title": "Overdrachtsverklaring",
   "assignmentLetter.main": "Ik, {addressBlock}, verklaar hierbij dat ik mijn recht op compensatie volgens Verordening (EG) nr. 261/2004 met betrekking tot vlucht {flight} {airports} hierbij onvoorwaardelijk en onherroepelijk overdraag aan {rightsPlus}.",
-  "assignmentLetter.reimbursement": "De overdragende partij ontvangt voor zijn recht op compensatie een betaling volgens de huidige algemene voorwaarden, evenals het prijs- en dienstenoverzicht.",
+  "assignmentLetter.compensation": "De overdragende partij ontvangt voor zijn recht op compensatie een betaling volgens de huidige algemene voorwaarden, evenals het prijs- en dienstenoverzicht.",
   "assignmentLetter.claimant": "De overdragende partij verklaart op het moment van overdracht gerechtigde te zijn.",
   "assignmentLetter.declaration": "{rightsPlus}, vertegenwoordigd door de managing partner {partner}, verklaart hierbij de overdracht te aanvaarden.",
   "myDestination": "mijn bestemming",

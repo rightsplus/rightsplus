@@ -55,29 +55,6 @@
       </div>
       <div class="flex flex-col w-full flex-1 relative overflow-hidden">
         <div class="flex-grow flex flex-col min-h-0 gap-y-2 py-2">
-          <!-- <div class="w-full flex flex-col px-4">
-            <button
-              type="button"
-              class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 hover:bg-gray-100 disabled:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/50 dark:disabled:bg-gray-800 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center"
-              aria-label="Search"
-            >
-              <FontAwesomeIcon :icon="'search'" fixed-width /><span class=""
-                >Search...</span
-              >
-              <div
-                class="hidden md:flex items-center gap-0.5 ml-auto -my-1 flex-shrink-0"
-              >
-                <kbd
-                  class="inline-flex items-center justify-center text-gray-900 dark:text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-300 dark:ring-gray-700 ring-inset"
-                  >⌘</kbd
-                ><kbd
-                  class="inline-flex items-center justify-center text-gray-900 dark:text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-300 dark:ring-gray-700 ring-inset"
-                >
-                  K
-                </kbd>
-              </div>
-            </button>
-          </div> -->
           <div class="flex-1 px-4 flex flex-col gap-y-2 overflow-y-auto">
             <ul class="relative !min-h-[auto] !min-w-[auto]">
               <li tag="li" class="!overflow-visible" v-for="(item, i) in menu">
@@ -125,31 +102,25 @@
                 aria-haspopup="menu"
                 aria-expanded="false"
                 data-headlessui-state=""
-                class="inline-flex w-full"
-                role="button"
-                data-n-ids='{"5yOShZwaZW:0":"5yOShZwaZW:2"}'
+                class="flex w-full items-center justify-between"
               >
-                <button
-                  type="button"
-                  class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center w-full"
+                <span class="text-xs leading-0"
+                  >Angemeldet als
+                  {{ user?.user_metadata.name.split(" ")[0] }}</span
+                ><Button
+                  alert
+                  tertiary
+                  class="h-8 !p-2 text-xs"
+                  @click="signOut"
+                  >Logout</Button
                 >
-                  <span
-                    class="relative inline-flex items-center justify-center flex-shrink-0 rounded-full h-5 w-5 text-[10px]"
-                    ><img
-                      class="rounded-full h-5 w-5 text-[10px]"
-                      src="https://avatars.githubusercontent.com/u/739984?v=4" /></span
-                  ><span class="">Joachim</span
-                  ><span
-                    class="i-heroicons-ellipsis-vertical w-5 h-5 ml-auto"
-                  ></span>
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <DashboardSeparator vertical @drag="width = $event.x" />
+    <DashboardSeparator vertical @drag="width = $event" />
 
     <div class="flex flex-1 w-full min-w-0">
       <slot />
@@ -167,7 +138,7 @@ const { auth } = useSupabaseAuthClient();
 const width = ref(250);
 const signOut = () => {
   auth.signOut();
-  navigateTo("/");
+  navigateTo(localeRoute("/"));
 };
 definePageMeta({
   middleware: ["auth"],

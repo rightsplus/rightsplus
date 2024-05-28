@@ -1,9 +1,7 @@
-import { euMember } from "is-european";
 import { useI18n } from "#i18n"
-import { type Airline, type RowAirline, type Airport, type ClaimsForm, type Flight, type FlightAviationEdge, type VariFlight, type FlightPhase, RowFlight, type AirlineInfo } from "@/types";
+import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo } from "@/types";
 import { airports } from "~/store";
 import { airlines } from "~/store";
-import type { UnwrapRef } from "vue"
 
 
 const circumstance = reactive({
@@ -154,7 +152,6 @@ export const useAirlines = () => {
 				const [airline] = data || []
 				if (airline) airlines.value[iata] = {
 					...airline,
-					id: airline.id?.toString()
 				}
 			})
 		}))
@@ -459,61 +456,15 @@ export const useFlights = () => {
 			}
 
 			queries.value.push(query);
-			// Create a URL instance with the desired URL string
-			// if date is more than three days back, use flightsHistory, else use flights
-			const api = new Date(date) < new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) ? 'flightsHistory' : 'flights'
-
-			const url = new URL(`https://aviation-edge.com/v2/public/${api}`);
-			url.searchParams.append("code", departure);
-			url.searchParams.append("iataCode", departure);
-			url.searchParams.append("type", 'departure');
-			url.searchParams.append('date_from', date);
-			// console.log('fetching started', date)
-			// url.searchParams.append('date_to', date);
-
-			// const url = new URL("https://app.airhelp.com/api/flights/selector");
-			// url.searchParams.append('local_departure_date', new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-'));
-			// url.searchParams.append("departure_airport_code", departure);
-			// url.searchParams.append("arrival_airport_code", arrival);
-
-			// console.time("fetchhh variable");
-
-			// const variData = ref()
-			// useFetch("/api/flights", {
-			// 	method: "post",
-			// 	body: { departure: 'FRA', arrival: 'JFK', date: '2024-03-25' },
-			// }).then(({ data }) => {
-			// 	console.timeEnd("fetchhh variable");
-			// 	variData.value = data.value
-			// 	console.log(data.value);
-			// })
-			// watch(variData, (newValue) => {
-			// 	if (newValue) flights.value = unref(newValue?.map(transformVariFlight))
-			// 		console.log(newValue, flights.value)
-			// })
 
 
-			// const key = useRuntimeConfig().public.flight.aviationEdge;
-			// url.searchParams.append("key", key);
-
-			// console.time("fetchhh egde");
-
-
-			// const res = await fetch(url.href)
-			// const data: FlightAviationEdge[] = await (res)?.json()
-			// const timeStamp = Date.now()
-			// console.log("fetchhh");
-			// const data = await fetchProxy<FlightAviationEdge[]>(url.href)
-			// console.log(`Fetched from API in ${Date.now() - timeStamp}ms`, data);
-
-
-
+			console.log('fetchFlightsSupabase')
 			const data = await fetchFlightsSupabase<Flight[]>({
 				departure,
 				arrival,
 				date,
 			})
-
+			console.log(data)
 
 
 			const distance = getAirportDistance(
@@ -531,16 +482,16 @@ export const useFlights = () => {
 				})
 
 
-			console.log(flights.value.reduce((acc, curr) => {
-				if (curr.status === 'cancelled') acc.cancelled.push(curr)
-				else if (curr.arrival.delay > 180) acc.delayed.push(curr)
-				return acc
-			}, { cancelled: [] as Flight[], delayed: [] as Flight[] }))
+			// console.log(flights.value.reduce((acc, curr) => {
+			// 	if (curr.status === 'cancelled') acc.cancelled.push(curr)
+			// 	else if (curr.arrival.delay > 180) acc.delayed.push(curr)
+			// 	return acc
+			// }, { cancelled: [] as Flight[], delayed: [] as Flight[] }))
 
 		} catch (error) {
-
 			if (attempts > 0) {
-				console.log('fetch failed', error, attempts)
+				console.log('fetch failed', error)
+				console.log('remaining attempts:', attempts)
 				fetchFlights(props, attempts - 1)
 			} else {
 				throw error
@@ -583,6 +534,7 @@ export const useCities = <T extends { arrival?: string; departure?: string;[x: s
 	const { locale } = useI18n()
 	const cities = ref();
 	const { query } = useAirports()
+	// console.log(arrival)
 	const assign = () => {
 		cities.value = iataCodes
 		query(Object.values(iataCodes).map(e => e || ''))
@@ -600,24 +552,32 @@ export const useCities = <T extends { arrival?: string; departure?: string;[x: s
 	watch(iataCodes, assign, { immediate: true, deep: true })
 	return cities
 }
-export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): Ref<AirlineInfo> => {
+export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): { pending: Ref<boolean>, airline: Ref<AirlineInfo> } => {
 	const airline = ref<AirlineInfo>({} as AirlineInfo);
+	const pending = ref(true)
 	const { airlines, query } = useAirlines()
 	const assign = () => {
 		if (!airlineInfo) return
-		airline.value = airlineInfo
+		if (!airline.value) airline.value = airlineInfo
+		pending.value = true
 		if (airlines.value[airlineInfo.iata]) {
 			airline.value = airlines.value[airlineInfo.iata]
+			pending.value = false
 			return
 		}
 		query(airlineInfo.iata)
 			.then((e) => {
+				console.log(e)
 				if (e && airlines.value) airline.value = e
+				pending.value = true
 			})
-			.catch((error) => console.error(error))
+			.catch((error) => console.log(error))
+			.finally(() => {
+				pending.value = false
+			})
 	}
 	watch(() => airlineInfo, assign, { immediate: true, deep: true })
-	return airline
+	return { airline, pending }
 }
 
 

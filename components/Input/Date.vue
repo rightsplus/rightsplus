@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import { useElementSize } from '@vueuse/core'
 import { DatePicker } from 'v-calendar';
+import 'v-calendar/dist/style.css';
 
 const calendar = ref(null)
 const { width } = useElementSize(calendar)
@@ -50,14 +51,24 @@ const dayClick = (value: Date) => {
   if (!props.modelValue) updateModelValue()
  })
 </script>
-<style lang="scss">
-.vc-weekdays {
-  .vc-weekday {
-    color: var(--color-gray-300);
-  }
+<style lang="postcss">
+.vc-weekdays .vc-weekday {
+  @apply text-gray-300
 }
 
 .vc-container .vc-highlights ~ .vc-day-content {
-  color: white;
+  @apply text-white
+}
+.vc-header .vc-next, .vc-header .vc-prev {
+  @apply w-7 h-7
+}
+.vc-title:focus-visible {
+  @apply ring-1 ring-primary-500 ring-offset-2
+}
+.vc-focus:focus-visible, .vc-focus:focus-within {
+  @apply focus-within:ring-1 ring-primary-500 ring-offset-2
+}
+.vc-focus:focus-within:not(:focus-visible):has(svg) {
+  @apply !ring-transparent
 }
 </style>

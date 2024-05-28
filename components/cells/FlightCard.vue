@@ -5,7 +5,7 @@
     :class="{
       'bg-gray-700 text-white': selected,
       'bg-neutral-100 text-gray-800': !selected,
-      'hover:bg-neutral-50 hover:border-neutral-100':
+      'hover:bg-neutral-50 hover:border-neutral-100 focus-ring':
         !selected && !disabled && is === 'button',
     }"
     @click="actionButton ? undefined : emit('click')"
@@ -41,7 +41,7 @@
             size="sm"
             class="ml-auto @md:hidden"
           />
-          <div class="">
+          <div :class="{ 'text-neutral-200 bg-neutral-200 rounded': pending }">
             <span>{{ airline?.name }}</span
             >{{ " "
             }}<span v-if="codesharedAirline?.name" class="opacity-50">
@@ -60,10 +60,10 @@
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
-        <!-- <span
+        <span
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ flight.status }}</span
-        > -->
+        >
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
@@ -138,8 +138,10 @@ const city = useCities({
   departure: props.flight.departure?.iata,
   arrival: props.flight.arrival?.iata,
 });
-const airline = useAirline(props.flight?.airline);
-const codesharedAirline = useAirline(props.flight?.codeshared?.airline);
+const { airline, pending } = useAirline(props.flight?.airline);
+const { airline: codesharedAirline } = useAirline(
+  props.flight?.codeshared?.airline
+);
 
 const overNight = (flight: Flight) => {
   const getTime = (date: string) => {

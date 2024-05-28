@@ -15,7 +15,7 @@
           </h2>
         </div>
         <div
-          class="flex overflow-x-auto w-screen max-w-screen md:w-full md:max-w-full -m-5 p-5 md:m-0 md:p-0 md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5"
+          class="flex overflow-x-auto w-screen max-w-screen md:w-full md:max-w-full -m-5 p-5 md:m-0 md:p-0 md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
         >
           <ReviewCard
             v-for="review in entries"
@@ -51,7 +51,7 @@ const state = useAppState();
 const { locale } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
 const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review,url&language=${locale.value}`;
-const { fetchProxy } = useSupabaseFunctions()
+const { fetchProxy } = useSupabaseFunctions();
 
 interface MapsResponseData {
   result: {
@@ -75,21 +75,21 @@ const added = [
     relative_time_description: "vor 3 Wochen",
     text: "Vielen Dank, hat alles super schnell und unkompliziert geklappt.",
     time: 1575290474,
-    translated: false
-  }
+    translated: false,
+  },
 ];
 const entries = computed(() =>
   shuffle([...added, ...(useAppState().reviews.entries || [])])
 );
 onMounted(() => {
-  fetchProxy(request)
-  .then(({result}) => {
-    if (!result?.reviews?.length) return;
-    useAppState().reviews = {
-      entries: result?.reviews,
-      url: result?.url
-    };
-  })
-  .catch(e => console.log(e));
-})
+  fetchProxy<{ result: { reviews: Review[]; url: string } }>(request)
+    .then(({ result }) => {
+      if (!result?.reviews?.length) return;
+      useAppState().reviews = {
+        entries: result?.reviews,
+        url: result?.url,
+      };
+    })
+    .catch((e) => console.log(e));
+});
 </script>

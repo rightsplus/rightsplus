@@ -1,16 +1,19 @@
 import { useI18n } from "#i18n"
-import type { CaseStatus } from "~/types"
+import type { CaseStatus, RowClaim } from "~/types"
 
-const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n> }) => {
+const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n>, data: RowClaim }) => {
 	const { t } = i18n
 	return {
 		dataReceived: {
 			preTitle: t('status.dataReceived.preTitle'),
-			title: t('status.paymentProcessed.title'),
+			title: t('Wir sind dran!'),
 			body: `
 				<p>${t('letter.salutation.informal', data)}</p>
-				<p>Wir freuen uns, dir mitteilen zu können, dass wir deine Entschädigung erfolgreich durchgesetzt haben.</p>
-				<p>Danke für dein Vertrauen in RightsPlus.</p>
+				<p>vielen Dank für die Beauftragung.</p>
+				<p>Wir prüfen jetzt einen möglichen Entschädigungsanspruch aufgrund deiner Angaben und melden uns nach Abschluss der Prüfung bei dir.</p>
+				<p>Nachfolgend haben wir die übermittelten Daten noch einmal zusammengefasst. Bitte prüfe, ob die Daten korrekt sind und teile uns zeitnah per E-Mail mit, wenn etwas nicht stimmt. Es ist wichtig, dass die Angaben wahrheitsgemäß, vollständig und ordnungsgemäß sind. Wenn alle Daten korrekt sind, brauchst du nichts weiter zu unternehmen.</p>
+				<p>Übermittelte Daten:</p>
+				<p>${data}</p>
 				<p>Mit den folgenden Daten kannst du immer den Stand der Bearbeitung einsehen:</p>
 				<p>Fallnummer<br />**#2890123**</p>
 				<p>Buchungsnummer<br />**BD1238**</p>

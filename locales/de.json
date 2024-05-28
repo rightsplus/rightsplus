@@ -173,7 +173,7 @@
   "demandLetter.lawsuit": "Sollten Sie der Zahlungsaufforderung nicht nachkommen, werden wir ohne Ankündigung Klage erheben.",
   "assignmentLetter.title": "Abtretungserklärung",
   "assignmentLetter.main": "Ich, {addressBlock} erkläre hiermit, dass ich meinen Anspruch auf Entschädigung gemäß der Verordnung (EG) Nr. 261/2004 in Bezug auf den Flug {flight} {airports} hiermit an die {rightsPlus}, unbedingt und unwiderruflich abtrete.",
-  "assignmentLetter.reimbursement": "Der Abtretende erhält für seinen Anspruch eine Zahlung gemäß den aktuell gültigen AGB sowie Preis- und Leistungsverzeichnis.",
+  "assignmentLetter.compensation": "Der Abtretende erhält für seinen Anspruch eine Zahlung gemäß den aktuell gültigen AGB sowie Preis- und Leistungsverzeichnis.",
   "assignmentLetter.claimant": "Der Abtretende erklärt zum Zeitpunkt der Abtretung Anspruchsinhaber zu sein.",
   "assignmentLetter.declaration": "Die {rightsPlus}, vertreten durch den geschäftsführenden Gesellschafter {partner} erklärt hiermit die Annahme der Abtretung.",
   "myDestination": "mein Ziel",

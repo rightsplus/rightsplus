@@ -26,9 +26,7 @@
     </Item>
   </div>
 </template>
-
 <script setup lang="ts">
-import { emit } from "process";
 import Item from "./Item.vue";
 
 const props = defineProps<{

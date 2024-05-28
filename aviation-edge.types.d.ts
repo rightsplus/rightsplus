@@ -59,7 +59,7 @@ export interface FlightAviationEdge {
     icaoCode: string;
     gate?: string;
     terminal?: string;
-    delay: number;
+    delay: string;
     scheduledTime: string;
     estimatedTime: string;
     actualTime: string;
@@ -70,7 +70,7 @@ export interface FlightAviationEdge {
     iataCode: string;
     icaoCode: string;
     baggage?: string;
-    delay?: number;
+    delay?: string;
     scheduledTime: string;
     estimatedTime: string;
     actualTime: string;

@@ -1,6 +1,6 @@
 <template>
   <section
-    class="grid gap-12 lg:grid-cols-2 max-w-7xl mx-auto p-5 py-12 sm:p-12 md:py-36 h-full relative z-1"
+    class="grid gap-12 lg:grid-cols-2 max-w-7xl mx-auto p-5 py-12 sm:p-12 md:py-24 h-full relative z-1"
   >
     <div
       class="flex flex-col items-start gap-5 sm:gap-12 lg:sticky lg:top-12 self-start"
@@ -44,6 +44,7 @@
         :flights="flights"
         :limit="page ? 30 : 5"
         @select="handleSelect"
+        :showFilter="page"
         :flightCard="{
           airports: true,
           compensation: false,
@@ -59,7 +60,7 @@
   </section>
 </template>
 <script lang="ts" setup>
-import type { ClaimsForm, Database, RowFlight, Flight } from "~/types";
+import type { ClaimsForm, Database, RowFlight, Flight, ClaimState } from "~/types";
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAirports } from "@/composables/flight";
@@ -82,7 +83,7 @@ onMounted(async () => {
   console.log(flights);
 });
 import claimMachine from "~/machines/claimSubmission";
-const { send, state, invoke, messages } = useMachine<ClaimsForm>(claimMachine, {
+const { send, state, invoke, messages } = useMachine<ClaimState, ClaimsForm>(claimMachine, {
   context: claim,
 });
 const { query, airports } = useAirports();
@@ -91,21 +92,21 @@ const handleSelect = async (flight: Flight) => {
   invoke("reset");
   console.log("is in handleSelect", state.value);
   // await query([flight.departure.iata, flight.arrival.iata]);
-  if (!state.value.matches("itinerary")) return;
   claim.airport.trip.departure = airports.value[flight.departure.iata];
   claim.airport.trip.arrival = airports.value[flight.arrival.iata];
-  console.log("is in itinerary");
-  send("next");
-  if (!state.value.matches("flightDate")) {
-    console.log(state.value.value);
-    return;
-  }
   claim.date = getISODate(flight.departure.scheduledTime);
-  console.log("is in flightDate");
-  send("next");
-  if (!state.value.matches("flight")) return;
   claim.flight = flight;
-  console.log("is in flight");
+  // if (!state.value.matches("itinerary")) return;
+  // console.log("is in itinerary");
+  // send("next");
+  // if (!state.value.matches("flightDate")) {
+  //   console.log(state.value.value);
+  //   return;
+  // }
+  // console.log("is in flightDate");
+  // send("next");
+  // if (!state.value.matches("flight")) return;
+  // console.log("is in flight");
   send("next");
   router.push(localePath("claim-new"));
 };

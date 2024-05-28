@@ -44,10 +44,42 @@
               ></span
             >
 
+            <button
+              class="flex items-center"
+              v-if="
+              getCurrentInstance()?.vnode.props?.onSave && pendingChanges
+              "
+              @click.stop="$emit('save')"
+              ><FontAwesomeIcon
+                :icon="loading ? 'circle-quarter' : 'cloud-arrow-up'"
+                fixed-width
+                class="text-lg"
+                :class="loading ? 'animate-revolve' : ''"
+                aria-labelledby="pendingChanges-label"
+              /><span id="pendingChanges-label" class="sr-only">{{
+                $t(loading ? "pendingChanges" : "missingFields")
+              }}</span></button
+            >
+            <button
+              class="flex items-center"
+              v-if="
+              getCurrentInstance()?.vnode.props?.onRevert && pendingChanges
+              "
+              @click.stop="$emit('revert')"
+              ><FontAwesomeIcon
+                :icon="'arrow-rotate-left'"
+                fixed-width
+                class="text-lg"
+                aria-labelledby="pendingChanges-label"
+              /><span id="pendingChanges-label" class="sr-only">{{
+                $t(loading ? "pendingChanges" : "missingFields")
+              }}</span></button
+            >
+
             <span
               class="flex items-center"
               v-if="
-                Object.values(touched).some(Boolean) || !open.includes(index)
+              (Object.values(touched).some(Boolean) || !open.includes(index))
               "
               ><FontAwesomeIcon
                 :icon="completed ? 'circle-check' : 'triangle-exclamation'"
@@ -70,7 +102,7 @@
             type="text"
             :label="$t('firstName')"
             v-model="modelValue.firstName"
-            outer-class="col-span-full @sm:col-span-2"
+            outer-class="col-span-full @md:col-span-2"
             :suffix-icon="icon('firstName')"
             :suffix-icon-class="iconClass('firstName')"
             @blur="touched.firstName = true"
@@ -79,7 +111,7 @@
             type="text"
             :label="$t('lastName')"
             v-model="modelValue.lastName"
-            outer-class="col-span-full @sm:col-span-2"
+            outer-class="col-span-full @md:col-span-2"
             :suffix-icon="icon('lastName')"
             :suffix-icon-class="iconClass('lastName')"
             @blur="touched.lastName = true"
@@ -176,18 +208,17 @@
             v-model="modelValue.address"
             class="col-span-full"
           />
-          <!-- <FormKit
-            type="file"
+          <InputFile
             accept="image/*, application/pdf"
-            :label="$t('boardingPass')"
+            :label="$t('Lade deine Bordkarte hoch')"
             v-model="modelValue.boardingPass"
-            outer-class="col-span-full"
-            placeholder="z.B. XY789"
+            class="col-span-full"
             ref="fileInput"
-            :fileIcon="'image'"
+            icon="ticket-airline"
             fileRemoveIcon="xmark"
-            :multiple="false"
-          /> -->
+            multiple
+          />
+            <!-- icon="ticket-airline" -->
 
           <!-- <div class="col-span-full  text-sm">Damit wir den Fall notfalls vor Gericht verteidigen können.</div> -->
           <!-- <div class="col-span-full  text-sm">Damit wird dir das Geld auszahlen können.</div> -->
@@ -218,8 +249,10 @@ import IBAN from "iban";
 const props = defineProps<{
   modelValue: PassengerDetails;
   index: number;
-  length: number;
   open: number[];
+  length?: number;
+  loading?: boolean;
+  pendingChanges?: boolean
 }>();
 
 const touched = ref<Partial<PassengerDetails<boolean>> & { form: boolean }>({
@@ -247,6 +280,8 @@ watch(
 const emit = defineEmits<{
   "update:modelValue": [value: PassengerDetails];
   remove: [];
+  save: [];
+  revert: [];
   setOpen: [indices: number[]];
 }>();
 

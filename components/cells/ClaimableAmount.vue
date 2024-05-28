@@ -13,11 +13,11 @@ import { getDistance } from "@/composables/flight";
 const props = defineProps<{ full?: boolean }>();
 const processClaim = useProcessClaim();
 const status = computed(() => useFlightStatus(useClaim().flight));
-const potentialReimbursment = computed(() => {
+const potentialCompensation = computed(() => {
   if (!processClaim.value.eligible) return 0;
   const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
-  const { total, youGet } = reimbursementByDistance({
+  const { total, youGet } = compensationByDistance({
     distance,
     delay,
     passengers: useClaim().client.passengers.length,
@@ -25,7 +25,7 @@ const potentialReimbursment = computed(() => {
   return props.full ? total : youGet;
 });
 const youGet = reactive({
-  number: potentialReimbursment.value,
+  number: potentialCompensation.value,
 });
 
 const transform = (number: number) => ({
@@ -34,7 +34,7 @@ const transform = (number: number) => ({
   number,
 });
 
-watch(potentialReimbursment, (n) => {
+watch(potentialCompensation, (n) => {
   gsap.to(youGet, transform(n));
 });
 </script>

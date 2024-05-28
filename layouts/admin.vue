@@ -109,9 +109,9 @@
                 class="flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
               ></div>
             </div>
-          <div
-            class="mt-auto flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
-          ></div>
+            <div
+              class="mt-auto flex border-gray-100 dark:border-gray-800 w-full border-t border-solid"
+            ></div>
           </div>
 
           <div
@@ -136,11 +136,9 @@
                 >
                   <span
                     class="relative inline-flex items-center justify-center flex-shrink-0 rounded-full h-5 w-5 text-[10px]"
-                    ><img
-                      class="rounded-full h-5 w-5 text-[10px]"
-                      src="https://avatars.githubusercontent.com/u/739984?v=4" /></span
+                  ></span
                   ><span class="">Joachim</span
-                  ><span
+                  ><Button>Ausloggen</Button><span
                     class="i-heroicons-ellipsis-vertical w-5 h-5 ml-auto"
                   ></span>
                 </button>

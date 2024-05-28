@@ -1,9 +1,8 @@
 import type { ClaimsForm, RowClaim, Database, Flight, RowFlight, RowBooking } from "@/types";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 
 export const useSupabaseFunctions = () => {
-	const client = useSupabaseClient<Database>()
+	const supabase = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
 
 	async function fetchFlights<T>(body: {
@@ -32,6 +31,9 @@ export const useSupabaseFunctions = () => {
 		type?: "departure" | "arrival",
 		iata?: string
 	}): Promise<T> {
+		console.log('start fetching supabase')
+		// supabase.from('claim').select('*').then(() => console.log('claim'))
+		// return [] as unknown as T
 		console.time('fetching supabase')
 		const { date, departure, arrival, type, iata } = body
 		let match = {}
@@ -60,35 +62,39 @@ export const useSupabaseFunctions = () => {
 			throw 'supply iata OR type and dep/arr OR dep and arr'
 		}
 		console.log('match...', match)
+		console.log('supabase:', supabase)
 
-		const { data: flights, error: errFlights } = await client
+
+		const { data: flights, error: errFlights } = await supabase
 			.from('flight')
 			.select('data')
 			.match(match)
-
-
 
 		console.log('data', flights)
 		console.log('error', errFlights)
 
 		const mappedFlights = flights?.map(e => e.data)
 		console.timeEnd('fetching supabase')
-		if (mappedFlights?.length) return mappedFlights as T
+		if (mappedFlights?.length) {
+			console.log('flights cached')
+			return mappedFlights as T
+		}
+		console.log('flights not cached')
 		
-		console.time('fetching aviation edge')
-		const { data, error } = await client.functions.invoke("flights", { body })
-		console.timeEnd('fetching aviation edge')
+		console.log('fetching aviation stack/edge')
+		const { data, error } = await supabase.functions.invoke("flights", { body })
+		console.log('fetching aviation stack/edge done', data, error)
 		if (error) {
 			throw error;
 		}
 		return data as T;
 	}
 	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
-		console.log('proxy', client)
-		client.functions.invoke("proxy", {
+		console.log('proxy', supabase)
+		supabase.functions.invoke("proxy", {
 			body: { url, options },
 		}).then(console.log).catch(console.error).finally(() => console.log('fin'))
-		const { data, error } = await client.functions.invoke("proxy", {
+		const { data, error } = await supabase.functions.invoke("proxy", {
 			body: { url, options },
 		})
 		console.log("data", data)
@@ -101,7 +107,7 @@ export const useSupabaseFunctions = () => {
 	const userExists = async ({ email }: {
 		email: string
 	}) => {
-		const { data, error } = await client.functions.invoke("user-exists", {
+		const { data, error } = await supabase.functions.invoke("user-exists", {
 			body: { email },
 		})
 		if (error) {
@@ -118,7 +124,7 @@ export const useSupabaseFunctions = () => {
 
 	// 	const filePath = [storageFolderClaim, `signature_${index}.svg`].join("/");
 
-	// 	const { data, error } = await client.storage
+	// 	const { data, error } = await supabase.storage
 	// 		.from("client-files")
 	// 		.upload(filePath, signatureSVG, {
 	// 			cacheControl: "3600",
@@ -135,7 +141,7 @@ export const useSupabaseFunctions = () => {
 
 		const filePath = [folder, `signature.svg`].join("/");
 
-		const { data, error } = await client.storage
+		const { data, error } = await supabase.storage
 			.from("client-files")
 			.upload(filePath, signatureSVG, {
 				cacheControl: "3600",
@@ -149,6 +155,9 @@ export const useSupabaseFunctions = () => {
 		if (!file) {
 			throw new Error("No file provided");
 		}
+		// if (!(file instanceof File)) {
+		// 	throw new Error(`${file} is not of type File`);
+		// }
 		const options = {
 			convertSize: 0.5,
 			quality: 0.8,
@@ -160,7 +169,7 @@ export const useSupabaseFunctions = () => {
 		const fileExt = (resizedFile as File).name.split(".").pop();
 		const fileName = `${uuid()}.${fileExt}`;
 		const filePath = [folder, fileName].filter(Boolean).join("/");
-		const { data, error } = await client.storage
+		const { data, error } = await supabase.storage
 			.from("client-files")
 			.upload(filePath, resizedFile, {
 				cacheControl: "3600",
@@ -190,10 +199,10 @@ export const useSupabaseFunctions = () => {
 		} as Omit<RowFlight, 'id' | 'createdAt'>;
 
 		try {
-			const { data: existingFlight, error: errExisting } = await client.from("flight").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
+			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
 			if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
-			const { data: addedFlight, error } = await client
+			const { data: addedFlight, error } = await supabase
 				.from("flight")
 				.upsert([preparedFlight]
 				)
@@ -213,11 +222,11 @@ export const useSupabaseFunctions = () => {
 	const submitBooking = async (claim: ClaimsForm, flightId: number) => {
 		const preparedBooking = {
 			flightId,
-			bookingNumber: claim.client.bookingNumber,
+			number: claim.client.bookingNumber,
 			disruption: claim.disruption,
 		} as Omit<RowBooking, 'id' | 'createdAt'>;
 		try {
-			const { data, error } = await client
+			const { data, error } = await supabase
 				.from("booking")
 				.upsert([preparedBooking])
 				.select()
@@ -236,7 +245,7 @@ export const useSupabaseFunctions = () => {
 			bookingId: bookingId
 		} as Omit<RowClaim, 'id' | 'createdAt' | 'status' | 'unread'>;
 		try {
-			const { data, error } = await client
+			const { data, error } = await supabase
 				.from("claim")
 				.upsert([preparedClaim])
 				.select()

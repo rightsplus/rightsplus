@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-5">
     <span
-      v-if="!potentialReimbursment"
+      v-if="!potentialCompensation"
       class="text-sm font-bold leading-tight flex flex-col gap-2"
       >Du hast möglicherweise keinen Anspruch auf Entschädigung.
       <span class="text-xs font-normal">{{ noClaims }}</span>
@@ -58,19 +58,19 @@ const noClaims = computed(() => {
     return "Weder Verspätung noch Ausfall";
   return false;
 });
-const potentialReimbursment = computed(() => {
+const potentialCompensation = computed(() => {
   if (!status.value.cancelled.value && status.value.delayed.value < 180)
     return 0;
   const distance = getDistance(useClaim());
   const delay = status.value.delayed.value;
-  return reimbursementByDistance({
+  return compensationByDistance({
     distance,
     delay,
     passengers: useClaim().client.passengers?.length,
   }).youGet;
 });
 const youGet = reactive({
-  number: potentialReimbursment.value,
+  number: potentialCompensation.value,
 });
 
 const transform = (number: number) => ({
@@ -79,7 +79,7 @@ const transform = (number: number) => ({
   number,
 });
 
-watch(potentialReimbursment, (n) => {
+watch(potentialCompensation, (n) => {
   gsap.to(youGet, transform(n));
 });
 

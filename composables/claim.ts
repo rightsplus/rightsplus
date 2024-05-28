@@ -107,12 +107,9 @@ export const useCompensation = (estimate = false) => {
 				eligible.value = false
 				return 'cancelled.>14'
 			}
-			if (replacement) {
-				if (!replacement.flight) return 'replacement.missing'
-				if (isReplacementFlightWithinBounds(claim)) {
-					eligible.value = false
-					return 'replacement.withinBounds'
-				}
+			if (isReplacementFlightWithinBounds(claim)) {
+				eligible.value = false
+				return 'replacement.withinBounds'
 			}
 		} else if (disruption.type === "noBoarding") {
 			if (noBoardingReasons.find(e => e.value === disruption.reason)?.selfInflicted) {
@@ -126,7 +123,7 @@ export const useCompensation = (estimate = false) => {
 	const getCompensation = () => {
 		const distance = getDistance(claim)
 		let message = ""
-		if (claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
+		if (claim.flight && claim.flight?.status !== 'cancelled' && (claim.flight?.arrival.delay || 0) < 180) {
 			message = t("Dein Flug hatte weniger als 3 Stunden Verspätung. Wenn du wegen der Verspätung deinen Anschlussflug verpasst hast, kannst du trotzdem eine Entschädigung beantragen.")
 			return { compensation: 0, distance, message }
 		}
@@ -146,7 +143,7 @@ export const useCompensation = (estimate = false) => {
 		return { compensation, distance, message }
 	}
 
-	watch(claim.airport, () => {
+	watch(claim, () => {
 		const { compensation: c, distance: d, message: m } = getCompensation()
 		compensation.value = c
 		distance.value = d
@@ -176,6 +173,7 @@ export const usePrepareClaimSubmission = () => {
 
 			const storageFolderClaim = [formatClaimId(claimResponse.id, false), passenger.lastName].join("/");
 
+			console.log(passenger.signature.svg, passenger.boardingPass)
 			await Promise.all([
 				// Signature
 				handleUploadSignature(
@@ -183,10 +181,11 @@ export const usePrepareClaimSubmission = () => {
 					[storageFolderClaim, "signature"].join("/")
 				),
 				// Boarding Pass
-				// handleUploadFile(
-				// 	passenger.boardingPass?.[0]?.file,
-				// 	[storageFolderClaim, "boarding-pass"].join("/")
-				// )
+
+				...(passenger.boardingPass ? Array.from(passenger.boardingPass).filter(Boolean).map((file) => handleUploadFile(
+					file,
+					[storageFolderClaim, "boarding-pass"].join("/")
+				)) : [])
 			])
 
 			// const fileName = `${uuid.v4()}.svg`;

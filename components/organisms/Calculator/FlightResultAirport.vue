@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2" v-if="flight">
-    <span class="uppercase tracking-wider">{{ label }}</span>
+    <span class="uppercase tracking-wider text-xs font-medium text-neutral-400">{{ label }}</span>
     <div class="flex flex-col">
       <span class="font-bold leading-none text-lg text-gray-700">{{
         flight.iata

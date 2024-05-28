@@ -8,6 +8,7 @@
       <div class="px-5 sm:px-12 h-full">
         <article class="flex flex-col gap-12">
           <div class="flex flex-col gap-3 leading-0">
+          <slot name="before" />
             <span
               class="uppercase tracking-wider text-primary-500 font-bold"
               v-if="$route.meta.category"

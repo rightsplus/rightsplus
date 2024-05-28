@@ -39,18 +39,22 @@
               </Button> -->
         <Button
           tertiary
+          round
           @click="invoke('back')"
           prefix-icon="arrow-left"
           class="h-7 w-7 !p-0 text-sm"
         />
         <Button
           tertiary
+          round
           @click="invoke('reset')"
           prefix-icon="arrow-rotate-left"
           class="h-7 w-7 !p-0 text-sm"
         />
         <Button
-          class="h-7 w-7 !p-0 bg-blue-50 hover:bg-blue-100 text-blue-600 text-base"
+          tertiary
+          round
+          class="h-7 w-7 !p-0 text-base"
           :prefix-icon="claim.unread ? 'envelope' : 'envelope-dot'"
           @click="
             $emit('update', { id: claim?.id, data: { unread: !claim?.unread } })
@@ -71,10 +75,16 @@
             }
           "
         >
-          {{ $t(`action.${action}`) }} ({{ state.can(action) }})
+          {{ $t(`action.${action}`) }}
         </Button>
       </div>
+    <ClaimClient
+      :client="claim.client"
+      @update:modelValue="$emit('update', { id: claim?.id, data: { client: $event } })"
+      v-if="claim?.client"
+    />
     </div>
+    <!-- <pre>{{ claim }}</pre> -->
   </div>
   <div v-else class="relative inset-0 h-full flex items-center justify-center">
     <FontAwesomeIcon icon="folder-closed" class="text-7xl text-gray-300" />
@@ -95,7 +105,6 @@ const { state, send, invoke } = useMachine<CaseStatus, RowClaimExtended>(
     initial: props.claim?.status,
   }
 );
-const client = useSupabaseClient<Database>();
 
 watch(
   () => state.value.value,

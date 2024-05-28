@@ -5,7 +5,7 @@
       @submit.prevent
       ref="form"
     >
-      {{ state.value }}
+    <!-- {{ eligible }} // {{ message }} -->
       <button
         @click.prevent="
           () => {
@@ -17,7 +17,7 @@
             }
           }
         "
-        class="leading-none text-2xl self-start"
+        class="leading-none text-2xl self-start -mx-2 aspect-square w-10 h-10 flex items-center justify-center focus-ring rounded-lg"
       >
         <FontAwesomeIcon v-show="state.matches(state.initial)" icon="xmark" />
         <FontAwesomeIcon
@@ -94,6 +94,7 @@
             :flight-card="{
               is: 'button',
             }"
+            showFilter
           />
         </StepWrapper>
         <StepWrapper
@@ -293,19 +294,10 @@
         <StepWrapper v-else-if="state?.matches('assignmentAgreement')">
           <AssignmentAgreementPreflight :modelValue="claimState" />
           <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled: !state.can('next'),
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('summary')">
-          Summary
-          <ButtonGroup
             @primary="submit"
             :primary="{
               label: $t('next'),
+              disabled: !state.can('next'),
             }"
           />
         </StepWrapper>
@@ -332,7 +324,7 @@ import ClaimCard from "@/components/cells/ClaimCard.vue";
 import AddDisruptionComment from "@/components/organisms/Calculator/Forms/AddDisruptionComment.vue";
 
 import claimMachine from "~/machines/claimSubmission";
-import type { ClaimsForm, Airport, Flight } from "~/types";
+import type { ClaimsForm, ClaimState, Airport, Flight } from "~/types";
 import AddBookingNumber from "./Forms/AddBookingNumber.vue";
 import PassengerForm from "./Forms/PassengerForm.vue";
 import StepPassengers from "./StepPassengers.vue";
@@ -344,8 +336,8 @@ const route = useRoute();
 const { t, locale } = useI18n();
 const form = ref<HTMLElement>();
 const localePath = useLocalePath();
-const { state, send, transition, subscribe, invoke, messages } =
-  useMachine<ClaimsForm>(claimMachine, { context: claimState });
+const { state, send, transition, subscribe, invoke } =
+  useMachine<ClaimState, ClaimsForm>(claimMachine, { context: claimState });
 const { getFilteredFlights } = useFlights();
 const subscription = subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
@@ -402,7 +394,7 @@ const eligibleCompensation = computed(() => {
     secondary: eligible.value
       ? undefined
       : {
-          event: () => send("reset"),
+          event: () => invoke("reset"),
           label: t("checkOtherFlight"),
         },
   };

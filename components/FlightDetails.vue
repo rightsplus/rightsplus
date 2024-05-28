@@ -1,4 +1,5 @@
 <template>
+        {{ date(flight.departure.scheduledTime) }}
   <div class="grid grid-cols-2 gap-5 w-full">
     <div class="bg-neutral-100 rounded-lg p-3">
       <p class="text-lg font-bold">
@@ -29,7 +30,13 @@
     <FlightResultAirport
       :flight="flight.departure"
       :weather="weather.departure"
-      label="Abflug"
+      :label="$t('departure')"
+      :cancelled="flight.status === 'cancelled'"
+    />
+    <FlightResultAirport
+      :flight="flight.arrival"
+      :weather="weather.arrival"
+      :label="$t('arrival')"
       :cancelled="flight.status === 'cancelled'"
     />
   </div>
@@ -59,5 +66,3 @@ const time = (time: string) => {
   });
 };
 </script>
-
-<style scoped></style>

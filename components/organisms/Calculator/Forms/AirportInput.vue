@@ -65,6 +65,7 @@ const loadingTimeout = ref<undefined | ReturnType<typeof setTimeout>>();
 const errors = ref<undefined | string[]>();
 const errorTimeout = ref<undefined | ReturnType<typeof setTimeout>>();
 const algolia = useAlgoliaSearch("AIRPORTS");
+// const algoliaIndex = useAlgoliaInitIndexFull("AIRPORTS");
 
 const mapAirports = (airport: Airport) => ({
   value: airport.iata,
@@ -97,7 +98,8 @@ function findAirports(query: string) {
         .map(mapAirports);
     })
     .catch(({ transporterStackTrace }) => {
-      const [message] = transporterStackTrace;
+      console.log(transporterStackTrace)
+      const [message] = transporterStackTrace || [];
       errors.value = [message?.response?.content];
       clearTimeout(errorTimeout.value);
       errorTimeout.value = setTimeout(() => (errors.value = undefined), 5000);

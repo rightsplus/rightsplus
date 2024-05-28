@@ -10,7 +10,6 @@
         <span v-for="(char, i) in titleASCII" :key="i">
           {{ transform(char) }}
         </span>
-        <!-- {{ (char).toFixed() }} -->
       </ClientOnly>
     </h1>
     <span class="text-xl sm:text-2xl font-medium opacity-100">{{

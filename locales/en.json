@@ -131,7 +131,7 @@
   "demandLetter.lawsuit": "If you do not comply with the payment demand, we will file a lawsuit without further notice.",
   "assignmentLetter.title": "Assignment Agreement",
   "assignmentLetter.main": "I, {addressBlock}, hereby declare that I assign my claim for compensation under Regulation (EC) No. 261/2004 regarding flight {flight} {airports} to {rightsPlus}, unconditionally and irrevocably.",
-  "assignmentLetter.reimbursement": "The assignor will receive payment for their claim according to the currently valid terms and conditions as well as the price list.",
+  "assignmentLetter.compensation": "The assignor will receive payment for their claim according to the currently valid terms and conditions as well as the price list.",
   "assignmentLetter.claimant": "The assignor declares to be the rightful claimant at the time of the assignment.",
   "assignmentLetter.declaration": "{rightsPlus}, represented by the managing director {partner}, hereby accepts the assignment.",
   "myDestination": "my Destination",

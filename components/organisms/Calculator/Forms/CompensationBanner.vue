@@ -47,12 +47,12 @@
 <script setup lang="ts">
 import claimMachine from "~/machines/claimSubmission";
 import AirportInput from "./AirportInput.vue";
-import type { ClaimsForm } from "@/types";
+import type { ClaimState, ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
 const emit = defineEmits(["submit"]);
 const { push } = useRouter();
 const claimState = useClaim();
-const { invoke } = useMachine<ClaimsForm>(claimMachine, {
+const { invoke } = useMachine<ClaimState, ClaimsForm>(claimMachine, {
   context: claimState,
 });
 const localePath = useLocalePath();

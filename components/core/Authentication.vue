@@ -53,7 +53,7 @@ const props = defineProps<{
   inPopup?: boolean;
 }>();
 const emit = defineEmits(["close", "success"]);
-const client = useSupabaseClient();
+const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const mode = ref<"signUp" | "signIn">(props.initialMode || "signUp");
 const loading = ref({} as Record<Provider | "email", boolean>);
@@ -74,17 +74,17 @@ const signIn = async ({
   const { email, password } = form || {};
   let res;
   if (provider) {
-    res = await client.auth.signInWithOAuth({
+    res = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo },
     });
   } else if (password) {
-    res = await client.auth.signInWithPassword({
+    res = await supabase.auth.signInWithPassword({
       email,
       password,
     });
   } else {
-    res = await client.auth.signInWithOtp({ email });
+    res = await supabase.auth.signInWithOtp({ email });
   }
   setLoading(false, provider);
   console.log(user.value, res);
@@ -108,12 +108,12 @@ const signUp = async ({
   let res;
   try {
     if (provider) {
-      res = await client.auth.signInWithOAuth({
+      res = await supabase.auth.signInWithOAuth({
         provider,
         options: { redirectTo },
       });
     } else if (email && password) {
-      res = await client.auth.signUp({
+      res = await supabase.auth.signUp({
         email,
         password,
       });
@@ -129,7 +129,7 @@ const signUp = async ({
 };
 
 const resetPassword = async ({ email }: { email: string }) => {
-  const { data, error } = await client.auth.resetPasswordForEmail(email);
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 };
 
 const submit = mode.value === "signIn" ? signIn : signUp;

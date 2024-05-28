@@ -45,8 +45,6 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
     '~/assets/scss/main.scss',
     '~/assets/scss/transitions.scss',
-    "primevue/resources/themes/lara-light-blue/theme.css",
-    "primevue/resources/primevue.css"
   ],
   components: [
     '~/components',
@@ -68,11 +66,16 @@ export default defineNuxtConfig({
       // stripe: {
       //   key: process.env.STRIPE_KEY,
       // },
+      algolia: {
+        applicationId: process.env.ALGOLIA_APPLICATION_ID,
+        apiKey: process.env.ALGOLIA_API_KEY,
+      },
       google: {
         key: process.env.GOOGLE_KEY,
         placeId: process.env.GOOGLE_PLACE_ID
       },
       flight: {
+        aviationStack: process.env.AVIATIONSTACK_KEY,
         aviationEdge: process.env.AVIATION_EDGE_KEY,
         key: process.env.APP_KEY,
         appId: process.env.APP_ID

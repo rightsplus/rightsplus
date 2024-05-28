@@ -2,6 +2,7 @@
   <span
     class="rounded-full px-2.5 py-1.5 text-sm leading-none font-medium flex gap-2 items-center ring-1 ring-white"
     v-if="status"
+    :title="$t(`status.${status}`)"
     :class="{
       'bg-orange-100 text-orange-700':
         !props.status.includes('await') &&
@@ -18,7 +19,7 @@
           props.status
         ),
     }"
-    ><FontAwesomeIcon :icon="icon" /><span>{{
+    ><FontAwesomeIcon :icon="icon" /><span class="truncate -my-2 py-2">{{
       $t(`status.${status}`)
     }}</span></span
   >

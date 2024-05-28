@@ -85,11 +85,11 @@ export const nextLeg = (claim: ClaimsForm) => {
 
 const commission = 0.25;
 const vatRate = 0; // 0.19
-export const reimbursementByDistance = ({ distance, delay, withinEU, passengers }: { distance?: number; delay?: number; withinEU?: boolean; passengers?: number; claim?: ClaimsForm }) => {
+export const compensationByDistance = ({ distance, delay, withinEU, passengers }: { distance?: number; delay?: number; withinEU?: boolean; passengers?: number; claim?: ClaimsForm }) => {
 	let total = 250
 	if ((distance || 0) > 1500) total = 400
-	const beyondEU = !withinEU || (claim && [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261))
-	if ((distance || 0) > 3500 && beyondEU) total = 600
+	const beyondEU = !claim || [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261)
+	if ((distance || 0) > 3500 && (beyondEU && !withinEU)) total = 600
 	total = total * (passengers || 1)
 	const weGet = total * commission
 	const vat = total * commission * vatRate
@@ -207,6 +207,14 @@ export const get24HTime = (value: Date | string) => {
 		return ""
 	}
 }
+
+
+export const time = (time: string, locale = 'de') => {
+  return new Date(time).toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 export const getDuration = (minutes: number) => {
 	const min = `${minutes % 60} min`;
@@ -411,7 +419,6 @@ export const convertAssignmentAgreementData = (claim: ClaimsForm) => {
 }
 
 export const generatePDFTemplateLink = (template: string, data?: Record<string, string | undefined>) => {
-	console.log(process?.env)
 	const base = process.env.NODE_ENV === 'production' ? 'https://rightsplus.up.railway.app' : 'http://localhost:3000'
 	const url = new URL(`${base}/pdf/${template}`)
 	Object.entries(data || {}).forEach(([key, value]) => {
@@ -456,4 +463,21 @@ export const formatOrdinals = (n: number, locale = 'de') => {
 
 
 
-export const closest = (number: number, array: number[]) => array.reduce((prev, curr) => (Math.abs(curr - number) < Math.abs(prev - number) ? curr : prev));
+export const closest = (number: number, array: number[]) => array?.reduce((prev, curr) => (Math.abs(curr - number) < Math.abs(prev - number) ? curr : prev));
+
+
+export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
+	const KB = 1024;
+	const MB = KB * 1024;
+	const GB = MB * 1024;
+
+	if (sizeInBytes < KB) {
+		return sizeInBytes + ' B';
+	} else if (sizeInBytes < MB) {
+		return (sizeInBytes / KB).toFixed(decimalPoint) + ' KB';
+	} else if (sizeInBytes < GB) {
+		return (sizeInBytes / MB).toFixed(decimalPoint) + ' MB';
+	} else {
+		return (sizeInBytes / GB).toFixed(decimalPoint) + ' GB';
+	}
+}

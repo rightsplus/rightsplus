@@ -8,7 +8,7 @@
     <!-- {{ compensation }} // {{ distance }} -->
     <div v-if="!certain" class="flex flex-col">
       <div
-      class="flex flex-col justify-center text-center items-center gap-3 p-3"
+        class="flex flex-col justify-center text-center items-center gap-3 p-3"
       >
         <FontAwesomeIcon
           class="shrink-0 text-xl"
@@ -153,9 +153,7 @@
                 'text-orange-600 bg-orange-100': flight.arrival.delay,
                 'text-red-700 bg-red-200': flight.status === 'cancelled',
               }"
-              >{{
-                $t(flight.status)
-              }}</span
+              >{{ $t(flight.status) }}</span
             >
           </span>
         </div>
@@ -182,7 +180,7 @@
   </div>
   <div v-else>{{ flight }}</div>
 
-  <pre>{{ flight }}</pre>
+  <!-- <pre>{{ flight }}</pre> -->
 </template>
 
 <script setup lang="ts">
@@ -203,8 +201,10 @@ const city = useCities({
   departure: flight.value?.departure?.iata,
   arrival: flight.value?.arrival?.iata,
 });
-const airline = useAirline(flight.value?.airline);
-const codesharedAirline = useAirline(flight.value?.codeshared?.airline);
+const { airline } = useAirline(flight.value?.airline);
+const { airline: codesharedAirline } = useAirline(
+  flight.value?.codeshared?.airline
+);
 
 const date = (time: string) => {
   return new Date(time).toLocaleDateString(locale.value);

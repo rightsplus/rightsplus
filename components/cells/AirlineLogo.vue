@@ -1,6 +1,6 @@
 <template>
   <div
-    class="aspect-square flex justify-center items-center bg-white rounded-full shrink-0 overflow-hidden self-center border border-gray-100"
+    class="aspect-square flex justify-center items-center bg-white rounded-full shrink-0 overflow-hidden self-center border border-gray-100 relative"
     :class="{
       'w-5': size === 'xs',
       'w-6': size === 'sm',

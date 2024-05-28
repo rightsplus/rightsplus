@@ -1,5 +1,4 @@
-import { useStorage } from '@vueuse/core'
-
+import { useLocalStorage } from '@vueuse/core'
 type MachineState<States> = {
   target?: States;
   actions?: string
@@ -22,16 +21,17 @@ type GuardProps<Context, States> = {
 }
 export interface Machine<States extends string, Context> {
   id: string;
+  persist?: boolean;
   initial: States;
   loading: string;
   states: Record<States, {
-      type?: string;
-      meta?: Record<string, any>;
-      init?: MachineState<States> | MachineState<States>[];
-      on?: {
-        [event: string]: MachineState<States> | MachineState<States>[];
-      };
-    }>
+    type?: string;
+    meta?: Record<string, any>;
+    init?: MachineState<States> | MachineState<States>[];
+    on?: {
+      [event: string]: MachineState<States> | MachineState<States>[];
+    };
+  }>
   guards: {
     [guard: string]: (props: GuardProps<Context, States>) => boolean;
   };
@@ -44,29 +44,33 @@ const cleanObject = <T extends Record<string, any>>(obj: T): NonNullable<T> => J
 
 
 const loading = ref(true)
-// const states = useStorage<{ states: string[], subscriptions: Record<string, any>}>('machine', {
-//   states: [],
-//   subscriptions: {}
-// })
 
-// const subscriptions = ref<Subscription>({})
-export const useMachine = <S extends string, T extends Record<string, any>>(machine: Machine<S, T>, options?: {
+
+
+export const useMachine = <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
   context?: T | undefined;
-  initial?: S;
+  initial?: States;
 }) => {
 
-  type SubscriptionProps = { type: string; action?: string | string[]; target?: S }
+  type SubscriptionProps = { type: string; action?: string | string[]; target?: States }
   type Subscriptions = {
     [id: string]: (props: SubscriptionProps) => void
   }
   const context = options?.context || {} as T
   const initial = options?.initial || machine.initial
   const messages = ref<Record<string, string>>({})
-  const subscriptions = useStorage<Subscriptions>(machine.id, {})
-  const states = useStorage<S[]>(machine.id, [])
+
+  // const ls = typeof localStorage !== 'undefined'
+  const subscriptions = machine.persist ? useLocalStorage<Subscriptions>(`${machine.id}-subs`, {}) : ref<Subscriptions>({}) as Ref<Subscriptions>
+  const states = machine.persist ? useLocalStorage<States[]>(`${machine.id}-states`, []) : ref<States[]>([]) as Ref<States[]>
+  // const states = ref<States[]>([])
+  const history = machine.persist ? useLocalStorage<States[]>(`${machine.id}-history`, []) : ref<States[]>([]) as Ref<States[]>
+  const transition = machine.persist ? useLocalStorage<'forward' | 'back'>(`${machine.id}-transition`, 'forward') : ref<'forward' | 'back'>('forward') as Ref<'forward' | 'back'>
+
+
   const current = computed(() => states.value.at(-1) || initial)
 
-  const invoke = (action: string, target?: S) => {
+  const invoke = (action: string, target?: States) => {
     if (!machine.actions[action]) {
       console.error(`Action ${action} not found`)
       return
@@ -79,7 +83,7 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
 
   };
 
-  const guardClause = (e: MachineState<S>) => {
+  const guardClause = (e: MachineState<States>) => {
     const { guard, guardType, event } = e || {}
     if (!guard) return true
     const clause = (g: string) => {
@@ -97,10 +101,10 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
     return clause(guard)
   }
 
-  const getNext = ({ event, state }: { event?: string; state?: MachineState<S> | MachineState<S>[] }) => {
+  const getNext = ({ event, state }: { event?: string; state?: MachineState<States> | MachineState<States>[] }) => {
     const nextState = event ? machine.states[current.value].on?.[event] : state;
     if (!nextState) return { target: undefined, action: undefined }
-    let nextTarget: S | undefined = undefined;
+    let nextTarget: States | undefined = undefined;
     let nextAction: string | string[] | undefined = undefined;
     if (nextState && 'target' in nextState && nextState.target) {
       if (event) nextState.event = event
@@ -121,23 +125,20 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
   }
 
   const can = (event: string) => {
-    const { target } = getNext({ event })
-    return target
+    const { target, action } = getNext({ event })
+    return target || action
   }
 
   const send = (event: string) => {
     const { target, action } = getNext({ event })
-    
+
     if (action) {
       if (Array.isArray(action)) action.forEach(e => invoke(e))
-        else invoke(action)
+      else invoke(action)
     }
-    console.log(states.value, target)
     if (target) {
-      console.log(states.value, target)
       states.value?.push(target);
     }
-    return
     Object.values(subscriptions.value).forEach(e => {
       if (!e || typeof e !== 'function') return
       e(cleanObject({ type: 'event', action, event, target }))
@@ -153,10 +154,6 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
   }
 
   watch(current, (newValue) => {
-    // if (typeof localStorage !== 'undefined') {
-    //   localStorage.setItem('currentState', newValue);
-    // }
-
     const { init } = machine.states[newValue] || {}
     if (init) {
       const { action } = getNext({ state: init })
@@ -168,12 +165,11 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
     }
   }, { immediate: true });
 
-  const transition = ref('forward')
-  const history = ref();
-  watch(states, (newValue) => {
-    transition.value = newValue.length > (history.value?.length || 0) ? 'forward' : 'back'
-    history.value = newValue;
-  }, { deep: true, immediate: true });
+  watch(states, () => {
+    if (history.value.length === states.value.length) return
+    transition.value = states.value.length > (history.value?.length || 0) ? 'forward' : 'back'
+    history.value = states.value
+  }, { deep: true });
 
   onMounted(() => {
     loading.value = false
@@ -181,9 +177,7 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
 
   return {
     state: computed(() => ({
-      matches: (state: S) => {
-        return current.value === state ? state : false
-      },
+      matches: (state: States) => current.value === state ? state : false,
       value: current.value,
       initial: machine.initial,
       can,
@@ -192,6 +186,7 @@ export const useMachine = <S extends string, T extends Record<string, any>>(mach
     states,
     invoke,
     send,
+    history,
     transition,
     subscribe,
     loading,

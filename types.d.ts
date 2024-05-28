@@ -30,7 +30,6 @@ export type ClaimState = "loading"
   | "passengers"
   | "assignmentAgreement"
   | "eligibility"
-  | "summary"
 
 export type CaseStatus = "dataReceived"
 	| "awaitInitialAirlineResponse"
@@ -57,7 +56,12 @@ export type CaseStatus = "dataReceived"
 // 	| "paymentProcessed"
 // 	| "legalDisputeLost"
 // 	| "other"
-
+export type ClaimProcessingState = {
+  compensation: number;
+  distance: number;
+  eligible: boolean;
+  status?: CaseStatus;
+}
 export interface PassengerDetails<T = string> {
   firstName: T;
   lastName: T;
@@ -65,12 +69,13 @@ export interface PassengerDetails<T = string> {
   email: T;
   iban: T;
   phone?: T;
-  boardingPass?: Files;
+  boardingPass?: FileList;
   isMinor?: boolean;
   signature?: SignatureData
 }
 export type DisruptionType = 'cancelled' | 'delayed' | 'noBoarding'
 export type DisruptionDetail = '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14'
+
 export interface ClaimsForm {
   id?: number;
   airport: {
@@ -93,7 +98,6 @@ export interface ClaimsForm {
     selfInflicted?: boolean;
   };
   replacement: {
-    offered: boolean;
     departure: Airport;
     date: string | null;
     number: string | null;
@@ -254,7 +258,8 @@ export interface RowAirline extends Row {
 export interface RowFlight extends Row  {
   iata: string;
   status: string;
-  date: string;
+  dateDeparture: string;
+  dateArrival: string;
   airlineIata: RowAirline['iata'];
   scheduledDeparture: string;
   scheduledArrival: string;
