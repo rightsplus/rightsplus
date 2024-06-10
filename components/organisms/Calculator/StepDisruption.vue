@@ -108,7 +108,6 @@ import SelectDisruptionReplacement from "./Forms/SelectDisruptionReplacement.vue
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-const emit = defineEmits(["submit", "back"]);
 const active = ref<string[]>(["disruptionType"]);
 const {
   delayedDetails,

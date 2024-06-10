@@ -1,10 +1,11 @@
-import type { Airline, Airport, ClaimsForm, Leg } from "@/types";
+import type { Airline, Airport, ClaimsForm, Leg, RowAirline } from "@/types";
 
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { airlines, airports, claim } from "~~/store";
 import type { State } from "~~/store";
 import Compressor from "compressorjs";
 import { uuid as vueUuid } from "vue-uuid";
+import IBAN from "iban";
 
 export const uuid = () => vueUuid.v4()
 
@@ -207,13 +208,52 @@ export const get24HTime = (value: Date | string) => {
 		return ""
 	}
 }
+export const getLocaleDateFormatMask = (locale: string) => {
+	const date = new Date(2020, 10, 10); // Use a fixed date to ensure consistency
+	const options = { year: 'numeric', month: 'numeric', day: 'numeric' } as const;
+	const format = date.toLocaleDateString(locale, options);
 
+	const yearPart = date.toLocaleDateString(locale, { year: 'numeric' }).replace(/\d/g, 'Y');
+	const monthPart = date.toLocaleDateString(locale, { month: 'numeric' }).replace(/\d/g, 'M');
+	const dayPart = date.toLocaleDateString(locale, { day: 'numeric' }).replace(/\d/g, 'D');
+
+	return format
+		.replace(/\d{4}/, yearPart)
+		.replace(/\d{1,2}/, monthPart)
+		.replace(/\d{1,2}/, dayPart);
+}
+export const parseLocaleDateString = (dateString: string, locale: string) => {
+	const dateParts = new Intl.DateTimeFormat(locale, {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric'
+	}).formatToParts(new Date(2020, 10, 10));
+
+	const partTypes = dateParts.map(part => part.type).filter(type => type !== 'literal');
+	const regex = new RegExp(dateParts.map(part => (part.type === 'literal' ? `\\${part.value}?` : '(\\d+)?')).join(''));
+	const match = dateString.match(regex);
+	console.log('+++')
+	console.log(regex, dateString, match)
+	console.log('+++')
+	const dateObject: Partial<{
+		year: number;
+		month: number;
+		day: number;
+	}> = {}
+	partTypes.forEach((type, index) => {
+		if (!match || !match[index + 1]) return
+		console.log(type, Number(match[index + 1]))
+		dateObject[type as keyof typeof dateObject] = Number(match[index + 1]);
+	});
+	console.log(dateString, match, dateObject)
+	return new Date(dateObject.year, dateObject.month, dateObject.day);
+}
 
 export const time = (time: string, locale = 'de') => {
-  return new Date(time).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+	return new Date(time).toLocaleTimeString(locale, {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
 };
 
 export const getDuration = (minutes: number) => {
@@ -233,7 +273,7 @@ export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query
 }
 export const queryAirlines = async (query?: string) => {
 	const hits = await fetch("/api/airlines.json")
-	airlines.value = await hits.json() as Record<string, Airline>
+	airlines.value = await hits.json() as Record<string, RowAirline>
 	return query ? airlines.value[query] : airlines.value
 	// console.log(data.filter(e => e.status === 'active' && e.iata_code).reduce((acc, cur) => {
 	// 	const airline = {
@@ -483,3 +523,28 @@ export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
 }
 
 export const getExtendedClaimQuery = () => `*, booking ( flight ( *, airline ( * ) ) )`;
+
+
+
+const maskString = (str: string, numeric = "#", alpha = "@") => {
+	return str.replace(/[a-zA-Z0-9]/g, (match, offset) =>
+		/[0-9]/.test(match) ? numeric : alpha
+	);
+};
+export const getIbanMask = (str: string, country = "DE") => {
+
+	const countryInString =
+		str?.slice(0, 2) in IBAN.countries && str.slice(0, 2).toUpperCase();
+	const countryCode = countryInString || country;
+	const { example } = IBAN.countries[countryCode];
+	return {
+		mask: maskString(IBAN.printFormat(example)),
+		humanMask: maskString(IBAN.printFormat(example), "0", "A").replace(
+			/^.{2}/g,
+			countryCode
+		),
+		example: IBAN.printFormat(example),
+		length: example.length,
+		countryInString,
+	};
+};

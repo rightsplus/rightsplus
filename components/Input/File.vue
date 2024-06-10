@@ -82,6 +82,7 @@ onMounted(() => {
   if (files.value) return generatePreview(Array.isArray(files.value) ? files.value : [files.value]);
 });
 const handleChange = (e: Event) => {
+  console.log(e)
   errors.value = [];
   const { files: fileList } = (e.target as typeof input.value) || {};
   const files = Array.from(fileList || []);

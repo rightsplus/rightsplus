@@ -42,7 +42,7 @@ export default {
       return !!context.flight
     },
     hasEUAirport: ({ context, messages }) => {
-      console.log([context.airport.departure, context.airport.arrival])
+      // console.log([context.airport.departure, context.airport.arrival])
       messages.value.hasEUAirport = "Please provide at least one EU airport"
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
@@ -131,9 +131,10 @@ export default {
       console.log('go ...', target || machine.initial)
       states.value.push(target || machine.initial)
     },
-    back: ({ states, machine }) => {
+    back: ({ states, machine, transition }) => {
       console.log('go back ...')
       try {
+        transition.value = 'back'
         states.value = states.value.slice(0, -1)
       } catch (error) {
         states.value = [machine.initial]
@@ -191,7 +192,6 @@ export default {
       init: {
         guard: 'hasStopover',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [{
@@ -207,7 +207,6 @@ export default {
       init: {
         guard: 'hasItinerary',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: {
@@ -220,7 +219,6 @@ export default {
       init: {
         guard: 'hasDate',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [
@@ -242,7 +240,6 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         continue: [
@@ -274,7 +271,6 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [
@@ -296,7 +292,6 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [{
@@ -311,7 +306,6 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [
@@ -335,7 +329,6 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
-        actions: 'back'
       },
       on: {
         next: [

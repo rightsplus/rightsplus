@@ -21,7 +21,7 @@
       floatingLabel
       class="mb-5"
     />
-    <InputDate v-model="model.date!" label="Datum" />
+    <InputDateCalendar v-model="model.date!" label="Datum" calendar name="replacement-flight-date" :inline="false"/>
   </div>
 </template>
 

@@ -3,6 +3,7 @@ import type { Flight, FlightAviationEdge, RowAirline } from '~/types.js'
 import { corsHeaders } from '../_shared/cors.ts'
 import { transformAviationEdgeFlight, transformAviationStackFlight, prepareFlight } from '../_shared/fetchFlights.ts'
 import { createClient } from 'supabase'
+import type { FlightAviationStack } from '~/aviation-edge.types.js'
 
 const updateAirlines = (flights: Flight[], req: { headers: { get: (arg0: string) => any } } | undefined) => {
   const authHeader = req.headers.get('Authorization')!
@@ -15,61 +16,25 @@ const updateAirlines = (flights: Flight[], req: { headers: { get: (arg0: string)
   const airlines = Object.entries(flights.reduce((acc, curr) => ({ ...acc, [curr.airline.iata]: curr.airline.name }), {})).map(([iata, name]) => ({ iata, name }))
   supabase
     .from("airline")
-    .insert(airlines, { onConflict: 'iata' })
-    .then(({ data: airlines }) => {
+    .upsert(airlines, { onConflict: 'iata', ignoreDuplicates: true })
+    .select('*')
+    .then((e) => {
+      console.log('airlines updated', e)
       supabase
         .from("flight")
         .insert(flights.map((flight) => prepareFlight(flight)))
-        .then(console.log)
-        .catch(console.log)
+        .then(e => console.log('flights inserted', e))
+        .catch(e => console.warn('error inserting flights', e))
     })
-    .catch(console.log)
+    .catch(e => console.warn('error upserting airlines', e))
 }
-// const fetchSupabase = async ({ date, departure, arrival, type, iata }) => {
-//   let match = {}
-//   if (iata) {
-//     match = {
-//       dateDeparture: date,
-//       iata
-//     }
-//   } else if (type === 'departure' && departure) {
-//     match = {
-//       dateDeparture: date,
-//       airportDeparture: departure
-//     }
-//   } else if (type === 'arrival' && arrival) {
-//     match = {
-//       dateArrival: date,
-//       airportArrival: arrival
-//     }
-//   } else if (departure && arrival) {
-//     match = {
-//       dateDeparture: date,
-//       airportDeparture: departure,
-//       airportArrival: arrival
-//     }
-//   } else {
-//     console.log('supply iata OR type and dep/arr OR dep and arr')
-//     throw 'supply iata OR type and dep/arr OR dep and arr'
-//   }
-//   console.log('match...', match)
 
-//   const { data, error } = await supabase
-//     .from('flight')
-//     .select('data')
-//     .match(match)
 
-//   console.log('data', data)
-//   console.log('error', error)
-
-//   return data.map((e: { data: any }) => e.data)
-// }
-
-const fetchAviationStack = async ({ date, departure, arrival, type, iata }) => {
-  const url = new URL(`http://api.aviationstack.com/v1/flights/`);
+const fetchAviationStack = async ({ date, departure, arrival, type, iata }, req) => {
+  const url = new URL(`http://api.aviationstack.com/v1/flights`);
   url.searchParams.append('access_key', Deno.env.get("AVIATION_STACK_KEY"));
 
-  // if (date) url.searchParams.append("flight_date", date);
+  if (date) url.searchParams.append("flight_date", date);
   if (departure) url.searchParams.append("dep_iata", departure);
   if (arrival) url.searchParams.append("arr_iata", arrival);
   if (iata) url.searchParams.append("flight_iata", iata);
@@ -77,24 +42,24 @@ const fetchAviationStack = async ({ date, departure, arrival, type, iata }) => {
   console.log('fetching from aviation stack', url)
 
   const response = await fetch(url.href)
-  console.log(response)
+  console.log('fetch', response)
   if (response.error) {
-    console.log(response)
+    console.log('error fetching aviation stack', response)
     throw new Error(response.error)
   }
   const json = await (response.json())
 
-  console.log(json)
-  return []
-
   if (json.error) throw json.error
+  
+  console.log('raw', json.data)
+  const flights = json.data.map((flight: FlightAviationStack) => transformAviationStackFlight(flight))
+  console.log('flights', flights)
+  
+  updateAirlines(flights, req)
 
-  const flights = json.map((flight: FlightAviationEdge) => transformAviationStackFlight(flight))
-
-  updateAirlines(flights)
 
   const filteredFlights = departure && arrival ? flights.filter((e: { departure: { iata: any }; arrival: { iata: any } }) => e.departure.iata === departure && e.arrival.iata === arrival) : flights
-
+  
   console.log('filteredFlights', filteredFlights)
   return filteredFlights
 }
@@ -120,7 +85,7 @@ const fetchAviationEdge = async ({ date, departure, arrival, type, iata }: { dat
   console.log('fetching from aviation edge', url)
 
   const response = await fetch(url.href)
-  const json = await(response).json()
+  const json = await (response).json()
 
   if (json.error) throw json.error
 
@@ -153,7 +118,7 @@ Deno.serve(async (req: { json: () => PromiseLike<{ date: any; departure: any; ar
     // data = await fetchSupabase({ date, departure, arrival, type, iata })
     // if (data.length) return returnData(data)
     console.log("fetching from aviation stack")
-    data = await fetchAviationStack({ date, departure, arrival, type, iata })
+    data = await fetchAviationStack({ date, departure, arrival, type, iata }, req)
     if (data.length) return returnData(data)
     data = await fetchAviationEdge({ date, departure, arrival, type, iata }, req)
     return returnData(data)

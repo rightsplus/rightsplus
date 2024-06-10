@@ -40,3 +40,29 @@ npm run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+
+# SQL
+```sql
+-- Policy for allowing read access to the public
+CREATE POLICY "allow_read_for_public" 
+ON "public"."booking" 
+FOR SELECT 
+TO PUBLIC 
+USING (true);
+
+-- Policy for allowing insert access to the public
+CREATE POLICY "allow_insert_for_public" 
+ON "public"."booking" 
+FOR INSERT 
+TO PUBLIC 
+WITH CHECK (true);
+
+-- Policy for allowing all actions for admins
+CREATE POLICY "allow_all_for_admins" 
+ON "public"."booking" 
+FOR ALL 
+TO admins 
+USING (true);
+```

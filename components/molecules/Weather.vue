@@ -16,11 +16,11 @@
           class="text-gray-400 animate-revolve"
         />
       </div>
-      <span class="font-bold" v-if="temperature">{{
-        $n(temperature, "celsius")
-      }}</span>
-      <span class="font-bold text-neutral-300 bg-neutral-300 rounded" v-else
-        >0,0 ºC</span
+      <span class="font-medium" v-if="temperature">{{
+        $n(temperature, { maximumFractionDigits: 0 })
+      }}&deg;</span>
+      <span class="font-medium text-neutral-300 bg-neutral-300 rounded" v-else
+        >--&deg;</span
       >
     </div>
     <span

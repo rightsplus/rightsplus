@@ -20,7 +20,7 @@
     <span
       class="formkit-help !-mt-3 text-xs text-neutral-500 leading-tight col-span-full"
       v-if="firstName || lastName"
-      >Stelle sicher, dass die Angabe mit dem Namen auf deiner Bordkarte
+      >Stelle sicher, dass die Angabe mit dem Namen auf der Bordkarte
       übereinstimmt.</span
     >
     <div
@@ -44,14 +44,14 @@
       v-if="email !== undefined"
       v-model="email"
       outer-class="col-span-full"
-      help="Keine Sorge, wir schicken dir nicht ungefragt Werbung."
+      help="Keine Sorge, wir schicken nicht ungefragt Werbung."
     />
     <InputIBAN
       v-if="iban"
       :label="$t('iban')"
       :name="$t('iban')"
       v-model="iban"
-      help="Damit wird dir deinen Anspruch an dich auszahlen können."
+      help="Damit wird dir deinen Anspruch auszahlen können."
       outer-class="col-span-full"
     />
     <FormKit

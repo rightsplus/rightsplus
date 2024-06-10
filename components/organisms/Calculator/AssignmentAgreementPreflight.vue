@@ -66,8 +66,9 @@ const updateSignature = (val: string | undefined, i: number) => {
 
 const generateAssignmentAgreement = async () => {
   const data = convertAssignmentAgreementData(props.modelValue)
+  console.log(data)
   const { url } = await generate({template: 'assignmentLetter', data})
-
+  console.log(url)
 	window.open(url, '_blank');
 }
 </script>

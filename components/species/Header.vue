@@ -43,7 +43,7 @@
       <TransitionGroup
         name="list"
         tag="ul"
-        class="w-full flex flex-col md:flex-row gap-x-6 gap-y-2 landscape:gap-y-[1vh] relative"
+        class="w-full flex flex-col items-center md:flex-row gap-x-6 gap-y-2 landscape:gap-y-[1vh] relative"
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLinkLocale
@@ -67,7 +67,7 @@
           :key="item.name"
           class="order-1 flex whitespace-nowrap"
           :class="{
-            'button text-base': item.type === 'button',
+            'button': item.type === 'button',
             '!hidden': item.hidden,
           }"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
@@ -81,7 +81,7 @@
             exactActiveClass="text-gray-500"
             :title="item.title || item.name"
             :class="{
-              'text-white bg-gray-700 px-5 md:py-0 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
+              'text-white bg-gray-700 px-4 md:py-3 md:my-2 -mx-1 rounded-full hover:text-white hover:bg-gray-800':
                 item.type === 'button',
               'hover:text-gray-500 ': item.type !== 'button',
               'bg-red-500 hover:bg-red-600 active:bg-red-700': item.critical,

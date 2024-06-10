@@ -19,6 +19,7 @@ type GuardProps<Context, States> = {
   messages: Ref<Record<string, string>>;
   event?: string;
 }
+type Transitions = 'forward' | 'back'
 export interface Machine<States extends string, Context> {
   id: string;
   persist?: boolean;
@@ -36,7 +37,7 @@ export interface Machine<States extends string, Context> {
     [guard: string]: (props: GuardProps<Context, States>) => boolean;
   };
   actions: {
-    [action: string]: (props: GuardProps<Context, States> & { machine: Machine<States, Context>, target?: States }) => void;
+    [action: string]: (props: GuardProps<Context, States> & { machine: Machine<States, Context>, target?: States, transition: Ref<Transitions> }) => void;
   };
 };
 
@@ -65,9 +66,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
   const states = machine.persist ? useLocalStorage<States[]>(`${machine.id}-states`, []) : ref<States[]>([]) as Ref<States[]>
   // const states = ref<States[]>([])
   const history = machine.persist ? useLocalStorage<States[]>(`${machine.id}-history`, []) : ref<States[]>([]) as Ref<States[]>
-  const transition = machine.persist ? useLocalStorage<'forward' | 'back'>(`${machine.id}-transition`, 'forward') : ref<'forward' | 'back'>('forward') as Ref<'forward' | 'back'>
-
-  console.log(transition.value)
+  const transition = machine.persist ? useLocalStorage<'forward' | 'back'>(`${machine.id}-transition`, 'forward') : ref<Transitions>('forward') as Ref<Transitions>
 
   const current = computed(() => states.value.at(-1) || initial)
 
@@ -76,7 +75,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
       console.error(`Action ${action} not found`)
       return
     }
-    machine.actions[action]({ context, states, machine, target, messages });
+    machine.actions[action]({ context, states, machine, target, messages, transition });
     Object.values(subscriptions.value).forEach(e => {
       if (!e || typeof e !== 'function') return
       e(cleanObject({ type: 'action', action, target }))
@@ -130,8 +129,12 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     const { target, action } = getNext({ event })
     return target || action
   }
+  watch(transition, (newValue) => {
+    console.log('transition', newValue)
+  })
 
   const send = (event: string) => {
+    transition.value = 'forward'
     const { target, action } = getNext({ event })
 
     if (action) {
@@ -169,7 +172,6 @@ export const useMachine = <States extends string, T extends Record<string, any>>
 
   watch(states, () => {
     if (history.value.length === states.value.length) return
-    transition.value = states.value.length < (history.value?.length || 0) ? 'back' : 'forward'
     history.value = states.value
   }, { deep: true });
 

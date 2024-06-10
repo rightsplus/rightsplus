@@ -23,8 +23,16 @@
               >{{ passenger(index) }}</span
             >
             <span
-              :class="['duration-100', name ? 'translate-y-2.5' : 'opacity-0']"
-              >{{ name || "-" }}</span
+              :class="[
+                'duration-100 flex items-center gap-2',
+                name ? 'translate-y-2.5' : 'opacity-0',
+              ]"
+              ><span>{{ name || "-" }}</span
+              ><span
+                v-if="modelValue.isMinor"
+                class="text-xs bg-neutral-200 text-neutral-500 px-2 py-1 rounded font-medium"
+                >minderjährig</span
+              ></span
             ></span
           >
           <div class="flex items-center gap-2">
@@ -46,11 +54,10 @@
 
             <button
               class="flex items-center"
-              v-if="
-              getCurrentInstance()?.vnode.props?.onSave && pendingChanges
-              "
+              v-if="getCurrentInstance()?.vnode.props?.onSave && pendingChanges"
               @click.stop="$emit('save')"
-              ><FontAwesomeIcon
+            >
+              <FontAwesomeIcon
                 :icon="loading ? 'circle-quarter' : 'cloud-arrow-up'"
                 fixed-width
                 class="text-lg"
@@ -58,28 +65,29 @@
                 aria-labelledby="pendingChanges-label"
               /><span id="pendingChanges-label" class="sr-only">{{
                 $t(loading ? "pendingChanges" : "missingFields")
-              }}</span></button
-            >
+              }}</span>
+            </button>
             <button
               class="flex items-center"
               v-if="
-              getCurrentInstance()?.vnode.props?.onRevert && pendingChanges
+                getCurrentInstance()?.vnode.props?.onRevert && pendingChanges
               "
               @click.stop="$emit('revert')"
-              ><FontAwesomeIcon
+            >
+              <FontAwesomeIcon
                 :icon="'arrow-rotate-left'"
                 fixed-width
                 class="text-lg"
                 aria-labelledby="pendingChanges-label"
               /><span id="pendingChanges-label" class="sr-only">{{
                 $t(loading ? "pendingChanges" : "missingFields")
-              }}</span></button
-            >
+              }}</span>
+            </button>
 
             <span
               class="flex items-center"
               v-if="
-              (Object.values(touched).some(Boolean) || !open.includes(index))
+                Object.values(touched).some(Boolean) || !open.includes(index)
               "
               ><FontAwesomeIcon
                 :icon="completed ? 'circle-check' : 'triangle-exclamation'"
@@ -96,7 +104,7 @@
       </template>
       <template #content>
         <div
-          class="grid [&>*]:m-0 gap-4  [&_.formkit-inner]:max-w-full @container grid-cols-3 @md:grid-cols-4"
+          class="grid [&>*]:m-0 gap-4 [&_.formkit-inner]:max-w-full @container grid-cols-3 @md:grid-cols-4"
         >
           <FormKit
             type="text"
@@ -118,29 +126,60 @@
           />
           <span
             class="formkit-help !-mt-3 text-xs text-neutral-500 leading-tight col-span-full"
-            >Stelle sicher, dass die Angabe mit dem Namen auf deiner Bordkarte
+            >Stelle sicher, dass die Angabe mit dem Namen auf der Bordkarte
             übereinstimmt.</span
           >
-          <div class="flex items-center gap-1 col-span-full" v-if="index > 0">
+          <div class="flex items-center gap-1 col-span-2" v-if="index > 0">
             <FormKit
               type="checkbox"
               name="isMinor"
+              v-model="modelValue.isMinor"
               decorator-icon="check"
               id="isMinor"
             />
-            <label
-              tag="label"
-              for="isMinor"
-              class="text-base leading-none"
-            >{{ $t('isMinor') }}
+            <label tag="label" for="isMinor" class="text-base leading-none"
+              >{{ $t("isMinor") }}
             </label>
           </div>
+          <div class="flex items-center gap-1 col-span-2" v-if="index > 0">
+            <InputDate
+              :label="$t('dateOfBirth')"
+              v-model="modelValue.dateOfBirth"
+              class="col-span-full @md:col-span-2"
+              calendar
+              popup
+            />
+          </div>
+          <span v-if="modelValue.isMinor" class="col-span-full leading-0"
+            >Angaben zu den Erziehungsberechtigten</span
+          >
+
+          <FormKit
+            v-if="modelValue.isMinor"
+            type="text"
+            :label="$t('firstName')"
+            v-model="modelValue.guardian.firstName"
+            outer-class="col-span-full @md:col-span-2"
+            :suffix-icon="icon('firstName')"
+            :suffix-icon-class="iconClass('firstName')"
+            @blur="touched.firstName = true"
+          />
+          <FormKit
+            v-if="modelValue.isMinor"
+            type="text"
+            :label="$t('lastName')"
+            v-model="modelValue.guardian.lastName"
+            outer-class="col-span-full @md:col-span-2"
+            :suffix-icon="icon('lastName')"
+            :suffix-icon-class="iconClass('lastName')"
+            @blur="touched.lastName = true"
+          />
           <FormKit
             type="email"
             :label="$t('email')"
             v-model="modelValue.email"
             @input="emit('update:modelValue', { ...modelValue, email: $event })"
-            help="Keine Sorge, wir schicken dir nicht ungefragt Werbung."
+            help="Keine Sorge, wir schicken nicht ungefragt Werbung."
             @focus="emailFocus = true"
             @blur="
               () => {
@@ -161,25 +200,10 @@
               !validEmail && modelValue.email
                 ? '[&>svg]:fill-red-500'
                 : emailFocus && modelValue.email
-                ? '[&>svg]:fill-green-500'
+                ? '[&>svg]:!fill-green-500'
                 : 'opacity-0'
             "
           />
-          <InputIBAN
-            :label="$t('iban')"
-            :name="$t('iban')"
-            v-model="modelValue.iban"
-            help="Damit wird dir deinen Anspruch an dich auszahlen können."
-            outer-class="col-span-full"
-            :touched="touched.iban"
-            @blur="touched.iban = true"
-          />
-          <!-- <FormKit
-            type="tel"
-            :label="`${$t('phone')} (${$t('optional')})`"
-            v-model="modelValue.phone"
-            outer-class="col-span-2"
-          /> -->
           <AddressInput
             name="address"
             label="Adresse"
@@ -218,7 +242,16 @@
             fileRemoveIcon="xmark"
             multiple
           />
-            <!-- icon="ticket-airline" -->
+          <InputIBAN
+            :label="$t('iban')"
+            :name="$t('iban')"
+            v-model="modelValue.iban"
+            help="Damit wird dir deinen Anspruch auszahlen können."
+            outer-class="col-span-full"
+            :touched="touched.iban"
+            @blur="touched.iban = true"
+          />
+          <!-- icon="ticket-airline" -->
 
           <!-- <div class="col-span-full  text-sm">Damit wir den Fall notfalls vor Gericht verteidigen können.</div> -->
           <!-- <div class="col-span-full  text-sm">Damit wird dir das Geld auszahlen können.</div> -->
@@ -252,7 +285,7 @@ const props = defineProps<{
   open: number[];
   length?: number;
   loading?: boolean;
-  pendingChanges?: boolean
+  pendingChanges?: boolean;
 }>();
 
 const touched = ref<Partial<PassengerDetails<boolean>> & { form: boolean }>({
@@ -275,6 +308,27 @@ watch(
     }
   },
   { deep: true }
+);
+watch(
+  () => props.modelValue.isMinor,
+  (open) => {
+    if (props.modelValue.isMinor && !props.modelValue.guardian) {
+      props.modelValue.guardian = {
+        firstName: "",
+        lastName: "",
+      };
+    }
+    if (props.modelValue.isMinor && !props.modelValue.dateOfBirth) {
+      props.modelValue.dateOfBirth = new Date(
+        new Date().getFullYear() - 18,
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+        .toISOString()
+        .slice(0, 10);
+    }
+  },
+  { deep: true, immediate: true }
 );
 
 const emit = defineEmits<{

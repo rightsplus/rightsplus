@@ -72,6 +72,11 @@ export interface PassengerDetails<T = string> {
   phone?: T;
   boardingPass?: File[];
   isMinor?: boolean;
+  dateOfBirth?: T;
+  guardian?: {
+    firstName: T;
+    lastName: T;
+  }
   signature?: SignatureData
 }
 export type DisruptionType = 'cancelled' | 'delayed' | 'noBoarding'
@@ -164,6 +169,7 @@ export interface Airport {
 export type AirlineInfo = {
   name: string;
   iata: string;
+  type: string[];
 }
 type FlightInfo = {
   number: string;
@@ -185,7 +191,7 @@ export type FlightPhase<T = 'departure' | 'arrival'> = {
 }
 export interface Flight {
   type: "arrival" | "departure";
-  status: "landed" | "scheduled" | "cancelled" | "active" | "unknown";
+  status: "landed" | "diverted" | "cancelled" | "scheduled" | "active" | "unknown";
   departure: FlightPhase;
   arrival: FlightPhase;
   airline: AirlineInfo;

@@ -53,7 +53,10 @@
         >
       </template>
       <template #content>
-        <InputDate v-model="modelValue.date" class="mt-5" />
+        <InputCalendar
+          v-model="modelValue.date"
+          class="mt-5"
+        />
       </template>
     </AccordionItem>
     <AccordionItem
@@ -184,7 +187,6 @@ const europeanUnion = computed(() =>
     useFlightStatus(props.modelValue.flight).europeanUnion.value
   ).every((e) => !e)
 );
-defineEmits(["back", "submit"]);
 const loading = ref(true);
 const error = ref(false);
 const active = ref(["layover"] as string[]);

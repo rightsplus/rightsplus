@@ -1,4 +1,5 @@
 import { useLocalStorage } from "@vueuse/core";
+import IBAN from "iban";
 import type { MaskInputOptions } from "maska";
 
 export const useScroll = () => {
@@ -40,7 +41,13 @@ export const usePosition = () => {
 	return [element, position] as const;
 }
 export const useMask = () => {
-	const allCaps: MaskInputOptions = reactive({
+	const iban: MaskInputOptions = reactive({
+		tokens: {
+			"@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() },
+		},
+		mask: (value) => getIbanMask(value).mask,
+	});
+	const allCaps: MaskInputOptions = {
 		tokens: {
 			"@": {
 				pattern: /[a-zA-Z0-9]/,
@@ -49,8 +56,8 @@ export const useMask = () => {
 			},
 		},
 		mask: () => "@",
-	});
-	return { allCaps }
+	};
+	return { allCaps, iban }
 }
 
 export function formatDate(date?: string | Date) {

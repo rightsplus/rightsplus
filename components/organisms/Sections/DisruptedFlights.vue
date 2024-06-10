@@ -80,7 +80,6 @@ onMounted(async () => {
     .returns<RowFlight[]>();
 
   flights.value = data?.map(({ data }) => data) || [];
-  console.log(flights);
 });
 import claimMachine from "~/machines/claimSubmission";
 const { send, state, invoke, messages } = useMachine<ClaimState, ClaimsForm>(claimMachine, {
@@ -88,12 +87,14 @@ const { send, state, invoke, messages } = useMachine<ClaimState, ClaimsForm>(cla
 });
 const { query, airports } = useAirports();
 const localePath = useLocalePath();
+const { assignLeg } = useFlightLeg(claim)
 const handleSelect = async (flight: Flight) => {
   invoke("reset");
   console.log("is in handleSelect", state.value);
   // await query([flight.departure.iata, flight.arrival.iata]);
   claim.airport.trip.departure = airports.value[flight.departure.iata];
   claim.airport.trip.arrival = airports.value[flight.arrival.iata];
+  assignLeg()
   claim.date = getISODate(flight.departure.scheduledTime);
   claim.flight = flight;
   // if (!state.value.matches("itinerary")) return;

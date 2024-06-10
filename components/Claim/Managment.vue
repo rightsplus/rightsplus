@@ -78,6 +78,12 @@
           {{ $t(`action.${action}`) }}
         </Button>
       </div>
+      <TabMenu :model="items" v-model:activeIndex="active" :pt="{
+        inkbar: ({state, props, context}) => ({
+          class: context?.index === props.activeIndex ? 'bg-red-500' : 'border-secondary-500'
+        })
+      }" />
+      {{  active }}
     <ClaimClient
       :client="claim.client"
       @update:modelValue="$emit('update', { id: claim?.id, data: { client: $event } })"
@@ -92,6 +98,9 @@
 </template>
 
 <script setup lang="ts">
+import TabMenu from 'primevue/tabmenu';
+import 'primevue/resources/themes/lara-light-green/theme.css';
+
 import type { CaseStatus, Database, RowClaimExtended } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
 
@@ -105,6 +114,13 @@ const { state, send, invoke } = useMachine<CaseStatus, RowClaimExtended>(
     initial: props.claim?.status,
   }
 );
+const active = ref(0)
+const items = ref([
+    { label: 'Dashboard', icon: 'pi pi-home' },
+    { label: 'Transactions', icon: 'pi pi-chart-line' },
+    { label: 'Products', icon: 'pi pi-list' },
+    { label: 'Messages', icon: 'pi pi-inbox' }
+]);
 
 watch(
   () => state.value.value,
@@ -115,5 +131,3 @@ watch(
   (id) => emit("update", { id, data: { unread: false } })
 );
 </script>
-
-<style scoped></style>

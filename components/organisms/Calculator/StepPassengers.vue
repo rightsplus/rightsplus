@@ -18,7 +18,6 @@
 <script lang="ts" setup>
 import type { Database, ClaimsForm } from "@/types";
 import PassengerForm from "./Forms/PassengerForm.vue";
-const emit = defineEmits(["submit", "back"]);
 
 const props = defineProps<{
   modelValue: ClaimsForm;

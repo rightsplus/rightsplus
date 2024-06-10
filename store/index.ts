@@ -70,6 +70,7 @@ export const defaultClaim = {
 } as ClaimsForm
 
 export const claim: ClaimsForm = reactive(JSON.parse(JSON.stringify(defaultClaim)))
+
 export const state = reactive({
   legs: {} as Record<string, Leg>,
   flights: [] as Flight[],
@@ -103,7 +104,6 @@ watch(() => { }, () => {
 export const airports = ref({} as Record<string, Airport>);
 
 export const airlines = ref({} as Record<string, RowAirline>);
-
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

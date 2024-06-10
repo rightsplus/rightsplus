@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col">
-    <InputDate
+    <InputCalendar
       v-model="modelValue.date"
-      @select="$emit('select')"
+      @select="() => $emit('select')"
       @update:page="pages = $event"
       :minDate="minDate"
     />

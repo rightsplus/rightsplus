@@ -160,7 +160,14 @@ useIntersectionObserver(
   },
   { immediate: true, threshold: 0.5 }
 );
+
 const allFlights = computed(() => {
+  // console.log(props.flights, getFilteredFlights({
+  //     departure: props.departure,
+  //     arrival: props.arrival,
+  //     date: props.date,
+  //     number: props.number,
+  //   }))
   return (
     props.flights ||
     getFilteredFlights({

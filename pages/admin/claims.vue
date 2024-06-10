@@ -119,7 +119,7 @@ const {
   // console.log(claims);
   return claims;
 });
-
+const claimQuery = getExtendedClaimQuery()
 const updateData = (props: {
   id?: RowClaimExtended["id"];
   data?: Partial<RowClaimExtended>;
@@ -132,16 +132,15 @@ const updateData = (props: {
     .update(data)
     .eq("id", id)
     .select(claimQuery)
-    .single()
+    .single<RowClaimExtended>()
     .then(({ data: claim }) => {
-      Object.assign(claims.value?.find((e) => e.id === claim.id) || {}, claim);
+      Object.assign(claims.value?.find((e) => e.id === claim?.id) || {}, claim);
     });
 };
 const activeClaimId = ref<RowClaimExtended["id"]>();
 const activeClaim = ref<RowClaimExtended>();
 watch(activeClaimId, (id) => {
   const nextClaim = claims.value?.find((e) => e.id === id);
-  console.log(nextClaim);
   activeClaim.value = nextClaim;
 });
 const date = (d: string) => new Date(d).toLocaleDateString(locale.value);

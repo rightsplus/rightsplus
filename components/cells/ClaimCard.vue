@@ -4,9 +4,9 @@
     v-if="flight"
   >
     <!-- Compensation -->
-    {{ message }}
     <!-- {{ compensation }} // {{ distance }} -->
     <div v-if="certain" class="flex flex-col">
+    <span class="text-center mt-3">{{ message }}</span>
       <div
         class="flex flex-col justify-center text-center items-center gap-3 p-3"
       >
@@ -146,7 +146,7 @@
           <span class="text-sm text-neutral-500"
             >{{ $t("flightDistance") }} ({{
               $t("fromTo", {
-                from: claim.airport.departure.iata,
+                from: claim.airport.departure?.iata,
                 to: claim.airport.trip.arrival?.iata,
               })
             }})</span
@@ -181,7 +181,7 @@
   </div>
   <div v-else>{{ flight }}</div>
 
-  <!-- <pre>{{ flight }}</pre> -->
+  <pre>{{ flight }}</pre>
 </template>
 
 <script setup lang="ts">

@@ -61,8 +61,9 @@
           >{{ iata }}</span
         >
         <span
-          class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
-          >{{ flight.status }}</span
+          class="text-xs font-medium leading-none whitespace-nowrap px-2 py-1 rounded-full -mx-1 border"
+          :class="status.class"
+          >{{ status.text }}</span
         >
       </div>
       <FontAwesomeIcon
@@ -110,26 +111,38 @@ const iata = computed(() => {
 });
 const { t } = useI18n();
 const status = computed(() => {
-  const s =
-    props.flight.status === "cancelled"
-      ? "cancelled"
-      : props.flight.arrival?.delay > 0
-      ? "delayed"
-      : "landed";
+  const s = props.flight.arrival?.delay > 0 ? "delayed" : props.flight.status;
+
   return {
     cancelled: {
-      class: "bg-red-100 text-red-600",
+      class: "bg-red-100 border-red-200 text-red-600",
       text: t("cancelled"),
     },
     delayed: {
-      class: "bg-yellow-100 text-yellow-700",
+      class: "bg-yellow-100 border-yellow-200 text-yellow-700",
       text: t("delayed.by", {
         value: getDuration(props.flight.arrival?.delay),
       }),
     },
+    diverted: {
+      class: "bg-yellow-100 border-yellow-200 text-yellow-700",
+      text: t("diverted"),
+    },
     landed: {
-      class: "bg-green-100 text-green-600",
+      class: "bg-green-100 border-green-200 text-green-600",
       text: t("onTime"),
+    },
+    scheduled: {
+      class: "bg-green-100 border-green-200 text-green-600",
+      text: t("scheduled"),
+    },
+    active: {
+      class: "bg-green-100 border-green-200 text-green-600",
+      text: t("active"),
+    },
+    unknown: {
+      class: "bg-gray-100 border-gray-200 text-gray-600",
+      text: t("unknown"),
     },
   }[s];
 });

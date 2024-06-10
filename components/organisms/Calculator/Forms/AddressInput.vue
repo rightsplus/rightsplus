@@ -1,5 +1,5 @@
 <template>
-  <DropdownSearch
+  <!-- <DropdownSearch
     :modelValue="modelValue.street"
     @update:modelValue="fillFields($event)"
     :label="$t('streetAndNumber')"
@@ -17,8 +17,8 @@
     class="col-span-full"
     autocomplete="address-line1"
     required
-  />
-  <!-- <FormKit
+  /> -->
+  <FormKit
     type="text"
     autocomplete="address-line1"
     :label="$t('streetAndNumber')"
@@ -26,7 +26,7 @@
     v-model="modelValue.street"
     @input="emit('update:modelValue', { ...modelValue, street: $event })"
     outer-class="col-span-full"
-  /> -->
+  />
   <FormKit
     type="text"
     autocomplete="postal-code"

@@ -18,11 +18,11 @@
           $emit('update:modelValue', ($event.target as HTMLInputElement)?.value)
         "
         :id="name"
-        v-maska:[options]
+        v-maska:[iban]
         data-maska-eager
         :data-complete="Boolean(modelValue)"
         class="formkit-input appearance-none bg-transparent focus:outline-none focus:ring-0 focus:shadow-none font-medium rounded-lg autofill:shadow-autofill focus:autofill:shadow-autofill autofill:ring-1 ring-blue-200 w-full px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400"
-        :placeholder="maskByCountry(modelValue).example"
+        :placeholder="ibanMask.example"
         @focus="isFocused = true"
         @blur="
           () => {
@@ -36,9 +36,9 @@
         :data-has-value="Boolean(modelValue)"
         >{{
           modelValue?.length >= 2 &&
-          modelValue?.length !== maskByCountry(modelValue).example?.length &&
+          modelValue?.length !== ibanMask.example?.length &&
           !valid
-            ? maskByCountry(modelValue).humanMask
+            ? ibanMask.humanMask
             : label
         }}</label
       >
@@ -83,7 +83,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { MaskInputOptions } from "maska";
 import { vMaska } from "maska";
 import IBAN from "iban";
 const props = defineProps<{
@@ -94,41 +93,13 @@ const props = defineProps<{
   help?: string;
   touched?: boolean;
 }>();
-const options: MaskInputOptions = reactive({
-  tokens: {
-    "@": { pattern: /[A-Z]/, transform: (chr: string) => chr.toUpperCase() },
-  },
-  mask: (value) => maskByCountry(value).mask,
-});
+const { iban } = useMask();
 const isFocused = ref(false);
-const countryError = ref(false);
 const valid = computed(() => IBAN.isValid(props.modelValue));
-const maskByCountry = (str: string, country = "DE") => {
-  const countryInString =
-    str?.slice(0, 2) in IBAN.countries && str.slice(0, 2).toUpperCase();
-  countryError.value = !countryInString;
-  const countryCode = countryInString || country;
-  const { example } = IBAN.countries[countryCode];
-  return {
-    mask: maskString(IBAN.printFormat(example)),
-    humanMask: maskString(IBAN.printFormat(example), "0", "A").replace(
-      /^.{2}/g,
-      countryCode
-    ),
-    example: IBAN.printFormat(example),
-    length: example.length,
-  };
-};
-
-const maskString = (str: string, numeric = "#", alpha = "@") => {
-  return str.replace(/[a-zA-Z0-9]/g, (match, offset) =>
-    /[0-9]/.test(match) ? numeric : alpha
-  );
-};
-const suffixIconComputed = computed(
-  () =>
-    props.modelValue?.length ===
-      maskByCountry(props.modelValue).example?.length ||
-    (props.modelValue?.length >= 2 && countryError)
-);
+const ibanMask = computed(() => getIbanMask(props.modelValue));
+const suffixIconComputed = computed(() => {
+  const { countryInString, example } = ibanMask.value;
+  return props.modelValue?.length === example?.length ||
+    (props.modelValue?.length >= 2 && !countryInString);
+});
 </script>

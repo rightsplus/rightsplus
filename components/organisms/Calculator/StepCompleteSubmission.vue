@@ -29,7 +29,6 @@ import Callout from "~/components/core/Callout.vue";
 import { claim } from "~/store";
 const client = useSupabaseClient<Database>();
 const user = useSupabaseUser();
-const emit = defineEmits(["submit", "back"]);
 
 const props = defineProps<{
   modelValue: ClaimsForm;

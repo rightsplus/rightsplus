@@ -65,8 +65,11 @@ export const useCompensation = (estimate = false) => {
 
 		// TRIP
 		const { departure, arrival, trip } = airport || {}
-		if (!departure || !arrival) return 'airport.missing'
-		if (departure.iata === arrival.iata) return 'airport.identical'
+		if (!departure || !Object.keys(departure).length || !arrival || !Object.keys(arrival).length) return 'airport.missing'
+		if (departure.iata === arrival.iata) {
+			console.log(departure, arrival)
+			return 'airport.identical'
+		}
 		if (!departure.ec261 && !arrival.ec261) return 'ec261.airport'
 		if (!leg || !generateLegs(trip)[leg]) return 'leg.missing'
 
@@ -123,6 +126,7 @@ export const useCompensation = (estimate = false) => {
 		const distance = getDistance(claim)
 		let message = ""
 
+		// if (claim.flight?.status === 'landed') {
 		if (!estimate && getError()) {
 			const errorCode = getError()
 			if (errorCode) {
@@ -130,7 +134,11 @@ export const useCompensation = (estimate = false) => {
 				return { compensation: 0, distance, message }
 			}
 		}
-
+		if (claim.flight?.status === 'landed') {
+			message = t('Dein Flug ist offenbar pünktlich gelandet.')
+			eligible.value = false
+			return { compensation: 0, distance, message }
+		}
 		let compensation = 250
 		if (distance > 1500) compensation = 400
 		const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e.ec261)

@@ -149,6 +149,7 @@ export const useAirlines = () => {
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
 			await client.from('airline').select('*').eq('iata', iata).returns<RowAirline[]>().then(({ data }) => {
+				console.log(data)
 				const [airline] = data || []
 				if (airline) airlines.value[iata] = {
 					...airline,
