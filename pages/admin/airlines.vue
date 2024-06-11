@@ -142,7 +142,6 @@ const { data } = await useAsyncData("airlines", async () => {
       .order("name", { ascending: false })
       .returns<RowAirline[]>();
 
-    // console.log(airlines);
     return {
       airlines: airlines?.sort((a, b) => (a.iata.includes("*") ? 1 : -1)),
     };
@@ -208,16 +207,12 @@ const success = ref(false);
 const saveChanges = async () => {
   if (!currentAirline?.value) return;
   loading.value = true;
-  console.log("saving airline");
   try {
-    console.log(currentAirline.value);
-    console.log(currentAirline.value)
     const { data, error, status } = await supabase
       .from("airline")
       .upsert(currentAirline.value)
       .select();
     loading.value = false;
-    console.log(data, error, status);
     if (error) {
       throw error.message;
     } else {
