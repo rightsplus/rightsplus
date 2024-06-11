@@ -66,7 +66,7 @@ export type ButtonProps = {
 const props = defineProps<ButtonProps>();
 const localePath = useLocalePath();
 const component = computed(() => {
-  if (props.to) return resolveComponent("NuxtLinkLocale");
+  if (props.to) return resolveComponent("NuxtLink");
   return "button";
 });
 const path = computed(() => {

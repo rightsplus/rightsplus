@@ -22,7 +22,7 @@
           class="bg-neutral-100 rounded-xl p-3 flex overflow-auto"
         />
       </div>
-      <Button to="/" secondary>Zurück zur Startseite</Button>
+      <Button to="index" secondary>Zurück zur Startseite</Button>
     </div>
   </NuxtLayout>
 </template>

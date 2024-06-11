@@ -8,7 +8,7 @@
     >
       <div class="@2xl:col-span-4 @5xl:col-span-3 flex flex-col gap-24">
         <NuxtLinkLocale
-          to="/"
+          to="index"
           class="w-full max-w-[160px] h-min flex gap-3 items-center leading-none cursor-pointer"
           title="home"
           @click="scrollTop"

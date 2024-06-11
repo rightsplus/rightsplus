@@ -33,9 +33,9 @@
                 role="button"
                 data-n-ids='{"5yOShZwaZW:0":"5yOShZwaZW:1"}'
               >
-                <NuxtLink
+                <NuxtLinkLocale
                   type="button"
-                  :to="localeRoute('/')"
+                  to="index"
                   class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center w-full"
                 >
                   <Icon
@@ -138,7 +138,7 @@ const { auth } = useSupabaseAuthClient();
 const width = ref(250);
 const signOut = () => {
   auth.signOut();
-  navigateTo(localeRoute("/"));
+  navigateTo(localeRoute("index"));
 };
 definePageMeta({
   middleware: ["auth"],

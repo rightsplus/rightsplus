@@ -41,6 +41,12 @@ const options: ModuleOptions = {
 	customRoutes: 'config',
 	vueI18n: 'config/i18n.options.ts',
 	pages: {
+		"index": {
+			"en": "/",
+			"de": "/",
+			"fr": "/",
+			"nl": "/"
+		},
 		"terms-and-conditions": {
 			"en": "/terms-and-conditions",
 			"de": "/agb",

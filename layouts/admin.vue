@@ -170,7 +170,7 @@ const user = useSupabaseUser();
 const { auth } = useSupabaseAuthClient();
 const signOut = () => {
   auth.signOut();
-  navigateTo("/");
+  navigateTo(localeRoute("index"));
 };
 const menu = [
   {

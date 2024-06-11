@@ -38,7 +38,7 @@ const menu = computed(() => [
   //   name: "status",
   //   onClick: () => {
   //     auth.signOut();
-  //     navigateTo("/");
+  //     navigateTo(localeRoute("index"));
   //   },
   //   label: "Ausloggen",
   //   icon: "door-open",

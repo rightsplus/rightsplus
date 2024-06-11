@@ -47,7 +47,7 @@
       >
         <li class="order-0 md:order-1 mr-auto" key="logo">
           <NuxtLinkLocale
-            to="/"
+            to="index"
             class="flex gap-3 items-center sm:py-3 leading-none cursor-pointer"
             title="RightsPlus"
             @click="clickLink"
