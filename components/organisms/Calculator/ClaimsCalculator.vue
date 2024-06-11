@@ -14,7 +14,7 @@
         @close="
           {
             invoke('reset');
-            navigateTo(useLocalePath()('/'));
+            navigateTo(useLocalePath()('index'));
           }
         "
       />
