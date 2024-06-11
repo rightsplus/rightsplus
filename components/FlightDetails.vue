@@ -53,7 +53,7 @@ const { locale } = useI18n();
 const flight = computed(() => props.flight);
 const { weather } = useWeather(flight);
 watch(flight, () => {
-  console.log(props.flight);
+  // console.log(props.flight);
 });
 
 const date = (time: string) => {

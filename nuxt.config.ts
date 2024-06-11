@@ -33,6 +33,9 @@ export default defineNuxtConfig({
   },
   nitro: {
     compressPublicAssets: true,
+    prerender: {
+      failOnError: false
+    }
   },
   formkit: {
     configFile: './formkit.config.ts',

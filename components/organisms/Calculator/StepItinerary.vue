@@ -134,11 +134,11 @@
           sind verjährt. Gemäß geltendem EU-Recht kannst du keine Entschädigung
           mehr einfordern.</span
         >
-        <NuxtLink
-          :to="'/faq/verjaehrung'"
+        <NuxtLinkLocale
+          to="faq"
           class="flex gap-2 items-center mt-2 mr-auto hover:underline"
           ><FontAwesomeIcon icon="arrow-right" class="text-xs" />Mehr
-          erfahren</NuxtLink
+          erfahren</NuxtLinkLocale
         >
       </Callout>
 

@@ -142,7 +142,7 @@ const { data } = await useAsyncData("airlines", async () => {
       .order("name", { ascending: false })
       .returns<RowAirline[]>();
 
-    console.log(airlines);
+    // console.log(airlines);
     return {
       airlines: airlines?.sort((a, b) => (a.iata.includes("*") ? 1 : -1)),
     };
