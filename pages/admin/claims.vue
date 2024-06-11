@@ -57,7 +57,7 @@
     <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
       <div class="flex-col items-stretch relative w-full flex-1">
         <div class="flex-1 p-5 w-full h-full">
-          <ClaimManagment
+          <ClaimManagement
             :claim="activeClaim"
             @update="updateData"
           />
