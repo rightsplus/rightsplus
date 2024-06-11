@@ -47,7 +47,7 @@
                     <span class="font-bold">RightsPlus </span>
                     <span class="font-medium">Flights</span></span
                   >
-                </NuxtLink>
+                </NuxtLinkLocale>
               </div>
             </div>
           </div>
