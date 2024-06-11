@@ -11,12 +11,13 @@ export default {
   initial: "dataReceived",
   loading: "loading",
   guards: {
-    hasItinerary: ({ context, messages }) => {
+    acceptClaim: ({ context, methods }) => {
       return true
     },
   },
   actions: {
     setHistory: ({ states, target }) => {
+      console.log('setHistory', target, states.value)
       states.value = target ? [target] : []
       return states.value
     },
@@ -38,6 +39,7 @@ export default {
     dataReceived: {
       on: {
         accept: {
+          guard: "acceptClaim",
           target: "awaitInitialAirlineResponse",
         },
         reject: {
@@ -53,7 +55,6 @@ export default {
         reject: [
           {
             target: "awaitInitialAirlineResponse",
-            actions: "negotiate",
             guard: "insistToNegotiate"
           },
           {

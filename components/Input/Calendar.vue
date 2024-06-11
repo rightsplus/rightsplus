@@ -49,9 +49,9 @@ const updateModelValue = (value?: Date) => {
 const dayClick = (value: Date) => {
   emit("select");
 };
-onMounted(() => {
-  if (!props.modelValue) updateModelValue();
-});
+// onMounted(() => {
+//   if (!props.modelValue) updateModelValue();
+// });
 watch(() => props.modelValue, e => calendar.value?.move(e))
 
 </script>

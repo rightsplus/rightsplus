@@ -12,9 +12,11 @@ type MachineState<States> = {
   guardType?: "and" | "or" | "xor";
   event?: string;
 }
+export type Methods<Context, States extends string> = { [state in States]: (context: Context) => Promise<void> }
 
-type GuardProps<Context, States> = {
+type GuardProps<Context, States extends string> = {
   context: Context;
+  methods: Methods<Context, States>
   states: Ref<States[]>;
   messages: Ref<Record<string, string>>;
   event?: string;
@@ -51,14 +53,16 @@ const loading = ref(true)
 export const useMachine = <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
   context?: T | undefined;
   initial?: States;
+  methods?: Methods<T>
 }) => {
 
-  type SubscriptionProps = { type: string; action?: string | string[]; target?: States }
+  type SubscriptionProps = { type: string; action?: string | string[]; event?: string; target?: States, origin?: States }
   type Subscriptions = {
     [id: string]: (props: SubscriptionProps) => void
   }
   const context = options?.context || {} as T
   const initial = options?.initial || machine.initial
+  const methods = options?.methods || {}
   const messages = ref<Record<string, string>>({})
 
   // const ls = typeof localStorage !== 'undefined'
@@ -67,6 +71,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
   // const states = ref<States[]>([])
   const history = machine.persist ? useLocalStorage<States[]>(`${machine.id}-history`, []) : ref<States[]>([]) as Ref<States[]>
   const transition = machine.persist ? useLocalStorage<'forward' | 'back'>(`${machine.id}-transition`, 'forward') : ref<Transitions>('forward') as Ref<Transitions>
+  const invocation = ref<string | undefined>(undefined)
 
   const current = computed(() => states.value.at(-1) || initial)
 
@@ -75,10 +80,12 @@ export const useMachine = <States extends string, T extends Record<string, any>>
       console.error(`Action ${action} not found`)
       return
     }
-    machine.actions[action]({ context, states, machine, target, messages, transition });
+    const origin = current.value
+    machine.actions[action]({ context, methods, states, machine, target, messages, transition });
+    invocation.value = action
     Object.values(subscriptions.value).forEach(e => {
       if (!e || typeof e !== 'function') return
-      e(cleanObject({ type: 'action', action, target }))
+      e(cleanObject({ type: 'action', action, target, origin }))
     })
 
   };
@@ -87,7 +94,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     const { guard, guardType, event } = e || {}
     if (!guard) return true
     const clause = (g: string) => {
-      const res = machine.guards[g]?.({ context, states, messages, event })
+      const res = machine.guards[g]?.({ context, methods, states, messages, event })
       if (res) delete messages.value[g]
       return res
     }
@@ -134,6 +141,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
   })
 
   const send = (event: string) => {
+    const origin = current.value
     transition.value = 'forward'
     const { target, action } = getNext({ event })
 
@@ -146,11 +154,11 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     }
     Object.values(subscriptions.value).forEach(e => {
       if (!e || typeof e !== 'function') return
-      e(cleanObject({ type: 'event', action, event, target }))
+      e(cleanObject({ type: 'event', action, event, target, origin }))
     })
   };
 
-  const subscribe = (callback: (state: string) => void) => {
+  const subscribe = (callback: (state: SubscriptionProps) => void) => {
     const id = uuid()
     Object.assign(subscriptions.value, {
       id: callback
@@ -189,6 +197,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     })),
     states,
     invoke,
+    invocation,
     send,
     history,
     transition,

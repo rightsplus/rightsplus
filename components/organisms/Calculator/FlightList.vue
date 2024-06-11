@@ -36,7 +36,7 @@
           :options="[
             ...filteredAirlines.map((flight) => ({
               value: flight.airline.iata,
-              label: flight.airline.name,
+              label: airlines[flight.airline.iata]?.name || flight.airline.name,
               prepend: {
                 component: AirlineLogo,
                 props: {
@@ -146,6 +146,7 @@ const props = defineProps<{
   showFilter?: boolean;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
+const {airlines} = useAirlines()
 const show = ref(false);
 const container = ref(null);
 const group = (index: number) =>
@@ -275,9 +276,10 @@ const timeFilter = (flight: Flight, t = time.value) => {
 const selectedAirline = ref();
 const airlineFilter = (flight: Flight) => {
   return (
-    !selectedAirline.value ||
-    flight.airline.iata === selectedAirline.value ||
-    flight.codeshared?.airline.iata === selectedAirline.value
+    (!selectedAirline.value ||
+      flight.airline.iata === selectedAirline.value ||
+      flight.codeshared?.airline.iata === selectedAirline.value) &&
+    !flight.airline.name.toLocaleLowerCase().includes("cargo")
   );
 };
 const filteredDayTimeButtons = computed(() =>

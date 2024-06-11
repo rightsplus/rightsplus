@@ -60,19 +60,24 @@ export const useMask = () => {
 	return { allCaps, iban }
 }
 
-export function formatDate(date?: string | Date) {
+export function formatDateRelative(date?: string | Date) {
 	const { locale } = useI18n();
-	const today = new Date();
-	const d = new Date(date || today);
-	const diffInDays = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+	const now = new Date();
+	const d = new Date(date || now);
+	const isToday = getISODate(now) === getISODate(d)
+	const isYesterday = getISODate(now) === getISODate(new Date(d.setDate(d.getDate() + 1)))
+	const diffInDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
 
 	// Localize date and time format based on user's locale
 	const options: Intl.DateTimeFormatOptions = {
 		timeStyle: 'short',
 	};
 
-	if (diffInDays < 1) {
+	if (isToday) {
 		return d.toLocaleTimeString(locale.value, options);
+	} else if (isYesterday) {
+		const rtf = new Intl.RelativeTimeFormat(locale.value, { numeric: "auto" });
+		return rtf.formatToParts(-1, "day").map(({ value }) => value).join("");
 	} else if (diffInDays <= 6) {
 		const weekday = d.toLocaleDateString(locale.value, { weekday: 'long' });
 		return weekday.charAt(0).toUpperCase() + weekday.slice(1);

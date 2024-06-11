@@ -22,7 +22,10 @@
           v-if="airports && flight.departure && flight.arrival"
           ><span class="font-bold">{{ city.departure }}</span>
           {{ $t("to") }}
-          <span class="font-bold">{{ city.arrival }}</span></span
+          <span class="font-bold">{{ city.arrival }}</span>
+          <span v-if="showDate && flight.departure">{{
+            date(flight.departure.scheduledTime)
+          }}</span></span
         >
 
         <span
@@ -102,6 +105,7 @@ export type FlightCardProps = {
   airports?: boolean;
   compensation?: boolean;
   actionButton?: ButtonProps;
+  showDate?: boolean;
 };
 const props = defineProps<FlightCardProps>();
 
@@ -173,6 +177,13 @@ const time = (time: string) => {
   return new Date(time).toLocaleTimeString(useI18n().locale.value, {
     hour: "2-digit",
     minute: "2-digit",
+  });
+};
+const date = (date: string) => {
+  return new Date(date).toLocaleDateString(useI18n().locale.value, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 </script>

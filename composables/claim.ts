@@ -50,6 +50,8 @@ export const useGeneratePDF = () => {
 export const useCompensation = (estimate = false) => {
 	const { t } = useI18n()
 	const claim = useClaim()
+	const { airport: a, assignLeg } = useFlightLeg(claim);
+
 	const { airlines } = useAirlines()
 	const { noBoardingReasons } = useDisruption()
 
@@ -59,12 +61,16 @@ export const useCompensation = (estimate = false) => {
 	const message = ref<string>();
 
 	const getError = () => {
+		assignLeg()
 		eligible.value = null
 		if (!claim) return 'noClaim' // No claim
 		const { airport, leg, flight, disruption, replacement, connection } = claim
 
 		// TRIP
 		const { departure, arrival, trip } = airport || {}
+		const legs = generateLegs(airport.trip)
+		console.log(departure, arrival, trip, legs)
+
 		if (!departure || !Object.keys(departure).length || !arrival || !Object.keys(arrival).length) return 'airport.missing'
 		if (departure.iata === arrival.iata) {
 			console.log(departure, arrival)

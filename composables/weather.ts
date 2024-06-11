@@ -46,6 +46,7 @@ export const getWeather = async (airport: Airport, date: Date | string): Promise
 		"apparent_temperature"
 	];
 	try {
+		// console.log(`https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=${d}&end_date=${d}&hourly=${params.join(',')}`)
 		const data = await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=${d}&end_date=${d}&hourly=${params.join(',')}`).then((res) => res.json()).then(({ hourly, error, reason }) => {
 			if (error) throw new Error(reason)
 			return hourly
@@ -143,13 +144,16 @@ export const useWeather = (flight: Ref<Flight>) => {
 		departure: {},
 		arrival: {}
 	})
-	const fetch = async ({ departure, arrival }: Flight) => {
+	const fetch = async (e: Flight) => {
+		const { departure, arrival } = e
+		if (!departure?.iata || !arrival?.iata) return console.log('no iata')
 		const { [departure.iata]: dep, [arrival.iata]: arr } = await queryAirports([departure.iata, arrival.iata])
 		weather.value = {
 			departure: {},
 			arrival: {},
 		}
-		console.log('fetching', departure.iata, arrival.iata, dep, arr)
+		// console.log('fetching', departure.iata, arrival.iata, dep, arr)
+		// getWeather(dep, departure.scheduledTime).then(console.log)
 		const [weatherDeparture, weatherArrival] = await Promise.all([getWeather(dep, departure.scheduledTime), getWeather(arr, arrival.scheduledTime)])
 		weather.value = {
 			departure: getByHour(weatherDeparture, departure.scheduledTime),

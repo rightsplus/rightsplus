@@ -53,12 +53,12 @@
               class="text-xs"
             >
               <template v-slot:terms
-                ><NuxtLinkLocale to="/terms-and-conditions">{{
+                ><NuxtLinkLocale to="terms-and-conditions">{{
                   $t("termsAndConditions")
                 }}</NuxtLinkLocale></template
               >
               <template v-slot:privacyPolicy
-                ><NuxtLinkLocale to="/privacy">{{
+                ><NuxtLinkLocale to="privacy">{{
                   $t("privacyPolicy")
                 }}</NuxtLinkLocale></template
               >
@@ -92,12 +92,12 @@
         >
           <i18n-t keypath="accountAcceptTerms.notice" tag="span">
             <template v-slot:terms
-              ><NuxtLinkLocale to="/terms-and-conditions">{{
+              ><NuxtLinkLocale to="terms-and-conditions">{{
                 $t("termsAndConditions")
               }}</NuxtLinkLocale></template
             >
             <template v-slot:privacyPolicy
-              ><NuxtLinkLocale to="/privacy">{{
+              ><NuxtLinkLocale to="privacy">{{
                 $t("privacyPolicy")
               }}</NuxtLinkLocale></template
             >

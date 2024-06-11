@@ -46,6 +46,7 @@
         @select="handleSelect"
         :showFilter="page"
         :flightCard="{
+          showDate: true,
           airports: true,
           compensation: false,
           actionButton: {

@@ -1,10 +1,12 @@
 import { useI18n } from "#i18n"
 import type { CaseStatus, ClaimState, RowClaimExtended } from "~/types"
+import type { Methods } from "~/composables/machine"
 
 const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n>, data: RowClaimExtended }): Record<CaseStatus, {}> => {
 	const { t } = i18n
 	return {
 		dataReceived: {
+			subject: t('status.dataReceived.subject'),
 			preTitle: t('status.dataReceived.preTitle'),
 			title: t('Wir sind dran!'),
 			body: `
@@ -37,7 +39,29 @@ const getStatus = ({ i18n, data }: { i18n: ReturnType<typeof useI18n>, data: Row
 }
 
 
-export const useStatusEmail = () => {
+
+export const useStatusEmail = <Context, States extends string>() => {
 	const i18n = useI18n()
-	return (status: CaseStatus, data: RowClaimExtended) => getStatus({ i18n, data })[status]
+	const { send } = useSendMail();
+
+	const emails: Methods<Context, States> = {
+		dataReceived: [
+			{
+				handler: async (claim: a) => {
+					console.log('dataReceived', claim)
+					const data = getStatus({i18n, data: claim }).dataReceived
+					console.log('data', data)
+					// send({
+					// 	to: claim.client.email,
+					// 	subject: data.subject,
+					// 	template: "Status.vue",
+					// 	data,
+					// })
+				}
+			}
+		]
+	}
+	return {
+		emails
+	}
 }

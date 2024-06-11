@@ -522,7 +522,7 @@ export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
 	}
 }
 
-export const getExtendedClaimQuery = () => `*, booking ( flight ( *, airline ( * ) ) )`;
+export const getExtendedClaimQuery = () => `*, booking ( flight ( *, airline ( * ) ), disruption )`;
 
 
 

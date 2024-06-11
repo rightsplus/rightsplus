@@ -1,41 +1,36 @@
 import type { ClaimsForm, RowClaim, Database, Flight, RowFlight, RowBooking } from "@/types";
 
-
+type BaseProps = {
+	date: string;
+	or?: string;
+}
 export const useSupabaseFunctions = () => {
 	const supabase = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
 
-	async function fetchFlights<T>(body: {
-		date: string;
+	async function fetchFlights<T>(body: BaseProps & {
+		iata: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: BaseProps & {
+		arrival: string;
+		departure: string;
+	}): Promise<T>
+	async function fetchFlights<T>(body: BaseProps & {
 		type: "departure";
 		departure: string;
 	}): Promise<T>
-	async function fetchFlights<T>(body: {
-		date: string;
+	async function fetchFlights<T>(body: BaseProps & {
 		type: "arrival";
 		arrival: string;
 	}): Promise<T>
-	async function fetchFlights<T>(body: {
-		date: string;
-		arrival: string;
-		departure: string;
-	}): Promise<T>
-	async function fetchFlights<T>(body: {
-		date: string;
-		iata: string;
-	}): Promise<T>
-	async function fetchFlights<T>(body: {
-		date: string
+	async function fetchFlights<T>(body: BaseProps & {
 		departure?: string
 		arrival?: string
 		type?: "departure" | "arrival",
 		iata?: string
 	}): Promise<T> {
-		console.log('start fetching supabase')
-		// supabase.from('claim').select('*').then(() => console.log('claim'))
-		// return [] as unknown as T
 		console.time('fetching supabase')
-		const { date, departure, arrival, type, iata } = body
+		const { date, departure, arrival, type, iata, or } = body
 		let match = {}
 		if (iata) {
 			match = {
@@ -65,10 +60,13 @@ export const useSupabaseFunctions = () => {
 		console.log('supabase:', supabase)
 
 
+		console.log(or)
+		// return []
 		const { data: flights, error: errFlights } = await supabase
 			.from('flight')
 			.select('data')
 			.match(match)
+			.or(or || "")
 
 		console.log('data', flights)
 		console.log('error', errFlights)
@@ -80,7 +78,7 @@ export const useSupabaseFunctions = () => {
 			return mappedFlights as T
 		}
 		console.log('flights not cached')
-		
+
 		console.log('fetching aviation stack/edge')
 		const { data, error } = await supabase.functions.invoke("flights", { body })
 		console.log('fetching aviation stack/edge done', data, error)

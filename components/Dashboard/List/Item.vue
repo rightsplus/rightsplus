@@ -32,7 +32,7 @@
             </span>
             <div class="flex flex-col items-end" v-if="date">
               <span class="text-neutral-400 flex items-center gap-2"
-                ><span>{{ formatDate(date) }}</span></span
+                ><span>{{ formatDateRelative(date) }}</span></span
               >
             </div>
           </div>

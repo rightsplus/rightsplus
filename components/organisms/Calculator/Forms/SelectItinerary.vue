@@ -49,22 +49,14 @@ const props = defineProps<{
 const t = ref()
 const container = ref<HTMLElement>();
 
-const { legs, assignLeg } = useFlightLeg(props.modelValue);
+const { assignLeg } = useFlightLeg(props.modelValue);
 
 watch(
   props.modelValue.airport.trip,
-  () => {
-    const iatasLeg = Object.keys(legs.value);
-    if (iatasLeg.length <= 1) {
-      props.modelValue.leg = iatasLeg[0];
-    }
-  },
+  assignLeg,
   { deep: true, immediate: true }
 );
-watch(() => props.modelValue.airport.trip, assignLeg, {
-  deep: true,
-  immediate: true,
-});
+
 onMounted(() => {
   focusFirst({ select: true, empty: true, scope: container.value });
 });

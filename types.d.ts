@@ -261,7 +261,7 @@ export interface RowAirline extends Row {
   phone: string;
   active: boolean;
 }
-export interface RowFlight extends Row  {
+export interface RowFlight extends Row {
   iata: string;
   status: string;
   dateDeparture: string;
@@ -276,12 +276,12 @@ export interface RowFlight extends Row  {
   airportArrival: string;
   data: Flight
 }
-export interface RowBooking extends Row  {
+export interface RowBooking extends Row {
   number: string;
   flightId: RowFlight['id'];
   disruption: ClaimsForm['disruption'];
 }
-export interface RowClaim extends Row  {
+export interface RowClaim extends Row {
   status: CaseStatus;
   email: string;
   bookingId: BookingsRow['id'];

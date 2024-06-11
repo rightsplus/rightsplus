@@ -149,11 +149,12 @@ export const useAirlines = () => {
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
 			await client.from('airline').select('*').eq('iata', iata).returns<RowAirline[]>().then(({ data }) => {
-				console.log(data)
+				// 		console.log(data)
 				const [airline] = data || []
 				if (airline) airlines.value[iata] = {
 					...airline,
 				}
+
 			})
 		}))
 		return Array.isArray(iata) ? airlines.value : airlines.value[iata]
@@ -450,7 +451,7 @@ export const useFlights = () => {
 				return
 			}
 
-			const query = `${departure}-${arrival}-${getISODate(date)}`;
+			const query = [departure, arrival, getISODate(date)].filter(Boolean).join('-');
 			if (queries.value.includes(query) && flights.value.length) {
 				console.log("has been queried", queries.value, query, flights.value);
 				return
@@ -587,10 +588,14 @@ export const useFlightLeg = (claim: ClaimsForm) => {
 	const legs = computed(() => generateLegs?.(claim.airport.trip));
 
 	const assignLeg = async () => {
+
+		const iatasLeg = Object.keys(legs.value);
+		if (iatasLeg.length <= 1) claim.leg = iatasLeg[0];
 		const [departure, arrival] = claim.leg?.split("-") || [];
 		await query([departure, arrival])
+
 		Object.assign(claim.airport, { departure: airports.value[departure], arrival: airports.value[arrival] });
 	};
 
-	return { legs, assignLeg }
+	return { legs, assignLeg, airport: claim.airport }
 }

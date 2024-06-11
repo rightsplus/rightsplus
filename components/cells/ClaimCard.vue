@@ -5,8 +5,15 @@
   >
     <!-- Compensation -->
     <!-- {{ compensation }} // {{ distance }} -->
+    {{
+      eligible === false
+        ? "ineligible"
+        : eligible === true
+        ? "eligible"
+        : `unknown: ${message}`
+    }}
     <div v-if="certain" class="flex flex-col">
-    <span class="text-center mt-3">{{ message }}</span>
+      <span class="text-center mt-3">{{ message }}</span>
       <div
         class="flex flex-col justify-center text-center items-center gap-3 p-3"
       >
@@ -175,7 +182,6 @@
             >
           </span>
         </div>
-        
       </div>
     </div>
   </div>
@@ -216,7 +222,9 @@ const time = (time: string) => {
     minute: "2-digit",
   });
 };
-const { compensation, distance, message } = useCompensation(!props.certain);
+const { compensation, distance, message, eligible } = useCompensation(
+  !props.certain
+);
 
 const arrivalTime = computed(() => {
   const { actualTime } = flight.value?.arrival || {};

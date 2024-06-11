@@ -103,5 +103,3 @@ const weatherIconMap = [
   "smog",
 ];
 </script>
-
-<style scoped></style>

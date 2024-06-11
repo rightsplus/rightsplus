@@ -194,10 +194,5 @@ const menu = [
     href: "/admin/airlines",
     icon: "plane-tail",
   },
-  {
-    label: "Kialo Clone",
-    href: "/admin/kialo",
-    icon: "arrow-right",
-  },
 ];
 </script>
