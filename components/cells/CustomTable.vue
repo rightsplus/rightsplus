@@ -20,8 +20,8 @@
     <Column header="Flug" field="flight" sortable sortField="flight.number">
       <template #body="{ data }: { data: RowClaimExtended }">
         <div class="flex items-center gap-2">
-          <!-- <CellsAirlineLogo :airline="data.flight.airline" /> -->
-          <span>{{ data.flight.iata }}</span>
+          <!-- <CellsAirlineLogo :airline="data.booking.flight.airline" /> -->
+          <span>{{ data.booking.flight.iata }}</span>
         </div>
       </template>
     </Column>
@@ -29,9 +29,9 @@
       <template #body="{ data }: { data: RowClaimExtended }">
         <span
           class="text-xs font-medium p-1 rounded"
-          :class="getStatus(data.flight.status, data.flight.delayArrival).class"
+          :class="getStatus(data.booking.flight.status, data.booking.flight.delayArrival).class"
           >{{
-            getStatus(data.flight.status, data.flight.delayArrival).text
+            getStatus(data.booking.flight.status, data.booking.flight.delayArrival).text
           }}</span
         >
       </template>
@@ -41,12 +41,12 @@
         <span
           class="text-xs font-medium"
           :class="
-            getStatus(data.flight.status, data.flight.delayArrival).value ===
+            getStatus(data.booking.flight.status, data.booking.flight.delayArrival).value ===
             'delayed'
               ? 'text-red-500'
               : ''
           "
-          >{{ getDuration(data.flight.delayArrival) }}</span
+          >{{ getDuration(data.booking.flight.delayArrival) }}</span
         >
       </template>
     </Column>
