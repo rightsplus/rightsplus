@@ -57,7 +57,6 @@ import CompensationBanner from "~/components/organisms/Calculator/Forms/Compensa
 const ready = ref(false);
 const claim = useClaim();
 onMounted(() => {
-  console.log('asd')
   ready.value = true;
 });
 definePageMeta({

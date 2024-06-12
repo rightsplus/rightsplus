@@ -139,7 +139,6 @@ const getStatus = (status: string, delay: number) => {
     landed: "bg-green-100 text-green-600",
   };
 
-  console.log(status);
 
   const newStatus =
     status === "cancelled" || delay < 180
@@ -157,7 +156,6 @@ const getStatus = (status: string, delay: number) => {
 const selectedRow = ref<RowClaimExtended[]>();
 const clickedRow = ref(false);
 const rowSelect = (e) => {
-  console.log(e);
   if (e.type === "row") clickedRow.value = true;
 };
 const rowUnselect = (e) => {

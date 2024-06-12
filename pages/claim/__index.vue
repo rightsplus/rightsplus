@@ -20,6 +20,7 @@ definePageMeta({
   middleware: ["auth"],
   layout: "claims",
 });
+
 watch(user, (val) => {
   if (!val) router.push("/login");
 });

@@ -23,12 +23,12 @@ const { auth } = useSupabaseAuthClient();
 const menu = computed(() => [
   {
     label: "Deine Forderungen",
-    href: "/claim",
+    link: "claim",
     icon: "plane",
   },
   {
     label: "Profil",
-    href: "/profile",
+    link: "profile",
     icon: "user",
   },
   // {

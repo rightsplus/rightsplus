@@ -80,11 +80,11 @@
           <div class="flex-1 px-4 flex flex-col gap-y-2 overflow-y-auto">
             <ul class="relative !min-h-[auto] !min-w-[auto]">
               <li tag="li" class="!overflow-visible" v-for="(item, i) in menu">
-                <NuxtLink
+                <NuxtLinkLocale
                   class="group relative flex items-center gap-1.5 px-2.5 py-1.5 w-full rounded-md font-medium text-sm focus:outline-none focus-visible:outline-none dark:focus-visible:outline-none focus-visible:before:ring-inset focus-visible:before:ring-2 focus-visible:before:ring-primary-500 dark:focus-visible:before:ring-primary-400 before:absolute before:inset-px before:rounded-md disabled:cursor-not-allowed disabled:opacity-75 text-gray-900 dark:text-white hover:text-gray-900 dark:hover:text-white hover:before:bg-gray-50 dark:hover:before:bg-gray-800/50"
                   active-class="before:!bg-gray-100 dark:before:!bg-gray-800"
                   draggable="false"
-                  :to="localeRoute(item.href)"
+                  :to="item.link"
                 >
                   <FontAwesomeIcon
                     :icon="item.icon"
@@ -98,7 +98,7 @@
                     v-if="item.badge"
                     class="inline-flex items-center font-medium text-xs px-1.5 py-0.5 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 flex-shrink-0 ml-auto relative rounded"
                     >{{ item.badge }}</span
-                  ></NuxtLink
+                  ></NuxtLinkLocale
                 >
               </li>
             </ul>
@@ -175,23 +175,23 @@ const signOut = () => {
 const menu = [
   {
     label: "Home",
-    href: "/admin",
+    link: "admin",
     icon: "house",
   },
   {
     label: "Fälle",
-    href: "/admin/claims",
+    link: "admin-claims",
     icon: "folder-closed",
     badge: 18,
   },
   {
     label: "Kunden",
-    href: "/admin/clients",
+    link: "admin-clients",
     icon: "user",
   },
   {
     label: "Airlines",
-    href: "/admin/airlines",
+    link: "admin-airlines",
     icon: "plane-tail",
   },
 ];

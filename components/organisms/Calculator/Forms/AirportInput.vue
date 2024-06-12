@@ -98,7 +98,6 @@ function findAirports(query: string) {
         .map(mapAirports);
     })
     .catch(({ transporterStackTrace }) => {
-      console.log(transporterStackTrace)
       const [message] = transporterStackTrace || [];
       errors.value = [message?.response?.content];
       clearTimeout(errorTimeout.value);

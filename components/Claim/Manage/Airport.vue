@@ -27,7 +27,6 @@ const { data: flights, pending: pendingFlights } = useAsyncData(
       or: "delayArrival.gt.180,status.eq.cancelled",
     });
 
-    console.log(flights);
     return flights;
   }
 );

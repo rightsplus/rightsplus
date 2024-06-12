@@ -24,10 +24,11 @@ const user = useSupabaseUser();
 definePageMeta({
   middleware: ["auth"],
 });
+const localeRoute = useLocaleRoute();
 
 onMounted(() => {
   watchEffect(() => {
-    if (!user.value) navigateTo("/login");
+    if (!user.value) navigateTo(localeRoute("login"));
   });
 });
 const { data: claims } = await useFetch("/api/claims", {

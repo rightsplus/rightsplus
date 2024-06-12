@@ -118,7 +118,6 @@ const signUp = async ({
         password,
       });
     }
-    console.log(res)
     setLoading(false, provider);
 
     if (user.value) emit("success", provider);
