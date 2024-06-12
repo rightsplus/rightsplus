@@ -44,7 +44,6 @@ const time = (d: string) =>
   });
 const logo = getAirlineLogo || (() => "");
 const tableData = computed(() => {
-  console.log(data.value);
   return data.value?.claims?.map((item) => {
     return {
       status: item.flights?.status,

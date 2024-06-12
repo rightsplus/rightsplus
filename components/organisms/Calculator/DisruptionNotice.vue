@@ -35,7 +35,6 @@ onMounted(() => {
   if (!props.modelValue.flight?.arrival.iata) return;
   getCities([props.modelValue.flight?.arrival.iata], locale.value).then(
     ([arrival]) => {
-      console.log(arrival);
       arrivalCity.value = arrival;
     }
   );

@@ -84,7 +84,7 @@ const invokeProtocol = async (item: keyof typeof protocol) => {
 };
 
 props.machine.subscribe(({ origin, target, action, event }) => {
-  console.log(origin, target, event);
+  // console.log(origin, target, event);
   if (origin === "dataReceived" && event === "accept") {
     invokeProtocol("acceptClaim");
   }

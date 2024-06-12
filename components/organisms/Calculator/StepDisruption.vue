@@ -147,9 +147,7 @@ const { locale } = useI18n();
 const firstSectionComplete = computed(() => {
   const { type, details, replacement, replacementFlight } =
     props.modelValue.disruption;
-  console.log({ type, details, replacement, replacementFlight });
   if (!type) return false;
-  console.log("is type");
   if (
     !details ||
     (details === "<3" && (replacement === null || replacement === undefined))
@@ -194,7 +192,6 @@ watch(
   status,
   () => {
     const { cancelled, delayed } = status.value || {};
-    console.log(delayed.value);
     if (cancelled.value) {
       props.modelValue.disruption.type = "cancelled";
     } else if (delayed.value > 0) {

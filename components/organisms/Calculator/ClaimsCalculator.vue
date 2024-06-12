@@ -427,7 +427,6 @@ const submit = async () => {
   console.log("submitting");
   try {
     const submission = await prepareClaimSubmission(claimState);
-    console.log(submission);
     await supabase.from("claims").insert(submission).then(console.log);
     send("next");
   } catch (error: string) {

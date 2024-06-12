@@ -146,7 +146,6 @@ const {
 //     //   reader.readAsText(data);
 //     // });
 
-//     console.log(data, signature);
 //     return { signature };
 //   } catch (error) {
 //     console.error(error);

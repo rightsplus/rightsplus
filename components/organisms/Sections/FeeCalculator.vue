@@ -122,7 +122,6 @@ const distances = ref([
   },
 ]);
 const compensation = computed(() => {
-  console.log(withinEU.value)
   return compensationByDistance({
     distance: distance.value,
     withinEU: withinEU.value,

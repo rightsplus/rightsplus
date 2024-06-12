@@ -180,7 +180,6 @@ async function initiatePayout(email: string) {
       // const data = await response.json();
       // console.log(data); // Handle the response from the server
     } else {
-      console.log(response);
       throw new Error("Payout request failed");
     }
   } catch (error) {
@@ -215,7 +214,6 @@ const sendEmail = async (to: any) => {
       reimbursment: 300,
     }),
   };
-  console.log(data);
 
   try {
     send({

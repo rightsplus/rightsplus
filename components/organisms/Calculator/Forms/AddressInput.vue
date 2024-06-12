@@ -194,7 +194,7 @@ const fillFields = (street: DropdownItem) => {
   if (!reference) return;
 
   const { name, street: st, housenumber, postcode, city, country } = reference || {};
-  console.log(reference);
+
   emit("update:modelValue", { city: "" });
   setTimeout(() => {
     emit("update:modelValue", {

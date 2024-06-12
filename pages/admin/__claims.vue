@@ -249,7 +249,6 @@ const { data: claims } = useAsyncData("claims", async () => {
         };
       })[]
     >();
-  console.log(claims);
   // if (claims) state.claims = claims;
   return claims;
 });

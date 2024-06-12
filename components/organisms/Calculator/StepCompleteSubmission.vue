@@ -98,7 +98,6 @@ onMounted(() => {
       .then(({ data, error }) => {
         if (error) throw error;
         if (data.length) {
-          console.log(data);
           // props.modelValue.client = data[0];
           // passengerCount.value = props.modelValue.client.passengers?.length || 1;
         }
@@ -116,7 +115,6 @@ const handleUploadFile = async (file: File) => {
     maxWidth: 1080,
     maxHeight: 1080,
   };
-  console.log(file);
   const resizedFile = await compressImage(file, options);
   const fileExt = resizedFile.name.split(".").pop();
   const fileName = `${uuid.v4()}.${fileExt}`;
@@ -128,10 +126,8 @@ const handleUploadFile = async (file: File) => {
       upsert: false,
     });
   if (error) {
-    console.error(error);
     throw error;
   } else {
-    console.log(data);
     return data.path;
   }
 };

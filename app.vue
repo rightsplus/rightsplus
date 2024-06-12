@@ -21,16 +21,5 @@ onMounted(() => {
   if (app.$pwa?.offlineReady) {
     console.log("App ready to work offline");
   }
-  // document.addEventListener("focus", () => {
-    //   console.log(document.activeElement);
-    // }, true);
-  });
-  
-// const route = useRoute();
-// watch(
-//   () => route,
-//   (e) => {
-//     console.log(e.name?.toString());
-//   }
-// );
+});
 </script>

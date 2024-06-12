@@ -106,17 +106,13 @@ const {
     .order("createdAt", { ascending: false })
     .returns<RowClaimExtended[]>();
 
-  // console.log(claims, error);
   if (claims) {
-    // console.log(claims.map((e) => e.booking.flight.data));
-    // console.log(airlinesByFlights(claims.map((e) => e.booking.flight.data)));
     query(
       airlinesByFlights(claims.map((e) => e.booking.flight.data)).map(
         (e) => e.airline.iata
       )
     );
   }
-  // console.log(claims);
   return claims;
 });
 const claimQuery = getExtendedClaimQuery()
@@ -125,7 +121,6 @@ const updateData = (props: {
   data?: Partial<RowClaimExtended>;
 }) => {
   const { id, data } = props;
-  console.log(id, data);
   if (!id || !data) return;
   client
     .from("claim")

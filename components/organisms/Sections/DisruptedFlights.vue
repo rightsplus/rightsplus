@@ -91,24 +91,12 @@ const localePath = useLocalePath();
 const { assignLeg } = useFlightLeg(claim)
 const handleSelect = async (flight: Flight) => {
   invoke("reset");
-  console.log("is in handleSelect", state.value);
   // await query([flight.departure.iata, flight.arrival.iata]);
   claim.airport.trip.departure = airports.value[flight.departure.iata];
   claim.airport.trip.arrival = airports.value[flight.arrival.iata];
   assignLeg()
   claim.date = getISODate(flight.departure.scheduledTime);
   claim.flight = flight;
-  // if (!state.value.matches("itinerary")) return;
-  // console.log("is in itinerary");
-  // send("next");
-  // if (!state.value.matches("flightDate")) {
-  //   console.log(state.value.value);
-  //   return;
-  // }
-  // console.log("is in flightDate");
-  // send("next");
-  // if (!state.value.matches("flight")) return;
-  // console.log("is in flight");
   send("next");
   router.push(localePath("claim-new"));
 };

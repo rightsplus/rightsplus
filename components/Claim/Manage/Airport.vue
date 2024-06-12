@@ -19,7 +19,6 @@ const { fetchFlights } = useSupabaseFunctions();
 const { data: flights, pending: pendingFlights } = useAsyncData(
   "flights",
   async () => {
-    console.log(props.claim.booking.flight.dateDeparture);
     const flights = await fetchFlights({
       type: "departure",
       departure: props.claim.booking.flight.airportDeparture,

@@ -94,7 +94,6 @@ const activeClaimId = ref<RowClaimExtended["id"]>();
 const activeClaim = ref<RowClaimExtended>();
 watch(activeClaimId, (id) => {
   const nextClaim = bookings.value?.find((e) => e.id === id);
-  console.log(nextClaim);
   activeClaim.value = nextClaim;
 });
 const date = (d: string) => new Date(d).toLocaleDateString(locale.value);
