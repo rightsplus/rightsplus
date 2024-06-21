@@ -105,6 +105,24 @@ export const compensationByDistance = ({ distance, delay, withinEU, passengers }
 	}
 }
 
+export const calculateCO2e = (distanceKm: number): number => {
+	// Constants
+	const fuelConsumptionPerKmPerPassenger = 0.03; // liters per km per passenger
+	const CO2EmissionFactor = 2.54; // kg CO2 per liter of jet fuel
+	const radiativeForcingIndex = 2.7;
+
+	// Calculate CO2 emissions per km per passenger
+	const CO2PerKmPerPassenger = fuelConsumptionPerKmPerPassenger * CO2EmissionFactor;
+
+	// Incorporate Radiative Forcing Index (RFI)
+	const CO2ePerKmPerPassenger = CO2PerKmPerPassenger * radiativeForcingIndex;
+
+	// Calculate total CO2e for the given distance
+	const totalCO2e = CO2ePerKmPerPassenger * distanceKm;
+
+	return totalCO2e;
+}
+
 
 export const keyIncrement = (e: KeyboardEvent, value: number, length: number) => {
 	let v = value
