@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/algolia',
     '@nuxtjs/i18n',
-    '@formkit/nuxt',
+    // '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
     '@vite-pwa/nuxt',
@@ -37,9 +37,9 @@ export default defineNuxtConfig({
       failOnError: false
     }
   },
-  formkit: {
-    configFile: './formkit.config.ts',
-  },
+  // formkit: {
+  //   configFile: './formkit.config.ts',
+  // },
   image: {
 
     // format: ['webp']
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
     '~/components',
     '~/components/core',
   ],
-  // pwa,
+  pwa,
   i18n,
   postcss,
   sourcemap: {
