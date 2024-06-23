@@ -123,7 +123,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Flight } from "@/types";
+import type { Database, Flight } from "@/types";
 import FlightCard, {
   type FlightCardProps,
 } from "@/components/cells/FlightCard.vue";
@@ -177,7 +177,7 @@ const allFlights = computed(() => {
       date: props.date,
       number: props.number,
     })
-  ).filter((e) => e.flight.iata);
+  ).filter((e) => e.flight.iata && e.flight.number);
 });
 const filteredFlights = computed(() =>
   allFlights.value
@@ -197,6 +197,16 @@ const filteredAirlines = computed(() => {
 const loading = ref(true);
 const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
+  
+const supabase = useSupabaseClient<Database>()
+onMounted(() => {
+  console.log('delete')
+  // supabase
+  //   .from('flight')
+  //   .delete()
+  //   .lt('id', "200000")
+  //   .then(e => console.log(e))
+});
 const fetch = () => {
   loading.value = true;
   if (!props.date) {

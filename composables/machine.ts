@@ -12,7 +12,14 @@ type MachineState<States> = {
   guardType?: "and" | "or" | "xor";
   event?: string;
 }
-export type Methods<Context, States extends string> = { [state in States]: (context: Context) => Promise<void> }
+export type Methods<Context, States extends string> = {
+  [state in States]: [
+    {
+      label: string;
+      handler: (context: Context) => Promise<void>
+    }
+  ]
+}
 
 type GuardProps<Context, States extends string> = {
   context: Context;

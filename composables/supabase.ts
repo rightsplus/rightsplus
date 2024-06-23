@@ -60,13 +60,15 @@ export const useSupabaseFunctions = () => {
 		console.log('supabase:', supabase)
 
 
-		console.log(or)
+		// const { error : err} = await supabase.rpc('delete_duplicate_flights')
+		// console.log(err)
+
 		// return []
-		const { data: flights, error: errFlights } = await supabase
+		const supabaseQuery = supabase
 			.from('flight')
 			.select('data')
 			.match(match)
-			.or(or || "")
+		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
 		console.log('data', flights)
 		console.log('error', errFlights)
@@ -87,6 +89,7 @@ export const useSupabaseFunctions = () => {
 		}
 		return data as T;
 	}
+
 	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
 		console.log('proxy', supabase)
 		supabase.functions.invoke("proxy", {
@@ -239,7 +242,8 @@ export const useSupabaseFunctions = () => {
 		}
 	}
 	const submitClaim = async (claim: ClaimsForm, passengerIndex: number, bookingId: number) => {
-		const passenger = claim.client.passengers[passengerIndex];
+		const passenger = { ...claim.client.passengers[passengerIndex] };
+		delete passenger.signature
 		const preparedClaim = {
 			email: passenger.email,
 			client: passenger,

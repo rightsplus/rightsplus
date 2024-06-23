@@ -6,7 +6,9 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "build-dev": "cross-env NODE_ENV=dev nuxt build",
+    "debug-prod": "node --inspect node_modules/.bin/nuxt start"
   },
   "devDependencies": {
     "@nuxt/image": "^1.5.0",

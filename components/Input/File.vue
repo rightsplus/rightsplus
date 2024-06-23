@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-3">
     <input
       ref="input"
-      id="file"
+      :id="id"
       type="file"
       @change="$emit('update:modelValue', handleChange($event))"
       v-bind="$attrs"
@@ -44,7 +44,7 @@
     </div>
     <label
       class="rounded-lg ring-neutral-200 bg-neutral-100 hover:bg-neutral-50 flex items-center justify-center min-h-40 cursor-pointer ring-1 focus-within:ring-primary-500 gap-5 leading-none px-5 h-14"
-      for="file"
+      :for="id"
     >
       <div class="flex flex-col gap-2 w-full items-center">
         <FontAwesomeIcon
@@ -60,6 +60,7 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const input = ref<HTMLInputElement>();
+const id = `file-${uuid()}`;
 
 const props = defineProps<{
   name?: string;

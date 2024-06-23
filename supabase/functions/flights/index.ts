@@ -18,11 +18,11 @@ const updateAirlines = (flights: Flight[], req: { headers: { get: (arg0: string)
     .from("airline")
     .upsert(airlines, { onConflict: 'iata', ignoreDuplicates: true })
     .select('*')
-    .then((e) => {
+    .then((e: RowAirline[]) => {
       console.log('airlines updated', e)
       supabase
         .from("flight")
-        .insert(flights.map((flight) => prepareFlight(flight)))
+        .upsert(flights.map((flight) => prepareFlight(flight, e)), { onConflict: ['iata', 'dateDeparture'] })
         .then(e => console.log('flights inserted', e))
         .catch(e => console.warn('error inserting flights', e))
     })
@@ -50,16 +50,16 @@ const fetchAviationStack = async ({ date, departure, arrival, type, iata }, req)
   const json = await (response.json())
 
   if (json.error) throw json.error
-  
+
   console.log('raw', json.data)
   const flights = json.data.map((flight: FlightAviationStack) => transformAviationStackFlight(flight))
   console.log('flights', flights)
-  
+
   updateAirlines(flights, req)
 
 
   const filteredFlights = departure && arrival ? flights.filter((e: { departure: { iata: any }; arrival: { iata: any } }) => e.departure.iata === departure && e.arrival.iata === arrival) : flights
-  
+
   console.log('filteredFlights', filteredFlights)
   return filteredFlights
 }

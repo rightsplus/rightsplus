@@ -53,12 +53,12 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-emit("update:modelValue", props.modelValue || {} as Airport);
+emit("update:modelValue", props.modelValue || ({} as Airport));
 const { airports } = useAirports();
 
 const { locale } = useI18n();
 const convertName = (value?: Airport) =>
-  value?.name ? `${value?.name} (${value?.iata})` : "";
+  value?.iata ? `${value?.name} (${value?.iata})` : value?.name;
 const dropdownList = ref<DropdownItem[]>([]);
 const loading = ref(false);
 const loadingTimeout = ref<undefined | ReturnType<typeof setTimeout>>();

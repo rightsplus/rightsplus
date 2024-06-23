@@ -5,15 +5,15 @@
   >
     <!-- Compensation -->
     <!-- {{ compensation }} // {{ distance }} -->
-    {{
+    <!-- {{
       eligible === false
         ? "ineligible"
         : eligible === true
         ? "eligible"
         : `unknown: ${message}`
-    }}
+    }} -->
     <div v-if="certain" class="flex flex-col">
-      <span class="text-center mt-3">{{ message }}</span>
+      <span class="text-center mt-3" v-if="message">{{ message }}</span>
       <div
         class="flex flex-col justify-center text-center items-center gap-3 p-3"
       >
@@ -158,12 +158,17 @@
               })
             }})</span
           >
-          <span class="font-bold flex items-center text-sm gap-3"
-            ><span class="leading-0 flex items-center gap-2"
+          <span class="font-bold flex items-center text-sm gap-3">
+            <span class="leading-0 flex items-center gap-2"
               ><FontAwesomeIcon
                 icon="arrow-right-long"
                 class="text-neutral-400"
               />{{ $n(distance, "km") }}</span
+            >
+            <span class="leading-0 flex items-center gap-2"
+              ><FontAwesomeIcon icon="co2" class="text-green-500" /><span>{{
+                $n(calculateCO2e(distance), "kg", { maximumFractionDigits: 0 })
+              }} CO<sub>2</sub>e</span></span
             >
           </span>
         </div>
@@ -171,14 +176,8 @@
           <span class="text-sm text-neutral-500">{{ $t("flightStatus") }}</span>
           <span class="font-medium flex items-center text-sm gap-3"
             ><span
-              class="leading-0 flex items-center gap-2 rounded-full px-2 py-0.5"
-              :class="{
-                'text-green-700 bg-green-100':
-                  !flight.arrival.delay && flight.status !== 'cancelled',
-                'text-orange-600 bg-orange-100': flight.arrival.delay,
-                'text-red-700 bg-red-200': flight.status === 'cancelled',
-              }"
-              >{{ $t(flight.status) }}</span
+              :class="status.class"
+              >{{ status.text }}</span
             >
           </span>
         </div>
@@ -187,7 +186,7 @@
   </div>
   <div v-else>{{ flight }}</div>
 
-  <pre>{{ flight }}</pre>
+  <!-- <pre>{{ flight }}</pre> -->
 </template>
 
 <script setup lang="ts">
@@ -212,14 +211,18 @@ const { airline } = useAirline(flight.value?.airline);
 const { airline: codesharedAirline } = useAirline(
   flight.value?.codeshared?.airline
 );
+const status = useFlightStatus(flight.value);
 
 const date = (time: string) => {
-  return new Date(time).toLocaleDateString(locale.value);
+  return new Date(time).toLocaleDateString(locale.value, {
+    timeZone: "UTC",
+  });
 };
 const time = (time: string) => {
   return new Date(time).toLocaleTimeString(locale.value, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
 };
 const { compensation, distance, message, eligible } = useCompensation(

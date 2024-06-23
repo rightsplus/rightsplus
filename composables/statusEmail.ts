@@ -47,20 +47,21 @@ export const useStatusEmail = <Context, States extends string>() => {
 	const emails: Methods<Context, States> = {
 		dataReceived: [
 			{
-				handler: async (claim: a) => {
+				label: 'Send Data Received Email',
+				handler: async (claim: RowClaimExtended) => {
 					console.log('dataReceived', claim)
-					const data = getStatus({i18n, data: claim }).dataReceived
+					const data = getStatus({ i18n, data: claim }).dataReceived
 					console.log('data', data)
-					// send({
-					// 	to: claim.client.email,
-					// 	subject: data.subject,
-					// 	template: "Status.vue",
-					// 	data,
-					// })
+					send({
+						to: claim.client.email,
+						subject: data.subject,
+						template: "Status.vue",
+						data,
+					})
 				}
 			}
 		]
-	}
+	} as const
 	return {
 		emails
 	}

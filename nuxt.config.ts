@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     transpile: [
       "primevue",
       "@fortawesome/vue-fontawesome",
-      'vue-i18n'
+      // 'vue-i18n'
     ]
   },
   nitro: {

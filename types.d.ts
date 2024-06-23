@@ -287,6 +287,7 @@ export interface RowClaim extends Row {
   bookingId: BookingsRow['id'];
   client: ClaimsForm['client']['passengers'][number];
   unread: boolean;
+  notes: string
 }
 export type RowClaimExtended = RowClaim & {
   booking: RowBooking & {
