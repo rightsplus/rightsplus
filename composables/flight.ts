@@ -110,33 +110,73 @@ export const getDistance = (claim: ClaimsForm | null) => {
 // }
 
 
-export const useFlightStatus = (flight: Flight | null) => {
-	const barred = isBarred(flight)
-	const delay = getDelay(flight?.arrival)
-	// const eu = getEU(flight)
-	const eu = false
-	return {
-		barred: {
-			value: barred,
-			label: barred ? "Verjährt" : "Nicht verjährt",
-		},
-		cancelled: {
-			value: flight?.status === "cancelled",
-			label: flight?.status === "cancelled" ? "Annulliert" : "Nicht annulliert",
-		},
-		delayed: {
-			value: delay,
-			label: delay ? `Verspätet (${delay} min)` : "Nicht verspätet",
-		},
-		europeanUnion: {
-			value: eu,
-			label: Object.values(eu).some(Boolean) ? eu : "Nicht EU",
-		},
-		extraordinaryCirumstance: {
-			value: !!Object.values(circumstance).length,
-			label: circumstance,
-		}
-	}
+export const useFlightStatus = (flight: Flight, options?: { detailed: boolean}) => {
+	// console.log(flight)
+	// const barred = isBarred(flight)
+	// const delay = getDelay(flight?.arrival)
+	// // const eu = getEU(flight)
+	// const eu = false
+	// // return {
+	// // 	barred: {
+	// // 		value: barred,
+	// // 		label: barred ? "Verjährt" : "Nicht verjährt",
+	// // 	},
+	// // 	cancelled: {
+	// // 		value: flight?.status === "cancelled",
+	// // 		label: flight?.status === "cancelled" ? "Annulliert" : "Nicht annulliert",
+	// // 	},
+	// // 	delayed: {
+	// // 		value: delay,
+	// // 		label: delay ? `Verspätet (${delay} min)` : "Nicht verspätet",
+	// // 	},
+	// // 	europeanUnion: {
+	// // 		value: eu,
+	// // 		label: Object.values(eu).some(Boolean) ? eu : "Nicht EU",
+	// // 	},
+	// // 	extraordinaryCirumstance: {
+	// // 		value: !!Object.values(circumstance).length,
+	// // 		label: circumstance,
+	// // 	}
+	// // }
+	const { t } = useI18n();
+	return computed(() => {
+		const s = flight?.arrival?.delay > 0 ? "delayed" : flight?.status;
+		const base = "text-sm font-medium leading-none whitespace-nowrap px-2 py-1 -mx-1 rounded-full border "
+		// console.log(s)
+		return {
+			cancelled: {
+				class: base + "bg-red-100 border-red-200 text-red-600",
+				text: t("cancelled"),
+			},
+			delayed: {
+				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
+				text: options?.detailed ? t("delayed.by", {
+					value: getDuration(flight?.arrival?.delay || 0),
+				 }) : t("delayed"),
+			},
+			diverted: {
+				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
+				text: t("diverted"),
+			},
+			landed: {
+				class: base + "bg-green-100 border-green-200 text-green-600",
+				text: t("onTime"),
+			},
+			scheduled: {
+				class: base + "bg-green-100 border-green-200 text-green-600",
+				text: t("scheduled"),
+			},
+			active: {
+				class: base + "bg-green-100 border-green-200 text-green-600",
+				text: t("active"),
+			},
+			unknown: {
+				class: base + "bg-gray-100 border-gray-200 text-gray-600",
+				text: t("unknown"),
+			},
+		}[s || 'unknown'];
+
+	});
 }
 
 
@@ -569,7 +609,7 @@ export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): { pending: R
 		}
 		query(airlineInfo.iata)
 			.then((e) => {
-				console.log(e)
+				// console.log('query airline response in flights.ts:612', e)
 				if (e && airlines.value) airline.value = e
 				pending.value = true
 			})

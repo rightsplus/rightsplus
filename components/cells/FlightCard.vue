@@ -63,11 +63,7 @@
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
-        <span
-          class="text-xs font-medium leading-none whitespace-nowrap px-2 py-1 rounded-full -mx-1 border"
-          :class="status.class"
-          >{{ status.text }}</span
-        >
+        <span :class="status.class">{{ status.text }}</span>
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
@@ -81,11 +77,7 @@
     <template v-if="actionButton">
       <hr class="w-full mt-2" />
       <div class="flex justify-between items-center">
-        <span
-          class="text-sm font-medium leading-none whitespace-nowrap px-3 py-1.5 rounded-full"
-          :class="status.class"
-          >{{ status.text }}</span
-        >
+        <span :class="status.class">{{ status.text }}</span>
         <Button @click="emit('click')" v-bind="actionButton" />
       </div>
     </template>
@@ -113,43 +105,7 @@ const emit = defineEmits(["click"]);
 const iata = computed(() => {
   return `${props.flight.airline.iata} ${props.flight.flight.number}`;
 });
-const { t } = useI18n();
-const status = computed(() => {
-  const s = props.flight.arrival?.delay > 0 ? "delayed" : props.flight.status;
-
-  return {
-    cancelled: {
-      class: "bg-red-100 border-red-200 text-red-600",
-      text: t("cancelled"),
-    },
-    delayed: {
-      class: "bg-yellow-100 border-yellow-200 text-yellow-700",
-      text: t("delayed.by", {
-        value: getDuration(props.flight.arrival?.delay),
-      }),
-    },
-    diverted: {
-      class: "bg-yellow-100 border-yellow-200 text-yellow-700",
-      text: t("diverted"),
-    },
-    landed: {
-      class: "bg-green-100 border-green-200 text-green-600",
-      text: t("onTime"),
-    },
-    scheduled: {
-      class: "bg-green-100 border-green-200 text-green-600",
-      text: t("scheduled"),
-    },
-    active: {
-      class: "bg-green-100 border-green-200 text-green-600",
-      text: t("active"),
-    },
-    unknown: {
-      class: "bg-gray-100 border-gray-200 text-gray-600",
-      text: t("unknown"),
-    },
-  }[s];
-});
+const status = useFlightStatus(props.flight, { detailed: true });
 
 const city = useCities({
   departure: props.flight.departure?.iata,
@@ -177,6 +133,7 @@ const time = (time: string) => {
   return new Date(time).toLocaleTimeString(useI18n().locale.value, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
 };
 const date = (date: string) => {
@@ -184,6 +141,7 @@ const date = (date: string) => {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
+    timeZone: "UTC",
   });
 };
 </script>

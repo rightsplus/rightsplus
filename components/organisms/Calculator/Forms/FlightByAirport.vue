@@ -25,12 +25,22 @@
 
 <script setup lang="ts">
 import AirportInput from "./AirportInput.vue";
-import type { ClaimsForm } from "@/types";
+import type { ClaimState, ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
 const { push } = useRouter();
 const localePath = useLocalePath()
+// const claim = useClaim()
+
+// import claimMachine from "~/machines/claimSubmission";
+// const { state, send, transition, subscribe, invoke } = useMachine<
+//   ClaimState,
+//   ClaimsForm
+// >(claimMachine, { context: claim });
 const start = () => {
+  // console.log(claim)
+  // console.log(state.value)
+  // return
   push(localePath("claim-new"));
 };
 </script>

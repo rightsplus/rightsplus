@@ -48,11 +48,11 @@
       :active="highlighted"
       :options="options"
       :show="!!showDropdown"
-      :style="position"
       @input="handleInput"
       :required="required"
-      teleport
     />
+      <!-- teleport -->
+      <!-- :style="position" -->
   </div>
 </template>
 
@@ -98,6 +98,7 @@ const attrs = computed(() => {
 const highlighted = ref(0);
 const input = ref<FormKitFrameworkContext | null>(null);
 const [container, position] = usePosition();
+watch(position, e => console.log(position))
 const inputFocused = ref(false);
 const inputValue = ref(props.modelValue);
 
@@ -111,7 +112,7 @@ const showDropdown = computed(() => {
 
 watch(showDropdown, (open) => {
   if (!open) return;
-  const value = props.modelValue.match(/\(([^)]+)\)/)?.[1];
+  const value = props.modelValue?.match(/\(([^)]+)\)/)?.[1];
   const index = props.options.findIndex((option) => option.value === value);
   if (index > -1) highlighted.value = index;
 });

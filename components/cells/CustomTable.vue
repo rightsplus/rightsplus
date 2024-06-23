@@ -188,7 +188,7 @@ async function initiatePayout(email: string) {
 }
 
 const { send } = useSendMail();
-const statusEmail = useStatusEmail();
+const { emails } = useStatusEmail();
 const sendEmail = async (to: any) => {
   const [passenger] = to.item.client.passengers;
   const [departure, arrival] = await getCities(

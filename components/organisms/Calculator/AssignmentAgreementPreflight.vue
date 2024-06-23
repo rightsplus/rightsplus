@@ -19,7 +19,7 @@
       <SignaturePad
         :modelValue="passenger.signature"
         @update:modelValue="(e) => updateSignature(e, i)"
-        :name="[passenger.firstName, passenger.lastName].join(' ')"
+        :name="passengerName(passenger)"
       />
       <i18n-t
         keypath="assignmentLetter.signatureConfirmation"
@@ -42,7 +42,10 @@
           </NuxtLink></template
         >
         <template v-slot:assignmentAgreement
-          ><NuxtLink @click.prevent="generateAssignmentAgreement" target="_blank">
+          ><NuxtLink
+            @click.prevent="generateAssignmentAgreement"
+            target="_blank"
+          >
             {{ $t("assignmentAgreement") }}
           </NuxtLink></template
         >
@@ -57,18 +60,30 @@ import SignaturePad from "~/components/molecules/SignaturePad.vue";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
-const localePath = useLocalePath()
-const { generate } = useGeneratePDF()
+const localePath = useLocalePath();
+const { generate } = useGeneratePDF();
 
 const updateSignature = (val: string | undefined, i: number) => {
   props.modelValue.client.passengers[i].signature = val;
 };
 
 const generateAssignmentAgreement = async () => {
-  const data = convertAssignmentAgreementData(props.modelValue)
-  const { url } = await generate({template: 'assignmentLetter', data})
-	window.open(url, '_blank');
-}
+  const data = convertAssignmentAgreementData(props.modelValue);
+  const { url } = await generate({ template: "assignmentLetter", data });
+  window.open(url, "_blank");
+};
+const passengerName = (
+  passenger: ClaimsForm["client"]["passengers"][number]
+) => {
+  if (passenger.isMinor) {
+    return `${[
+      passenger.guardian?.firstName,
+      passenger.guardian?.lastName,
+    ].join(" ")}, (Erziehungsberechtigte/r von ${[
+      passenger.firstName,
+      passenger.lastName,
+    ].join(" ")})`;
+  }
+  return [passenger.firstName, passenger.lastName].join(" ");
+};
 </script>
-
-<style scoped></style>

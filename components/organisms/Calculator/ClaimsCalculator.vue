@@ -358,7 +358,7 @@ const eligibleDisruption = computed(() => {
     statement: eligible
       ? t("Anspruch auf Entschädigung")
       : t("Kein Anspruch auf Entschädigung"),
-    title: t(cancelled ? "cancelled" : "delayed"),
+    title: t(cancelled ? "cancellation" : "delay"),
     description: cancelled
       ? t("disruptionDetected.cancelled.description")
       : t("disruptionDetected.delayed.description", {

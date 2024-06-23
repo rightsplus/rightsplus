@@ -97,8 +97,6 @@ export default {
     tooLittleDelay: ({ context }) => {
       const delay = context.disruption.type === 'delayed' && context.disruption.details === '<3' ? 60 : context.flight?.arrival.delay || 0
 
-      console.log('delay', delay < 180)
-
       return delay < 180
     },
     replacementRelevant: ({ context }) => {
@@ -192,6 +190,7 @@ export default {
       init: {
         guard: 'hasStopover',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [{
@@ -207,6 +206,7 @@ export default {
       init: {
         guard: 'hasItinerary',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: {
@@ -219,6 +219,7 @@ export default {
       init: {
         guard: 'hasDate',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [
@@ -240,6 +241,7 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         continue: [
@@ -271,6 +273,7 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [
@@ -292,6 +295,7 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [{
@@ -306,6 +310,7 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [
@@ -329,6 +334,7 @@ export default {
       init: {
         guard: 'hasFlight',
         guardType: 'not',
+        actions: 'back'
       },
       on: {
         next: [
@@ -448,6 +454,11 @@ export default {
       },
     },
     success: {
+      init: {
+        guard: "agreedToTerms",
+        guardType: "not",
+        actions: "reset",
+      },
       on: {
         next: {},
       },

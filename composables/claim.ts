@@ -140,7 +140,8 @@ export const useCompensation = (estimate = false) => {
 				return { compensation: 0, distance, message }
 			}
 		}
-		if (claim.flight?.status === 'landed') {
+		console.log('error code', getError())
+		if (claim.flight?.status === 'landed' && (claim.disruption.type !== "noBoarding" || claim.disruption.selfInflicted)) {
 			message = t('Dein Flug ist offenbar pünktlich gelandet.')
 			eligible.value = false
 			return { compensation: 0, distance, message }
@@ -167,7 +168,7 @@ export const usePrepareClaimSubmission = () => {
 	const claim = useClaim()
 	const { t } = useI18n()
 	const { send } = useSendMail();
-	const statusEmail = useStatusEmail()
+	const { emails } = useStatusEmail()
 	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, booking: RowBooking) => {
 		try {
 			if (!passenger.signature) {
@@ -198,26 +199,27 @@ export const usePrepareClaimSubmission = () => {
 			])
 
 			// const fileName = `${uuid.v4()}.svg`;
-			const email = send({
-				to: passenger.email,
-				subject: "Deine Anfrage wurde erfolgreich eingereicht",
-				template: "Status.vue",
-				// pdf: {
-				// 	template: "assignment-letter",
-				// 	fileName: [
-				// 		t("assignmentLetter"),
-				// 		claim.client.passengers[0].lastName,
-				// 	].join("-"),
-				// },
-				data: {
-					name: [passenger?.firstName, passenger?.lastName].join(" "),
-					firstName: passenger?.firstName,
-					claimId: formatClaimId(claimResponse.id),
-					bookingNumber: booking.number,
-					status: "dataReceived",
-					...statusEmail('dataReceived', claimResponse),
-				},
-			});
+			emails.dataReceived.forEach(e => e.handler(claimResponse));
+			// const email = send({
+			// 	to: passenger.email,
+			// 	subject: "Deine Anfrage wurde erfolgreich eingereicht",
+			// 	template: "Status.vue",
+			// 	// pdf: {
+			// 	// 	template: "assignment-letter",
+			// 	// 	fileName: [
+			// 	// 		t("assignmentLetter"),
+			// 	// 		claim.client.passengers[0].lastName,
+			// 	// 	].join("-"),
+			// 	// },
+			// 	data: {
+			// 		name: [passenger?.firstName, passenger?.lastName].join(" "),
+			// 		firstName: passenger?.firstName,
+			// 		claimId: formatClaimId(claimResponse.id),
+			// 		bookingNumber: booking.number,
+			// 		status: "dataReceived",
+			// 		...statusEmail('dataReceived', claimResponse),
+			// 	},
+			// });
 		} catch (error) {
 			console.log(error);
 			return;
