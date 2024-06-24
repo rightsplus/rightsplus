@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/algolia',
     '@nuxtjs/i18n',
-    // '@formkit/nuxt',
+    '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
     '@vite-pwa/nuxt',
@@ -28,18 +28,19 @@ export default defineNuxtConfig({
     transpile: [
       "primevue",
       "@fortawesome/vue-fontawesome",
-      // 'vue-i18n'
+      'vue-i18n'
     ]
   },
   nitro: {
     compressPublicAssets: true,
     prerender: {
+      enabled: false,
       failOnError: false
     }
   },
-  // formkit: {
-  //   configFile: './formkit.config.ts',
-  // },
+  formkit: {
+    configFile: './formkit.config.ts',
+  },
   image: {
 
     // format: ['webp']
