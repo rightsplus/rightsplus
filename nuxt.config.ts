@@ -15,6 +15,7 @@ export default defineNuxtConfig({
       ],
     }
   },
+
   modules: [
     '@nuxtjs/algolia',
     '@nuxtjs/i18n',
@@ -24,6 +25,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     "@nuxt/image"
   ],
+
   build: {
     transpile: [
       "primevue",
@@ -31,39 +33,48 @@ export default defineNuxtConfig({
       'vue-i18n'
     ]
   },
+
   nitro: {
     compressPublicAssets: true,
     // prerender: {
     //   failOnError: false
     // }
   },
+
   formkit: {
     configFile: './formkit.config.ts',
   },
+
   image: {
 
     // format: ['webp']
   },
+
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     '~/assets/scss/main.scss',
     '~/assets/scss/transitions.scss',
   ],
+
   components: [
     '~/components',
     '~/components/core',
   ],
+
   pwa,
   i18n,
   postcss,
+
   sourcemap: {
     server: process.env.NODE_ENV === 'development',
     client: process.env.NODE_ENV === 'development',
   },
+
   vueEmail: {
     baseUrl: 'https://rightsplus.up.railway.app/',
     autoImport: true,
   },
+
   runtimeConfig: {
     public: {
       // stripe: {
@@ -85,7 +96,10 @@ export default defineNuxtConfig({
       }
     },
   },
+
   devtools: {
     enabled: true,
   },
+
+  compatibilityDate: '2024-07-10',
 })

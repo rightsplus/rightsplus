@@ -5,18 +5,18 @@
       type="text"
       :modelValue="modelValue"
       @update:modelValue="updateInput"
+      :prefix-icon="prefixIcon"
+      :suffix-icon="loading ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
+      :prefix-icon-class="$attrs['prefix-icon-class']"
+      :suffix-icon-class="$attrs['suffix-icon-class']"
       :autocomplete="!showDropdown ? autocomplete : 'one-time-code'"
       :label="label"
       :name="name"
       :id="id || name"
       :validation="validation"
+      :errors="errors"
       @focus="focus"
       @blur="blur"
-      :errors="errors"
-      :prefix-icon="prefixIcon"
-      :suffix-icon="loading ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
-      :prefix-icon-class="$attrs['prefix-icon-class']"
-      :suffix-icon-class="$attrs['suffix-icon-class']"
       @keydown.down.up.prevent="keydown"
       @keydown.enter.prevent="handleEnter"
       @keydown.tab.exact.prevent="handleTab"
@@ -98,7 +98,6 @@ const attrs = computed(() => {
 const highlighted = ref(0);
 const input = ref<FormKitFrameworkContext | null>(null);
 const [container, position] = usePosition();
-watch(position, e => console.log(position))
 const inputFocused = ref(false);
 const inputValue = ref(props.modelValue);
 
@@ -117,9 +116,9 @@ watch(showDropdown, (open) => {
   if (index > -1) highlighted.value = index;
 });
 
-function updateInput(value: string) {
+function updateInput(value: string | undefined) {
   highlighted.value = 0;
-  inputValue.value = value;
+  inputValue.value = value || "";
   if (!value?.length) emit("update:modelValue", "");
   if (value !== props.modelValue || !value?.length) emit("query", value);
 }

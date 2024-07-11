@@ -15,7 +15,9 @@
         @keydown.enter="start"
       />
     </div>
-    <Button @click.prevent="start" primary>{{ $t('checkCompensationNow')}}</Button>
+    <Button @click.prevent="start" primary>{{
+      $t("checkCompensationNow")
+    }}</Button>
     <!-- <CheckList
       class="mt-2"
       :items="['professionalExpertise', 'completeProcess', 'noRisk']"
@@ -29,7 +31,7 @@ import type { ClaimState, ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
 defineProps<{ modelValue: ClaimsForm }>();
 const { push } = useRouter();
-const localePath = useLocalePath()
+const localePath = useLocalePath();
 // const claim = useClaim()
 
 // import claimMachine from "~/machines/claimSubmission";

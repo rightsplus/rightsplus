@@ -21,9 +21,7 @@
       :loading="loading"
       :disabled="disabled"
       @query="findAirports"
-      @prefix-icon-click="$emit('prefix-icon-click')"
-      @suffix-icon-click="$emit('suffix-icon-click')"
-      @keydown.enter="$emit('keydown.enter')"
+      v-bind="$attrs"
     />
   </ClientOnly>
 </template>
@@ -33,7 +31,6 @@ import { countries } from "@/config/countries";
 import type { Airport } from "@/types";
 import type { DropdownItem } from "~~/components/molecules/Dropdown.vue";
 import DropdownSearch from "~~/components/molecules/DropdownSearch.vue";
-
 const props = defineProps<{
   modelValue: Airport | undefined;
   name: string;
@@ -47,9 +44,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   "update:modelValue": [value?: Airport];
-  "suffix-icon-click": [];
-  "prefix-icon-click": [];
-  "keydown.enter": [];
 }>();
 
 const { t } = useI18n();

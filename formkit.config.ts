@@ -1,7 +1,7 @@
 import { de } from '@formkit/i18n'
 import type { DefaultConfigOptions } from '@formkit/vue'
 import { generateClasses } from '@formkit/themes'
-import { createAutoAnimatePlugin } from '@formkit/addons'
+// import { createAutoAnimatePlugin } from '@formkit/addons'
 import { createFloatingLabelsPlugin } from '@formkit/addons'
 import '@formkit/addons/css/floatingLabels'
 import { library, parse } from './plugins/fontawesome'
@@ -22,10 +22,10 @@ const config: DefaultConfigOptions = {
   locales: { de },
   locale: 'de',
   plugins: [
-    createAutoAnimatePlugin({
-      duration: 500,
-      easing: 'cubic-bezier(0.5, 0, 0, 1)',
-    }),
+    // createAutoAnimatePlugin({
+    //   duration: 500,
+    //   easing: 'cubic-bezier(0.5, 0, 0, 1)',
+    // }),
     createFloatingLabelsPlugin({
       useAsDefault: true, // defaults to false
     }),
