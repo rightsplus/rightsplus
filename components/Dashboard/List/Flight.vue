@@ -26,8 +26,8 @@
       </div>
       <span> {{ flight.departure.iata }} → {{ flight.arrival.iata }} </span>
       <span>
-        {{ time(flight.departure.scheduledTime, useI18n().locale.value) }} →
-        {{ time(flight.arrival.scheduledTime, useI18n().locale.value) }}
+        {{ time(flight.departure.scheduledTime, locale.value) }} →
+        {{ time(flight.arrival.scheduledTime, locale.value) }}
       </span>
       <span>
         {{ flight.status }}
@@ -43,7 +43,7 @@ const props = defineProps<{
   flight: Flight;
   active: boolean;
 }>();
-
+const { locale } = useI18n()
 const { airline, pending: airlinePending } = useAirline(props.flight.airline);
 </script>
 

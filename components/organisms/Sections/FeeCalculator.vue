@@ -56,25 +56,25 @@
           <span class="text-base"
             >Anspruch nach EU-Recht:
             <span class="font-bold tabular-nums tracking-tighter">{{
-              $n(total.number, "currency", {
+              n(total.number, "currency", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
             }}</span></span
           >
           <span class="text-base"
-            >Unsere Vergütung ({{ $n(compensation.commission, "percent") }}):
+            >Unsere Vergütung ({{ n(compensation.commission, "percent") }}):
             <span class="font-bold tabular-nums tracking-tighter">{{
-              $n(weGet.number * -1, "currency", {
+              n(weGet.number * -1, "currency", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
             }}</span></span
           >
           <span class="text-base" v-if="compensation.vatRate"
-            >Mehrwertsteuer ({{ $n(compensation.vatRate, "percent") }}):
+            >Mehrwertsteuer ({{ n(compensation.vatRate, "percent") }}):
             <span class="font-bold tabular-nums tracking-tighter">{{
-              $n(vat.number * -1, "currency", {
+              n(vat.number * -1, "currency", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
@@ -86,7 +86,7 @@
           <span
             class="font-bold tabular-nums tracking-tighter text-4xl sm:text-5xl"
             >{{
-              $n(youGet.number, "currency", {
+              n(youGet.number, "currency", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
@@ -103,21 +103,21 @@ import ButtonLarge from "../Calculator/ButtonLarge.vue";
 
 const distance = ref(2000);
 const withinEU = ref(false);
+const { n } = useI18n()
 const distances = ref([
   {
     preLabel: `weniger als`,
-    label: useI18n().n(1500, "km").replace(/\s/g, "\u00a0"),
+    label: n(1500, "km").replace(/\s/g, "\u00a0"),
     value: 1000,
   },
   {
-    label: `${useI18n().n(1500)} – ${useI18n()
-      .n(3500, "km")
+    label: `${n(1500)} – ${n(3500, "km")
       .replace(/\s/g, "\u00a0")}`,
     value: 2000,
   },
   {
     preLabel: `mehr als`,
-    label: useI18n().n(3500, "km").replace(/\s/g, "\u00a0"),
+    label: n(3500, "km").replace(/\s/g, "\u00a0"),
     value: 4000,
   },
 ]);

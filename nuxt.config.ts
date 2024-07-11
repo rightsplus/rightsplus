@@ -1,4 +1,4 @@
-import i18n from './config/i18n'
+// import i18n from './config/i18n'
 import postcss from './config/postcss'
 import pwa from './config/pwa'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/algolia',
-    '@nuxtjs/i18n',
+    // '@nuxtjs/i18n',
     '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     transpile: [
       "primevue",
       "@fortawesome/vue-fontawesome",
-      'vue-i18n'
+      // 'vue-i18n'
     ]
   },
 
@@ -62,7 +62,7 @@ export default defineNuxtConfig({
   ],
 
   pwa,
-  i18n,
+  // i18n,
   postcss,
 
   sourcemap: {

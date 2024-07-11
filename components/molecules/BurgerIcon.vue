@@ -8,6 +8,7 @@ defineProps<{ active: boolean }>()
 
 <style lang="scss" scoped>
 button {
+	--factor: 1;
 	height: var(--size);
 	width: var(--size);
 	position: absolute;
@@ -26,7 +27,6 @@ button {
 		transition-property: transform width;
 		border-radius: 10px;
 	}
-	--factor: 1;
 	&:hover {
 		--factor: 1.25;
 	}

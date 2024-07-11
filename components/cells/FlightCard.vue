@@ -129,15 +129,16 @@ const overNight = (flight: Flight) => {
 
   return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
 };
+const { locale } = useI18n()
 const time = (time: string) => {
-  return new Date(time).toLocaleTimeString(useI18n().locale.value, {
+  return new Date(time).toLocaleTimeString(locale.value, {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "UTC",
   });
 };
 const date = (date: string) => {
-  return new Date(date).toLocaleDateString(useI18n().locale.value, {
+  return new Date(date).toLocaleDateString(locale.value, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
