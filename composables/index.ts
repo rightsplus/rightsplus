@@ -2,40 +2,40 @@ import { useLocalStorage } from "@vueuse/core";
 import IBAN from "iban";
 import type { MaskInputOptions } from "maska";
 
-export const useI18n = () => {
-	const locale = ref('de')
-	const t = (e, ...props) => e
-	const n = (e, ...props) => String(e)
-	const locales = ref([{ iso: 'de-DE', name: 'Deutsch', code: 'de' }])
-	const localeProperties = ref({
-		code: 'de',
-		iso: 'de-DE',
-		name: 'Deutsch',
-	})
-	return { t, n, locale, locales, localeProperties }
-}
-export const useLocalePath = () => {
-	return (string) => string
-}
-export const useSwitchLocalePath = () => {
-	return (string) => string
-}
-import { defineComponent, computed, h } from 'vue'
+// export const useI18n = () => {
+// 	const locale = ref('de')
+// 	const t = (e, ...props) => e
+// 	const n = (e, ...props) => String(e)
+// 	const locales = ref([{ iso: 'de-DE', name: 'Deutsch', code: 'de' }])
+// 	const localeProperties = ref({
+// 		code: 'de',
+// 		iso: 'de-DE',
+// 		name: 'Deutsch',
+// 	})
+// 	return { t, n, locale, locales, localeProperties }
+// }
+// export const useLocalePath = () => {
+// 	return (string) => string
+// }
+// export const useSwitchLocalePath = () => {
+// 	return (string) => string
+// }
+// import { defineComponent, computed, h } from 'vue'
 
-defineComponent<{ locale?: string }>({
-	name: 'NuxtLinkLocale',
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- FIXME
-	props: {
-		locale: {
-			type: String as PropType<string>,
-			default: undefined,
-			required: false
-		}
-	},
-	setup(props, { slots }) {
-		return () => 'translated link'
-	}
-})
+// defineComponent<{ locale?: string }>({
+// 	name: 'NuxtLinkLocale',
+// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- FIXME
+// 	props: {
+// 		locale: {
+// 			type: String as PropType<string>,
+// 			default: undefined,
+// 			required: false
+// 		}
+// 	},
+// 	setup(props, { slots }) {
+// 		return () => 'translated link'
+// 	}
+// })
 
 export const useScroll = () => {
 	const scroll = ref(0);
