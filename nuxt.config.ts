@@ -101,5 +101,20 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
+  routeRules: {
+    '/pdf/**': {
+      prerender: false,
+      ssr: false
+    },
+    '/admin/**': {
+      prerender: false,
+      ssr: false
+    },
+    '/claim/**': {
+      prerender: false,
+      ssr: false
+    }
+  },
+
   compatibilityDate: '2024-07-10',
 })
