@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 md:py-24 bg-neutral-200 relative">
-    <NuxtImg
+    <img
       src="/images/kenrick-mills-MF9Wy1NA55I-unsplash.jpg"
       quality="70"
       width="1920"

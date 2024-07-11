@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
     '@vite-pwa/nuxt',
-    "@nuxt/image"
+    // "@nuxt/image"
   ],
 
   build: {

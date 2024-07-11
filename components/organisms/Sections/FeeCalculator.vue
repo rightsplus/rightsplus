@@ -1,6 +1,6 @@
 <template>
   <section class="sm:py-24 bg-gray-200 relative">
-    <NuxtImg
+    <img
       src="/images/mkjr_-8QsqXeJMvOU-unsplash.jpg"
       class="object-cover w-full h-full absolute inset-0 opacity-100 brightness-80 saturate-50"
       quality="50"

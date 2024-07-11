@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-gray-900 text-white">
-    <NuxtImg
+    <img
       src="/images/empty-airport.jpg"
       alt="Airport"
       class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1 top-8 md:top-6 lg:top-0"
@@ -61,7 +61,7 @@
             </p>
           </div>
           <div class="flex items-center gap-8 mt-24">
-            <NuxtImg
+            <img
               src="/jo.jpg"
               alt="Joachim Bawa"
               quality="80"
