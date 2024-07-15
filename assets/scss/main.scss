@@ -119,20 +119,18 @@ p {
 [data-floating-label="true"] {
   --left: var(--p-4);
   --right: var(--p-4);
-  --y: -50%;
+  --y: 87.5%;
   --x: 0;
   --scale: 1;
   .formkit-input {
     padding-top: calc(var(--p-4) * 1.5);
     padding-bottom: calc(var(--p-4) * 0.5);
-    // padding-left: var(--left);
-    // padding-right: var(--right);
     &::placeholder {
       opacity: 0;
     }
   }
   .formkit-label {
-    // pointer-events: none;
+    pointer-events: none;
     background-color: transparent !important;
     font-weight: 500 !important;
     font-size: var(--text-base) !important;
@@ -141,16 +139,10 @@ p {
     white-space: nowrap;
     transform-origin: 0;
     cursor: text;
-    // top: var(--top) !important;
-    left: var(--left) !important;
-    // height: 100%;
-    // position: relative;
+    top: 0 !important;
     width: calc((100% - var(--left) - var(--right)) / var(--scale));
     transform: scale(var(--scale)) translateY(var(--y)) !important;
-    transition-property: transform, top !important;
-    transition-delay: 0 !important;
-    transition-duration: .3s !important;
-    transition-timing-function: cubic-bezier(0.23, 1, 0.320, 1) !important;
+    transition: transform .3s cubic-bezier(0.23, 1, 0.320, 1) 0 !important;
   }
 
   & input:focus ~ .formkit-label,
