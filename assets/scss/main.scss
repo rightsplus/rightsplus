@@ -119,7 +119,7 @@ p {
 [data-floating-label="true"] {
   --left: var(--p-4);
   --right: var(--p-4);
-  --y: 87.5%;
+  --y: 1.25rem;
   --x: 0;
   --scale: 1;
   .formkit-input {
@@ -129,7 +129,7 @@ p {
       opacity: 0;
     }
   }
-  .formkit-label {
+  label.formkit-label {
     pointer-events: none;
     background-color: transparent !important;
     font-weight: 500 !important;
@@ -138,26 +138,39 @@ p {
     text-overflow: ellipsis;
     white-space: nowrap;
     transform-origin: 0;
+    padding: var(--p-1) !important;
+    margin: calc(var(--m-1) * -1) !important;
     cursor: text;
     top: 0 !important;
     width: calc((100% - var(--left) - var(--right)) / var(--scale));
     transform: scale(var(--scale)) translateY(var(--y)) !important;
-    transition: transform .3s cubic-bezier(0.23, 1, 0.320, 1) 0 !important;
+    transition: transform left top .3s cubic-bezier(0.23, 1, 0.320, 1) 0s !important;
+    left: var(--left) !important;
   }
 
-  & input:focus ~ .formkit-label,
-  & textarea:focus ~ .formkit-label,
-  &:not([data-empty="true"]) .formkit-label,
-  &[data-expanded="true"] .formkit-label {
-    --y: 50%;
+  &:not([data-empty="true"]) label.formkit-label{
+    --y: 1.25rem;
+    left: var(--left) !important;
+  }
+
+  & input:focus ~ label.formkit-label,
+  & textarea:focus ~ label.formkit-label,
+  &[data-family="text"]:not([data-empty="true"]) label.formkit-label,
+  &[data-expanded="true"] label.formkit-label,
+  button ~ .formkit-label[data-has-value="true"] {
+    --y: 1rem;
     --scale: 0.7;
+    left: var(--left) !important;
   }
-
+  
   &[data-prefix-icon="true"] {
-    --left: calc(-0.25em + 44px);
+    --left: calc(44px);
+  }
+  &[data-prefix-icon="false"] {
+    --left: 0;
     & input:focus ~ .formkit-label,
     & textarea:focus ~ .formkit-label,
-    &:not([data-empty="true"]) .formkit-label,
+    &[data-family="text"]:not([data-empty="true"]) .formkit-label,
     &[data-expanded="true"] .formkit-label {
       left: var(--left) !important;
     }
@@ -165,27 +178,30 @@ p {
   &[data-suffix-icon="true"]:not(.hidden-suffix) {
     --right: calc(-0.25em + 44px);
   }
-  // button ~ .formkit-label {
-  //   --top: 25%;
-  // }
-  // button.active ~ .formkit-label,
-  // input:focus ~ .formkit-label,
-  // textarea:focus ~ .formkit-label,
-  // .formkit-label[data-has-value="true"],
-  // &[data-complete="true"] .formkit-label {
-  //   --top: 25%;
-  // }
-  //   textarea ~ .formkit-label {
-  //     white-space: pre-wrap;
-  //   }
-  //   textarea:focus ~ .formkit-label,
-  //   textarea ~ .formkit-label[data-has-value="true"],
-  //   &[data-complete="true"] textarea ~ .formkit-label {
-  //     --top: -0.5em;
-  //     white-space: nowrap;
-  //   }
-  //   button ~ .formkit-label[data-has-value="true"],
-  //   &[data-complete="true"] button ~ .formkit-label {
-  //     --top: 0em;
-  //   }
+  textarea ~ .formkit-label {
+    // --y: var(--p-3);
+    white-space: pre-wrap;
+  }
+  button ~ .formkit-label {
+    --y: 1rem;
+    left: var(--left) !important;
+  }
+
+  button.active ~ .formkit-label,
+  input:focus ~ .formkit-label,
+  textarea:focus ~ .formkit-label,
+  .formkit-label[data-has-value="true"],
+  &[data-complete="true"] .formkit-label {
+    --top: 25%;
+  }
+    textarea:focus ~ .formkit-label,
+    textarea ~ .formkit-label[data-has-value="true"],
+    &[data-complete="true"] textarea ~ .formkit-label {
+      --top: -0.5em;
+      white-space: nowrap;
+    }
+    button ~ .formkit-label[data-has-value="true"],
+    &[data-complete="true"] button ~ .formkit-label {
+      --top: 0em;
+    }
 }

@@ -124,6 +124,8 @@ const config: DefaultConfigOptions = {
       textarea: {
         inner: 'flex max-w-2xl rounded-lg ring-1 ring-neutral-200 focus-within:ring-primary-500 [&>label:first-child]:focus-within:text-primary-500',
         input: 'block w-full h-32 px-4 py-3 border-none text-base text-neutral-700 placeholder-neutral-400 focus:shadow-outline',
+        prefixIcon: 'max-h-14',
+        suffixIcon: 'max-h-14'
       },
 
       // PRO input styles

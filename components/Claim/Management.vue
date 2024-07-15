@@ -105,7 +105,8 @@
         <pre v-else-if="active === 3">{{ claim.client }}</pre>
         <pre v-else-if="active === 4">{{ claim.booking.flight.airline }}</pre>
         <div v-else-if="active === 5">
-          <FormKit type="textarea" v-model="claim.notes" label="Notizen" />
+          <FormKit type="textarea" v-model="claim.notes" label="Notizen" prefix-icon="pen"/>
+
         </div>
       </div>
     </div>

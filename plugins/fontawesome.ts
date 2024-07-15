@@ -102,7 +102,8 @@ import {
   faFileArrowUp,
   faCloudArrowUp,
   faLeaf,
-  faNoteSticky
+  faNoteSticky,
+  faPen
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -130,6 +131,7 @@ library.add(
   faCircleCheck,
   faRoute,
   faFilePen,
+  faPen,
   faMoneyBill1Wave,
   faPlaneCircleXmark,
   faClock,

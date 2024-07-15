@@ -31,7 +31,22 @@ export const useSupabaseFunctions = () => {
 	}): Promise<T> {
 		console.time('fetching supabase')
 		const { date, departure, arrival, type, iata, or } = body
-		let match = {}
+		type Match = {
+			dateDeparture: string
+			iata: string
+		} | {
+			dateDeparture: string
+			airportDeparture: string
+		} | {
+			dateArrival: string
+			airportArrival: string
+		} | {
+			dateDeparture: string
+			airportDeparture: string
+			airportArrival: string
+		}
+		// let match: Match
+		let match: Partial<Match> // for testing purposes only, while not subscribed to aviation stack
 		if (iata) {
 			match = {
 				dateDeparture: date,
@@ -56,8 +71,12 @@ export const useSupabaseFunctions = () => {
 		} else {
 			throw 'supply iata OR type and dep/arr OR dep and arr'
 		}
+		if ('dateDeparture' in match) {
+			delete match.dateDeparture
+			delete body.date
+		}
+
 		console.log('match...', match)
-		console.log('supabase:', supabase)
 
 
 		// const { error : err} = await supabase.rpc('delete_duplicate_flights')

@@ -8,7 +8,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "build-dev": "cross-env NODE_ENV=dev nuxt build",
-    "debug-prod": "node --inspect node_modules/.bin/nuxt start"
+    "debug-prod": "node --inspect .output/server/index.mjs"
   },
   "devDependencies": {
     "@nuxt/image": "^1.5.0",
