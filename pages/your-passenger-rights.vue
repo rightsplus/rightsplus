@@ -46,7 +46,7 @@
         Flüge und auch für Flüge in Norwegen, Island, Liechtenstein und der
         Schweiz, sofern die Fluggesellschaft ihren Sitz in der EU hat.
       </p>
-      <img
+      <NuxtImage
         width="800"
         quality="70"
         format="webp"

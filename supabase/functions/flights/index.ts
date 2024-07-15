@@ -34,7 +34,7 @@ const fetchAviationStack = async ({ date, departure, arrival, type, iata }, req)
   const url = new URL(`http://api.aviationstack.com/v1/flights`);
   url.searchParams.append('access_key', Deno.env.get("AVIATION_STACK_KEY"));
 
-  if (date) url.searchParams.append("flight_date", date);
+  // if (date) url.searchParams.append("flight_date", date);
   if (departure) url.searchParams.append("dep_iata", departure);
   if (arrival) url.searchParams.append("arr_iata", arrival);
   if (iata) url.searchParams.append("flight_iata", iata);

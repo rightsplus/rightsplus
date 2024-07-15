@@ -147,6 +147,10 @@ p {
     // position: relative;
     width: calc((100% - var(--left) - var(--right)) / var(--scale));
     transform: scale(var(--scale)) translateY(var(--y)) !important;
+    transition-property: transform, top !important;
+    transition-delay: 0 !important;
+    transition-duration: .3s !important;
+    transition-timing-function: cubic-bezier(0.23, 1, 0.320, 1) !important;
   }
 
   & input:focus ~ .formkit-label,
