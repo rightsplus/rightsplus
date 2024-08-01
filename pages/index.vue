@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-x-hidden">
-    <NuxtImg
+    <img
       src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
       quality="70"
       width="1920"

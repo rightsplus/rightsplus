@@ -60,7 +60,7 @@ const loading = ref(true)
 export const useMachine = <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
   context?: T | undefined;
   initial?: States;
-  methods?: Methods<T>
+  methods?: Methods<T, States>
 }) => {
 
   type SubscriptionProps = { type: string; action?: string | string[]; event?: string; target?: States, origin?: States }
@@ -69,7 +69,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
   }
   const context = options?.context || {} as T
   const initial = options?.initial || machine.initial
-  const methods = options?.methods || {}
+  const methods = options?.methods || {} as Methods<T, States>
   const messages = ref<Record<string, string>>({})
 
   // const ls = typeof localStorage !== 'undefined'

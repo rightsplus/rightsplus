@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   },
 
   image: {
-    format: ['webp']
+    // format: ['webp']
   },
 
   css: [

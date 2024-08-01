@@ -95,7 +95,7 @@ definePageMeta({
 const active = ref([] as number[]);
 const filter = ref("");
 watch(
-  () => filter.value,
+  filter,
   (query) => {
     if (query.length < 2) return (active.value = []);
 

@@ -66,9 +66,5 @@
     "vue-email": "^0.8.8",
     "vue-uuid": "^3.0.0",
     "@vueuse/core": "^10.1.2"
-  },
-  "resolutions": {
-    "wrap-ansi": "7.0.0",
-    "string-width": "4.2.3"
   }
 }

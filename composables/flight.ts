@@ -1,4 +1,3 @@
-// import { useI18n } from "#i18n"
 import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo } from "@/types";
 import { airports } from "~/store";
 import { airlines } from "~/store";

@@ -36,12 +36,17 @@ const emit = defineEmits<{
   ];
 }>();
 const dragging = ref(false);
-onMounted(() => {
-  window.addEventListener("mouseup", () => (dragging.value = false));
-  window.addEventListener("mousemove", (e: MouseEvent) =>
+const handleMouseUp = () => (dragging.value = false)
+const handleMouseMove = (e: MouseEvent) =>
     dragging.value
       ? emit("drag", props.vertical ? e.clientX : e.clientY)
       : null
-  );
+onMounted(() => {
+  window.addEventListener("mouseup", handleMouseUp);
+  window.addEventListener("mousemove", handleMouseMove);
 });
+onBeforeUnmount(() => {
+  window.removeEventListener("mouseup", handleMouseUp)
+  window.removeEventListener("mousemove", handleMouseMove)
+})
 </script>
