@@ -37,7 +37,7 @@ const options: ModuleOptions = {
 	locales,
 	langDir: 'locales',
 	defaultLocale: 'en',
-	strategy: 'prefix',
+	strategy: "prefix_and_default",
 	customRoutes: 'config',
 	vueI18n: 'config/i18n.options.ts',
 	pages: {
