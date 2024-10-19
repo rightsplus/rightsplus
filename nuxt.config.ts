@@ -4,7 +4,7 @@ import pwa from './config/pwa'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   app: {
-    pageTransition: { name: 'layout', mode: 'out-in' },
+    pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       title: "RightsPlus",
@@ -13,6 +13,9 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content' },
         { name: 'HandheldFriendly', content: 'true' }
       ],
+      htmlAttrs: {
+        lang: 'de'
+      }
     }
   },
 
@@ -36,9 +39,14 @@ export default defineNuxtConfig({
 
   nitro: {
     compressPublicAssets: true,
-    // prerender: {
-    //   failOnError: false
-    // }
+    prerender: {
+      crawlLinks: true,
+      routes: [
+        '/', // Add the root path so it's generated
+        '/en', '/de' // Include all locale versions here
+      ]
+    },
+    static: true,
   },
 
   formkit: {
@@ -101,6 +109,16 @@ export default defineNuxtConfig({
   },
 
   ssr: true,
+
+  hooks: {
+    'pages:extend'(pages) {
+      pages.push({
+        name: 'root',
+        path: '/',
+        redirect: '/de' // Redirect to your default locale
+      })
+    }
+  },
 
   routeRules: {
     '/pdf/**': {
