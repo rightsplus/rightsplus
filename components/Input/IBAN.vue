@@ -9,6 +9,8 @@
             isFocused && modelValue && IBAN.isValid(modelValue),
         },
       ]"
+      data-family="text"
+      :data-empty="!modelValue"
       data-floating-label="true"
       :data-suffix-icon="suffixIconComputed && 'true'"
     >

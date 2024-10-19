@@ -143,9 +143,9 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     const { target, action } = getNext({ event })
     return target || action
   }
-  watch(transition, (newValue) => {
-    console.log('transition', newValue)
-  })
+  // watch(transition, (newValue) => {
+  //   console.log('transition', newValue)
+  // })
 
   const send = (event: string) => {
     const origin = current.value

@@ -10,7 +10,6 @@
   "fewerThan": "Minder dan {value}",
   "lessThan": "@:fewerThan {value}",
   "moreThan": "Meer dan {value}",
-  "isMinor": "",
   "hours": "{n} uur | {n} uren",
   "days": "{n} dag | {n} dagen",
   "cancelled": "Geannuleerd",

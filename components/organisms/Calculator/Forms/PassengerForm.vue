@@ -232,16 +232,6 @@
             v-model="modelValue.address"
             class="col-span-full"
           />
-          <InputFile
-            accept="image/*, application/pdf"
-            :label="$t('Lade deine Bordkarte hoch')"
-            v-model="modelValue.boardingPass"
-            class="col-span-full"
-            ref="fileInput"
-            icon="ticket-airline"
-            fileRemoveIcon="xmark"
-            multiple
-          />
           <InputIBAN
             :label="$t('iban')"
             :name="$t('iban')"
@@ -250,6 +240,16 @@
             outer-class="col-span-full"
             :touched="touched.iban"
             @blur="touched.iban = true"
+          />
+          <InputFile
+            accept="image/*, application/pdf"
+            :label="index > 0 ? $t(`Lade die Bordkarte von ${modelValue.firstName || 'diesem Passagier'} hoch`) : $t('Lade deine Bordkarte hoch')"
+            v-model="modelValue.boardingPass"
+            class="col-span-full"
+            ref="fileInput"
+            icon="ticket-airline"
+            fileRemoveIcon="xmark"
+            multiple
           />
           <!-- icon="ticket-airline" -->
 

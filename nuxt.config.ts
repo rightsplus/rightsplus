@@ -52,7 +52,7 @@ export default defineNuxtConfig({
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     '~/assets/scss/main.scss',
-    '~/assets/scss/transitions.scss',
+    '~/assets/css/transitions.css',
   ],
 
   components: [
@@ -99,6 +99,8 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
+
+  ssr: true,
 
   routeRules: {
     '/pdf/**': {

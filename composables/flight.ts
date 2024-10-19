@@ -471,15 +471,15 @@ export const useFlights = () => {
 	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
 	const { airlines, query: queryAirlines } = useAirlines()
-	const ATTEMPTS = 3
 
 	const fetchFlights = async (props: {
 		date: string,
 		departure?: string,
 		arrival?: string,
 		locale?: string,
-	}, attempts = ATTEMPTS) => {
+	}, attempts = 3) => {
 		const { departure, arrival, date, locale } = props
+		console.trace('fetch flights')
 		try {
 			if (
 				!date ||

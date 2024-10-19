@@ -69,11 +69,11 @@ export const useCompensation = (estimate = false) => {
 		// TRIP
 		const { departure, arrival, trip } = airport || {}
 		const legs = generateLegs(airport.trip)
-		console.log(departure, arrival, trip, legs)
+		// console.log(departure, arrival, trip, legs)
 
 		if (!departure || !Object.keys(departure).length || !arrival || !Object.keys(arrival).length) return 'airport.missing'
 		if (departure.iata === arrival.iata) {
-			console.log(departure, arrival)
+			// console.log(departure, arrival)
 			return 'airport.identical'
 		}
 		if (!departure.ec261 && !arrival.ec261) return 'ec261.airport'
@@ -97,7 +97,7 @@ export const useCompensation = (estimate = false) => {
 		if (disruption.type === "delayed") {
 			if (!disruption.details) return 'disruption.detail.delay'
 			if (disruption.details === "<3") {
-				console.log('connection', connection)
+				// console.log('connection', connection)
 				const { departure, arrival } = nextLeg(claim)
 				if (!connection || !(departure || arrival)) {
 					eligible.value = false
@@ -140,7 +140,7 @@ export const useCompensation = (estimate = false) => {
 				return { compensation: 0, distance, message }
 			}
 		}
-		console.log('error code', getError())
+		// console.log('error code', getError())
 		if (claim.flight?.status === 'landed' && (claim.disruption.type !== "noBoarding" || claim.disruption.selfInflicted)) {
 			message = t('Dein Flug ist offenbar pünktlich gelandet.')
 			eligible.value = false
@@ -183,7 +183,7 @@ export const usePrepareClaimSubmission = () => {
 
 			const storageFolderClaim = [formatClaimId(claimResponse.id, false), passenger.lastName].join("/");
 
-			console.log(passenger.signature.svg, passenger.boardingPass)
+			// console.log(passenger.signature.svg, passenger.boardingPass)
 			await Promise.all([
 				// Signature
 				handleUploadSignature(

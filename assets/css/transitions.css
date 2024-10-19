@@ -4,8 +4,7 @@
 /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  // transition: all var(--transition-duration-1000, 3000ms)
-  transition-duration: 1000ms;
+  /* transition: all var(--transition-duration-1000, 3000ms) transition-duration: 1000ms; */
   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   transition-property: opacity, transform;
 }
@@ -54,25 +53,21 @@
   transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.layout-move,
-.layout-enter-active,
-.layout-leave-active {
-  &,
-  main {
-    transition-duration: 500ms;
-    transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
-    transition-property: opacity, transform;
-    transform-origin: top;
-  }
+.layout-move main,
+.layout-enter-active main,
+.layout-leave-active main {
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  transition-property: opacity, transform;
+  transform-origin: top;
 }
 
-.layout-enter-from,
-.layout-leave-to {
-  main {
-    opacity: 0;
-    transform: scale(0.99);
-  }
+.layout-enter-from main,
+.layout-leave-to main {
+  opacity: 0;
+  transform: scale(0.99);
 }
+
 .slide-in-move,
 .slide-in-enter-active,
 .slide-in-leave-active {
@@ -86,6 +81,7 @@
   opacity: 0;
   transform: translateY(var(--offset, 2%));
 }
+
 .scale-move,
 .scale-enter-active,
 .scale-leave-active {
@@ -133,11 +129,13 @@
   transition-property: opacity, transform;
   transform-origin: 0 0;
 }
+
 .dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;
   transform: scaleY(0.5);
 }
+
 .move-up-move,
 .move-up-enter-active,
 .move-up-leave-active {
@@ -146,11 +144,13 @@
   transition-property: opacity, transform;
   transform-origin: 0 0;
 }
+
 .move-up-enter-from,
 .move-up-leave-to {
   opacity: 0;
   transform: translateY(1em);
 }
+
 .move-up-leave-to {
   transition-duration: var(--transition-duration-250, 250ms);
 }
@@ -206,15 +206,13 @@
 .transition-hide {
   opacity: 0;
   transform: translateY(-20px) scale(0.9);
-  transition: var(--transition-duration-1000, 100ms)
-    cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: var(--transition-duration-1000, 100ms) cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .transition-show {
   opacity: 1;
   transform: translateY(0) scale(1);
-  transition: var(--transition-duration-1000, 100ms)
-    cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: var(--transition-duration-1000, 100ms) cubic-bezier(0.165, 0.84, 0.44, 1);
   transition-delay: calc(100ms * (var(--total, 1) - var(--i, 1)));
 }
 
@@ -243,11 +241,13 @@
   opacity: 0;
   scale: 0.99;
 }
+
 .popup-enter-active,
 .popup-enter-active .content {
   transition: 0.3s cubic-bezier(0, 0, 0, 1);
   transition-property: opacity, scale;
 }
+
 .popup-leave-active,
 .popup-leave-active .content {
   transition: 0.2s cubic-bezier(1, 0, 0, 0);
@@ -258,12 +258,14 @@
 .popup-leave-to {
   opacity: 0;
 }
+
 .popup-enter-from .content,
 .popup-leave-to .content {
   scale: 0.95;
 }
 
-.new-list-move, /* apply transition to moving elements */
+.new-list-move,
+/* apply transition to moving elements */
 .new-list-enter-active,
 .new-list-leave-active {
   transition: all 0.5s ease-in-out;
@@ -292,16 +294,19 @@
   transition: 100ms ease-out;
   transition-property: opacity, transform;
 }
+
 .step-prev-enter-from,
 .step-prev-leave-to,
 .step-next-enter-from,
 .step-next-leave-to {
   opacity: 0;
 }
+
 .step-next-leave-to,
 .step-prev-enter-from {
   transform: translateX(-2%);
 }
+
 .step-next-enter-from,
 .step-prev-leave-to {
   transform: translateX(2%);

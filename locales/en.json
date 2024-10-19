@@ -10,7 +10,7 @@
   "fewerThan": "Fewer than {value}",
   "lessThan": "@:fewerThan {value}",
   "moreThan": "More than {value}",
-  "isMinor": "",
+  "isMinor": "is minor",
   "hours": "{n} Hour | {n} Hours",
   "days": "{n} Day | {n} Days",
   "cancelled": "Cancelled",

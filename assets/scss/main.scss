@@ -144,30 +144,35 @@ p {
     top: 0 !important;
     width: calc((100% - var(--left) - var(--right)) / var(--scale));
     transform: scale(var(--scale)) translateY(var(--y)) !important;
-    transition: transform left top .3s cubic-bezier(0.23, 1, 0.320, 1) 0s !important;
+    transition: transform left top 0.3s cubic-bezier(0.23, 1, 0.32, 1) 0s !important;
     left: var(--left) !important;
+    opacity: 1 !important;
+    color: var(--color-neutral-400);
   }
 
-  &:not([data-empty="true"]) label.formkit-label{
+  &:not([data-empty="true"]) label.formkit-label {
     --y: 1.25rem;
     left: var(--left) !important;
+    color: var(--color-neutral-500)
   }
 
   & input:focus ~ label.formkit-label,
   & textarea:focus ~ label.formkit-label,
+  &[data-type="textarea"]:not([data-empty="true"]) label.formkit-label,
   &[data-family="text"]:not([data-empty="true"]) label.formkit-label,
   &[data-expanded="true"] label.formkit-label,
   button ~ .formkit-label[data-has-value="true"] {
     --y: 1rem;
     --scale: 0.7;
     left: var(--left) !important;
+    color: var(--color-neutral-500)
   }
-  
+
   &[data-prefix-icon="true"] {
     --left: calc(44px);
   }
   &[data-prefix-icon="false"] {
-    --left: 0;
+    --left: 10px;
     & input:focus ~ .formkit-label,
     & textarea:focus ~ .formkit-label,
     &[data-family="text"]:not([data-empty="true"]) .formkit-label,
@@ -194,14 +199,14 @@ p {
   &[data-complete="true"] .formkit-label {
     --top: 25%;
   }
-    textarea:focus ~ .formkit-label,
-    textarea ~ .formkit-label[data-has-value="true"],
-    &[data-complete="true"] textarea ~ .formkit-label {
-      --top: -0.5em;
-      white-space: nowrap;
-    }
-    button ~ .formkit-label[data-has-value="true"],
-    &[data-complete="true"] button ~ .formkit-label {
-      --top: 0em;
-    }
+  textarea:focus ~ .formkit-label,
+  textarea ~ .formkit-label[data-has-value="true"],
+  &[data-complete="true"] textarea ~ .formkit-label {
+    --top: -0.5em;
+    white-space: nowrap;
+  }
+  button ~ .formkit-label[data-has-value="true"],
+  &[data-complete="true"] button ~ .formkit-label {
+    --top: 0em;
+  }
 }

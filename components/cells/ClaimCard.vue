@@ -231,6 +231,7 @@ const { compensation, distance, message, eligible } = useCompensation(
 
 const arrivalTime = computed(() => {
   const { actualTime } = flight.value?.arrival || {};
+  // console.log(flight.value)
   return actualTime;
 });
 </script>
