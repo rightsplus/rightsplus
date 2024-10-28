@@ -15,12 +15,15 @@ const generatePDF = async ({ data, template }: GeneratePDFProps ) => {
 	if (!template) {
 		throw new Error('no template name')
 	}
+	console.log('data', data)
 	const url = generatePDFTemplateLink(template, data)
+	console.log(url)
 	return generate(url.href)
 }
 
 export default defineEventHandler(async (event) => {
 	try {
+		console.log('event', event)
 		const user = await serverSupabaseUser(event)
 		// if (!user?.email) throw createError({ statusCode: 401, message: "Unauthorized" })
 		const body = JSON.parse(await readBody(event)) as GeneratePDFProps

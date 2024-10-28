@@ -117,7 +117,7 @@ p {
 }
 
 [data-floating-label="true"] {
-  --left: var(--p-4);
+  --left: calc(var(--p-4) + 1px);
   --right: var(--p-4);
   --y: 1.25rem;
   --x: 0;
@@ -169,7 +169,7 @@ p {
   }
 
   &[data-prefix-icon="true"] {
-    --left: calc(44px);
+    --left: 46px;
   }
   &[data-prefix-icon="false"] {
     --left: 10px;

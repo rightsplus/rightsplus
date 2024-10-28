@@ -426,10 +426,17 @@ const { prepareClaimSubmission } = usePrepareClaimSubmission();
 const submit = async () => {
   console.log("submitting");
   try {
+    console.log('claimState', claimState)
     const submission = await prepareClaimSubmission(claimState);
-    await supabase.from("claims").insert(submission).then(console.log);
+    console.log('submission', submission)
+    const { data, error } = await supabase.from("claims").insert(submission)
+    console.log('data', data)
+    console.log('error', error)
+    if (error) {
+      throw error
+    }
     send("next");
-  } catch (error: string) {
+  } catch (error) {
     console.error(error);
   }
 };

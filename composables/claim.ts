@@ -42,6 +42,8 @@ export const useGeneratePDF = () => {
 			body: JSON.stringify(props),
 		});
 
+		console.log('response', response)
+
 		return streamToPdfLink(response.body);
 	};
 	return { generate };

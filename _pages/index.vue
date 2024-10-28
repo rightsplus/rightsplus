@@ -31,7 +31,7 @@
     </section>
     <div class="bg-white z-5 relative">
       <CompensationBanner />
-      <DisruptedFlights id="below-the fold" />
+      <DisruptedFlights id="below-the-fold" />
       <YourRights />
       <ProcessSummary />
       <Reasons />

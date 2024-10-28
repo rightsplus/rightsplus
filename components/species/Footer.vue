@@ -74,10 +74,10 @@ const routes = computed(() => [
         path: "claim-new",
         title: t("checkClaim"),
       },
-      {
-        path: "delayed-and-cancelled-flights",
-        title: t("disruptedFlights"),
-      },
+      // {
+      //   path: "delayed-and-cancelled-flights",
+      //   title: t("disruptedFlights"),
+      // },
       {
         path: "your-passenger-rights",
         title: t("yourRights"),

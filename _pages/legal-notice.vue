@@ -25,13 +25,12 @@
         Vermögenschadenshaftpflicht: AXA Versicherung AG, Colonia-Allee 10-20,
         51067 Köln
       </p>
-      <p>Berufsrechtliche Regelungen:<br/>
+      <p>Berufsrechtliche Regelungen:</p>
       <ul class="list-disc list-inside">
         <li>Rechtsdienstleistungsgesetz (RDG)</li>
         <li>Rechtsdienstleistungsverordnung (RDV)</li>
         <li>Geldwäschegesetz (GwG)</li>
       </ul>
-    </p>
       <p>
         Verantwortlicher i.S.d. § 55 Abs. 2 RStV: Joachim Bawa, Sandeldamm 24a,
         63450 Hanau

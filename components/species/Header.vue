@@ -135,25 +135,21 @@ const isAdmin =
 
 const { invoke } = useMachine(claimMachine, { context: claim });
 const links = computed(() => [
-  {
-    path: "delayed-and-cancelled-flights",
-    name: "disrupted-flights",
-    title: t("disruptedFlights"),
-  },
+  // {
+  //   path: "delayed-and-cancelled-flights",
+  //   title: t("disruptedFlights"),
+  // },
   {
     path: "your-passenger-rights",
-    name: "your-passenger-rights",
     title: t("yourRights"),
   },
   {
     path: "claim-new",
     onClick: () => invoke("reset"),
-    name: "claim",
     title: t("checkClaim"),
     type: "button",
   },
   // {
-  //   name: "sign-out",
   //   onClick: () => auth.signOut(),
   //   type: "button",
   //   icon: "door-open",

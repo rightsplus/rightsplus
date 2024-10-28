@@ -223,7 +223,8 @@ export const useSupabaseFunctions = () => {
 			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
 			console.log('query:', { iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime })
 			console.log('existing flight:', existingFlight)
-			if (errExisting) throw errExisting
+			console.log('errExisting', errExisting)
+			// if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
 			console.log('preparedFlight', preparedFlight)
 			const { data: addedFlight, error } = await supabase
