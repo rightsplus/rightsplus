@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 const { orange, neutral, sky, emerald, yellow, red, black, white, transparent } = require('tailwindcss/colors')
 const gray = {
   "50": "hsl(200deg 60% 98%)",

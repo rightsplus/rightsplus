@@ -91,10 +91,10 @@ const routes = computed(() => [
   {
     title: t("about").trim(),
     links: [
-      {
-        path: "blog",
-        title: t("blog"),
-      },
+      // {
+      //   path: "blog",
+      //   title: t("blog"),
+      // },
       {
         path: "team",
         title: t("team"),

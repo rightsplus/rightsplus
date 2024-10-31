@@ -11,6 +11,7 @@
     "debug-prod": "node --inspect .output/server/index.mjs"
   },
   "devDependencies": {
+    "@nuxt/content": "^2.13.4",
     "@nuxt/image": "^1.5.0",
     "@nuxtjs/algolia": "^1.7.0",
     "@nuxtjs/i18n": "^8.1.1",
@@ -19,6 +20,7 @@
     "@types/iban": "^0.0.35",
     "@types/node": "^22.7.7",
     "@types/nodemailer": "^6.4.14",
+    "@types/pdfmake": "^0.2.9",
     "@types/signature_pad": "^2.3.6",
     "@vite-pwa/nuxt": "^0.9.1",
     "@vue-email/nuxt": "^0.8.13",
@@ -45,6 +47,7 @@
     "@stdlib/string-truncate-middle": "^0.2.1",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.3",
+    "@vueuse/core": "^10.1.2",
     "compressorjs": "^1.2.1",
     "date-fns": "^3.6.0",
     "floating-vue": "^5.2.2",
@@ -55,6 +58,8 @@
     "maska": "^2.1.7",
     "nodemailer": "^6.9.2",
     "nuxt-storage": "^1.2.2",
+    "pdf-lib": "^1.17.1",
+    "pdfmake": "^0.2.14",
     "primevue": "^3.29.1",
     "puppeteer": "^22.12.1",
     "signature_pad": "^4.1.7",
@@ -64,7 +69,6 @@
     "tailwindcss-unimportant": "^2.1.1",
     "v-calendar": "^3.0.3",
     "vue-email": "^0.8.8",
-    "vue-uuid": "^3.0.0",
-    "@vueuse/core": "^10.1.2"
+    "vue-uuid": "^3.0.0"
   }
 }

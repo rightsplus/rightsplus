@@ -5,7 +5,14 @@ export async function generatePDF(url: string): Promise<Buffer> {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     console.log('url', url)
-    await page.goto(url, { waitUntil: 'load' });
+    // Wait until network is idle and content is loaded
+    await page.goto(url, { 
+      waitUntil: ['networkidle0', 'domcontentloaded'],
+      timeout: 30000 
+    });
+
+    // Wait for any content to be rendered
+    await page.waitForSelector('body', { timeout: 5000 });
     const pdf = await page.pdf({ format: 'A4', printBackground: true });
     console.log('pdf', pdf)
     await browser.close();

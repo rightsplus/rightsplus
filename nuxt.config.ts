@@ -21,12 +21,14 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/algolia',
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@formkit/nuxt',
     '@nuxtjs/supabase',
     '@vue-email/nuxt',
     '@vite-pwa/nuxt',
-    "@nuxt/image"
+    "@nuxt/image",
+    '@nuxt/content',
   ],
 
   build: {
@@ -71,6 +73,12 @@ export default defineNuxtConfig({
   pwa,
   i18n,
   postcss,
+
+
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+  },
 
   sourcemap: {
     server: process.env.NODE_ENV === 'development',
@@ -132,6 +140,12 @@ export default defineNuxtConfig({
     '/claim/**': {
       prerender: false,
       ssr: false
+    }
+  },
+
+  content: {
+    documentDriven: {
+      layoutFallbacks: ['theme'],
     }
   },
 

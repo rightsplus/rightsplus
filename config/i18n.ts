@@ -19,24 +19,12 @@ export const locales: LocaleObject[] = [
 		iso: 'en-GB',
 		name: 'English',
 		file: 'en.json',
-	},
-	{
-		code: 'fr',
-		iso: 'fr-FR',
-		name: 'Français',
-		file: 'fr.json',
-	},
-	{
-		code: 'nl',
-		iso: 'nl-NL',
-		name: 'Nederlands',
-		file: 'nl.json',
-	},
+	}
 ]
 const options: ModuleOptions = {
 	locales,
 	langDir: 'locales',
-	defaultLocale: 'en',
+	defaultLocale: 'de',
 	strategy: "prefix_and_default",
 	customRoutes: 'config',
 	vueI18n: 'config/i18n.options.ts',
