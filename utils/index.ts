@@ -566,3 +566,24 @@ export const getIbanMask = (str: string, country = "DE") => {
 		countryInString,
 	};
 };
+
+
+import i18nConfig from '@/config/i18n'
+
+export const getRouteNameFromPath = (path: string, pages = i18nConfig.pages) => {
+	// Remove leading slash and split to get locale and route parts
+	const cleanPath = path.replace(/^\//, '')
+	const pathParts = cleanPath.split('/')
+
+	// Handle both /de/impressum and impressum formats
+	const routePath = pathParts.length > 1 ? `/${pathParts[1]}` : `/${pathParts[0]}`
+
+	// if (routePath)
+
+	// Find matching route name by checking all locales for each page
+	const [match] = Object.entries(pages).find(([_, translations]) =>
+		Object.entries(translations).some(([locale, path]) => path === routePath || locale === routePath.replace(/^\//, ''))
+	) || []
+
+	return match || ''
+}
