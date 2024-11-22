@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import type { LocaleObject } from "~/config/i18n";
+const { locale, locales, localeProperties, t } = useI18n();
+const isOpen = ref(false);
+const switchLocalePath = useSwitchLocalePath()
+</script>
+
 <template>
   <button
     @click="isOpen = true"
@@ -29,7 +36,7 @@
         v-for="{ iso, name, code } in (locales as LocaleObject[])"
         :key="code"
         :to="switchLocalePath(code)"
-        @click="closeModal"
+        @click="isOpen = false"
         class="flex items-center gap-2 hover:bg-blue-100 p-4 rounded-lg"
         :class="{
           'bg-blue-100 hover:bg-blue-50': locale === code,
@@ -45,16 +52,3 @@
     </div>
   </Popup>
 </template>
-
-<script setup lang="ts">
-import type { LocaleObject } from "~/config/i18n";
-const switchLocalePath = useSwitchLocalePath();
-
-const { locale, locales, localeProperties, t } = useI18n();
-const isOpen = ref(false);
-const closeModal = (l: string) => {
-  // locale.value = l;
-  // switchLocalePath(l);
-  setTimeout(() => (isOpen.value = false), 100);
-};
-</script>

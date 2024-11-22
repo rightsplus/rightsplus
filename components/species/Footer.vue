@@ -7,8 +7,8 @@
       class="grid @2xl:grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-full"
     >
       <div class="@2xl:col-span-4 @5xl:col-span-3 flex flex-col gap-24">
-        <NuxtLinkLocale
-          to="index"
+        <NuxtLink
+          :to="localePath('index')"
           class="w-full max-w-[160px] h-min flex gap-3 items-center leading-none cursor-pointer"
           title="home"
           @click="scrollTop"
@@ -22,7 +22,7 @@
             <span class="font-bold shrink-0">RightsPlus</span
             ><span class="font-medium shrink-0">Flights</span>
           </span>
-        </NuxtLinkLocale>
+        </NuxtLink>
       </div>
       <ul
         class="@2xl:col-span-8 @5xl:col-span-9 grid grid-cols-2 @5xl:grid-cols-4 font-medium gap-5 gap-y-12 sm:gap-12"
@@ -34,11 +34,11 @@
           >
           <ul class="flex flex-col gap-3 text-sm md:text-base">
             <li v-for="item in column.links" class="leading-tight">
-              <NuxtLinkLocale
-                :to="item.path"
+              <NuxtLink
+                :to="localePath(item.path)"
                 class="hover:text-gray-400 break-words hyphens-auto"
                 exactActiveClass="text-gray-400"
-                >{{ item.title }}</NuxtLinkLocale
+                >{{ item.title }}</NuxtLink
               >
             </li>
           </ul>
@@ -64,78 +64,82 @@
 import Logo from "~/assets/logo";
 import LanguageSwitcher from "@/components/molecules/LanguageSwitcher.vue";
 const { t } = useI18n();
-const localePath = useLocalePath();
+import { type RouteName } from "~/composables/useLocaleContent";
+const { localePath } = useLocaleContent();
 
-const routes = computed(() => [
-  {
-    title: t("ourService"),
-    links: [
+const routes = computed(
+  () =>
+    [
       {
-        path: "claim-new",
-        title: t("checkClaim"),
-      },
-      // {
-      //   path: "delayed-and-cancelled-flights",
-      //   title: t("disruptedFlights"),
-      // },
-      {
-        path: "your-passenger-rights",
-        title: t("yourRights"),
-      },
-      {
-        path: "prices-and-services",
-        title: t("pricesAndServices"),
-      },
-    ],
-  },
-  {
-    title: t("about").trim(),
-    links: [
-      // {
-      //   path: "blog",
-      //   title: t("blog"),
-      // },
-      {
-        path: "team",
-        title: t("team"),
+        title: t("ourService"),
+        links: [
+          {
+            path: "claim-new",
+            title: t("checkClaim"),
+          },
+          // {
+          //   path: "delayed-and-cancelled-flights",
+          //   title: t("disruptedFlights"),
+          // },
+          {
+            path: "your-passenger-rights",
+            title: t("yourRights"),
+          },
+          {
+            path: "prices-and-services",
+            title: t("pricesAndServices"),
+          },
+        ],
       },
       {
-        path: "about-rights-plus",
-        title: t("about", { name: "RightsPlus" }),
-      },
-    ],
-  },
-  {
-    title: t("legal"), // Legal
-    links: [
-      {
-        path: "privacy",
-        title: t("privacy"),
-      },
-      {
-        path: "terms-and-conditions",
-        title: t("termsAndConditions"),
-      },
-      {
-        path: "legal-notice",
-        title: t("legalNotice"),
-      },
-    ],
-  },
-  {
-    title: t("help"),
-    links: [
-      {
-        path: "faq",
-        title: t("customerService"),
+        title: t("about").trim(),
+        links: [
+          // {
+          //   path: "blog",
+          //   title: t("blog"),
+          // },
+          {
+            path: "team",
+            title: t("team"),
+          },
+          {
+            path: "about-rights-plus",
+            title: t("about", { name: "RightsPlus" }),
+          },
+        ],
       },
       {
-        path: "faq",
-        title: t("faq"),
+        title: t("legal"), // Legal
+        links: [
+          {
+            path: "privacy",
+            title: t("privacy"),
+          },
+          {
+            path: "terms-and-conditions",
+            title: t("termsAndConditions"),
+          },
+          {
+            path: "legal-notice",
+            title: t("legalNotice"),
+          },
+        ],
       },
-    ],
-  },
-]);
+      {
+        title: t("help"),
+        links: [
+          {
+            path: "faq",
+            title: t("customerService"),
+          },
+          {
+            path: "faq",
+            title: t("faq"),
+          },
+        ],
+      },
+    ] satisfies { title: string; links: { path: RouteName; title: string }[] }[]
+);
 const scrollTop = () => {
   // scroll to top smooth
   // @todo use animejs instead

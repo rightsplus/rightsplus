@@ -38,6 +38,16 @@ a {
     font-weight: var(--font-bold);
     line-height: 1.2;
     margin-block: 1em;
+    a:hover {
+      text-decoration: none;
+      &::before {
+        content: '#';
+        position: absolute;
+        transform: translateX(-100%);
+        padding: 0 0.5ex;
+        @apply text-neutral-300
+      }
+    }
   }
 
   h1 {
@@ -103,6 +113,16 @@ a {
       font-size: var(--text-lg);
     }
   }
+  table {
+    @apply w-full table-fixed my-5;
+    td, th {
+      @apply px-3 py-2 align-top hyphens-auto leading-tight;
+    }
+    thead th, 
+    tr:nth-child(even) td {
+      @apply first:rounded-l-lg last:rounded-r-lg bg-neutral-100;
+    }
+  }
 }
 
 span,
@@ -153,7 +173,7 @@ p {
   &:not([data-empty="true"]) label.formkit-label {
     --y: 1.25rem;
     left: var(--left) !important;
-    color: var(--color-neutral-500)
+    color: var(--color-neutral-500);
   }
 
   & input:focus ~ label.formkit-label,
@@ -165,7 +185,7 @@ p {
     --y: 1rem;
     --scale: 0.7;
     left: var(--left) !important;
-    color: var(--color-neutral-500)
+    color: var(--color-neutral-500);
   }
 
   &[data-prefix-icon="true"] {

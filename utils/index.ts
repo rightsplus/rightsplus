@@ -587,3 +587,14 @@ export const getRouteNameFromPath = (path: string, pages = i18nConfig.pages) => 
 
 	return match || ''
 }
+export const getRoutePathFromName = (name: keyof typeof i18nConfig.pages, locale: (typeof i18nConfig.locales)[number]['code'], pages = i18nConfig.pages) => {
+	return pages[name][locale]
+}
+
+
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}

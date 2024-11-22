@@ -1,5 +1,22 @@
+<script setup lang="ts">
+import Stats from "@/components/organisms/Sections/Stats.vue";
+definePageMeta({
+  layout: "default",
+  classes: {
+    header: "text-white",
+  },
+});
+const route = useRoute()
+const { data } = await useAsyncData('about', () => queryContent(route.path).findOne())
+
+watchEffect(() => {
+  queryContent(route.path).findOne(); // This will re-fetch the data whenever the route changes.
+});
+</script>
+
 <template>
   <section class="min-h-screen pt-48 pb-8 bg-gray-900 text-white">
+    <pre>{{ data?.body }}</pre>
     <NuxtImg
       src="/images/empty-airport.jpg"
       alt="Airport"
@@ -80,16 +97,6 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import Stats from "@/components/organisms/Sections/Stats.vue";
-definePageMeta({
-  layout: "default",
-  classes: {
-    header: "text-white",
-  },
-});
-</script>
 
 <style scoped lang="scss">
 .image {

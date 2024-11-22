@@ -2,14 +2,13 @@
 import Header from "@/components/species/Header.vue";
 import Footer from "@/components/species/Footer.vue";
 onMounted(() => scrollTo({ top: 0, behavior: "smooth" }));
-const { t } = useI18n();
 const route = useRoute();
-const { currentContent } = useI18nContent();
-const {
-  title = route.meta.title,
-  lead = route.meta.lead,
-  category = route.meta.category,
-} = currentContent.value;
+type Props = {
+  footer?: boolean;
+};
+withDefaults(defineProps<Props>(), {
+  footer: true,
+});
 </script>
 
 <template>
@@ -24,27 +23,27 @@ const {
           <div class="flex flex-col gap-3 leading-0">
             <slot name="before" />
             <span
+              v-if="$slots.category"
               class="uppercase tracking-wider text-primary-500 font-bold"
-              v-if="category"
-              >{{ t(category) }}</span
-            >
+              ><slot name="category"
+            /></span>
             <h1
+              v-if="$slots.title"
               class="text-4xl sm:text-6xl font-extrabold hyphens-auto break-words text-balance"
-              v-if="title"
             >
-              {{ t(title) }}
+              <slot name="title" />
             </h1>
             <span
+              v-if="$slots.description"
               class="text-2xl sm:text-3xl font-medium text-neutral-500"
-              v-if="lead"
             >
-              {{ t(lead) }}
+              <slot name="description" />
             </span>
           </div>
           <slot />
         </article>
       </div>
     </main>
-    <Footer class="w-full mt-auto" />
+    <Footer class="w-full mt-auto" v-if="footer" />
   </div>
 </template>

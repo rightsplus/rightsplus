@@ -6,10 +6,10 @@
       class="text-3xl text-primary-500"
     />
     <div class="flex flex-col gap-2 ml-2">
-      <div class="text-base font-medium text-gray-500 leading-none">
+      <h4 class="text-base font-medium text-gray-500 leading-none my-0">
         {{ title }}
-      </div>
-      <div class="text-2xl font-bold leading-none">{{ value }}</div>
+      </h4>
+      <span class="text-2xl font-bold leading-none">{{ value }}</span>
     </div>
   </div>
 </template>

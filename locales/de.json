@@ -44,7 +44,7 @@
   "yes": "Ja",
   "no": "Nein",
   "fewerThan": "Weniger als {value}",
-  "lessThan": "@:fewerThan {value}",
+  "lessThan": "Weniger als {value}",
   "moreThan": "Mehr als {value}",
   "isMinor": "ist minderjährig",
   "hours": "{n} Stunde | {n} Stunden",
@@ -232,5 +232,11 @@
   "potentialCompensationFromAirline": "Mögliche Vergütung durch die Fluggesellschaft",
   "noPotentialCompensationFromAirline": "Vermutlich keine Vergütung durch die Fluggesellschaft",
   "perPerson": "{value} pro Person",
-  "continueWithoutStopover": "Weiter ohne Zwischenstopp"
+  "continueWithoutStopover": "Weiter ohne Zwischenstopp",
+  "youGet": "Du erhältst",
+  "withinEU": "Innerhalb der Europäischen Union",
+  "claimEU": "Anspruch nach EU-Recht",
+  "ourCommission": "Unsere Vergütung",
+  "vat": "Mehrwertsteuer",
+  "flightRoute": "Flugstrecke"
 }

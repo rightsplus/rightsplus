@@ -1,6 +1,7 @@
 ---
+category: EU-Fluggastrechtverordnung EC261
 title: Deine Rechte
-lead: Nach der Fluggastrechteverordnung hast Du unter verschiedenen Voraussetzungen ein Recht auf Entschädigung.
+description: Nach der Fluggastrechteverordnung hast Du unter verschiedenen Voraussetzungen ein Recht auf Entschädigung.
 ---
 Wenn du eine Flugverspätung ab drei Stunden am Zielort, eine Flugannullierung oder eine unfreiwillige Umbuchung erlebt hast, hast du oft einen Anspruch auf eine pauschale Ausgleichszahlung von 250€ bis 600€ - unabhängig von dem Ticketpreis und der gebuchten Klasse.
 
@@ -14,7 +15,7 @@ Beispiel
 Eine 4-köpfige Familie kann bis zu 2400€ fordern
 
 #footer
-:icon{icon="user" class="text-sm mr-1 text-primary-500"} 4 Personen :icon{icon="money-bill-1-wave" class="text-sm ml-3 mr-1 text-primary-500"} bis zu 2400€
+:fa-icon{icon="user" class="text-sm mr-1 text-primary-500"} 4 Personen :fa-icon{icon="money-bill-1-wave" class="text-sm ml-3 mr-1 text-primary-500"} bis zu 2400€
 ::
 
 Du hast auch das Recht auf Verpflegung, kostenlose Telefonate und E-Mails, und in besonderen Fällen, ein Hotel und Flughafentransfer. Du kannst deinen Anspruch auch für die letzten 3 Jahre geltend machen.
@@ -23,6 +24,7 @@ Die Fluggastrechte-VO gilt für alle in der EU startenden und landenden Flüge u
 
 
 ### Die Höhe der Ausgleichsleistung ist abhängig von der Flugstrecke zum letzten Zielort und beträgt:
+
 ::icon-card-grid
 	:::icon-card{icon="signs-post" title="Flugstrecke bis 1500 km" value="250€"}
 	:::

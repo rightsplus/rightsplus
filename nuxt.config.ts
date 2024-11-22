@@ -145,7 +145,9 @@ export default defineNuxtConfig({
 
   content: {
     documentDriven: {
-      layoutFallbacks: ['theme'],
+      page: false,
+      navigation: false,
+      surround: false
     }
   },
 

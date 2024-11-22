@@ -1,8 +1,89 @@
+<script setup lang="ts">
+import LanguageSwitcher from "@/components/molecules/LanguageSwitcher.vue";
+import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
+import Logo from "~/assets/logo";
+import type { Database } from "@/types";
+import claimMachine from "~/machines/claimSubmission";
+const { auth } = useSupabaseAuthClient();
+// const localePath = useLocalePath();
+interface Route {
+  name: string;
+  path: string;
+  icon?: string;
+  title?: string;
+  class?: string;
+  type?: string;
+  onClick?: () => void;
+}
+const user = useSupabaseUser();
+const client = useSupabaseClient<Database>();
+const claim = useClaim();
+const { t } = useI18n();
+
+const menuOpen = ref(false);
+const isAdmin =
+  user.value?.email &&
+  (
+    await client
+      .from("users")
+      .select("role")
+      .eq("email", user.value?.email)
+      .single()
+  ).data?.role === "admin";
+
+const { invoke } = useMachine(claimMachine, { context: claim });
+const links: ComputedRef<
+  {
+    path: string;
+    name: string;
+    title: string;
+    hidden?: boolean;
+    type?: string;
+    icon?: string;
+    critical?: string;
+  }[]
+> = computed(() => [
+  // {
+  //   path: "delayed-and-cancelled-flights",
+  //   title: t("disruptedFlights"),
+  // },
+  {
+    path: "your-passenger-rights",
+    name: "your-passenger-rights",
+    title: t("yourRights"),
+  },
+  {
+    path: "claim-new",
+    name: "claim-new",
+    onClick: () => invoke("reset"),
+    title: t("checkClaim"),
+    type: "button",
+  },
+  // {
+  //   onClick: () => auth.signOut(),
+  //   type: "button",
+  //   icon: "door-open",
+  //   critical: true,
+  //   hidden: !user.value,
+  // },
+]);
+
+const clickLink = (item: Route) => {
+  item.onClick?.();
+  menuOpen.value = false;
+};
+watch(
+  () => menuOpen,
+  (value) => (document.body.style.overflow = value ? "hidden" : "auto")
+);
+const { meta, path } = useRoute();
+// const { path } = useRouter()
+</script>
 <template>
   <header
     class="z-40 w-full text-neutral"
     :class="[
-      $route.meta.classes?.header,
+      meta.classes?.header,
       {
         open: menuOpen,
       },
@@ -11,7 +92,7 @@
     :style="`--total: ${links?.length}`"
   >
     <div
-      v-if="useRouter().currentRoute.value.path !== '/admin' && isAdmin"
+      v-if="path !== '/admin' && isAdmin"
       role="banner"
       class="flex flex-col bg-white z-50 fixed bottom-3 left-3 rounded-lg shadow-xl text-xs"
     >
@@ -35,8 +116,8 @@
     <nav
       class="flex justify-center md:items-center px-5 sm:px-12 text-xl md:text-sm lg:text-base h-24 bg-gradient-to-b mx-auto font-medium"
       :class="{
-        'max-w-7xl': useRoute().path !== '/admin',
-        'max-w-screen': useRoute().path === '/admin',
+        'max-w-7xl': path !== '/admin',
+        'max-w-screen': path === '/admin',
       }"
     >
       <!-- {{  useSteps().index }} -->
@@ -67,7 +148,7 @@
           :key="item.name"
           class="order-1 flex whitespace-nowrap"
           :class="{
-            'button': item.type === 'button',
+            button: item.type === 'button',
             '!hidden': item.hidden,
           }"
           :ref="!item.icon && item.type !== 'button' ? item.path : ''"
@@ -97,76 +178,13 @@
             />
           </NuxtLinkLocale>
         </li>
+        <li key="lang" class="order-12">
+          <LanguageSwitcher />
+        </li>
       </TransitionGroup>
     </nav>
   </header>
 </template>
-
-<script setup lang="ts">
-import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
-import Logo from "~/assets/logo";
-import type { Database } from "@/types";
-import claimMachine from "~/machines/claimSubmission";
-const { auth } = useSupabaseAuthClient();
-// const localePath = useLocalePath();
-interface Route {
-  name: string;
-  path: string;
-  icon?: string;
-  title?: string;
-  class?: string;
-  type?: string;
-  onClick?: () => void;
-}
-const user = useSupabaseUser();
-const client = useSupabaseClient<Database>();
-const claim = useClaim();
-const { t } = useI18n();
-const menuOpen = ref(false);
-const isAdmin =
-  user.value?.email &&
-  (
-    await client
-      .from("users")
-      .select("role")
-      .eq("email", user.value?.email)
-      .single()
-  ).data?.role === "admin";
-
-const { invoke } = useMachine(claimMachine, { context: claim });
-const links = computed(() => [
-  // {
-  //   path: "delayed-and-cancelled-flights",
-  //   title: t("disruptedFlights"),
-  // },
-  {
-    path: "your-passenger-rights",
-    title: t("yourRights"),
-  },
-  {
-    path: "claim-new",
-    onClick: () => invoke("reset"),
-    title: t("checkClaim"),
-    type: "button",
-  },
-  // {
-  //   onClick: () => auth.signOut(),
-  //   type: "button",
-  //   icon: "door-open",
-  //   critical: true,
-  //   hidden: !user.value,
-  // },
-]);
-
-const clickLink = (item: Route) => {
-  item.onClick?.();
-  menuOpen.value = false;
-};
-watch(
-  () => menuOpen,
-  (value) => (document.body.style.overflow = value ? "hidden" : "auto")
-);
-</script>
 
 <style lang="scss" scoped>
 @media (min-width: 768px) {

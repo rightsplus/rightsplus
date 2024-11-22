@@ -8,7 +8,7 @@
   "yes": "Yes",
   "no": "No",
   "fewerThan": "Fewer than {value}",
-  "lessThan": "@:fewerThan {value}",
+  "lessThan": "Less than {value}",
   "moreThan": "More than {value}",
   "isMinor": "is minor",
   "hours": "{n} Hour | {n} Hours",
@@ -182,5 +182,11 @@
   "assignmentAgreement.description": "To be able to pursue your claim in court if necessary, you must assign the claim to us",
   "flightDelayedOrCancelled": "Flight Delayed or Cancelled?",
   "checkCompensationNow": "Check Your Claim Now!",
-  "fightingForYourRights": "With {partner}, we enforce your compensation claims according to EU law."
+  "fightingForYourRights": "With {partner}, we enforce your compensation claims according to EU law.",
+  "youGet": "You get",
+  "withinEU": "Within the European Union",
+  "claimEU": "Claim under EU Law",
+  "ourCommission": "Our Commission",
+  "vat": "VAT",
+  "flightRoute": "Flight Route"
 }

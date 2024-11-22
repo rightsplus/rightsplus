@@ -1,6 +1,7 @@
 ---
+category: EU Air Passenger Rights Regulation EC261
 title: Your Rights
-lead: According to the EU Air Passenger Rights Regulation, you have the right to compensation under certain conditions.
+description: According to the EU Air Passenger Rights Regulation, you have the right to compensation under certain conditions.
 ---
 
 If you have experienced a delay of more than three hours upon arrival, a flight cancellation, or an involuntary rebooking, you are often entitled to a standard compensation of €250 to €600—regardless of the ticket price or travel class.
@@ -15,14 +16,15 @@ Example
 A family of four can claim up to €2,400
 
 #footer
-:icon{icon="user" class="text-sm mr-1 text-primary-500"} 4 people :icon{icon="money-bill-1-wave" class="text-sm ml-3 mr-1 text-primary-500"} up to €2,400
+:fa-icon{icon="user" class="text-sm mr-1 text-primary-500"} 4 people :fa-icon{icon="money-bill-1-wave" class="text-sm ml-3 mr-1 text-primary-500"} up to €2,400
 ::
 
 You also have the right to food, free phone calls and emails, and, in certain cases, a hotel stay and airport transfer. You can claim compensation for incidents up to 3 years in the past.
 
 The Air Passenger Rights Regulation applies to all flights departing from or arriving in the EU and to flights within Norway, Iceland, Liechtenstein, and Switzerland, provided that the airline is based in the EU.
 
-### The amount of compensation depends on the flight distance to the final destination and is as follows:
+### The amount of compensation depends on the flight distance to the final destination and is as follows
+
 ::icon-card-grid
 	:::icon-card{icon="signs-post" title="Flight distance up to 1500 km" value="€250"}
 	:::
