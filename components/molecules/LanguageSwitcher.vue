@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { LocaleObject } from "~/config/i18n";
+const switchLocalePath = useSwitchLocalePath();
+
 const { locale, locales, localeProperties, t } = useI18n();
 const isOpen = ref(false);
-const switchLocalePath = useSwitchLocalePath()
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const switchLocalePath = useSwitchLocalePath()
       class="relative after:absolute after:inset-[1px] after:bg-white/60 after:rounded-full shrink-0"
     >
       <img
-        :src="`/locales/${localeProperties.iso}.svg`"
+        :src="`/locales/${localeProperties.language}.svg`"
         :alt="localeProperties.name"
         class="relative z-10 w-6 shrink-0"
       />
@@ -33,7 +34,7 @@ const switchLocalePath = useSwitchLocalePath()
   >
     <div class="grid grid-cols-1 @sm:grid-cols-2 gap-4">
       <NuxtLink
-        v-for="{ iso, name, code } in (locales as LocaleObject[])"
+        v-for="{ language, name, code } in (locales as LocaleObject[])"
         :key="code"
         :to="switchLocalePath(code)"
         @click="isOpen = false"
@@ -43,7 +44,7 @@ const switchLocalePath = useSwitchLocalePath()
         }"
       >
         <img
-          :src="`/locales/${iso}.svg`"
+          :src="`/locales/${language}.svg`"
           :alt="name"
           class="relative z-10 w-6 shrink-0"
         />

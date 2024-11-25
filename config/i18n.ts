@@ -4,19 +4,19 @@ export type LocaleObject = {
 	code: string;
 	name: string;
 	file: string;
-	iso: string;
+	language: string;
 }
 
 export const locales = [
 	{
 		code: 'de',
-		iso: 'de-DE',
+		language: 'de-DE',
 		name: 'Deutsch',
 		file: 'de.json',
 	},
 	{
 		code: 'en',
-		iso: 'en-GB',
+		language: 'en-GB',
 		name: 'English',
 		file: 'en.json',
 	}
