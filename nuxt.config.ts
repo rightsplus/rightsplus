@@ -38,7 +38,15 @@ export default defineNuxtConfig({
       'vue-i18n'
     ]
   },
-
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern",
+        }
+      }
+    }
+  },
   nitro: {
     compressPublicAssets: true,
     prerender: {
@@ -49,6 +57,10 @@ export default defineNuxtConfig({
       ]
     },
     static: true,
+    logLevel: 'debug', // Captures detailed logs during prerendering
+    devProxy: {
+      host: 'localhost',
+    },
   },
 
   formkit: {
@@ -127,20 +139,31 @@ export default defineNuxtConfig({
       })
     }
   },
-
   routeRules: {
-    '/pdf/**': {
+    '/en/pdf/**': {
       prerender: false,
       ssr: false
     },
-    '/admin/**': {
+    '/de/pdf/**': {
       prerender: false,
       ssr: false
     },
-    '/claim/**': {
+    '/en/admin/**': {
       prerender: false,
       ssr: false
-    }
+    },
+    '/de/admin/**': {
+      prerender: false,
+      ssr: false
+    },
+    '/en/claim/**': {
+      prerender: false,
+      ssr: false
+    },
+    '/de/anspruch/**': {
+      prerender: false,
+      ssr: false
+    },
   },
 
   content: {
@@ -148,6 +171,12 @@ export default defineNuxtConfig({
       page: false,
       navigation: false,
       surround: false
+    },
+    watch: {
+      ws: {
+        port: 4000,
+        showURL: true
+      }
     }
   },
 
