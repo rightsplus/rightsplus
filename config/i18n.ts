@@ -62,6 +62,14 @@ const options = {
 			"en": "/delayed-and-cancelled-flights",
 			"de": "/verspaetete-und-annullierte-fluege",
 		},
+		"team": {
+			"en": "/team",
+			"de": "/team",
+		},
+		"faq": {
+			"en": "/faq",
+			"de": "/faq",
+		},
 		"claim-new": {
 			"en": "/claim/new",
 			"de": "/anspruch/neu",
@@ -85,7 +93,7 @@ const options = {
 		"admin-airlines": {
 			"en": "/admin/airlines",
 			"de": "/admin/airlines",
-		}
+		},
 	}
 } satisfies ModuleOptions
 
