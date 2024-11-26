@@ -179,7 +179,7 @@ const { meta, path } = useRoute();
           </NuxtLinkLocale>
         </li>
         <li key="lang" class="order-12">
-          <LanguageSwitcher />
+          <LanguageSwitcher class="hover:bg-blue-100" />
         </li>
       </TransitionGroup>
     </nav>

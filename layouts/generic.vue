@@ -15,11 +15,11 @@ withDefaults(defineProps<Props>(), {
   <div class="flex flex-col">
     <Header class="w-full z-50 absolute" />
     <main
-      class="min-h-screen py-48 max-w-4xl mx-auto w-full"
+      class="min-h-screen py-48 w-full max-w-7xl mx-auto"
       :class="route.meta.classes?.main"
     >
-      <div class="px-5 sm:px-12 h-full">
-        <article class="flex flex-col gap-12">
+      <div class="px-5 sm:px-12 h-full col-start-2">
+        <article class="gap-y-12 grid grid-cols-1 sm:grid-cols-[1fr,min(896px,calc(100vw-6rem)),1fr] [&>*]:col-start-2">
           <div class="flex flex-col gap-3 leading-0">
             <slot name="before" />
             <span

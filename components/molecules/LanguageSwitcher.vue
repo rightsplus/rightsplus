@@ -9,7 +9,8 @@ const isOpen = ref(false);
 <template>
   <button
     @click="isOpen = true"
-    class="flex gap-2 hover:bg-gray-700 p-3 pr-5 rounded-xl"
+    class="flex gap-2 p-3 rounded-lg"
+    v-bind="$attrs"
   >
     <span class="text-base min-w-[auto] whitespace-nowrap">{{
       localeProperties.code.toUpperCase()
@@ -43,11 +44,13 @@ const isOpen = ref(false);
           'bg-blue-100 hover:bg-blue-50': locale === code,
         }"
       >
+      <span class="relative after:absolute after:inset-[1px] after:bg-white/60 after:rounded-full">
         <img
           :src="`/locales/${language}.svg`"
           :alt="name"
           class="relative z-10 w-6 shrink-0"
         />
+      </span>
         <span class="text-base">{{ name }}</span>
       </NuxtLink>
     </div>

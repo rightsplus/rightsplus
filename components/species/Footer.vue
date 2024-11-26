@@ -55,7 +55,7 @@
           )}`
         "
       />
-      <LanguageSwitcher />
+      <LanguageSwitcher class="hover:bg-gray-700" />
     </div>
   </footer>
 </template>

@@ -1,310 +1,3 @@
-<template>
-  <div class="w-full max-w-3xl mx-auto grid gap-5 mb-12">
-    <form
-      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 flex flex-col gap-2 justify-items-start"
-      @submit.prevent
-      ref="form"
-    >
-      <!-- {{ eligible }} // {{ message }} -->
-      <ButtonBack
-        :showClose="
-          !!state.matches(state.initial) || !!state.matches('success')
-        "
-        @back="invoke('back')"
-        @close="
-          {
-            invoke('reset');
-            navigateTo(useLocalePath()('index'));
-          }
-        "
-      />
-      <Transition
-        :name="transition === 'forward' ? 'step-next' : 'step-prev'"
-        class="w-full"
-        mode="out-in"
-      >
-        <StepWrapper v-if="state?.matches('itinerary')">
-          <SelectItinerary :modelValue="claimState" />
-          <ButtonGroup
-            :stack="
-              claimState.airport.trip.layover?.some(Boolean) &&
-              stackButtons(640)
-            "
-            @secondary="addLayover"
-            :secondary="{
-              prefixIcon: 'plus',
-              label: $t('stopover'),
-              disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
-            }"
-            @primary="send('next')"
-            :primary="{
-              label: !claimState.airport.trip.layover?.some((e) => e.iata)
-                ? $t('continueWithoutStopover')
-                : $t('next'),
-              disabled: !state.can('next'),
-              tooltip: $t(state.can('next') + '.title'),
-              suffixIcon: 'angle-right',
-            }"
-          />
-        </StepWrapper>
-
-        <!-- <StepWrapper v-else-if="state?.matches('stopover')">
-          <SelectLayover :modelValue="claimState" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-            }"
-            @secondary="claimState.airport.trip.layover?.push({} as Airport)"
-            :secondary="{
-              prefixIcon: 'plus',
-              label: $t('stopover'),
-              disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
-            }"
-          />
-        </StepWrapper> -->
-        <StepWrapper v-else-if="state?.matches('chooseLeg')">
-          <SelectLeg :modelValue="claimState" @select="send('next')" />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('flightDate')">
-          <SelectFlightDate :modelValue="claimState" @select="send('next')" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled: !state.can('next'),
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('flight')">
-          <FlightList
-            :departure="claimState.airport.departure?.iata"
-            :arrival="claimState.airport.arrival?.iata"
-            :date="claimState.date"
-            :modelValue="claimState.flight"
-            @update:modelValue="claimState.flight = $event"
-            @select="send('next')"
-            :flight-card="{
-              is: 'button',
-            }"
-            showFilter
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('disruptionDetected')"
-          :title="eligibleDisruption.title"
-          :description="eligibleDisruption.description"
-        >
-          <div v-if="claimState.flight">
-            <ClaimCard :claim="claimState" />
-          </div>
-          <ButtonGroup
-            :stack="stackButtons(640)"
-            @primary="eligibleDisruption.primary.event"
-            :primary="eligibleDisruption.primary"
-            @secondary="eligibleDisruption.secondary.event"
-            :secondary="eligibleDisruption.secondary"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('disruptionType')"
-          :description="
-            $t(`disruptionType.description`, { arrival: city.arrival })
-          "
-        >
-          <SelectDisruptionType
-            :modelValue="claimState"
-            @select="send('next')"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('disruptionReason')"
-          :title="$t(`disruptionReason.${claimState.disruption.type}.title`)"
-          :description="
-            $t(`disruptionReason.${claimState.disruption.type}.description`, {
-              arrival: city.arrival,
-            })
-          "
-        >
-          <div class="flex flex-col gap-3">
-            <SelectDisruptionReason
-              :modelValue="claimState"
-              @select="send('next')"
-            />
-            <AddDisruptionComment v-model="claimState" />
-          </div>
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled: !state.can('next'),
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('delayDetails')"
-          :title="$t('delay')"
-          :description="
-            $t('delayDetails.description', { arrival: city.arrival })
-          "
-        >
-          <SelectDisruptionDetails
-            :modelValue="claimState"
-            type="delayed"
-            @select="send('next')"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('cancellationDetails')"
-          :title="$t('cancellation')"
-        >
-          <SelectDisruptionDetails
-            :modelValue="claimState"
-            type="cancelled"
-            @select="send('next')"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('replacementFlightYN')"
-          :title="$t('replacementFlight.title')"
-        >
-          <div class="flex flex-col gap-3">
-            <ButtonLarge @click="send('yes')" :label="$t('yes')" proceed />
-            <ButtonLarge @click="send('no')" :label="$t('no')" proceed />
-          </div>
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('connectionFlightYN')"
-          :title="$t('connectionFlight.title')"
-        >
-          <div class="flex flex-col gap-3">
-            <ButtonLarge @click="send('yes')" :label="$t('yes')" proceed />
-            <ButtonLarge @click="send('no')" :label="$t('no')" proceed />
-          </div>
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('connectionFlightDetails')">
-          <FlightDetails :modelValue="claimState.connection" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled:
-                !claimState.connection.date || !claimState.connection.departure,
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('replacementFlightDetails')"
-          :title="$t('replacementFlight.title')"
-        >
-          <FlightDetails :modelValue="claimState.replacement" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled:
-                !claimState.replacement.date ||
-                !claimState.replacement.departure,
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('replacementFlight')">
-          <FlightList
-            :departure="claimState.replacement.departure.iata"
-            :arrival="claimState.airport.arrival.iata"
-            :date="claimState.replacement.date"
-            :number="claimState.replacement.number"
-            :modelValue="claimState.replacement.flight"
-            @select="handleSelectReplacement"
-            :flight-card="{
-              is: 'button',
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('connectionFlight')">
-          <FlightList
-            :departure="claimState.connection.departure.iata"
-            :arrival="claimState.connection.arrival.iata"
-            :date="claimState.connection.date"
-            :number="claimState.connection.number"
-            :modelValue="claimState.connection.flight"
-            @select="handleSelectConnection"
-            :flight-card="{
-              is: 'button',
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('eligibility')"
-          :title="eligibleCompensation.title"
-          :description="eligibleCompensation.description"
-        >
-          <div v-if="claimState.flight">
-            <ClaimCard :claim="claimState" certain />
-          </div>
-          <ButtonGroup
-            @primary="eligibleCompensation.primary?.event"
-            :primary="
-              eligibleCompensation.primary && {
-                label: eligibleCompensation.primary.label,
-              }
-            "
-            @secondary="eligibleCompensation.secondary?.event"
-            :secondary="
-              eligibleCompensation.secondary && {
-                label: eligibleCompensation.secondary.label,
-              }
-            "
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('bookingNumber')">
-          <AddBookingNumber :modelValue="claimState" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled: !claimState.client.bookingNumber,
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('passengers')">
-          <StepPassengers :modelValue="claimState" ref="passengers" />
-          <ButtonGroup
-            @primary="send('next')"
-            :primary="{
-              label: $t('next'),
-              disabled: !state.can('next'),
-            }"
-            @secondary="
-              ($refs.passengers as typeof StepPassengers)?.addPassenger()
-            "
-            :secondary="{
-              prefixIcon: 'plus',
-              label: $t('passenger'),
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('assignmentAgreement')">
-          <AssignmentAgreementPreflight :modelValue="claimState" />
-          <ButtonGroup
-            @primary="submit"
-            :primary="{
-              label: $t('next'),
-              disabled: !state.can('next'),
-            }"
-          />
-        </StepWrapper>
-        <StepWrapper
-          v-else-if="state?.matches('success')"
-          title="Deine Anfrage wurde erfolgreich eingereicht!"
-          description="Wir prüfen jetzt einen möglichen Entschädigungsanspruch aufgrund deiner Angaben und melden uns nach Abschluss der Prüfung bei dir."
-        >
-        </StepWrapper>
-      </Transition>
-    </form>
-  </div>
-</template>
-
 <script setup lang="ts">
 import StepWrapper from "@/components/organisms/Calculator/StepWrapper.vue";
 import ButtonGroup from "@/components/organisms/Calculator/ButtonGroup.vue";
@@ -328,7 +21,6 @@ import StepPassengers from "./StepPassengers.vue";
 import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
 import { useElementSize } from "@vueuse/core";
 const claimState = useClaim();
-const route = useRoute();
 const supabase = useSupabaseClient();
 const { t } = useI18n();
 const form = ref<HTMLElement>();
@@ -448,3 +140,309 @@ const addLayover = () => {
   claimState.airport.trip.layover?.push({} as Airport);
 };
 </script>
+<template>
+  <div class="w-full max-w-3xl mx-auto grid gap-5 mb-12">
+    <form
+      class="w-full max-w-3xl mx-auto min-h-full bg-white sm:rounded-2xl md:rounded-3xl p-5 sm:p-8 md:p-12 flex flex-col gap-2 justify-items-start"
+      @submit.prevent
+      ref="form"
+    >
+      <!-- {{ eligible }} // {{ message }} -->
+      <ButtonBack
+        :showClose="
+          !!state.matches(state.initial) || !!state.matches('success')
+        "
+        @back="invoke('back')"
+        @close="
+          {
+            invoke('reset');
+            navigateTo(useLocalePath()('index'));
+          }
+        "
+      />
+      <Transition
+        :name="transition === 'forward' ? 'step-next' : 'step-prev'"
+        class="w-full"
+        mode="out-in"
+      >
+        <StepWrapper v-if="state?.matches('itinerary')">
+          <SelectItinerary :modelValue="claimState" />
+          <ButtonGroup
+            :stack="
+              claimState.airport.trip.layover?.some(Boolean) &&
+              stackButtons(640)
+            "
+            @secondary="addLayover"
+            :secondary="{
+              prefixIcon: 'plus',
+              label: t('stopover'),
+              disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
+            }"
+            @primary="send('next')"
+            :primary="{
+              label: !claimState.airport.trip.layover?.some((e) => e.iata)
+                ? t('continueWithoutStopover')
+                : t('next'),
+              disabled: !state.can('next'),
+              tooltip: state.can('next') ? t(state.can('next') + '.title') : undefiend,
+              suffixIcon: 'angle-right',
+            }"
+          />
+        </StepWrapper>
+
+        <!-- <StepWrapper v-else-if="state?.matches('stopover')">
+          <SelectLayover :modelValue="claimState" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+            }"
+            @secondary="claimState.airport.trip.layover?.push({} as Airport)"
+            :secondary="{
+              prefixIcon: 'plus',
+              label: t('stopover'),
+              disabled: claimState.airport.trip.layover?.some((e) => !e.iata),
+            }"
+          />
+        </StepWrapper> -->
+        <StepWrapper v-else-if="state?.matches('chooseLeg')">
+          <SelectLeg :modelValue="claimState" @select="send('next')" />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('flightDate')">
+          <SelectFlightDate :modelValue="claimState" @select="send('next')" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled: !state.can('next'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('flight')">
+          <FlightList
+            :departure="claimState.airport.departure?.iata"
+            :arrival="claimState.airport.arrival?.iata"
+            :date="claimState.date"
+            :modelValue="claimState.flight"
+            @update:modelValue="claimState.flight = $event"
+            @select="send('next')"
+            :flight-card="{
+              is: 'button',
+            }"
+            showFilter
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('disruptionDetected')"
+          :title="eligibleDisruption.title"
+          :description="eligibleDisruption.description"
+        >
+          <div v-if="claimState.flight">
+            <ClaimCard :claim="claimState" />
+          </div>
+          <ButtonGroup
+            :stack="stackButtons(640)"
+            @primary="eligibleDisruption.primary.event"
+            :primary="eligibleDisruption.primary"
+            @secondary="eligibleDisruption.secondary.event"
+            :secondary="eligibleDisruption.secondary"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('disruptionType')"
+          :description="
+            t(`disruptionType.description`, { arrival: city.arrival })
+          "
+        >
+          <SelectDisruptionType
+            :modelValue="claimState"
+            @select="send('next')"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('disruptionReason')"
+          :title="t(`disruptionReason.${claimState.disruption.type}.title`)"
+          :description="
+            t(`disruptionReason.${claimState.disruption.type}.description`, {
+              arrival: city.arrival,
+            })
+          "
+        >
+          <div class="flex flex-col gap-3">
+            <SelectDisruptionReason
+              :modelValue="claimState"
+              @select="send('next')"
+            />
+            <AddDisruptionComment v-model="claimState" />
+          </div>
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled: !state.can('next'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('delayDetails')"
+          :title="t('delay')"
+          :description="
+            t('delayDetails.description', { arrival: city.arrival })
+          "
+        >
+          <SelectDisruptionDetails
+            :modelValue="claimState"
+            type="delayed"
+            @select="send('next')"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('cancellationDetails')"
+          :title="t('cancellation')"
+        >
+          <SelectDisruptionDetails
+            :modelValue="claimState"
+            type="cancelled"
+            @select="send('next')"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('replacementFlightYN')"
+          :title="t('replacementFlight.title')"
+        >
+          <div class="flex flex-col gap-3">
+            <ButtonLarge @click="send('yes')" :label="t('yes')" proceed />
+            <ButtonLarge @click="send('no')" :label="t('no')" proceed />
+          </div>
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('connectionFlightYN')"
+          :title="t('connectionFlight.title')"
+        >
+          <div class="flex flex-col gap-3">
+            <ButtonLarge @click="send('yes')" :label="t('yes')" proceed />
+            <ButtonLarge @click="send('no')" :label="t('no')" proceed />
+          </div>
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('connectionFlightDetails')">
+          <FlightDetails :modelValue="claimState.connection" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled:
+                !claimState.connection.date || !claimState.connection.departure,
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('replacementFlightDetails')"
+          :title="t('replacementFlight.title')"
+        >
+          <FlightDetails :modelValue="claimState.replacement" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled:
+                !claimState.replacement.date ||
+                !claimState.replacement.departure,
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('replacementFlight')">
+          <FlightList
+            :departure="claimState.replacement.departure.iata"
+            :arrival="claimState.airport.arrival.iata"
+            :date="claimState.replacement.date"
+            :number="claimState.replacement.number"
+            :modelValue="claimState.replacement.flight"
+            @select="handleSelectReplacement"
+            :flight-card="{
+              is: 'button',
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('connectionFlight')">
+          <FlightList
+            :departure="claimState.connection.departure.iata"
+            :arrival="claimState.connection.arrival.iata"
+            :date="claimState.connection.date"
+            :number="claimState.connection.number"
+            :modelValue="claimState.connection.flight"
+            @select="handleSelectConnection"
+            :flight-card="{
+              is: 'button',
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('eligibility')"
+          :title="eligibleCompensation.title"
+          :description="eligibleCompensation.description"
+        >
+          <div v-if="claimState.flight">
+            <ClaimCard :claim="claimState" certain />
+          </div>
+          <ButtonGroup
+            @primary="eligibleCompensation.primary?.event"
+            :primary="
+              eligibleCompensation.primary && {
+                label: eligibleCompensation.primary.label,
+              }
+            "
+            @secondary="eligibleCompensation.secondary?.event"
+            :secondary="
+              eligibleCompensation.secondary && {
+                label: eligibleCompensation.secondary.label,
+              }
+            "
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('bookingNumber')">
+          <AddBookingNumber :modelValue="claimState" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled: !claimState.client.bookingNumber,
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('passengers')">
+          <StepPassengers :modelValue="claimState" ref="passengers" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('next'),
+              disabled: !state.can('next'),
+            }"
+            @secondary="
+              ($refs.passengers as typeof StepPassengers)?.addPassenger()
+            "
+            :secondary="{
+              prefixIcon: 'plus',
+              label: t('passenger'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('assignmentAgreement')">
+          <AssignmentAgreementPreflight :modelValue="claimState" />
+          <ButtonGroup
+            @primary="submit"
+            :primary="{
+              label: t('next'),
+              disabled: !state.can('next'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper
+          v-else-if="state?.matches('success')"
+          title="Deine Anfrage wurde erfolgreich eingereicht!"
+          description="Wir prüfen jetzt einen möglichen Entschädigungsanspruch aufgrund deiner Angaben und melden uns nach Abschluss der Prüfung bei dir."
+        >
+        </StepWrapper>
+      </Transition>
+    </form>
+  </div>
+</template>

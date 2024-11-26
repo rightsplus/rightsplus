@@ -3,7 +3,7 @@
     <FontAwesomeIcon
       v-if="icon"
       :icon="icon"
-      class="text-3xl text-primary-500"
+      class="text-3xl text-primary-500 shrink-0"
     />
     <div class="flex flex-col gap-2 ml-2">
       <h4 class="text-base font-medium text-gray-500 leading-none my-0">

@@ -34,7 +34,7 @@
           tertiary && info,
         'pointer-events-none opacity-50': disabled,
       },
-      round ? 'rounded-full' : 'rounded-xl',
+      round ? 'rounded-full' : 'rounded-lg',
     ]"
     :aria-label="label"
     :bind="$attrs"

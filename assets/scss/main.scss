@@ -17,6 +17,9 @@
     unicode-range: U+0020-007F, U+00A0-00FF;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
 
 .focus-ring {
   @apply focus-visible:outline-none focus-visible:ring-1 ring-primary-500 ring-offset-2;
@@ -41,11 +44,11 @@ a {
     a:hover {
       text-decoration: none;
       &::before {
-        content: '#';
+        content: "#";
         position: absolute;
         transform: translateX(-100%);
         padding: 0 0.5ex;
-        @apply text-neutral-300
+        @apply text-neutral-300;
       }
     }
   }
@@ -115,10 +118,11 @@ a {
   }
   table {
     @apply w-full table-fixed my-5;
-    td, th {
+    td,
+    th {
       @apply px-3 py-2 align-top hyphens-auto leading-tight;
     }
-    thead th, 
+    thead th,
     tr:nth-child(even) td {
       @apply first:rounded-l-lg last:rounded-r-lg bg-neutral-100;
     }

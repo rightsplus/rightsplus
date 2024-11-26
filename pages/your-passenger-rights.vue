@@ -6,6 +6,7 @@ const route = useRoute();
 const { data } = useAsyncData("your-passenger-rights", () =>
   queryContent(route.fullPath).findOne()
 );
+const { t } = useI18n();
 </script>
 <template>
   <div>
@@ -18,9 +19,12 @@ const { data } = useAsyncData("your-passenger-rights", () =>
           }}</span>
         </div>
       </template>
-      <template #title>{{ $t(data?.title || "") }}</template>
-      <template #description>{{ $t(data?.description || "") }}</template>
-      <ContentRenderer :value="data || {}" class="markdown" />
+      <template #title>{{ t(data?.title || "") }}</template>
+      <template #description>{{ t(data?.description || "") }}</template>
+      <ContentRenderer
+        :value="data || {}"
+        class="markdown grid grid-cols-subgrid sm:!col-start-1 !-col-end-1 [&>*]:col-start-2"
+      />
     </NuxtLayout>
   </div>
 </template>
