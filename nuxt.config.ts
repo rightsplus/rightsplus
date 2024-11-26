@@ -139,6 +139,7 @@ export default defineNuxtConfig({
       })
     }
   },
+
   routeRules: {
     '/en/pdf/**': {
       prerender: false,
