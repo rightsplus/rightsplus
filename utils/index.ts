@@ -90,7 +90,7 @@ export const compensationByDistance = ({ distance, delay, withinEU, passengers }
 	let total = 250
 	if ((distance || 0) > 1500) total = 400
 	const beyondEU = !claim || [claim?.airport?.departure, claim?.airport?.arrival].some(e => !e?.ec261)
-	if ((distance || 0) > 3500 && (beyondEU && !withinEU)) total = 600
+	if ((distance || 0) > 3500 && ((beyondEU && !withinEU) || withinEU === false)) total = 600
 	total = total * (passengers || 1)
 	const weGet = total * commission
 	const vat = total * commission * vatRate
