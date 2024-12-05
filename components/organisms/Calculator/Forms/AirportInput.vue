@@ -104,12 +104,9 @@ function findAirports(query: string) {
 }
 
 const fallbackPlaceholder = computed(() => {
-  const exampleAirtports = {
-    JFK: "New York",
+  const departures = {
     BER: "Berlin",
     FRA: "Frankfurt",
-    TLV: "Tel Aviv",
-    NRT: "Tokyo",
     LHR: "London",
     CDG: "Paris",
     MUC: "Munich",
@@ -120,11 +117,18 @@ const fallbackPlaceholder = computed(() => {
     MXP: "Milan",
     ZRH: "Zurich",
     ISL: "Istanbul",
+    FCO: "Rome",
+    CPH: "Copenhagen",
+    ARN: "Stockholm",
+    OSL: "Oslo",
+    
+  };
+  const arrivals = {
+    JFK: "New York",
     SIN: "Singapore",
     DXB: "Dubai",
     BKK: "Bangkok",
     HKG: "Hong Kong",
-    PEK: "Beijing",
     PVG: "Shanghai",
     ICN: "Seoul",
     SYD: "Sydney",
@@ -134,15 +138,18 @@ const fallbackPlaceholder = computed(() => {
     YYZ: "Toronto",
     YVR: "Vancouver",
     YUL: "Montreal",
-    FCO: "Rome",
+    CPT: "Cape Town",
+    NRT: "Tokyo",
+    TLV: "Tel Aviv",
   };
+  const exampleAirports = props.name === "arrival" ? arrivals : departures;
 
-  const randomIata = Object.keys(exampleAirtports)[
-    Math.floor(Math.random() * Object.keys(exampleAirtports).length)
-  ] as keyof typeof exampleAirtports;
+  const randomIata = Object.keys(exampleAirports)[
+    Math.floor(Math.random() * Object.keys(exampleAirports).length)
+  ] as keyof typeof exampleAirports;
 
   return t("forExample", {
-    value: `${exampleAirtports[randomIata]} ${t("or")} ${randomIata}`,
+    value: `${exampleAirports[randomIata]} ${t("or")} ${randomIata}`,
   });
 });
 </script>
