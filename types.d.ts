@@ -169,7 +169,7 @@ export interface Airport {
 export type AirlineInfo = {
   name: string;
   iata: string;
-  type: string[];
+  type?: string[];
 }
 type FlightInfo = {
   number: string;

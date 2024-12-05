@@ -80,6 +80,8 @@ export const transformAviationStackFlight = (flight: FlightAviationStack): Fligh
 
 	console.log('flight in aviationstack transform', flight)
 
+	// @todo: sanitize flight status
+
 	return {
 		type: "arrival",  // This could be dynamically determined based on context
 		status: flight.flight_status,
