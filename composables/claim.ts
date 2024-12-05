@@ -143,7 +143,9 @@ export const useCompensation = (estimate = false) => {
 			}
 		}
 		// console.log('error code', getError())
-		if (claim.flight?.status === 'landed' && (claim.disruption.type !== "noBoarding" || claim.disruption.selfInflicted)) {
+
+		const wasDelayed = (claim.flight?.arrival.delay || 0) >= 180
+		if ((claim.flight?.status === 'landed' && !wasDelayed) && (claim.disruption.type !== "noBoarding" || claim.disruption.selfInflicted)) {
 			message = t('Dein Flug ist offenbar pünktlich gelandet.')
 			eligible.value = false
 			return { compensation: 0, distance, message }
