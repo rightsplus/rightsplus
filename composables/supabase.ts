@@ -71,10 +71,6 @@ export const useSupabaseFunctions = () => {
 		} else {
 			throw 'supply iata OR type and dep/arr OR dep and arr'
 		}
-		if ('dateDeparture' in match) {
-			delete match.dateDeparture
-			delete body.date
-		}
 
 		console.log('match...', match)
 
