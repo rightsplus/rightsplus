@@ -54,7 +54,7 @@ export default defineNuxtConfig({
       routes: [
         '/', // Add the root path so it's generated
         '/en', '/de' // Include all locale versions here
-      ]
+      ],
     },
     static: true,
     logLevel: 'debug', // Captures detailed logs during prerendering
@@ -148,6 +148,10 @@ export default defineNuxtConfig({
       prerender: false,
       ssr: false
     },
+    '/pdf/**': {
+      prerender: false,
+      ssr: false
+    },
     '/en/admin/**': {
       prerender: false,
       ssr: false
@@ -156,11 +160,19 @@ export default defineNuxtConfig({
       prerender: false,
       ssr: false
     },
+    '/admin/**': {
+      prerender: false,
+      ssr: false
+    },
     '/en/claim/**': {
       prerender: false,
       ssr: false
     },
     '/de/anspruch/**': {
+      prerender: false,
+      ssr: false
+    },
+    '/anspruch/**': {
       prerender: false,
       ssr: false
     },
