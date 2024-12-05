@@ -1,7 +1,7 @@
 ---
 category: EU Air Passenger Rights Regulation EC261
 title: Your Rights
-description: According to the EU Air Passenger Rights Regulation, you have the right to compensation under certain conditions.
+lead: According to the EU Air Passenger Rights Regulation, you have the right to compensation under certain conditions.
 ---
 
 If you have experienced a delay of more than three hours upon arrival, a flight cancellation, or an involuntary rebooking, you are often entitled to a standard compensation of €250 to €600—regardless of the ticket price or travel class.

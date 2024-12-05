@@ -110,14 +110,21 @@ export const useSupabaseFunctions = () => {
 	}
 
 	const fetchProxy = async <T>(url: string, options?: RequestInit) => {
-		console.log('proxy', supabase)
+		// console.log('proxy', supabase)
 		supabase.functions.invoke("proxy", {
 			body: { url, options },
-		}).then(console.log).catch(console.error).finally(() => console.log('fin'))
+		})
+			.then((e) => {
+				// console.log(e)
+			})
+			.catch(console.error)
+			.finally(() => {
+				// console.log('fin')
+			})
 		const { data, error } = await supabase.functions.invoke("proxy", {
 			body: { url, options },
 		})
-		console.log("data", data)
+		// console.log("data", data)
 		if (error) {
 			throw error;
 		}

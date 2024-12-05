@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen pt-20 sm:pt-36 pb-8 bg-neutral-200">
+  <section class="min-h-screen pt-20 pb-8 bg-neutral-200">
     <div class="max-w-7xl mx-auto sm:px-12 h-full relative z-1">
       <ClientOnly><ClaimsCalculator /></ClientOnly>
     </div>

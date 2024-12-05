@@ -1,6 +1,6 @@
 ---
 title: Price and Service Directory
-description: For the basic enforcement of claims under the Air Passenger Rights Regulation, RightsPlus receives compensation staggered according to the amount of the compensation claim.
+lead: For the basic enforcement of claims under the Air Passenger Rights Regulation, RightsPlus receives compensation staggered according to the amount of the compensation claim.
 ---
 
 ### A. Claims under Regulation (EC) No. 261/2004 (Delay, Cancellation, Denied Boarding)

@@ -1,7 +1,7 @@
 ---
 category: AGB
 title: Allgemeine Geschäftsbedingungen
-description: Für die Nutzung der Dienstleistungen von RightsPlus
+lead: Für die Nutzung der Dienstleistungen von RightsPlus
 ---
 
 (Stand: 01.04.2024)

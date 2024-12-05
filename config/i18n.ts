@@ -25,7 +25,7 @@ const options = {
 	locales,
 	langDir: 'locales',
 	defaultLocale: 'de',
-	strategy: "prefix" as Strategies,
+	strategy: "prefix_and_default" as Strategies,
 	// strategy: "prefix_except_default" as Strategies,
 	customRoutes: 'config',
 	vueI18n: 'config/i18n.options.ts',
@@ -42,8 +42,8 @@ const options = {
 			"en": "/legal-notice",
 			"de": "/impressum",
 		},
-		"privacy": {
-			"en": "/privacy",
+		"privacy-policy": {
+			"en": "/privacy-policy",
 			"de": "/datenschutz",
 		},
 		"about-rights-plus": {

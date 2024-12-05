@@ -1,5 +1,0 @@
----
-category: legal
-title: privacy
----
-

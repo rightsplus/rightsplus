@@ -1,6 +1,6 @@
 ---
 title: Preis und Leistungsverzeichnis
-description: Für die grundsätzliche Durchsetzung der Ansprüche nach der Fluggastrechte-VO erhält RightsPlus eine in Abhängigkeit der Höhe des Entschädigungsanspruchs gestaffelte Vergütung.
+lead: Für die grundsätzliche Durchsetzung der Ansprüche nach der Fluggastrechte-VO erhält RightsPlus eine in Abhängigkeit der Höhe des Entschädigungsanspruchs gestaffelte Vergütung.
 ---
 
 ### A. Ansprüche nach VO (EG) Nr. 261/2004 (Verspätung, Annullierung, Nichtbeföderung)

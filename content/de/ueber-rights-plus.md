@@ -1,30 +1,18 @@
 ---
-layout: generic
-category: legal
-title: legalNotice
-lead: tmg
+category: Über uns
+title: RightsPlus
+lead: Erlebe eine neue Dimension an Rechte-Durchsetzung mit RightsPlus.
 ---
 
-ÜBER
+Wir sind ein innovatives Unternehmen, das sich auf die Durchsetzung der Entschädigungsansprüche von Flugpassagieren konzentriert. Basierend auf der Fluggastrechteverordnung der Europäischen Union, bieten wir unseren Kunden eine schnelle und effiziente Lösung für ihre Ansprüche.
 
-**RIGHTS PLUS**  
-Joachim Bawa  
-Zülpicher Platz 18  
-50674 Köln  
+Unser Team besteht aus erfahrenen Juristen und Reiserechtexperten, die jeden Fall sorgfältig prüfen und dafür sorgen, dass unsere Kund:innen die von ihnen verdiente Entschädigung erhalten. Wir setzen uns für die Rechte unserer Kunden ein und garantieren ihnen eine faire Behandlung und angemessene Entschädigung.
 
-Telefon: XXX  
-E-Mail: info@rightsplus.de
+Wir sind stolz auf unsere Erfolgsbilanz und unsere zufriedenen Kunden. Unser Unternehmen wächst stetig und wir haben uns einen guten Ruf in der Branche erworben. Dank unserer umfangreichen Erfahrung und unseres fachkundigen Personals können wir jeden Fall schnell und effizient bearbeiten und unseren Kunden eine positive Lösung anbieten.
 
-USt-Ident-Nummer: XXX  
-Registrierter Inkassodienstleister nach § 10 Abs. 1 Nr. 1 RDG  
-Eingetragen im Rechtsdienstleistungsregister, Aktenzeichen 3712-1104(7)  
-Registrierungsbehörde: Oberlandesgericht Köln, Reichenspergerplatz 1, 60670 Köln  
-Vermögenschadenshaftpflicht: ERGO Versicherung AG, ERGO-Platz 1, 40477 Düsseldorf  
+:stats
 
-**Verantwortlicher i.S.d. § 55 Abs. 2 RStV:**  
-Joachim Bawa, Zülpicher Platz 18, 50674 Köln  
+Wir verstehen, dass Flugverspätungen, Annullierungen und die Verweigerung der Beförderung für unsere Kund:innen stressig und ärgerlich sein können. Deshalb arbeiten wir hart daran, den Prozess so einfach und unkompliziert wie möglich zu gestalten. Unser Online-System ermöglicht es unseren Kund:innen, ihren Fall bequem von zu Hause aus zu übermitteln, und wir halten sie über den Fortschritt ihres Falls auf dem Laufenden.
 
-Die EU-Kommission bietet die Möglichkeit zur Streitbeilegung auf einer von ihr betriebenen Online-Plattform. Diese Plattform finden Sie unter dem externen Link [http://ec.europa.eu/consumers/odr/](http://ec.europa.eu/consumers/odr/).  
-An Streitbeilegungsverfahren vor Verbraucherschlichtungsstellen nehme ich nicht teil.
+RightsPlus ist eines der führendes Unternehmen im Bereich der Fluggastrechte, das sich für die Rechte seiner Kund:innen einsetzt und für eine schnelle und effiziente Lösung ihrer Ansprüche sorgt. Wir sind stolz auf unsere Erfolgsbilanz und unsere zufriedenen Kund:innen und arbeiten hart daran, weiterhin die besten Ergebnisse für unsere Kund:innen zu erzielen.
 
-Die Datenschutzhinweise finden Sie unter [Link](/datenschutz).

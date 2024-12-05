@@ -32,7 +32,7 @@
           </NuxtLink></template
         >
         <template v-slot:privacy
-          ><NuxtLink :to="localePath('privacy')" target="_blank">
+          ><NuxtLink :to="localePath('privacy-policy')" target="_blank">
             {{ $t("privacyPolicy") }}
           </NuxtLink></template
         >

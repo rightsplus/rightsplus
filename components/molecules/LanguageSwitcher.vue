@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { LocaleObject } from "~/config/i18n";
-const switchLocalePath = useSwitchLocalePath();
-
+const { switchLocale } = useLocaleContent();
 const { locale, locales, localeProperties, t } = useI18n();
 const isOpen = ref(false);
 </script>
@@ -37,20 +36,22 @@ const isOpen = ref(false);
       <NuxtLink
         v-for="{ language, name, code } in (locales as LocaleObject[])"
         :key="code"
-        :to="switchLocalePath(code)"
+        :to="switchLocale(code)"
         @click="isOpen = false"
         class="flex items-center gap-2 hover:bg-blue-100 p-4 rounded-lg"
         :class="{
           'bg-blue-100 hover:bg-blue-50': locale === code,
         }"
       >
-      <span class="relative after:absolute after:inset-[1px] after:bg-white/60 after:rounded-full">
-        <img
-          :src="`/locales/${language}.svg`"
-          :alt="name"
-          class="relative z-10 w-6 shrink-0"
-        />
-      </span>
+        <span
+          class="relative after:absolute after:inset-[1px] after:bg-white/60 after:rounded-full"
+        >
+          <img
+            :src="`/locales/${language}.svg`"
+            :alt="name"
+            class="relative z-10 w-6 shrink-0"
+          />
+        </span>
         <span class="text-base">{{ name }}</span>
       </NuxtLink>
     </div>

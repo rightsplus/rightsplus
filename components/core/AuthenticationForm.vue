@@ -58,7 +58,7 @@
                 }}</NuxtLinkLocale></template
               >
               <template v-slot:privacyPolicy
-                ><NuxtLinkLocale to="privacy">{{
+                ><NuxtLinkLocale to="privacy-policy">{{
                   $t("privacyPolicy")
                 }}</NuxtLinkLocale></template
               >
@@ -97,7 +97,7 @@
               }}</NuxtLinkLocale></template
             >
             <template v-slot:privacyPolicy
-              ><NuxtLinkLocale to="privacy">{{
+              ><NuxtLinkLocale to="privacy-policy">{{
                 $t("privacyPolicy")
               }}</NuxtLinkLocale></template
             >

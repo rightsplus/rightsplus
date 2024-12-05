@@ -1,7 +1,6 @@
 
 import i18nConfig from '@/config/i18n'
 import type { ParsedContent } from '@nuxt/content'
-import type { CustomRoutePages } from '@nuxtjs/i18n'
 type Content = ParsedContent & {
 	layout?: string
 	category?: string
@@ -9,7 +8,6 @@ type Content = ParsedContent & {
 	lead?: string
 }
 export default () => {
-	const i18n = useI18n()
 	const route = useRoute()
 	const contentState = useContentState()
 
@@ -36,10 +34,21 @@ export default () => {
 		}
 	}
 
+	const queryLocaleContent = (path: string) => {
+		const locales = i18nConfig.locales
+		if (!path) return queryContent('/')
+		const [, localePath] = path.split('/')
+		if (!locales.some(e => e.code === localePath)) {
+			path = `/${i18nConfig.defaultLocale}${path}`
+		}
+		return queryContent(path)
+	}
+
 	return {
 		contentState,
 		currentContent,
 		query,
 		routeName: name,
+		queryLocaleContent
 	}
 }

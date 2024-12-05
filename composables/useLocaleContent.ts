@@ -21,8 +21,8 @@ export default () => {
 		) || []
 		return match as RouteName || ''
 	}
-	const localePath = (name: RouteName, code = locale.value) => {
-		const route = i18nConfig.pages[name]
+	const localePath = (name: RouteName | string = route.path, code = locale.value) => {
+		const route = i18nConfig.pages[name as RouteName]
 		type AvailableLocale = keyof typeof route
 		if (!route) return `/${name}`
 		let path = route[code as AvailableLocale]

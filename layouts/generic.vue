@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import Header from "@/components/species/Header.vue";
 import Footer from "@/components/species/Footer.vue";
-onMounted(() => scrollTo({ top: 0, behavior: "smooth" }));
+const slots = useSlots()
+
+onMounted(() => {
+  scrollTo({ top: 0, behavior: "smooth" })
+});
 const route = useRoute();
+
 type Props = {
   footer?: boolean;
 };
@@ -34,10 +39,10 @@ withDefaults(defineProps<Props>(), {
               <slot name="title" />
             </h1>
             <span
-              v-if="$slots.description"
+              v-if="$slots.lead"
               class="text-2xl sm:text-3xl font-medium text-neutral-500"
             >
-              <slot name="description" />
+              <slot name="lead" />
             </span>
           </div>
           <slot />

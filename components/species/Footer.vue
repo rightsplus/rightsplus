@@ -112,7 +112,7 @@ const routes = computed(
         title: t("legal"), // Legal
         links: [
           {
-            path: "privacy",
+            path: "privacy-policy",
             title: t("privacy"),
           },
           {

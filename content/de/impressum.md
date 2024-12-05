@@ -1,8 +1,7 @@
 ---
-layout: generic
-category: legal
-title: legalNotice
-lead: tmg
+category: Rechtliches
+title: Impressum
+lead: Angaben gemäß § 5 TMG
 ---
 
 **RIGHTS PLUS**  

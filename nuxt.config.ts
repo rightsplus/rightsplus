@@ -68,7 +68,7 @@ export default defineNuxtConfig({
   },
 
   image: {
-    // format: ['webp']
+    format: ['webp']
   },
 
   css: [
@@ -139,7 +139,6 @@ export default defineNuxtConfig({
       })
     }
   },
-
   routeRules: {
     '/en/pdf/**': {
       prerender: false,
