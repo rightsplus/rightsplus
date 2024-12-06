@@ -12,7 +12,7 @@
           v-for="(item, i) in options"
           :key="item.value"
           :name="item.value"
-          class="flex gap-2 text-base leading-none p-3 cursor-pointer hover:bg-primary-50 border-b border-b-white last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600 items-center"
+          class="flex gap-3 text-base leading-none p-3 px-3.5 cursor-pointer hover:bg-primary-50 border-b border-b-white last:rounded-b-lg focus-within:outline-none focus-within:bg-primary-50 focus-within:text-primary-600 items-center"
           :class="{
             'bg-primary-50': i === active,
           }"
