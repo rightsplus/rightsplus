@@ -43,7 +43,7 @@
         >
         <template v-slot:assignmentAgreement
           ><NuxtLink
-            @click.prevent="generateAssignmentAgreement"
+            @click.prevent="() => downloadSheet(['assignmentAgreement'])"
             target="_blank"
           >
             {{ $t("assignmentAgreement") }}
@@ -57,11 +57,16 @@
 <script setup lang="ts">
 import type { ClaimsForm } from "~/types";
 import SignaturePad from "~/components/molecules/SignaturePad.vue";
+import useCreatePdf from "~/plugins/pdfmake/useCreatePdf";
 const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const localePath = useLocalePath();
 const { generate } = useGeneratePDF();
+const {
+  downloadSheet
+} = useCreatePdf()
+
 
 const updateSignature = (val: string | undefined, i: number) => {
   props.modelValue.client.passengers[i].signature = val;

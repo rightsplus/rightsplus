@@ -1,13 +1,49 @@
 import type { ContentTable, TDocumentDefinitions } from 'pdfmake/interfaces'
-import { getFooterHeight, measurements } from './utils'
+// import { getFooterHeight, measurements } from './utils'
 import { theme } from '#tailwind-config'
 const { colors } = theme
-
+console.log(colors.neutral)
+const measurements = {
+	"mm": 2.835,
+	"margin": 56.70,
+	"margin_x2": 35.04,
+	"margin_x3": 21.66,
+	"margin_x4": 13.39,
+	"margin_x5": 8.27,
+	"margin_x6": 5.11,
+	"columnWidth": 29.16,
+	"columnGap": 12,
+	"firstColumn": 357.96,
+	"secondColumn": 111.49
+}
 const { mm } = measurements
 
+export function hsl2hex(hsl: string) {
+  if (hsl.includes('#')) return hsl
+  const hslArr = hsl
+    .match(/\d+/g)
+    ?.map(num => parseInt(num));
+  if (!hslArr) return hsl
+  const [h, s] = hslArr
+  let [, , l] = hslArr
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0'); // convert to Hex and prefix "0" if needed
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
 export const styles = {
-  model: {
+  title: {
     fontSize: 24,
+    bold: true
+  },
+  subtitle: {
+    fontSize: 14,
+    color: hsl2hex(colors.neutral['400'])
   },
   valueBig: {
     fontSize: 24,
@@ -39,11 +75,11 @@ export const styles = {
     margin: [0, measurements.margin_x4, 0, measurements.margin_x3],
   },
   small: {
-    fontSize: 7,
-    color: colors.gray['500'],
+    fontSize: 8,
+    color: hsl2hex(colors.neutral['400']),
   },
   tableHeader: {
-    fontSize: 7,
+    fontSize: 8,
     // bold: true,
     characterSpacing: 0.5,
   },
@@ -69,7 +105,7 @@ export function marks(show: boolean = false) {
         x2: 6.2 * mm,
         y2: 105 * mm,
         lineWidth: 1,
-        lineColor: (colors.border),
+        lineColor: hsl2hex(colors.neutral['400']),
       },
       {
         type: 'line',
@@ -78,7 +114,7 @@ export function marks(show: boolean = false) {
         x2: 6.2 * mm,
         y2: 210 * mm,
         lineWidth: 1,
-        lineColor: (colors.border),
+        lineColor: hsl2hex(colors.neutral['400']),
       },
       {
         type: 'line',
@@ -87,7 +123,7 @@ export function marks(show: boolean = false) {
         x2: 10 * mm,
         y2: 148.5 * mm,
         lineWidth: 1,
-        lineColor: (colors.border),
+        lineColor: hsl2hex(colors.neutral['400']),
       },
     ],
     absolutePosition: { x: 0, y: 0 },
@@ -275,7 +311,7 @@ export function layoutAlternating(padding: [number, number]) {
     paddingRight: () => padding[0],
     paddingBottom: () => padding[1],
     paddingLeft: () => padding[0],
-    fillColor: (i: number) => i % 2 ? 'white' : (colors.gray['100']),
+    fillColor: (i: number) => i % 2 ? 'white' : (colors.neutral['100']),
   }
 }
 export function layoutRoundedCorderFrame(padding: number) {
@@ -289,8 +325,8 @@ export function layoutRoundedCorderFrame(padding: number) {
       if (i === 0 || i === node.table.body.length) return tableLineWidth
       return 0
     },
-    hLineColor: () => (colors.gray['100']),
-    vLineColor: () => (colors.gray['100']),
+    hLineColor: () => (colors.neutral['100']),
+    vLineColor: () => (colors.neutral['100']),
     paddingTop: () => padding,
     paddingRight: () => padding,
     paddingBottom: () => padding,

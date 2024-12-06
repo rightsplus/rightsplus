@@ -1,4 +1,4 @@
-import useSummary from './pdf/documents/useSummary'
+import assignmentAgreement from './pdf/documents/assignmentAgreement'
 import type { PDFPage } from 'pdf-lib'
 import { measurements, getFooterHeight } from './pdf/utils'
 import type { TDocumentDefinitions } from 'pdfmake/interfaces'
@@ -17,7 +17,8 @@ interface CreatePdfProps extends TDocumentDefinitions {
 }
 
 export default () => {
-	const { t, locale } = useI18n()
+	const i18n = useI18n()
+	const { t, locale } = i18n
 	const ready = ref(false)
 	const loading = ref(false)
 	const pdfMake = ref()
@@ -79,9 +80,9 @@ export default () => {
 			defaultStyle: {
 				font: 'Inter',
 				fontSize: 10,
-				lineHeight: 0.875,
+				lineHeight: 1.25,
 				characterSpacing: -0.01,
-				color: colors.gray['700'],
+				color: colors.neutral['800'],
 			},
 			styles
 		}
@@ -103,13 +104,12 @@ export default () => {
 	}
 
 	type SheetsProp = {
-		summary?: (() => Promise<TDocumentDefinitions>) | false
+		assignmentAgreement?: (() => Promise<TDocumentDefinitions>) | false
 		variant?: string | false
 	}
 
-	const summary = useSummary()
 
-	const collectFiles = async (documents: (keyof SheetsProp)[], tempStore?: ConfigurationStore) => {
+	const collectFiles = async (documents: (keyof SheetsProp)[]) => {
 		const files: Partial<Record<keyof SheetsProp, Buffer | Uint8Array | undefined>> = {};
 
 		const awaitAndAssign = async (key: keyof SheetsProp, promise: Promise<Buffer | Uint8Array | undefined>) => {
@@ -123,13 +123,13 @@ export default () => {
 		const tasks = [];
 
 
-		if (documents.includes('summary')) {
-			tasks.push(awaitAndAssign('summary', getPage(summary())));
+		if (documents.includes('assignmentAgreement')) {
+			tasks.push(awaitAndAssign('assignmentAgreement', getPage(assignmentAgreement(i18n))));
 		}
 
-		if (documents.includes('variant')) {
-			tasks.push(awaitAndAssign('variant', fetchToBuffer(getProductSheets(store.model, store.steps, store.rise, locale.value))));
-		}
+		// if (documents.includes('variant')) {
+		// 	tasks.push(awaitAndAssign('variant', fetchToBuffer(getProductSheets(store.model, store.steps, store.rise, locale.value))));
+		// }
 
 		// Wait for all tasks to complete
 		await Promise.all(tasks);
@@ -140,7 +140,7 @@ export default () => {
 
 
 	const getPDF = async (documents: (keyof SheetsProp)[], { download, filter }: { download?: string, filter?: (name: keyof SheetsProp, copiedPages: PDFPage[]) => void } = {}) => {
-		const files = await collectFiles(documents, store)
+		const files = await collectFiles(documents)
 		return Promise.all(files?.map(async file => {
 			const pages = await mergePages(file, { order: documents, filter })
 			const blob = await generateBlob(pages)

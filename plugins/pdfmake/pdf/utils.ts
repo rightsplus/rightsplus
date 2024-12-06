@@ -478,3 +478,78 @@ export const getMaterials = async (i18n: ReturnType<typeof useI18n>, margin?: nu
 		}]
 	return materialsList
 }
+
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import type { Content } from 'pdfmake/interfaces';
+
+/**
+ * Converts Markdown to pdfmake-styled text.
+ * @param markdown - The Markdown input string.
+ * @returns An array of pdfmake-styled objects.
+ */
+export function markdownToPdfMake(markdown: string): Content[] {
+  const processor = unified().use(remarkParse);
+  const tree = processor.parse(markdown);
+
+  const pdfmakeContent: Content[] = [];
+
+  /**
+   * Recursively processes nodes to build pdfmake content.
+   * @param node - The AST node to process.
+   * @param parentStyle - The style inherited from the parent node.
+   */
+  const processNode = (node: any, parentStyle: Partial<Content> = {}): void => {
+    switch (node.type) {
+      case 'text':
+        pdfmakeContent.push({ text: node.value, ...parentStyle });
+        break;
+      case 'strong':
+        node.children.forEach((child: any) =>
+          processNode(child, { bold: true, ...parentStyle })
+        );
+        break;
+      // case 'emphasis':
+      //   node.children.forEach((child: any) =>
+      //     processNode(child, { italics: true, ...parentStyle })
+      //   );
+      //   break;
+      case 'heading':
+        const headingStyles: Record<number, Partial<Content>> = {
+          1: { fontSize: 24, bold: true },
+          2: { fontSize: 20, bold: true },
+          3: { fontSize: 18, bold: true },
+        };
+        const style = headingStyles[node.depth] || {};
+        node.children.forEach((child: any) => processNode(child, style));
+        break;
+      case 'paragraph':
+        const paragraphContent: Content[] = [];
+        node.children.forEach((child: any) => {
+          const currentLength = pdfmakeContent.length;
+          processNode(child);
+          paragraphContent.push(...pdfmakeContent.splice(currentLength));
+        });
+        pdfmakeContent.push({ text: paragraphContent });
+        break;
+      case 'list':
+        const listItems = node.children.map((child: any) => {
+          const itemContent: Content[] = [];
+          child.children.forEach((itemChild: any) => processNode(itemChild));
+          return itemContent.map((c) => (c as { text: string }).text || '');
+        });
+        const listType = node.ordered ? 'ol' : 'ul';
+        pdfmakeContent.push({ [listType]: listItems });
+        break;
+      default:
+        if (node.children) {
+          node.children.forEach((child: any) => processNode(child, parentStyle));
+        }
+    }
+  };
+
+  tree.children.forEach((node: any) => processNode(node));
+
+	console.log(pdfmakeContent)
+  return pdfmakeContent;
+}
