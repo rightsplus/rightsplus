@@ -1,5 +1,5 @@
 <template>
-  <div :class="['max-w-full mb-3', outerClass]">
+  <div :class="['formkit-outer max-w-full mb-3', outerClass]">
     <div
       class="relative formkit-inner bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500 flex items-center ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg"
       :class="[

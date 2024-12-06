@@ -45,7 +45,7 @@ const config: DefaultConfigOptions = {
         message: 'text-red-500 mb-1 text-xs',
         messages: 'list-none p-0 mt-1 mb-0',
         outer: 'formkit-disabled:opacity-50 min-w-[auto]',
-        prefixIcon: 'absolute z-40 w-10 mx-1 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400',
+        prefixIcon: 'absolute z-40 w-10 mx-1 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 pointer-events-none',
         suffixIcon: 'absolute z-40 w-10 mx-1 right-0 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 [[data-suffix-icon-click="true"]_&:hover]:cursor-pointer [[data-suffix-icon-click="true"]_&:hover>svg]:fill-neutral-800 duration-0',
       },
       'family:box': {

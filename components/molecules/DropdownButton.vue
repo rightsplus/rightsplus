@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative w-full h-14"
+    class="relative w-full h-14 formkit-outer"
     data-floating-label="true"
     data-suffix-icon="true"
     :data-prefix-icon="
