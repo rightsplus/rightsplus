@@ -1,3 +1,4 @@
+import vue from '@vitejs/plugin-vue'
 import i18n from './config/i18n'
 import postcss from './config/postcss'
 import pwa from './config/pwa'
@@ -60,6 +61,9 @@ export default defineNuxtConfig({
     logLevel: 'debug', // Captures detailed logs during prerendering
     devProxy: {
       host: 'localhost',
+    },
+    rollupConfig: {
+      plugins: [vue()]
     },
   },
 

@@ -1,8 +1,12 @@
+<script setup lang="ts">
+import { Tailwind, Html, Head, Body, Font } from "@vue-email/components";
+defineProps<{ preview?: string }>()
+</script>
 <template>
-  <ETailwind>
-    <EHtml>
-      <EHead>
-        <EFont
+  <Tailwind>
+    <Html>
+      <Head>
+        <Font
           font-family="Inter"
           fallback-font-family="Verdana"
           :web-font="{
@@ -11,8 +15,8 @@
           }"
           font-weight="normal"
           font-style="normal"
-        />
-        <EFont
+      />
+        <Font
           font-family="Inter"
           fallback-font-family="Verdana"
           :web-font="{
@@ -22,12 +26,13 @@
           font-weight="bold"
           font-style="normal"
         />
-      </EHead>
-      <EBody
-        class="text-sm sm:text-base text-gray-500 bg-neutral-200 flex flex-col gap-5 p-3 sm:p-5"
+      </Head>
+      <Body
+        class="text-base sm:text-lg text-gray-500 bg-neutral-200 flex flex-col gap-5 p-3 sm:p-5"
       >
+        <Preview class="absolute text-[0.1px] opacity-0">{{ preview?.slice(0,90) }}</Preview>
         <slot />
-      </EBody>
-    </EHtml>
-  </ETailwind>
+      </Body>
+    </Html>
+  </Tailwind>
 </template>
