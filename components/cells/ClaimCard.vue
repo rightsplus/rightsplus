@@ -111,7 +111,7 @@
           </span>
         </div>
         <!-- @todo: maybe do not check for status ...-->
-        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active' && flight?.status !== 'scheduled'">
+        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
           <span class="text-sm text-neutral-500">{{
             $t("actualArrivalTime")
           }}</span>
