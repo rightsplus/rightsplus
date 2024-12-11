@@ -6,12 +6,10 @@
           class="flex flex-col gap-5 text-center md:max-w-3xl mx-auto box-content"
         >
           <h1 class="text-2xl sm:text-5xl font-bold">
-            RightsPlus Kund·innen berichten
+            {{ t('reviews.title') }}
           </h1>
           <h2 class="text-lg sm:text-2xl font-medium text-gray-500">
-            Unsere Kund·innen sprechen für sich! Über 500 zufriedene
-            Nutzer·innen haben bereits auf die einfache und effektive Erstattung
-            ihrer Entschädigungsansprüche durch RightsPlus gesetzt.
+            {{ t('reviews.subtitle') }}
           </h2>
         </div>
         <div
@@ -36,7 +34,7 @@
           :to="state.reviews.url"
           target="_blank"
           class="text-center cursor-pointer underline-offset-1 hover:underline flex gap-2 items-center mx-auto font-medium"
-          ><span>Weitere Bewertungen ansehen</span>
+          ><span>{{ t('reviews.viewMore') }}</span>
           <FontAwesomeIcon icon="arrow-right" class="text-sm"
         /></NuxtLink>
       </div>
@@ -48,7 +46,7 @@
 import ReviewCard from "@/components/cells/ReviewCard.vue";
 import type { Review } from "@/types";
 const state = useAppState();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const { key, placeId } = useRuntimeConfig().public.google;
 const request = `https://maps.googleapis.com/maps/api/place/details/json?key=${key}&place_id=${placeId}&fields=review,url&language=${locale.value}`;
 const { fetchProxy } = useSupabaseFunctions();

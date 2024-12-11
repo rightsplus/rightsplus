@@ -11,13 +11,10 @@
     <div class="max-w-full sm:max-w-xl mx-auto p-5 sm:p-12 h-full relative z-1 bg-white sm:rounded-xl grid gap-8">
       <div class="flex flex-col justify-around gap-4 leading-0 h-full">
         <h2 class="text-2xl sm:text-3xl font-bold my-0">
-          Entschädigungshöhe und Vergütung
+          {{ t('feeCalculator.title') }}
         </h2>
         <p class="text-sm">
-          Unsere Vergütung hängt von deiner Entschädigung ab. Wir bekommen nur
-          Geld, wenn du auch eine Entschädigung bekommst. Das bedeutet, dass wir
-          uns für dich einsetzen und motiviert sind, dir eine hohe Entschädigung
-          zu sichern. So profitieren wir beide.
+          {{ t('feeCalculator.description') }}
         </p>
       </div>
       <OrganismsPricesAndServicesCalculator
@@ -26,3 +23,7 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+const { t } = useI18n()
+</script>

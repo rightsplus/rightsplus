@@ -9,12 +9,12 @@
           class="flex flex-col gap-2 items-center text-center"
         >
           <span class="text-3xl sm:text-6xl font-bold">
-            {{ stat.title }}
+            {{ t(`stats.${i}.title`) }}
           </span>
           <p
             class="text-base sm:text-lg leading-none text-gray-300 font-medium"
           >
-            {{ stat.description }}
+            {{ t(`stats.${i}.description`) }}
           </p>
         </div>
       </div>
@@ -22,6 +22,7 @@
   </section>
 </template>
 <script lang="ts" setup>
+const { t } = useI18n()
 const stats = [
   {
     title: "400+",

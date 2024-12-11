@@ -132,6 +132,13 @@
   "welcomeBack": "Willkommen zurück!",
   "ourService": "Unser Service",
   "yourRights": "Deine Rechte",
+  "yourRights.title": "Wann bekomme ich eine Entschädigung?",
+  "yourRights.cta": "Deine Rechte kennenlernen",
+  "yourRights.process.compensation": "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
+  "yourRights.process.delay": "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
+  "yourRights.process.eligibility": "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
+  "yourRights.process.period": "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
+  "yourRights.process.exceptions": "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
   "pricesAndServices": "Preise und Leistungen",
   "pricelist": "Preisliste",
   "assignmentAgreement": "Abtretungserklärung",
@@ -238,5 +245,52 @@
   "claimEU": "Anspruch nach EU-Recht",
   "ourCommission": "Unsere Vergütung",
   "vat": "Mehrwertsteuer",
-  "flightRoute": "Flugstrecke"
+  "flightRoute": "Flugstrecke",
+  "process": {
+    "summary": {
+      "mainTitle": "In 3 Schritten deine Entschädigung sichern",
+      "subtitle": "Mit RightsPlus setzen wir deine Ansprüche gemäß EU-Recht durch.",
+      "steps": {
+        "check": {
+          "title": "Entschädigungsanspruch prüfen",
+          "description": "Anhand von Flugroute und Datum"
+        },
+        "contact": {
+          "title": "Kontaktdaten eingeben",
+          "description": "Um den Anspruch geltend zu machen"
+        },
+        "receive": {
+          "title": "Entschädigung erhalten",
+          "description": "Innerhalb von 2 Wochen"
+        }
+      }
+    }
+  },
+  "stats": {
+    "0": {
+      "title": "400+",
+      "description": "Fälle bearbeitet"
+    },
+    "1": {
+      "title": "€25k",
+      "description": "in Entschädigungen erkämpft"
+    },
+    "2": {
+      "title": "98%",
+      "description": "Erfolgsquote"
+    }
+  },
+  "feeCalculator": {
+    "title": "Entschädigungshöhe und Vergütung",
+    "description": "Unsere Vergütung hängt von deiner Entschädigung ab. Wir bekommen nur Geld, wenn du auch eine Entschädigung bekommst. Das bedeutet, dass wir uns für dich einsetzen und motiviert sind, dir eine hohe Entschädigung zu sichern. So profitieren wir beide."
+  },
+  "reviews": {
+    "title": "RightsPlus Kund·innen berichten",
+    "subtitle": "Unsere Kund·innen sprechen für sich! Über 500 zufriedene Nutzer·innen haben bereits auf die einfache und effektive Erstattung ihrer Entschädigungsansprüche durch RightsPlus gesetzt.",
+    "viewMore": "Weitere Bewertungen ansehen"
+  },
+  "cta": {
+    "title": "Sichere dir deine verdiente Entschädigung",
+    "subtitle": "Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich."
+  }
 }

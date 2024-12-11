@@ -8,18 +8,19 @@
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-6">
           <h2 class="text-4xl font-bold">
-            Sichere dir deine verdiente Entschädigung
+            {{ t('cta.title') }}
           </h2>
           <h3 class="text-xl font-medium">
-            Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich.
+            {{ t('cta.subtitle') }}
           </h3>
         </div>
         <Button class="text-white bg-gray-800 hover:bg-gray-900 mr-auto" to="claim-new"
-          >{{ $t('checkCompensationNow')}}</Button
+          >{{ t('checkCompensationNow')}}</Button
         >
       </div>
     </div>
   </section>
 </template>
 <script lang="ts" setup>
+const { t } = useI18n()
 </script>

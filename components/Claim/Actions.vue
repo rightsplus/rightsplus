@@ -10,7 +10,7 @@
       class="w-full !h-12 !px-3"
       @click="() => send(action)"
     >
-      {{ $t(`action.${action}`) }}
+      {{ t(`action.${action}`) }}
     </Button>
   </div>
 </template>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import type { CaseStatus, RowClaimExtended } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   claim: RowClaimExtended;
@@ -30,6 +31,7 @@ const actions = computed(() => {
   return state.value.events.sort((e) => (e.includes("accept") ? 1 : -1));
 });
 const { send: sendMail } = useSendMail();
+const { t } = useI18n()
 
 const acceptClaimClient = async () => {
   if (!props.claim) return;

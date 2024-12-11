@@ -93,6 +93,13 @@
   "welcomeBack": "Welcome Back!",
   "ourService": "Our Service",
   "yourRights": "Your Rights",
+  "yourRights.title": "When am I entitled to compensation?",
+  "yourRights.cta": "Learn about your rights",
+  "yourRights.process.compensation": "Compensation covers delays, cancellations and denied boarding",
+  "yourRights.process.delay": "Applies to delays of 2-3 hours or more (depending on flight distance)",
+  "yourRights.process.eligibility": "Flight must depart from or arrive in the EU, or the airline must be based in the EU",
+  "yourRights.process.period": "Claims can be made for the last 3 years",
+  "yourRights.process.exceptions": "Exceptions possible for delays due to extraordinary circumstances",
   "pricesAndServices": "Prices and Services",
   "pricelist": "Price List",
   "assignmentAgreement": "Assignment Agreement",
@@ -188,5 +195,52 @@
   "claimEU": "Claim under EU Law",
   "ourCommission": "Our Commission",
   "vat": "VAT",
-  "flightRoute": "Flight Route"
+  "flightRoute": "Flight Route",
+  "process": {
+    "summary": {
+      "mainTitle": "Secure Your Compensation in 3 Steps",
+      "subtitle": "With RightsPlus, we enforce your claims according to EU law.",
+      "steps": {
+        "check": {
+          "title": "Check Compensation Claim",
+          "description": "Based on flight route and date"
+        },
+        "contact": {
+          "title": "Enter Contact Details",
+          "description": "To submit your claim"
+        },
+        "receive": {
+          "title": "Receive Compensation",
+          "description": "Within 2 weeks"
+        }
+      }
+    }
+  },
+  "stats": {
+    "0": {
+      "title": "400+",
+      "description": "Cases processed"
+    },
+    "1": {
+      "title": "€25k",
+      "description": "in compensation secured"
+    },
+    "2": {
+      "title": "98%",
+      "description": "Success rate"
+    }
+  },
+  "feeCalculator": {
+    "title": "Compensation Amount and Fee",
+    "description": "Our fee depends on your compensation. We only get paid if you receive compensation. This means we are committed and motivated to secure high compensation for you. This way, we both benefit."
+  },
+  "reviews": {
+    "title": "RightsPlus Customer Reviews",
+    "subtitle": "Our customers speak for themselves! Over 500 satisfied users have already relied on the simple and effective compensation claims process through RightsPlus.",
+    "viewMore": "View more reviews"
+  },
+  "cta": {
+    "title": "Secure your deserved compensation",
+    "subtitle": "With our simple online check, you can quickly and easily verify your compensation claims. And the best part: It's free and non-binding."
+  }
 }

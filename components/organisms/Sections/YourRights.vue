@@ -14,16 +14,16 @@
       <div class="flex flex-col gap-12 leading-0 h-full">
         <div class="flex flex-col gap-6">
           <h3 class="uppercase tracking-wider text-red-200 font-bold">
-            {{ $t('yourRights')}}
+            {{ t('yourRights') }}
           </h3>
           <h2 class="text-3xl sm:text-5xl font-bold">
-            Wann bekomme ich eine Entschädigung?
+            {{ t('yourRights.title') }}
           </h2>
         </div>
         <ol class="flex flex-col gap-8 text-base sm:text-lg">
           <li
-            v-for="item in process"
-            :key="item.title"
+            v-for="(item, key) in process"
+            :key="key"
             class="flex gap-5 items-center"
             :class="{ 'text-gray-50': item.exception }"
           >
@@ -32,51 +32,53 @@
               class="shrink-0"
               :class="item.color"
             />
-            <span class="flex flex-col gap-1 leading-none font-medium">{{
-              item.title
-            }}</span>
+            <span class="flex flex-col gap-1 leading-none font-medium">
+              {{ t(`yourRights.process.${key}`) }}
+            </span>
           </li>
         </ol>
         <Button
           class="text-white !bg-gray-700 hover:!bg-gray-800 mr-auto mt-12"
           :to="'your-passenger-rights'"
           suffix-icon="angle-right"
-          >Deine Rechte kennenlernen</Button
         >
+          {{ t('yourRights.cta') }}
+        </Button>
       </div>
     </div>
   </section>
 </template>
+
 <script lang="ts" setup>
-const process = [
-  {
+const { t } = useI18n()
+
+interface ProcessItem {
+  icon: string;
+  color?: string;
+  exception?: boolean;
+}
+
+const process: Record<string, ProcessItem> = {
+  compensation: {
     icon: "plane-circle-xmark",
     color: "text-red-200",
-    title:
-      "Entschädigung deckt Verspätungen, Annullierungen und verweigerte Beförderungen ab",
   },
-  {
+  delay: {
     icon: "clock",
     color: "text-red-200",
-    title:
-      "Gilt für Verspätung von mindestens 2-3 Stunden (abhängig von Flugdistanz)",
   },
-  {
+  eligibility: {
     icon: "globe-europe",
     color: "text-red-200",
-    title:
-      "Flug muss innerhalb der EU starten oder landen oder der Flugbetreiber muss in der EU ansässig sein",
   },
-  {
+  period: {
     icon: "calendar",
     color: "text-red-200",
-    title: "Anspruch kann für die letzten 3 Jahre geltend gemacht werden",
   },
-  {
+  exceptions: {
     icon: "meteor",
-    title:
-      "Ausnahmen möglich bei Verspätung aufgrund außergewöhnlicher Umstände",
+    color: "text-red-200",
     exception: true,
   },
-];
+}
 </script>
