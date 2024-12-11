@@ -1,3 +1,53 @@
+<script setup lang="ts">
+import TabMenu from "primevue/tabmenu";
+import "primevue/resources/themes/lara-light-green/theme.css";
+import FlightCard from "@/components/cells/FlightCard.vue";
+
+import type { CaseStatus, RowClaimExtended, RowFlight } from "~/types";
+import claimProcessing from "~/machines/claimProcessing";
+import { date } from "@formkit/i18n";
+
+const props = defineProps<{ claim?: RowClaimExtended }>();
+
+const emit = defineEmits(["update"]);
+const { emails } = useStatusEmail();
+const machine = useMachine<CaseStatus, RowClaimExtended>(claimProcessing, {
+  context: props.claim,
+  initial: props.claim?.status,
+  methods: emails,
+});
+const { state, send, invoke, history } = machine;
+const actions = computed(() =>
+  state.value.events.sort((e) => (e.includes("accept") ? 1 : -1))
+);
+
+watch(
+  () => props.claim?.bookingId,
+  (id) => emit("update", { id, data: { unread: false } })
+);
+
+const active = ref(0);
+const items = ref([
+  { label: "Flug", icon: "plane", component: FlightCard },
+  { label: "Flughafen", icon: "tower-control" },
+  { label: "Störung", icon: "ban" },
+  { label: "Passagier", icon: "user" },
+  { label: "Airline", icon: "plane-tail" },
+  { label: "Notizen", icon: "note-sticky" },
+  // { label: "Wetter", icon: "sun" },
+]);
+
+watch(state, ({ value }) => {
+  emit("update", { id: props.claim?.id, data: { status: value } });
+});
+watch(
+  () => props.claim?.id,
+  (id) => emit("update", { id, data: { unread: false } })
+);
+
+const f = computed(() => props.claim?.booking?.flight.data || {});
+</script>
+
 <template>
   <div v-if="claim">
     <div class="flex flex-col w-full min-w-96">
@@ -121,53 +171,3 @@
     <FontAwesomeIcon icon="folder-closed" class="text-7xl text-gray-300" />
   </div>
 </template>
-
-<script setup lang="ts">
-import TabMenu from "primevue/tabmenu";
-import "primevue/resources/themes/lara-light-green/theme.css";
-import FlightCard from "@/components/cells/FlightCard.vue";
-
-import type { CaseStatus, RowClaimExtended, RowFlight } from "~/types";
-import claimProcessing from "~/machines/claimProcessing";
-import { date } from "@formkit/i18n";
-
-const props = defineProps<{ claim?: RowClaimExtended }>();
-
-const emit = defineEmits(["update"]);
-const { emails } = useStatusEmail();
-const machine = useMachine<CaseStatus, RowClaimExtended>(claimProcessing, {
-  context: props.claim,
-  initial: props.claim?.status,
-  methods: emails,
-});
-const { state, send, invoke, history } = machine;
-const actions = computed(() =>
-  state.value.events.sort((e) => (e.includes("accept") ? 1 : -1))
-);
-
-watch(
-  () => props.claim?.bookingId,
-  (id) => emit("update", { id, data: { unread: false } })
-);
-
-const active = ref(0);
-const items = ref([
-  { label: "Flug", icon: "plane", component: FlightCard },
-  { label: "Flughafen", icon: "tower-control" },
-  { label: "Störung", icon: "ban" },
-  { label: "Passagier", icon: "user" },
-  { label: "Airline", icon: "plane-tail" },
-  { label: "Notizen", icon: "note-sticky" },
-  // { label: "Wetter", icon: "sun" },
-]);
-
-watch(state, ({ value }) => {
-  emit("update", { id: props.claim?.id, data: { status: value } });
-});
-watch(
-  () => props.claim?.id,
-  (id) => emit("update", { id, data: { unread: false } })
-);
-
-const f = computed(() => props.claim?.booking?.flight.data || {});
-</script>

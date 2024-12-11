@@ -26,9 +26,9 @@ const props = defineProps<{
 
 const emit = defineEmits(["update"]);
 const { state, send, invoke } = props.machine;
-const actions = computed(() =>
-  state.value.events.sort((e) => (e.includes("accept") ? 1 : -1))
-);
+const actions = computed(() => {
+  return state.value.events.sort((e) => (e.includes("accept") ? 1 : -1));
+});
 const { send: sendMail } = useSendMail();
 
 const acceptClaimClient = async () => {
@@ -48,7 +48,7 @@ const acceptClaimAirline = async () => {
     "send claim email to airline",
     props.claim.booking.flight.airline.email
   );
-  console.log(props.claim.booking.flight.airline.email)
+  console.log(props.claim.booking.flight.airline.email);
   if (!props.claim.booking.flight.airline.email) {
     const newEmail = prompt("Please enter the email address");
     if (newEmail) {

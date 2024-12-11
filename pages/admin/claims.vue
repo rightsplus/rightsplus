@@ -96,7 +96,7 @@ const container = ref();
 const width = ref(400);
 const offset = ref(0);
 onMounted(() => {
-  const { left } = container.value.getBoundingClientRect();
+  const { left } = container.value?.getBoundingClientRect() || {};
   offset.value = left;
 });
 

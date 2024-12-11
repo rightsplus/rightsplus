@@ -352,10 +352,10 @@ export const handleFormKitIconClick = (e: MouseEvent) => {
 	const input = (e.target as Element).closest('.formkit-inner')?.querySelector('input')
 	input?.click()
 }
-// Array(999).fill(0).map((e, i) => {
-// 	return '#' + (Math.round(new Date().getTime() / (24 * 60 * 60 * 1000))).toString(36).toUpperCase().padStart(3, '0') + '-' + (i + 999).toString(36).toUpperCase().padStart(3, '0')
-// })
 
+// Array(999).fill(0).map((e, i) => {
+// 	return '#' + (Math.round(new Date().getTime() / (24 * 60 * 60 * 1000))).toString(36).toUpperCase().padStart(3, '0') + (i + 999).toString(36).toUpperCase().padStart(3, '0')
+// })
 export const formatClaimId = (id: number | string, prependHash = true) => {
 	if (!id) return ""
 	const base = 36 // 10

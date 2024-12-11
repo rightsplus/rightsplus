@@ -54,11 +54,7 @@ export const useStatusEmail = <Context extends RowClaimExtended, States extends 
 			{
 				label: 'Send Data Received Email',
 				handler: async (claim: RowClaimExtended) => {
-					console.log('dataReceived', claim)
 					const data = getStatus({ i18n, data: claim }).dataReceived
-					console.log('data', data)
-					console.log('claim', claim)
-					console.log('claim.client', claim.client)
 					try {
 						const pdf = await generatePDF(assignmentAgreement(claim.client, {
 							id: claim.id,
@@ -79,7 +75,7 @@ export const useStatusEmail = <Context extends RowClaimExtended, States extends 
 			}
 		],
 		awaitInitialAirlineResponse: [{
-			label: "",
+			label: "Wait for Airline",
 			handler: () => {
 				return new Promise(() => {})
 			}
