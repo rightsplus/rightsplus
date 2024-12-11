@@ -21,7 +21,7 @@ function wrapWithEmTags(query: string, text: string) {
 
 const { queryLocaleContent } = useI18nContent();
 const route = useRoute();
-const { data } = useAsyncData("your-passenger-rights", () =>
+const { data } = useAsyncData("faq", () =>
   queryLocaleContent(route.fullPath).findOne()
 );
 
