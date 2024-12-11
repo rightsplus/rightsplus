@@ -8,7 +8,7 @@ definePageMeta({
 const { t } = useI18n();
 const { queryLocaleContent } = useI18nContent();
 const route = useRoute();
-const { data } = useAsyncData("your-passenger-rights", () =>
+const { data } = useAsyncData("about-rights-plus", () =>
 queryLocaleContent(route.fullPath).findOne()
 );
 </script>
