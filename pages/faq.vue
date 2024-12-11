@@ -1,7 +1,7 @@
-
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Accordion from "@/components/organisms/Accordion/Accordion.vue";
+import type { MarkdownNode } from "@nuxt/content";
 
 definePageMeta({
   layout: "generic",
@@ -9,20 +9,9 @@ definePageMeta({
     main: "max-w-7xl",
   },
 });
-const { t } = useI18n()
+const { t } = useI18n();
 const active = ref([] as number[]);
 const filter = ref("");
-watch(filter, (query) => {
-  if (query.length < 2) return (active.value = []);
-
-  active.value = qa.map((item, i) =>
-    item.q.toLowerCase().includes(query.toLowerCase()) ||
-    item.a.toLowerCase().includes(filter.value.toLowerCase()) ||
-    item.tags.some((e) => e.toLowerCase().includes(filter.value.toLowerCase()))
-      ? i
-      : -1
-  );
-});
 function wrapWithEmTags(query: string, text: string) {
   if (query.length < 2) return text;
   const regex = new RegExp(query, "gi");
@@ -30,76 +19,27 @@ function wrapWithEmTags(query: string, text: string) {
   return wrappedText;
 }
 
-const qa = [
-  {
-    q: "Welchen Service bietet RightsPlus für mich an?",
-    a: "RightsPlus bietet dir den Service der Durchsetzung deiner Ansprüche bei Flugverspätungen, Flugausfällen oder verpassten Anschlussflügen an.",
-    tags: ["Dienstleistung", "Rechtsvertretung"],
-  },
-  {
-    q: "Welchen Geldbetrag erhalte ich im Falle der erfolgreichen Durchsetzung des Anspruchs?",
-    a: "Die genaue Höhe des Geldbetrags hängt von verschiedenen Faktoren ab, wie zum Beispiel der Flugstrecke und der Dauer der Verspätung.",
-    tags: [
-      "Vergütung",
-      "Erfolgreiche Durchsetzung",
-      "Flugstrecke",
-      "Verspätungsdauer",
-    ],
-  },
-  {
-    q: "Muss ich einen Gutschein bzw. eine Gutschrift seitens der Fluggesellschaft akzeptieren?",
-    a: "Nein. Die Fluggesellschaft benötigt dazu dein schriftliches Einverständnis. Es wird empfohlen, den Gutschein bzw. die Gutschrift nur dann anzunehmen, wenn du wirklich damit zufrieden bist. Häufig erhält man eine Gutschrift bzw. einen Gutschein, welcher nicht der tatsächlichen Höhe der zu erbringenden Entschädigungsleistung entspricht.",
-    tags: [
-      "Gutschein",
-      "Gutschrift",
-      "Fluggesellschaft",
-      "Einverständnis",
-      "Entschädigungsleistung",
-    ],
-  },
-  {
-    q: "Was muss ich für den Service von RightsPlus bezahlen?",
-    a: "Die genauen Kosten für den Service von RightsPlus können je nach Fall unterschiedlich sein. Es wird empfohlen, dich direkt an RightsPlus zu wenden, um Informationen über die anfallenden Kosten zu erhalten.",
-    tags: ["Servicekosten", "Kosten", "Fallabhängig"],
-  },
-  {
-    q: "Entstehen für mich auch Kosten im Falle des Nichterfolgs?",
-    a: "Im Falle des Nichterfolgs entstehen dir in der Regel keine Kosten. RightsPlus arbeitet in vielen Fällen auf Basis von Erfolgsgebühren, das bedeutet, dass nur im Erfolgsfall eine Gebühr fällig wird.",
-    tags: ["Kosten", "Nichterfolg", "Erfolgsgebühren"],
-  },
-  {
-    q: "Welchen Geldbetrag erhalte ich im Falle der erfolgreichen Durchsetzung des Anspruchs?",
-    a: "Die genaue Höhe des Geldbetrags hängt von verschiedenen Faktoren ab, wie zum Beispiel der Flugstrecke und der Dauer der Verspätung.",
-    tags: [
-      "Geldbetrag",
-      "Erfolgreiche Durchsetzung",
-      "Flugstrecke",
-      "Verspätungsdauer",
-    ],
-  },
-  {
-    q: "Muss ich einen Gutschein bzw. eine Gutschrift seitens der Fluggesellschaft akzeptieren?",
-    a: "Nein. Die Fluggesellschaft benötigt dazu dein schriftliches Einverständnis. Es wird empfohlen, den Gutschein bzw. die Gutschrift nur dann anzunehmen, wenn du wirklich damit zufrieden bist. Häufig erhält man eine Gutschrift bzw. einen Gutschein, welcher nicht der tatsächlichen Höhe der zu erbringenden Entschädigungsleistung entspricht.",
-    tags: [
-      "Gutschein",
-      "Gutschrift",
-      "Fluggesellschaft",
-      "Einverständnis",
-      "Entschädigungsleistung",
-    ],
-  },
-  {
-    q: "Was muss ich für den Service von RightsPlus bezahlen?",
-    a: "Die genauen Kosten für den Service von RightsPlus können je nach Fall unterschiedlich sein. Es wird empfohlen, dich direkt an RightsPlus zu wenden, um Informationen über die anfallenden Kosten zu erhalten.",
-    tags: ["Servicekosten", "Kosten", "Fallabhängig"],
-  },
-  {
-    q: "Entstehen für mich auch Kosten im Falle des Nichterfolgs?",
-    a: "Im Falle des Nichterfolgs entstehen dir in der Regel keine Kosten. RightsPlus arbeitet in vielen Fällen auf Basis von Erfolgsgebühren, das bedeutet, dass nur im Erfolgsfall eine Gebühr fällig wird.",
-    tags: ["Kosten", "Nichterfolg", "Erfolgsgebühren"],
-  },
-];
+const { queryLocaleContent } = useI18nContent();
+const route = useRoute();
+const { data } = useAsyncData("your-passenger-rights", () =>
+  queryLocaleContent(route.fullPath).findOne()
+);
 
+const qa = computed(() => {
+  return convertToQAFormat(data.value?.body?.children || []);
+});
+
+watch(filter, (query) => {
+  if (query.length < 2) return (active.value = []);
+
+  active.value = qa.value.map((item, i) =>
+    item.q.toLowerCase().includes(query.toLowerCase()) ||
+    item.a.toLowerCase().includes(filter.value.toLowerCase()) ||
+    item.tags?.some((e) => e.toLowerCase().includes(filter.value.toLowerCase()))
+      ? i
+      : -1
+  );
+});
 const contact = [
   {
     name: "phone",
@@ -114,24 +54,95 @@ const contact = [
     link: "mailto:info@rightsplus.de",
   },
 ];
+type BlockquoteChild = {
+  type: "text" | "element";
+  value: string;
+  tag?: string;
+  props?: Record<string, any>;
+  children?: BlockquoteChild[];
+};
+
+type Blockquote = {
+  type: "element";
+  tag: string;
+  props: Record<string, any>;
+  children: BlockquoteChild[];
+};
+
+type Element = {
+  type: "element";
+  tag: string;
+  props: Record<string, any>;
+  children: BlockquoteChild[];
+};
+
+type ProcessedObject = {
+  q: string;
+  a: string;
+  tags?: string[];
+};
+
+function convertToQAFormat(input: MarkdownNode[]): ProcessedObject[] {
+  console.log(input);
+  const array = input
+    .map((item, index) => {
+      if (item.tag !== "h2") return;
+
+      const question = item.children
+        ?.filter((child) => child.type === "text")
+        .map((child) => child.value)
+        .join("");
+
+      if (!question) return;
+
+      const answerElement = [...input]
+        .slice(index + 1)
+        .find((i) => i.tag === "p" && i.children?.[0].type === "text");
+
+      const answer = answerElement
+        ? answerElement.children
+            ?.filter((child) => child.type === "text")
+            .map((child) => child.value)
+            .join("")
+        : "";
+
+      if (!answer) return;
+
+      const tags = [...input]
+        .slice(index + 1)
+        .find((i) => i.tag === "blockquote")
+        ?.children?.[0].children?.filter((e) => e?.value && e?.type === "text")
+        ?.map((e) => e.value!.replaceAll("\n", ""));
+
+      return {
+        q: question,
+        a: answer,
+        tags: tags,
+      };
+    })
+    .filter((e) => !!e);
+
+  console.log(array);
+  return array;
+}
 </script>
 <template>
   <div>
     <NuxtLayout name="generic">
-      <template #category>{{ "Kundenservice" }}</template>
-      <template #title>{{ "Wie können wir helfen?" }}</template>
-      <template #lead>{{ "Du hast Fragen? Wir sind da um dir zu helfen." }}</template>
+      <template #category>{{ t(data?.category || "") }}</template>
+      <template #title>{{ t(data?.title || "") }}</template>
+      <template #lead>{{ t(data?.lead || "") }}</template>
       <div class="flex flex-col gap-5">
         <div class="flex justify-center">
           <FormKit
             type="text"
             :floatingLabel="false"
-            placeholder="Suche nach Stichworten"
+            :placeholder="t('faq.search')"
             prefix-icon="magnifying-glass"
-            suffix-icon="xmark"
+            :suffix-icon="filter ? 'xmark' : ''"
             @suffix-icon-click="filter = ''"
             outer-class="py-12 w-full max-w-2xl"
-            :modelValue="filter"
+            :modelValue="filter || ''"
             @update:modelValue="filter = $event"
           />
         </div>
@@ -158,11 +169,11 @@ const contact = [
               <div v-html="wrapWithEmTags(filter, item.a)" />
               <div class="flex flex-wrap gap-1 mt-3" v-if="filter.length >= 2">
                 <span
-                  v-for="tag in item.tags.filter((e) =>
+                  v-for="tag in (item.tags || []).filter((e: string) =>
                     e.toLowerCase().includes(filter.toLowerCase())
                   )"
                   v-html="tag"
-                  class="text-sm py-1 px-2 leading-none rounded bg-neutral-300"
+                  class="text-sm py-1 px-2 leading-none rounded bg-orange-100 text-orange-700"
                 />
               </div>
             </template>
@@ -170,8 +181,7 @@ const contact = [
           <div class="flex flex-col gap-5">
             <div class="sm:sticky sm:top-5 my-12 sm:my-0 flex flex-col gap-5">
               <p class="">
-                Deine Frage ist nicht dabei? Dann ruf an oder schreib uns eine
-                Email!
+                {{ t("faq.not_found") }}
               </p>
               <div
                 class="flex flex-col gap-2 p-5 rounded-lg font-medium bg-primary-300/20 w-full"
@@ -179,7 +189,7 @@ const contact = [
                 <span
                   class="text-sm uppercase tracking-wider font-bold text-neutral-500"
                 >
-                  Kontakt
+                  {{ t("faq.contact") }}
                 </span>
                 <ul class="text-sm font-bold flex flex-col gap-2 items-start">
                   <li v-for="{ icon, text, link, name } in contact" :key="name">
@@ -192,10 +202,6 @@ const contact = [
                   </li>
                 </ul>
               </div>
-              <!-- <Button class="max-w-min !bg-gray-800 hover:!bg-gray-900"
-                  >Kontakt aufnehmen<FontAwesomeIcon
-                      icon="arrow-right"
-                      class="text-sm" /></Button> -->
             </div>
           </div>
         </div>

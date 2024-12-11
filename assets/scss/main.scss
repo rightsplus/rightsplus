@@ -147,8 +147,9 @@ p {
   --scale: 1;
 
   .formkit-inner {
+    position: relative;
     .formkit-icon {
-      top: var(--y)
+      top: var(--p-4);
     }
     // align-items: center;
     // &:has(:-webkit-autofill, :autofill) {
@@ -160,6 +161,14 @@ p {
   }
   .formkit-input {
     padding-left: var(--left);
+    padding-right: var(--right);
+  }
+
+  &[data-prefix-icon="true"] {
+    --left: 46px;
+  }
+  &[data-suffix-icon="true"]:not(.hidden-suffix) {
+    --right: 46px;
   }
 }
 [data-floating-label="true"] {
@@ -212,9 +221,6 @@ p {
     transition-duration: 500ms;
   }
 
-  &[data-prefix-icon="true"] {
-    --left: 46px;
-  }
   &[data-prefix-icon="false"] {
     --left: 10px;
     & input:focus ~ .formkit-label,
@@ -223,9 +229,6 @@ p {
     &[data-expanded="true"] .formkit-label {
       left: var(--left) !important;
     }
-  }
-  &[data-suffix-icon="true"]:not(.hidden-suffix) {
-    --right: calc(-0.25em + 44px);
   }
   textarea ~ .formkit-label {
     // --y: var(--p-3);

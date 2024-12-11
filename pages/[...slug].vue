@@ -13,9 +13,6 @@ const route = useRoute();
 const { data } = useAsyncData("page", () => {
   return queryLocaleContent(route.fullPath).findOne();
 });
-onMounted(() => {
-  console.log(route.fullPath)
-})
 </script>
 <template>
   <div>
