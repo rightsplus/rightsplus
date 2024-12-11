@@ -139,7 +139,7 @@ p {
 .text-shadow {
   text-shadow: 0 5px 15px var(--tw-shadow-color, black);
 }
-.formkit-outer {
+.formkit-outer[data-family="text"] {
   --left: calc(var(--p-4) + 1px);
   --right: var(--p-4);
   --y: var(--p-4);
