@@ -118,6 +118,7 @@
   "faq.contact": "Contact",
   "about": "About {name}",
   "checkClaim": "Check Claim",
+  "managingDirector": "Managing Director",
   "team": "Team",
   "blog": "Blog",
   "allRightsReserved": "All Rights Reserved.",
@@ -143,7 +144,7 @@
   "demandLetter.extraordinaryCircumstances": "If you claim extraordinary circumstances, we ask you to provide corresponding evidence now. If you believe you are not the correct respondent for the claim, you will be asked to provide justification or evidence accordingly.",
   "demandLetter.lawsuit": "If you do not comply with the payment demand, we will file a lawsuit without further notice.",
   "assignmentLetter.title": "Assignment Agreement",
-  "assignmentLetter.main": "I, {addressBlock}, hereby declare that I assign my claim for compensation under Regulation (EC) No. 261/2004 regarding flight {flight} {airports} to {rightsPlus}, unconditionally and irrevocably.",
+  "assignmentLetter.main": "I, {addressBlock} hereby declare that I assign my claim for compensation under Regulation (EC) No. 261/2004 regarding flight {flight} {airports} to {rightsPlus}, unconditionally and irrevocably.",
   "assignmentLetter.compensation": "The assignor will receive payment for their claim according to the currently valid terms and conditions as well as the price list.",
   "assignmentLetter.claimant": "The assignor declares to be the rightful claimant at the time of the assignment.",
   "assignmentLetter.declaration": "{rightsPlus}, represented by the managing director {partner}, hereby accepts the assignment.",
@@ -248,5 +249,24 @@
   "cta": {
     "title": "Secure your deserved compensation",
     "subtitle": "With our simple online check, you can quickly and easily verify your compensation claims. And the best part: It's free and non-binding."
+  },
+  "reasonsSection": {
+    "professionalExpertise": {
+      "title": "Professional Expertise",
+      "description": "You benefit from our professional expertise and experience in this field. We offer you a competent service and place great emphasis on efficient and transparent work.\nOur success rate is 98% for the claims we process. For effective and successful enforcement of claims, we work closely with a law firm specializing in travel law."
+    },
+    "completeProcess": {
+      "title": "Complete Process",
+      "description": "We handle the entire process independently. You only need to transfer the respective claim to us. Of course, we keep you updated on the current status at all times.\nBy engaging us, you not only save yourself frustrating and time-consuming correspondence with airlines that often doesn't lead to the desired success, but also any legal fees and associated litigation risks that may arise."
+    },
+    "noRisk": {
+      "title": "No Cost & Process Risk",
+      "description": "You bear no cost or process risk. There are no hidden costs or risks.\nOnly in the case of successful enforcement of the claim do we receive a proportional fee of 25% (incl. VAT). In this regard, we refer to our price and service list."
+    }
+  },
+  "compensationBanner": {
+    "claimUpTo": "Claim up to {amount}!",
+    "claimUpToExtended": "Claim up to {amount} for your delayed or cancelled flight!",
+    "close": "Close"
   }
 }

@@ -8,35 +8,29 @@
         class="flex flex-col gap-3 max-w-3xl mx-auto rounded-3xl bg-white shadow-xl ease-out p-5"
       >
         <div class="flex items-baseline justify-between gap-2">
-          <span class="text-lg font-medium sm:hidden leading-tight"
-            >Fordere bis zu
-            {{ $n(600, "currency", { maximumFractionDigits: 0 }) }}!</span
-          >
+          <span class="text-lg font-medium sm:hidden leading-tight">
+            {{ t('compensationBanner.claimUpTo', { amount: n(600, 'currency', { maximumFractionDigits: 0 }) }) }}
+          </span>
           <button
             @click.prevent="seen = true"
             class="leading-none text-xl sm:text-2xl self-start"
+            :aria-label="t('compensationBanner.close')"
           >
             <FontAwesomeIcon icon="times" />
           </button>
         </div>
         <div class="grid sm:flex gap-5 gap-x-8 items-end">
           <div class="grow hidden sm:grid gap-2">
-            <span class="text-xl sm:text-2xl font-bold leading-tight"
-              >Fordere bis zu
-              {{ $n(600, "currency", { maximumFractionDigits: 0 }) }} für deinen
-              verspäteten oder annullierten Flug!</span
-            >
-            <!-- <CheckList
-              class="mt-2"
-              :items="['professionalExpertise', 'completeProcess', 'noRisk']"
-            /> -->
+            <span class="text-xl sm:text-2xl font-bold leading-tight">
+              {{ t('compensationBanner.claimUpToExtended', { amount: n(600, 'currency', { maximumFractionDigits: 0 }) }) }}
+            </span>
           </div>
           <Button
             @click.prevent="start"
             primary
             suffixIcon="angle-right"
             class="shrink-0"
-            >{{ $t("checkClaim") }}</Button
+            >{{ t('checkClaim') }}</Button
           >
         </div>
       </div>
@@ -49,6 +43,8 @@ import claimMachine from "~/machines/claimSubmission";
 import AirportInput from "./AirportInput.vue";
 import type { ClaimState, ClaimsForm } from "@/types";
 import Button from "@/components/core/Button.vue";
+
+const { t, n } = useI18n();
 const emit = defineEmits(["submit"]);
 const { push } = useRouter();
 const claimState = useClaim();

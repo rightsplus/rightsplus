@@ -64,7 +64,7 @@ function resizeCanvas() {
   if (!canvas.value || !container.value) return;
   const { width, height } = canvas.value;
   const ctx = canvas.value.getContext("2d");
-  if (!ctx) return;
+  if (!ctx?.canvas?.width) return;
   const temp = ctx.getImageData(0, 0, width, height);
   if (!temp) return;
   canvas.value.width = container.value?.offsetWidth * scale;

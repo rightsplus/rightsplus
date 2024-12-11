@@ -244,6 +244,7 @@
   "scrollDown": "Nach unten scrollen",
   "potentialCompensationFromAirline": "Mögliche Vergütung durch die Fluggesellschaft",
   "noPotentialCompensationFromAirline": "Vermutlich keine Vergütung durch die Fluggesellschaft",
+  "managingDirector": "Geschäftsführer",
   "perPerson": "{value} pro Person",
   "continueWithoutStopover": "Weiter ohne Zwischenstopp",
   "youGet": "Du erhältst",
@@ -298,5 +299,24 @@
   "cta": {
     "title": "Sichere dir deine verdiente Entschädigung",
     "subtitle": "Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich."
+  },
+  "reasons": {
+    "professionalExpertise": {
+      "title": "Fachliche Expertise",
+      "description": "Sie profitieren von unserer fachlichen Expertise und Erfahrung auf diesem Gebiet. Wir bieten Ihnen einen kompetenten Service an und legen dabei großen Wert auf effiziente und transparente Arbeit.\nUnsere Erfolgsquote liegt bei 98 % bei den von uns geltend gemachten Ansprüchen. Zur effektiven und erfolgreichen Durchsetzung der Ansprüche arbeiten wir eng mit einer auf das Reiserecht spezialisierten Rechtsanwaltskanzlei zusammen."
+    },
+    "completeProcess": {
+      "title": "Gesamte Abwicklung",
+      "description": "Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.\nDurch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die häufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko."
+    },
+    "noRisk": {
+      "title": "Kein Kosten- & Prozessrisiko",
+      "description": "Du trägst keinerlei Kosten- bzw. Prozessrisiko. Es bestehen keine versteckten Kosten oder Risiken.\nLediglich im Falle der erfolgreichen Durchsetzung des Anspruchs erhalten wir eine anteilige Vergütung in Höhe von 25% (inkl. MwSt.). Insoweit verweisen wir auf unser Preis- und Leistungsverzeichnis."
+    }
+  },
+  "compensationBanner": {
+    "claimUpTo": "Fordere bis zu {amount}!",
+    "claimUpToExtended": "Fordere bis zu {amount} für deinen verspäteten oder annullierten Flug!",
+    "close": "Schließen"
   }
 }

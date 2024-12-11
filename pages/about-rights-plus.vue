@@ -54,7 +54,7 @@ queryLocaleContent(route.fullPath).findOne()
                 <div class="flex flex-col">
                   <span class="text-xl font-bold">Joachim Bawa</span>
                   <span class="text-base text-neutral-400"
-                    >Geschäftsführer</span
+                    >{{ t('managingDirector')}}</span
                   >
                 </div>
               </div>
