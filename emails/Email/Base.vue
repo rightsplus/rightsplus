@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tailwind, Html, Head, Body, Font } from "@vue-email/components";
+import { Preview, Tailwind, Html, Head, Body, Font } from "@vue-email/components";
 defineProps<{ preview?: string }>()
 </script>
 <template>
@@ -30,7 +30,7 @@ defineProps<{ preview?: string }>()
       <Body
         class="text-base sm:text-lg text-gray-500 bg-neutral-200 flex flex-col gap-5 p-3 sm:p-5"
       >
-        <Preview class="absolute text-[0.1px] opacity-0">{{ preview?.slice(0,90) }}</Preview>
+        <Preview class="absolute text-[0.1px] opacity-0">{{ preview }}</Preview>
         <slot />
       </Body>
     </Html>

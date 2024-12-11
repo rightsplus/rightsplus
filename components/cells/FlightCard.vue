@@ -24,16 +24,16 @@
           {{ $t("to") }}
           <span class="font-bold">{{ city.arrival }}</span>
           <span v-if="showDate && flight.departure">{{
-            date(flight.departure.scheduledTime)
+            getLocalizedTime(flight.departure.scheduledTime)
           }}</span></span
         >
 
         <span
           v-if="flight.departure && flight.arrival"
           class="text-lg font-bold flex items-center gap-3"
-          >{{ time(flight.departure.scheduledTime)
+          >{{ getLocalizedTime(flight.departure.scheduledTime)
           }}<FontAwesomeIcon icon="plane" class="text-sm text-gray-400" />{{
-            time(flight.arrival.scheduledTime)
+            getLocalizedTime(flight.arrival.scheduledTime)
           }}<span v-if="overNight(flight)" class="-ml-2 text-gray-500 text-xs"
             >+{{ overNight(flight) }}</span
           ></span

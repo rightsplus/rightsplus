@@ -13,8 +13,8 @@
         <AirlineLogo :airline="flight.airline" />{{ flight.flight.iata }}</span
       >
       <span>{{ flight.arrival.iata }}</span>
-      <span>{{ time(flight.departure.scheduledTime) }}</span>
-      <span>{{ time(flight.arrival.actualTime) }}</span>
+      <span>{{ getLocalizedTime(flight.departure.scheduledTime) }}</span>
+      <span>{{ getLocalizedTime(flight.arrival.actualTime) }}</span>
       <span>{{ flight.arrival.delay }}</span>
       <span>{{ flight.status }}</span>
       <!-- <pre>{{ flight }}</pre> -->

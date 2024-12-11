@@ -70,7 +70,9 @@ export interface PassengerDetails<T = string> {
   email: T;
   iban: T;
   phone?: T;
-  boardingPass?: File[];
+  boardingPass?: {
+    [name: string]: string // base64
+  };
   isMinor?: boolean;
   dateOfBirth?: T;
   guardian?: {

@@ -95,10 +95,10 @@ export const useMask = () => {
 	return { allCaps, iban }
 }
 
-export function formatDateRelative(date?: string | Date) {
+export const formatDateRelative = (date: string | Date = new Date()) => {
 	const { locale } = useI18n();
 	const now = new Date();
-	const d = new Date(date || now);
+	const d = new Date(date)
 	const isToday = getISODate(now) === getISODate(d)
 	const isYesterday = getISODate(now) === getISODate(new Date(d.setDate(d.getDate() + 1)))
 	const diffInDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));

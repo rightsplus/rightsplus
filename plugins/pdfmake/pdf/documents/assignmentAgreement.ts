@@ -1,7 +1,8 @@
-import { startInColumn, spanColumns, date } from '../template'
-import type { Column, Content, ContentColumns, ContentStack, TDocumentDefinitions } from 'pdfmake/interfaces'
+import { startInColumn, spanColumns } from '../template'
+import type { CanvasRect, Column, Content, ContentCanvas, ContentColumns, ContentStack, ContentText, TDocumentDefinitions } from 'pdfmake/interfaces'
 // import { measurements, getFooter, getAddress, getSvgDimensionsRatio } from '../utils'
 import { markdownToPdfMake, validateSVG, type QuoteSettings } from "../utils.js"
+import type { ClaimsForm, RowClaimExtended } from '~/types'
 
 const measurements = {
   "mm": 2.835,
@@ -17,12 +18,46 @@ const measurements = {
   "secondColumn": 111.49
 }
 
+const getField = ({ w, h, canvasOptions, fieldOptions, content, }: { w: number, h: number, canvasOptions?: CanvasRect, fieldOptions?: Content, content?: Content[] }) => {
+  const canvas: CanvasRect = {
+    type: 'rect',
+    x: 0,
+    y: 0,
+    w,
+    h,
+    r: 5,
+    color: '#f8f8f8'
+  };
+  if (canvasOptions) {
+    Object.assign(canvas, canvasOptions)
+  }
+  const field: Content = {
+    canvas: [{ ...canvas }],
+  }
+  if (fieldOptions) {
+    Object.assign(field, fieldOptions)
+  }
+  const stack: Content[] = [field]
+  if (content?.length) {
+    for (const block of content) {
+      const isContent = typeof block !== 'string' && typeof block !== 'number' && !Array.isArray(block)
+      const relativeBlock = Object.assign(block, {
+        relativePosition: {
+          x: canvas.x + 10 + (isContent ? block.relativePosition?.x || 0 : 0),
+          y: -canvas.h + (isContent ? block.relativePosition?.y || 0 : 0),
+        }
+      })
+      stack.push(relativeBlock)
+    }
+  }
+  return stack
+}
 
-export default async (i18n: ReturnType<typeof useI18n>) => {
-  const { t, n, locale } = i18n
 
+export default async (passenger: ClaimsForm['client']['passengers'][number], claim: Pick<ClaimsForm, 'id' | 'flight'>, i18n: ReturnType<typeof useI18n>) => {
+  const { t, locale } = i18n
 
-  async function letterHeadSide(settings?: QuoteSettings) {
+  async function letterHeadSide() {
     return [
       {
         columns: [
@@ -40,7 +75,7 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
             text: t('date'),
             style: 'small',
           },
-          date(locale),
+          getLocalizedDate(new Date(), locale.value),
         ],
         margin: [0, 0, 0, measurements.margin_x5],
       },
@@ -50,7 +85,7 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
             text: t('claimId'),
             style: 'small',
           },
-          '#000000',
+          formatClaimId(claim.id || '-------'),
         ],
         margin: [0, 0, 0, measurements.margin_x5],
       },
@@ -71,17 +106,45 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
     ]
   }
 
-  const name = "Leon Vogler"
-  const address = "Gailhöfe 6"
-  const postalCode = "88699"
-  const city = "Frickingen"
-  const flightNumber = "LH404"
-  const flightDate = "2024-10-14"
-  const departure = "Lisbon"
-  const arrival = "Cologne"
+  const rect = {
+    w: spanColumns(4.5),
+    h: 40
+  }
+
+  const { firstName, lastName, address } = passenger
+  const name = [firstName, lastName].join(" ")
+  const { street, postalCode, city } = address
+
+  const dateOfSignature = passenger.signature?.svg ? {
+    content: [{
+      text: getLocalizedDate(new Date(), locale.value),
+      relativePosition: {
+        y: 8
+      }
+    }]
+  } : {}
+  const signature = passenger.signature?.svg ? {
+    svg: validateSVG(passenger.signature?.svg),
+    fit: [rect.w, rect.h],
+    width: 'auto',
+    relativePosition: {
+      x: -10,
+      y: -5
+    }
+  } : {
+    text: '×',
+    fontSize: 20,
+    relativePosition: {
+      y: 2
+    }
+  }
+
+  const flightNumber = claim.flight?.flight.iata
+  const flightDate = claim.flight?.departure.scheduledTime
+  const departure = claim.flight?.departure.iata
+  const arrival = claim.flight?.arrival.iata
 
   async function content() {
-
     const leftColumn = [
       {
         text: t('assignmentAgreement'),
@@ -90,7 +153,7 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
       },
       '\n',
       markdownToPdfMake(t('assignmentLetter.main', {
-        addressBlock: ['<br />', '<br />', `**${name}**`, `**${address}**`, `**${[postalCode, city].join(" ")}**`, '<br />', '<br />'].join("\n"),
+        addressBlock: ['<br />', '<br />', `**${name}**`, `**${street}**`, `**${[postalCode, city].join(" ")}**`, '<br />', '<br />'].join("\n"),
         flight: ['<br />', [`**${flightNumber}**`, t("on"), `**${new Date(flightDate as string).toLocaleDateString()}**`].join(' ')].join('\n'),
         airports: ['<br />', [t("from"), `**${departure}**`, t("to"), `**${arrival}**`].join(' '), '<br />', '<br />'].join('\n'),
         rightsPlus: `**RightsPlus GbR**`
@@ -109,22 +172,12 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
           // Left rectangle with "Ort, Datum"
           {
             stack: [
-              {
-                canvas: [
-                  {
-                    type: 'rect',
-                    x: 0,
-                    y: 0,
-                    w: spanColumns(4.5),
-                    h: 40, // Fixed height
-                    r: 5, // Rounded corners
-                    color: '#f8f8f8', // Light gray color
-                  },
-                ],
-                width: spanColumns(4.5), // Ensures canvas spans full column
-                height: 40, // Optional for clarity
-                margin: [0, 0, 0, 5], // Margin between rectangle and text
-              },
+              getField({
+                ...rect, ...dateOfSignature,
+                fieldOptions: {
+                  margin: [0, 0, 0, 5],
+                },
+              }),
               {
                 text: 'Ort, Datum',
               },
@@ -134,40 +187,14 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
           // Right rectangle with "Unterschrift"
           {
             stack: [
-              {
-                canvas: [
-                  {
-                    type: 'rect',
-                    x: 0,
-                    y: 0,
-                    w: spanColumns(4.5), // Make it dynamically fit the column width
-                    h: 40, // Fixed height
-                    r: 5, // Rounded corners
-                    color: '#f8f8f8', // Light gray color
-                  },
-                  // {
-                  //   type: 'line', // Draws the cross
-                  //   x1: 5,
-                  //   y1: 5,
-                  //   x2: 35, // Dynamic based on canvas size
-                  //   y2: 35,
-                  //   lineWidth: 2,
-                  //   color: '#000000',
-                  // },
-                  // {
-                  //   type: 'line', // Draws the cross
-                  //   x1: 35,
-                  //   y1: 5,
-                  //   x2: 5, // Dynamic based on canvas size
-                  //   y2: 35,
-                  //   lineWidth: 2,
-                  //   color: '#000000',
-                  // },
-                ],
-                width: spanColumns(4.5), // Ensures canvas spans full column
-                height: 40, // Optional for clarity
-                margin: [0, 0, 0, 5], // Margin between rectangle and text
-              },
+
+              getField({
+                ...rect,
+                fieldOptions: {
+                  margin: [0, 0, 0, 5],
+                },
+                content: [signature]
+              }),
               {
                 text: 'Unterschrift',
               },
@@ -212,5 +239,5 @@ export default async (i18n: ReturnType<typeof useI18n>) => {
     ] as TDocumentDefinitions['content'],
     // footer: getFooter({ blocks: await summaryFooterBlocks(), i18n }),
     info
-  }
+  } satisfies TDocumentDefinitions
 }

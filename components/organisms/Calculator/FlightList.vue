@@ -2,7 +2,7 @@
   <div ref="container">
     <div
       class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-      v-if="loading"
+      v-if="!allFlights.length && loading"
     >
       <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
       <span class="text-neutral-500">Flüge werden geladen ...</span>
@@ -113,6 +113,7 @@
           @click="handleSelect(flight)"
           :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
           class="w-full"
+          :selected="flight.flight.iata === modelValue?.flight.iata"
           :class="{
             'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
           }"
@@ -200,7 +201,7 @@ const operatingAirline = (flight: Flight) =>
   
 const supabase = useSupabaseClient<Database>()
 onMounted(() => {
-  console.log('delete')
+  // console.log('delete')
   // supabase
   //   .from('flight')
   //   .delete()

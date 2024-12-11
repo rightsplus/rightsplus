@@ -1,52 +1,58 @@
 <template>
-  <div class="flex w-full" ref="container">
-    <Transition name="fade">
-      <span
-        v-if="pending"
-        class="fixed bottom-0 right-0 bg-white p-2 shadow m-5 rounded leading-none"
-        ><FontAwesomeIcon icon="circle-quarter" class="animate-revolve" />
-      </span>
-    </Transition>
-    <div
-      class="flex flex-col h-full w-[--width] min-w-64"
-      :style="`--width: ${width}px`"
-    >
-      <div
-        class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0"
-      >
-        <div class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0">
-          <div class="flex items-stretch gap-1.5 min-w-0">
-            <h1
-              class="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white min-w-0"
+  <div>
+    <NuxtLayout name="dashboard">
+      <div class="flex w-full" ref="container">
+        <Transition name="fade">
+          <span
+            v-if="pending"
+            class="fixed bottom-0 right-0 bg-white p-2 shadow m-5 rounded leading-none"
+            ><FontAwesomeIcon icon="circle-quarter" class="animate-revolve" />
+          </span>
+        </Transition>
+        <div
+          class="flex flex-col h-full w-[--width] min-w-64"
+          :style="`--width: ${width}px`"
+        >
+          <div
+            class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0"
+          >
+            <div
+              class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0"
             >
-              <span class="truncate">{{ $t("claim", 2) }}</span>
-            </h1>
-            <Badge
-              :content="bookings?.filter((e) => e.unread).length.toString()"
-              primary
+              <div class="flex items-stretch gap-1.5 min-w-0">
+                <h1
+                  class="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white min-w-0"
+                >
+                  <span class="truncate">{{ $t("claim", 2) }}</span>
+                </h1>
+                <Badge
+                  :content="bookings?.filter((e) => e.unread).length.toString()"
+                  primary
+                />
+              </div>
+              more
+            </div>
+          </div>
+          <div
+            class="flex-1 flex flex-col overflow-y-auto p-2 h-full"
+            @click.self="activeClaimId = undefined"
+          >
+            <DashboardListItem
+              v-for="booking in bookings"
+              :title="booking.number"
+              :date="booking.createdAt"
             />
           </div>
-          more
         </div>
-      </div>
-      <div class="flex-1 flex flex-col overflow-y-auto p-2 h-full" @click.self="activeClaimId = undefined">
-        <DashboardListItem
-          v-for="booking in bookings"
-          :title="booking.bookingNumber"
-          :date="booking.createdAt"
-        />
-      </div>
-    </div>
-    <DashboardSeparator vertical @drag="width = $event - offset" />
-    <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
-      <div class="flex-col items-stretch relative w-full flex-1">
-        <div class="flex-1 p-5 w-full h-full">
-          <ClaimManagement
-            :claim="activeClaim"
-          />
-        </div>
-      </div>
-    </div>
+        <DashboardSeparator vertical @drag="width = $event - offset" />
+        <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
+          <div class="flex-col items-stretch relative w-full flex-1">
+            <div class="flex-1 p-5 w-full h-full">
+              <ClaimManagement :claim="activeClaim" />
+            </div>
+          </div>
+        </div></div
+    ></NuxtLayout>
   </div>
 </template>
 <script setup lang="ts">
@@ -84,8 +90,8 @@ const {
 } = useAsyncData("bookings", async () => {
   const { data: bookings, error } = await client
     .from("booking")
-    .select('*')
-    .order("createdAt", { ascending: false })
+    .select("*")
+    .order("createdAt", { ascending: false });
 
   return bookings;
 });

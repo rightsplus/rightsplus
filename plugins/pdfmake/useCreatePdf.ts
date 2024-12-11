@@ -18,10 +18,10 @@ interface CreatePdfProps extends TDocumentDefinitions {
 
 export default () => {
 	const i18n = useI18n()
-	const { t, locale } = i18n
 	const ready = ref(false)
 	const loading = ref(false)
 	const pdfMake = ref()
+	const claim = useClaim();
 
 	onMounted(() => {
 		import('pdfmake/build/pdfmake').then(async (e) => {
@@ -109,6 +109,8 @@ export default () => {
 	}
 
 
+
+
 	const collectFiles = async (documents: (keyof SheetsProp)[]) => {
 		const files: Partial<Record<keyof SheetsProp, Buffer | Uint8Array | undefined>> = {};
 
@@ -124,7 +126,7 @@ export default () => {
 
 
 		if (documents.includes('assignmentAgreement')) {
-			tasks.push(awaitAndAssign('assignmentAgreement', getPage(assignmentAgreement(i18n))));
+			tasks.push(awaitAndAssign('assignmentAgreement', getPage(assignmentAgreement(claim, i18n))));
 		}
 
 		// if (documents.includes('variant')) {
@@ -149,6 +151,14 @@ export default () => {
 		}))
 	}
 
+	const generatePDF = async (document: Promise<TDocumentDefinitions>, { download }: { download?: string } = {}) => {
+		const page = await getPage(document)
+		const pages = await mergePages({ page })
+		const blob = await generateBlob(pages);
+		if (download) invokeDownload(blob, download)
+		return blob
+	}
+
 
 	const downloadSheet = (pages: (keyof SheetsProp)[] = ['summary', 'variant'], fileName = 'test') => {
 		loading.value = true
@@ -157,6 +167,7 @@ export default () => {
 	return {
 		downloadSheet,
 		getPDF,
+		generatePDF,
 		ready,
 		loading
 	}

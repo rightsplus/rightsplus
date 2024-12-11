@@ -4,7 +4,7 @@
       ref="input"
       :id="id"
       type="file"
-      @change="$emit('update:modelValue', handleChange($event))"
+      @change="handleChange"
       v-bind="$attrs"
       class="opacity-0 pointer-events-none absolute"
       :multiple="multiple"
@@ -13,7 +13,7 @@
     <div
       class="font-medium flex items-center rounded-lg ring-neutral-200 bg-neutral-100 gap-3 p-3 pr-5"
       v-if="files"
-      v-for="(file, i) in files"
+      v-for="(file, i) in realFiles"
       :key="file.name"
     >
       <div class="w-12 sm:w-16" v-if="preview?.[i] && !errors[i]">
@@ -32,11 +32,11 @@
       <div class="flex flex-col">
         <Truncate class="text-sm flex">{{ file.name }}</Truncate
         ><span class="text-neutral-500 text-xs">{{
-          formatFileSize(file.size)
+          getSize(file.size)
         }}</span>
       </div>
       <button
-        @click="files?.splice(i, 1)"
+        @click="delete files[file.name]"
         class="text-neutral-500 hover:text-red-500 ml-auto"
       >
         <FontAwesomeIcon icon="times" />
@@ -68,28 +68,40 @@ const props = defineProps<{
   icon?: string;
   multiple?: boolean;
 }>();
-const files = defineModel<File | File[]>();
+const files = defineModel<Record<string, string>>();
+const realFiles = computed(() =>
+  Object.entries(files.value || {}).map(([name, file]) =>
+    base64ToFile(file, name)
+  )
+);
 const errors = ref<boolean[]>([]);
-
 const preview = ref<string[]>();
-const generatePreview = (files: File[]) => {
+
+const getSize = formatFileSize
+const generatePreview = (files?: Record<string, string>) => {
+  if (!files) return;
   try {
-    preview.value = files.map(URL.createObjectURL);
+    preview.value = Object.values(files || {});
   } catch (e) {
-    errors.value = Array(files.length).fill(true);
+    errors.value = Array(Object.keys(files || {}).length).fill(true);
   }
 };
-onMounted(() => {
-  if (files.value) return generatePreview(Array.isArray(files.value) ? files.value : [files.value]);
-});
-const handleChange = (e: Event) => {
-  console.log(e)
+watch(files, generatePreview, { immediate: true });
+const handleChange = async ({
+  target,
+}: { target?: typeof input.value } = {}) => {
   errors.value = [];
-  const { files: fileList } = (e.target as typeof input.value) || {};
-  const files = Array.from(fileList || []);
-  generatePreview(files);
-  if (props.multiple) return files;
-  if (files?.length) return files[0];
-  return files;
+  files.value = await Promise.all(
+    Array.from(target?.files || []).map(
+      (file) =>
+        new Promise<[string, string]>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () =>
+            resolve([file.name, reader.result as string]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+    )
+  ).then((results) => Object.fromEntries(results));
 };
 </script>

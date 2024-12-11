@@ -267,12 +267,31 @@ export const parseLocaleDateString = (dateString: string, locale: string) => {
 	return new Date(dateObject.year, dateObject.month, dateObject.day);
 }
 
-export const time = (time: string, locale = 'de') => {
+export const getLocalizedTime = (time: string | Date = new Date(), locale = 'de') => {
 	return new Date(time).toLocaleTimeString(locale, {
 		hour: "2-digit",
 		minute: "2-digit",
 	});
 };
+
+export function getLocalizedDate(date: string | Date = new Date(), locale = 'de', format: 'long' | 'short' = 'long',) {
+	const size = {
+		long: {
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		},
+		short: {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+		},
+	} as const
+	return new Date(date).toLocaleDateString(
+		locale,
+		size[format]
+	)
+}
 
 export const getDuration = (minutes: number) => {
 	const min = `${minutes % 60} min`;
@@ -333,12 +352,15 @@ export const handleFormKitIconClick = (e: MouseEvent) => {
 	const input = (e.target as Element).closest('.formkit-inner')?.querySelector('input')
 	input?.click()
 }
+// Array(999).fill(0).map((e, i) => {
+// 	return '#' + (Math.round(new Date().getTime() / (24 * 60 * 60 * 1000))).toString(36).toUpperCase().padStart(3, '0') + '-' + (i + 999).toString(36).toUpperCase().padStart(3, '0')
+// })
 
 export const formatClaimId = (id: number | string, prependHash = true) => {
 	if (!id) return ""
-	const base = 10 // 10
+	const base = 36 // 10
 	const length = 7
-	const paddedId = id.toString(base).toUpperCase().padStart(length, '0')
+	const paddedId = (id).toString(base).toUpperCase().padStart(length, '0')
 	if (prependHash) return '#' + paddedId
 	return paddedId
 	// const decoded = parseInt(encoded.slice(1), base)
@@ -596,5 +618,63 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+	return twMerge(clsx(inputs))
+}
+
+
+
+
+
+
+
+
+
+
+// Helper function to recursively append nested properties
+export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
+	for (const [key, value] of Object.entries(obj)) {
+		const formKey = parentKey ? `${parentKey}[${key}]` : key;
+
+		if (value instanceof Blob) {
+			// Append blobs directly
+			formData.append(formKey, value);
+		} else if (Array.isArray(value)) {
+			// Append array elements
+			value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
+		} else if (value !== null && typeof value === "object") {
+			// Recursively flatten nested objects
+			appendNested(formData, value, formKey);
+		} else {
+			// Append primitive values
+			formData.append(formKey, value as string);
+		}
+	}
+};
+
+
+
+export function base64ToFile(base64String: string, fileName: string) {
+	// Split the Base64 string into data and the MIME type
+	const [header, data] = base64String.split(',');
+	const [, mimeType] = header.match(/:(.*?);/) || []; // Extract MIME type from the header
+
+	// Decode the Base64 data
+	const binaryData = atob(data);
+
+	// Create an array to hold the binary data
+	const byteArray = new Uint8Array(binaryData.length);
+
+	// Convert the binary data into a byte array
+	for (let i = 0; i < binaryData.length; i++) {
+		byteArray[i] = binaryData.charCodeAt(i);
+	}
+
+	// Create a Blob from the byte array and MIME type
+	const file = new Blob([byteArray], { type: mimeType });
+
+	// Create a File object (optional)
+	const finalFile = new File([file], fileName, { type: mimeType });
+
+	// Return the file object
+	return finalFile;
 }

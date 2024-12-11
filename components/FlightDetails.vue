@@ -1,9 +1,9 @@
 <template>
-        {{ date(flight.departure.scheduledTime) }}
+        {{ getLocalizedTime(flight.departure.scheduledTime) }}
   <div class="grid grid-cols-2 gap-5 w-full">
     <div class="bg-neutral-100 rounded-lg p-3">
       <p class="text-lg font-bold">
-        {{ time(flight.departure.scheduledTime) }}
+        {{ getLocalizedTime(flight.departure.scheduledTime) }}
       </p>
       <span class="text-sm text-neutral-500">{{ $t("departureAirport") }}</span>
       <MoleculesWeather
@@ -16,7 +16,7 @@
     </div>
     <div class="bg-neutral-100 rounded-lg p-3">
       <p class="text-lg font-bold">
-        {{ time(flight.arrival.scheduledTime) }}
+        {{ getLocalizedTime(flight.arrival.scheduledTime) }}
       </p>
       <span class="text-sm text-neutral-500">{{ $t("arrivalAirport") }}</span>
       <MoleculesWeather

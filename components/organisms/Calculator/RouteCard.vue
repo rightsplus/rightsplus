@@ -4,14 +4,14 @@
     v-bind="$attrs"
   >
     <span class="leading-none text-xs" v-if="route.date">{{
-      date(route.date)
+      getLocalizedTime(route.date)
     }}</span>
     <div
       class="grid grid-cols-[1fr_auto_1fr] items-center w-full text-sm font-medium text-gray-500"
     >
       <div class="flex flex-col">
         <span class="leading-none text-sm font-bold" v-if="route.flight">{{
-          time(route.flight.departure.scheduledTime)
+          getLocalizedTime(route.flight.departure.scheduledTime)
         }}</span>
         <span class="font-bold text-lg text-gray-700">{{
           route.departure.airport.iata
@@ -27,7 +27,7 @@
 
       <div class="flex flex-col text-end">
         <span class="leading-none text-sm font-bold" v-if="route.flight">{{
-          time(route.flight.departure.scheduledTime)
+          getLocalizedTime(route.flight.departure.scheduledTime)
         }}</span>
         <span class="font-bold text-lg text-gray-700">{{
           route.arrival.airport.iata
@@ -145,13 +145,13 @@ export default defineComponent({
     },
   },
   methods: {
-    time(date: string) {
+    getLocalizedTime(date: string) {
       return new Date(date).toLocaleTimeString(this.$i18n.locale, {
         hour: "2-digit",
         minute: "2-digit",
       });
     },
-    date(date: string) {
+    getLocalizedTime(date: string) {
       return new Date(date).toLocaleDateString(this.$i18n.locale, {
         day: "2-digit",
         month: "2-digit",

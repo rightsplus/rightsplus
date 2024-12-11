@@ -1,4 +1,6 @@
 <template>
+  <div>
+    <NuxtLayout name="dashboard">
   <div class="flex w-full">
     <div
       class="flex-col items-stretch relative w-full border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-800 lg:w-[--width] flex-shrink-0 flex"
@@ -119,6 +121,7 @@
         </div>
       </div>
     </div>
+  </div></NuxtLayout>
   </div>
 </template>
 

@@ -111,7 +111,7 @@ export default {
         const complete = Object.values(passenger).every(Boolean);
         const validEmail = validateEmail(passenger.email)
         const validIBAN = IBAN.isValid(passenger.iban)
-        const validBoardingPass = !!passenger.boardingPass?.length;
+        const validBoardingPass = !!Object.values(passenger.boardingPass || {})?.length;
         return complete && validEmail && validIBAN && validBoardingPass;
       })
     },

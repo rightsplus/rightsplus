@@ -1,5 +1,7 @@
 <template>
-  <div
+  <div>
+    <NuxtLayout name="dashboard">
+      <div
         class="flex-col items-stretch relative w-full border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-800 lg:w-[--width] flex-shrink-0 flex"
         style="--width: 400px"
       >
@@ -168,25 +170,26 @@
 
       <div class="flex-col items-stretch relative w-full flex-1 hidden lg:flex">
         <div class="flex-1 hidden lg:flex items-center justify-center">
-
-  <!-- <CustomTable :data="tableData" /> -->
+          <!-- <CustomTable :data="tableData" /> -->
           <span
             class="i-heroicons-inbox w-32 h-32 text-gray-400 dark:text-gray-500"
           ></span>
         </div>
       </div>
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
-  layout: "admin"
+  layout: "admin",
 });
 import type { Database } from "@/types";
 
 const currentUser = useSupabaseUser();
-const { locale } = useI18n()
-const state = useAdminState()
+const { locale } = useI18n();
+const state = useAdminState();
 
 const client = useSupabaseClient<Database>();
 // const { data } = await useAsyncData("clients", async () => {
@@ -215,8 +218,7 @@ const client = useSupabaseClient<Database>();
 //   };
 // });
 
-const date = (d: string) =>
-  new Date(d).toLocaleDateString(locale.value);
+const date = (d: string) => new Date(d).toLocaleDateString(locale.value);
 const time = (d: string) =>
   new Date(d).toLocaleString(locale.value, {
     dateStyle: "short",
@@ -235,8 +237,8 @@ const tableData = computed(() => {
         airline: item.flights?.airline,
         number: item.flight_number,
       },
-      date_departure: time(item.flights?.scheduled_time_departure),
-      date_arrival: time(item.flights?.scheduled_time_arrival),
+      date_departure: getLocalizedTime(item.flights?.scheduled_time_departure),
+      date_arrival: getLocalizedTime(item.flights?.scheduled_time_arrival),
       airport_departure: item.flights?.airport_departure,
       airport_arrival: item.flights?.airport_arrival,
       // reason: item.data.reason,

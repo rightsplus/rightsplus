@@ -17,7 +17,7 @@
             :key="article.id"
             class="bg-white rounded-lg p-5 grid gap-1"
           >
-            <span class="text-sm">{{ time(article.createdAt) }}</span>
+            <span class="text-sm">{{ getLocalizedTime(article.createdAt) }}</span>
             <span class="text-xl font-bold">{{ article.title }}</span>
             <p class="text-base line-clamp-3">{{ article.excerpt }}</p>
           </article>

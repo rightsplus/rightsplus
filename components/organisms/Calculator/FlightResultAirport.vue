@@ -11,7 +11,7 @@
     </div>
     <div class="flex flex-col leading-none">
       <span class="font-bold text-gray-700"
-        >{{ time(flight.actualTime) }} Ortszeit</span
+        >{{ getLocalizedTime(flight.actualTime) }} Ortszeit</span
       >
       <span
         v-if="cancelled"

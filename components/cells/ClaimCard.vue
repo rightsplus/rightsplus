@@ -101,11 +101,11 @@
           <span class="font-bold flex items-center text-sm gap-3"
             ><span class="leading-0 flex items-center gap-2"
               ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
-                date(flight.arrival.scheduledTime)
+                getLocalizedTime(flight.arrival.scheduledTime)
               }}</span
             ><span class="leading-0 flex items-center gap-2"
               ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
-                time(flight.arrival.scheduledTime)
+                getLocalizedTime(flight.arrival.scheduledTime)
               }}</span
             >
           </span>
@@ -119,11 +119,11 @@
             <div class="flex items-center gap-3">
               <span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
-                  date(arrivalTime)
+                  getLocalizedTime(arrivalTime)
                 }}</span
               ><span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
-                  time(arrivalTime)
+                  getLocalizedTime(arrivalTime)
                 }}</span
               >
             </div>

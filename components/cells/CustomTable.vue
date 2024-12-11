@@ -209,10 +209,11 @@ const sendEmail = async (to: any) => {
     claimId: formatClaimId(to.item.id, false),
     bookingNumber: to.item.booking_number,
     status: "paymentProcessed",
-    ...statusEmail("paymentProcessed", {
-      name: passenger?.firstName,
-      reimbursment: 300,
-    }),
+    // ...emails.paymentProcessed.handler(claim)
+    // ...statusEmail("paymentProcessed", {
+    //   name: passenger?.firstName,
+    //   reimbursment: 300,
+    // }),
   };
 
   try {

@@ -20,7 +20,8 @@
           />
         </h1>
         <span class="text-base font-medium text-neutral-500"
-          >{{ date(claim.createdAt) }}, {{ time(claim.createdAt) }}</span
+          >{{ getLocalizedTime(claim.createdAt) }},
+          {{ getLocalizedTime(claim.createdAt) }}</span
         >
       </div>
 
@@ -59,6 +60,7 @@
       <div class="flex grow basis-0 gap-3 w-full mt-3">
         <ClaimActions :claim="claim" :machine="machine" />
       </div>
+      <Button v-for="item in emails[claim.status]" :key="item.label" @click="item.handler(claim)">{{ item.label }}</Button>
     </div>
     <hr class="my-5" />
     <div class="flex gap-3 flex-col -mx-5">
@@ -105,8 +107,12 @@
         <pre v-else-if="active === 3">{{ claim.client }}</pre>
         <pre v-else-if="active === 4">{{ claim.booking.flight.airline }}</pre>
         <div v-else-if="active === 5">
-          <FormKit type="textarea" v-model="claim.notes" label="Notizen" prefix-icon="pen"/>
-
+          <FormKit
+            type="textarea"
+            v-model="claim.notes"
+            label="Notizen"
+            prefix-icon="pen"
+          />
         </div>
       </div>
     </div>

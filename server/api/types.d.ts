@@ -10,7 +10,8 @@ export type SendPDFMailProps = Data & {
 	subject: string;
 	text?: string;
 	template?: string;
-	pdf?: GeneratePDFProps
+	attachment?: Blob
+	// pdf?: GeneratePDFProps
 }
 
 export type SendMailProps = SendPDFMailProps & {

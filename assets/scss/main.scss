@@ -147,7 +147,10 @@ p {
   --scale: 1;
 
   .formkit-inner {
-    align-items: center;
+    .formkit-icon {
+      top: var(--y)
+    }
+    // align-items: center;
     // &:has(:-webkit-autofill, :autofill) {
     //   .formkit-icon svg {
     //     fill: var(--color-blue-600);

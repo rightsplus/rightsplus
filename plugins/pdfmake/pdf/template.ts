@@ -334,24 +334,7 @@ export function layoutRoundedCorderFrame(padding: number) {
     // fillColor: () => 'white',
   }
 }
-export function date(locale: string, format: 'long' | 'short' = 'long', date = new Date()) {
-  const size = {
-    long: {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    },
-    short: {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    },
-  } as const
-  return date.toLocaleDateString(
-    locale,
-    size[format]
-  )
-}
+
 export function getTextWidth(text: string, font: string) {
   const canvas = document.createElement('canvas')
   // const canvas =

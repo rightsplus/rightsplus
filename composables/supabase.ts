@@ -29,7 +29,7 @@ export const useSupabaseFunctions = () => {
 		type?: "departure" | "arrival",
 		iata?: string
 	}): Promise<T> {
-		console.time('fetching supabase')
+		console.getLocalizedTime('fetching supabase')
 		const { date, departure, arrival, type, iata, or } = body
 		type Match = {
 			dateDeparture: string

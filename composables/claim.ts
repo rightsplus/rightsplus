@@ -1,18 +1,36 @@
+import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement";
+import useCreatePdf from "~/plugins/pdfmake/useCreatePdf";
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
 import type { ClaimsForm, RowBooking } from "~/types";
 
+
+
+
 export const useSendMail = () => {
-	const send = async (props: SendPDFMailProps) => {
-		console.log('sending email')
+	const send = async ({ ...props }: SendPDFMailProps) => {
+		console.log("sending email");
+
+		// Construct FormData
+		const formData = new FormData();
+
+		// Append props and attachments
+		appendNested(formData, props);
+
+		console.log(props)
+
+		// Send FormData
 		const response = await fetch("/api/mail", {
 			method: "POST",
-			headers: useRequestHeaders(["cookie"]),
-			body: JSON.stringify(props),
+			headers: useRequestHeaders(["cookie"]), // Ensure headers are compatible with FormData
+			body: formData,
+			// body: JSON.stringify(props)
 		});
+
 		return response;
 	};
+
 	return { send };
-}
+};
 
 async function streamToPdfLink(pdfStream: ReadableStream<Uint8Array> | null): Promise<{ blob: Blob, url: string }> {
 	if (!pdfStream) {
@@ -185,6 +203,8 @@ export const usePrepareClaimSubmission = () => {
 				throw Error('No Claim ID')
 			}
 
+			claimResponse.client.signature = passenger.signature
+
 			const storageFolderClaim = [formatClaimId(claimResponse.id, false), passenger.lastName].join("/");
 
 			// console.log(passenger.signature.svg, passenger.boardingPass)
@@ -196,15 +216,15 @@ export const usePrepareClaimSubmission = () => {
 				),
 				// Boarding Pass
 
-				...(passenger.boardingPass ? Array.from(passenger.boardingPass).filter(Boolean).map((file) => handleUploadFile(
-					file,
+				...(passenger.boardingPass ? Object.entries(passenger.boardingPass).filter(Boolean).map(([name, file]) => handleUploadFile(
+					base64ToFile(file, name),
 					[storageFolderClaim, "boarding-pass"].join("/")
 				)) : [])
 			])
 
 			// const fileName = `${uuid.v4()}.svg`;
-			emails.dataReceived.forEach(e => e.handler(claimResponse));
-			// const email = send({
+			emails.dataReceived?.forEach(e => e.handler(claimResponse));
+			// send({
 			// 	to: passenger.email,
 			// 	subject: "Deine Anfrage wurde erfolgreich eingereicht",
 			// 	template: "Status.vue",
@@ -221,7 +241,7 @@ export const usePrepareClaimSubmission = () => {
 			// 		claimId: formatClaimId(claimResponse.id),
 			// 		bookingNumber: booking.number,
 			// 		status: "dataReceived",
-			// 		...statusEmail('dataReceived', claimResponse),
+			// 		...emails.dataReceived(claimResponse),
 			// 	},
 			// });
 		} catch (error) {
@@ -239,7 +259,7 @@ export const usePrepareClaimSubmission = () => {
 			console.log('success')
 			console.log('submitting booking...')
 			const booking = await submitBooking(claim, flightId);
-			console.log('success')
+			console.log('success', claim.client.passengers)
 			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, booking))
 
 		} catch (error) {

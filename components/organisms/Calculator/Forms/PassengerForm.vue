@@ -366,7 +366,7 @@ const completed = computed(() => {
   const complete = Object.values(props.modelValue).every(Boolean);
   const validEmail = validateEmail(props.modelValue.email);
   const validIBAN = IBAN.isValid(props.modelValue.iban);
-  const validBoardingPass = !!props.modelValue.boardingPass?.length;
+  const validBoardingPass = !!Object.keys(props.modelValue.boardingPass || {}).length;
   return complete && validEmail && validIBAN && validBoardingPass;
 });
 const passenger = (index: number) => {

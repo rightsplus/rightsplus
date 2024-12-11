@@ -121,13 +121,7 @@ const submit = async () => {
     console.log('claimState', claimState)
     const submission = await prepareClaimSubmission(claimState);
     console.log('submission', submission)
-    const { data, error } = await supabase.from("claims").insert(submission)
-    console.log('data', data)
-    console.log('error', error)
-    if (error) {
-      throw error
-    }
-    send("next");
+    // send("next");
   } catch (error) {
     console.error(error);
   }
@@ -184,7 +178,7 @@ const addLayover = () => {
                 ? t('continueWithoutStopover')
                 : t('next'),
               disabled: !state.can('next'),
-              tooltip: state.can('next') ? t(state.can('next') + '.title') : undefiend,
+              tooltip: state.can('next') ? t(state.can('next') + '.title') : undefined,
               suffixIcon: 'angle-right',
             }"
           />

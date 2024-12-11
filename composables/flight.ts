@@ -1,4 +1,5 @@
 import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo } from "@/types";
+import { useLocalStorage } from "@vueuse/core";
 import { airports } from "~/store";
 import { airlines } from "~/store";
 
@@ -109,7 +110,7 @@ export const getDistance = (claim: ClaimsForm | null) => {
 // }
 
 
-export const useFlightStatus = (flight: Flight, options?: { detailed: boolean}) => {
+export const useFlightStatus = (flight: Flight, options?: { detailed: boolean }) => {
 	// console.log(flight)
 	// const barred = isBarred(flight)
 	// const delay = getDelay(flight?.arrival)
@@ -151,7 +152,7 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean}) 
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
 				text: options?.detailed ? t("delayed.by", {
 					value: getDuration(flight?.arrival?.delay || 0),
-				 }) : t("delayed"),
+				}) : t("delayed"),
 			},
 			diverted: {
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
@@ -458,19 +459,19 @@ export const transformVariFlight = (flightObject: VariFlight) => {
 
 
 
-const queries = ref([] as string[]);
-let savedFlights = []
-if (typeof localStorage !== 'undefined') {
-	savedFlights = JSON.parse(localStorage.getItem('flights') || '[]')
-} else {
-	savedFlights = []
-}
-const flights = ref<Flight[]>(savedFlights)
+const flights = useLocalStorage<Flight[]>('flights', [])
+const flightsByQuery = useLocalStorage<Record<string, Flight[]>>('flightsByQuery', {})
 export const useFlights = () => {
 	const { fetchProxy, fetchFlights: fetchFlightsSupabase } = useSupabaseFunctions()
 	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
 	const { airlines, query: queryAirlines } = useAirlines()
+
+	const getQueryString = ({ date, departure, arrival }: {
+		date?: string,
+		departure?: string,
+		arrival?: string,
+	}) => [departure, arrival, getISODate(date)].filter(Boolean).join('-');
 
 	const fetchFlights = async (props: {
 		date: string,
@@ -490,13 +491,11 @@ export const useFlights = () => {
 				return
 			}
 
-			const query = [departure, arrival, getISODate(date)].filter(Boolean).join('-');
-			if (queries.value.includes(query) && flights.value.length) {
-				console.log("has been queried", queries.value, query, flights.value);
+			const query = getQueryString(props)
+			if (Object.keys(flightsByQuery.value).includes(query) && flights.value.length) {
+				console.log("has been queried", Object.keys(flightsByQuery.value), query, flights.value);
 				return
 			}
-
-			queries.value.push(query);
 
 
 			console.log('fetchFlightsSupabase')
@@ -512,8 +511,7 @@ export const useFlights = () => {
 				airports.value[arrival],
 				airports.value[departure]
 			)
-
-			flights.value = data
+			const mappedFlight = data
 				.map(flight => {
 					if (departure !== flight.departure.iata || arrival !== flight.arrival.iata) return flight
 					return {
@@ -521,6 +519,11 @@ export const useFlights = () => {
 						distance
 					}
 				})
+
+			flights.value = mappedFlight
+			flightsByQuery.value ??= {}
+			flightsByQuery.value[query] ??= mappedFlight
+
 
 
 			// console.log(flights.value.reduce((acc, curr) => {
@@ -540,13 +543,14 @@ export const useFlights = () => {
 		}
 	}
 
-	const getFilteredFlights = ({ departure, arrival, date, number, custom }: {
+	const getFilteredFlights = (props: {
 		departure?: string,
 		arrival?: string,
 		date?: string,
 		number?: string,
 		custom?: (flight: Flight) => boolean
 	}) => {
+		const { departure, arrival, date, number, custom } = props
 		const filterFlights = (flight: Flight) => {
 			return (
 				(!departure || flight.departure.iata === departure) &&
@@ -559,7 +563,8 @@ export const useFlights = () => {
 			);
 		};
 
-		return flights.value.filter(filterFlights)
+		const f = flightsByQuery.value[getQueryString(props)] || flights.value
+		return f.filter(filterFlights)
 	}
 	return { flights, fetchFlights, getFilteredFlights }
 }
