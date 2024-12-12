@@ -67,7 +67,7 @@
         <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
           <div class="flex-col items-stretch relative w-full flex-1">
             <div class="flex-1 p-5 w-full h-full">
-              <ClaimManagement :claim="activeClaim" @update="updateData" />
+              <ClaimManagement :claim="activeClaim" @update="updateData" :key="activeClaim?.id" />
             </div>
           </div>
         </div>
