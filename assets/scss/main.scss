@@ -139,7 +139,7 @@ p {
 .text-shadow {
   text-shadow: 0 5px 15px var(--tw-shadow-color, black);
 }
-.formkit-outer[data-family="text"] {
+.formkit-outer:is([data-family="text"], [data-family="dropdown"]) {
   --left: calc(var(--p-4) + 1px);
   --right: var(--p-4);
   --y: var(--p-4);
@@ -171,7 +171,7 @@ p {
     --right: 46px;
   }
 }
-.formkit-outer[data-family="text"][data-floating-label="true"] {
+.formkit-outer:is([data-family="text"], [data-family="dropdown"])[data-floating-label="true"] {
   --y: 1.25rem;
   .formkit-input {
     padding-top: calc(var(--p-4) * 1.5);

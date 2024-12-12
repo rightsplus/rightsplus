@@ -1,24 +1,7 @@
-<template>
-  <div class="flex gap-2 w-full">
-    <Button
-      v-for="action in actions"
-      :key="action"
-      :primary="!action.includes('reject')"
-      :tertiary="action.includes('reject')"
-      :success="action.includes('accept')"
-      :alert="action.includes('reject')"
-      class="w-full !h-12 !px-3"
-      @click="() => send(action)"
-    >
-      {{ t(`action.${action}`) }}
-    </Button>
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { CaseStatus, RowClaimExtended } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   claim: RowClaimExtended;
@@ -31,7 +14,7 @@ const actions = computed(() => {
   return state.value.events.sort((e) => (e.includes("accept") ? 1 : -1));
 });
 const { send: sendMail } = useSendMail();
-const { t } = useI18n()
+const { t } = useI18n();
 
 const acceptClaimClient = async () => {
   if (!props.claim) return;
@@ -119,4 +102,34 @@ props.machine.subscribe(({ origin, target, action, event }) => {
     invokeProtocol("acceptClaim");
   }
 });
+const labels: Partial<Record<CaseStatus, Record<string, string>>> = {
+  dataReceived: {
+    accept: 'acceptCase',
+    reject: 'rejectCase',
+  },
+  awaitInitialAirlineResponse: {
+    accept: 'airlineAccepts',
+    reject: 'airlineRejects',
+  },
+  awaitLawyerResponse: {
+    accept: 'airlineAccepts',
+    reject: 'airlineRejects',
+  },
+};
 </script>
+<template>
+  <div class="flex gap-2 w-full">
+    <Button
+      v-for="action in actions"
+      :key="action"
+      :primary="action.includes('accept')"
+      :tertiary="!action.includes('accept')"
+      :success="action.includes('accept')"
+      :alert="action.includes('reject')"
+      class="w-full !h-12 !px-3"
+      @click="() => send(action)"
+    >
+      {{ t(`action.${labels[state.value]?.[action] || action}`) }}
+    </Button>
+  </div>
+</template>

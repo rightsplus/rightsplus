@@ -77,9 +77,6 @@ function transformFlightPhase(phaseData: FlightAviationStack['arrival'] | Flight
 	};
 }
 export const transformAviationStackFlight = (flight: FlightAviationStack): Flight => {
-
-	console.log('flight in aviationstack transform', flight)
-
 	// @todo: sanitize flight status
 
 	return {
@@ -110,14 +107,13 @@ export const transformAviationStackFlight = (flight: FlightAviationStack): Fligh
 }
 
 const fixedAirlines: Record<string, RowAirline> = {}
-export const prepareFlight = (flight: Flight, airlines: RowAirline[]) => {
-	const airline = fixedAirlines[flight.airline.iata] || airlines?.find(airline => airline.iata === flight.airline.iata) || { iata: flight.airline.iata, name: flight.airline.name }
-	fixedAirlines[flight.airline.iata] = airline
-	flight.airline = airline
+export const prepareFlight = (flight: Flight, airlines?: RowAirline[]) => {
+	// console.log("before:",flight)
+	// const airline = fixedAirlines[flight.airline.iata] || airlines?.find(airline => airline.iata === flight.airline.iata) || { iata: flight.airline.iata, name: flight.airline.name }
+	// fixedAirlines[flight.airline.iata] = airline
+	// flight.airline = airline
 
-	console.log(flight)
-	console.log(flight.departure.scheduledTime)
-	console.log(flight.departure.scheduledTime.toLowerCase()?.split('t')[0])
+	// console.log("after:",flight)
 
 	// @todo: add arrival delay to actual arrival timestamp ??
 	return {
@@ -130,8 +126,8 @@ export const prepareFlight = (flight: Flight, airlines: RowAirline[]) => {
 		actualArrival: flight.arrival.actualTime || null,
 		scheduledDeparture: flight.departure.scheduledTime || null,
 		scheduledArrival: flight.arrival.scheduledTime || null,
-		dateDeparture: flight.departure.scheduledTime.toLowerCase()?.split('t')[0],
-		dateArrival: flight.arrival.scheduledTime.toLowerCase()?.split('t')[0],
+		dateDeparture: flight.departure.scheduledTime?.toLowerCase().split('t')[0],
+		dateArrival: flight.arrival.scheduledTime?.toLowerCase().split('t')[0],
 		delayArrival: flight.arrival.delay,
 		data: flight,
 	} as Omit<RowFlight, 'id' | 'createdAt'>;

@@ -3,6 +3,7 @@
     class="relative w-full h-14 formkit-outer"
     data-floating-label="true"
     data-suffix-icon="true"
+    data-family="dropdown"
     :data-prefix-icon="
       (current?.prepend?.component || current?.icon || prefixIcon) && 'true'
     "

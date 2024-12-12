@@ -5,29 +5,49 @@ import { transformAviationEdgeFlight, transformAviationStackFlight, prepareFligh
 import { createClient } from 'supabase'
 import type { FlightAviationStack } from '~/aviation-edge.types.js'
 
-const updateAirlines = (flights: Flight[], req: { headers: { get: (arg0: string) => any } } | undefined) => {
-  const authHeader = req.headers.get('Authorization')!
+const saveFlightsToSupabase = async (
+  flights: Flight[],
+  req: { headers: { get: (arg0: string) => any } } | undefined
+) => {
+  try {
+    const authHeader = req?.headers?.get('Authorization');
+    if (!authHeader) throw new Error('Missing Authorization header');
 
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    { global: { headers: { Authorization: authHeader } } }
-  )
-  const airlines = Object.entries(flights.reduce((acc, curr) => ({ ...acc, [curr.airline.iata]: curr.airline.name }), {})).map(([iata, name]) => ({ iata, name }))
-  supabase
-    .from("airline")
-    .upsert(airlines, { onConflict: 'iata', ignoreDuplicates: true })
-    .select('*')
-    .then((e: RowAirline[]) => {
-      console.log('airlines updated', e)
-      supabase
-        .from("flight")
-        .upsert(flights.map((flight) => prepareFlight(flight, e)), { onConflict: ['iata', 'dateDeparture'] })
-        .then(e => console.log('flights inserted', e))
-        .catch(e => console.warn('error inserting flights', e))
-    })
-    .catch(e => console.warn('error upserting airlines', e))
-}
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') || '',
+      Deno.env.get('SUPABASE_ANON_KEY') || '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    // @todo: eventually we do not expect to gather more airlines and we can remove this
+    // Aggregate unique airlines
+    const airlines = Array.from(
+      flights.reduce((map, flight) => {
+        map.set(flight.airline.iata, flight.airline.name);
+        return map;
+      }, new Map<string, string>())
+    ).map(([iata, name]) => ({ iata, name }));
+
+    // Upsert airlines
+    const { data: airlineData, error: airlineError } = await supabase
+      .from('airline')
+      .upsert(airlines, { onConflict: 'iata', ignoreDuplicates: true })
+      .select('*');
+
+    if (airlineError) throw new Error(`Airline upsert failed: ${airlineError.message}`);
+
+    // Upsert flights
+    const { data: flightData, error: flightError } = await supabase
+      .from('flight')
+      .upsert(flights.map(e => prepareFlight(e)), { onConflict: ['iata', 'dateDeparture'], ignoreDuplicates: true });
+
+    if (flightError) throw new Error(`Flight upsert failed: ${flightError.message}`);
+
+    console.log('Flights inserted successfully', flightData);
+  } catch (error) {
+    console.error('Error updating airlines and flights:', error);
+  }
+};
 
 
 const fetchAviationStack = async ({ date, departure, arrival, type, iata }, req) => {
@@ -55,7 +75,7 @@ const fetchAviationStack = async ({ date, departure, arrival, type, iata }, req)
   const flights = json.data.map((flight: FlightAviationStack) => transformAviationStackFlight(flight))
   console.log('flights', flights)
 
-  updateAirlines(flights, req)
+  saveFlightsToSupabase(flights, req)
 
 
   const filteredFlights = departure && arrival ? flights.filter((e: { departure: { iata: any }; arrival: { iata: any } }) => e.departure.iata === departure && e.arrival.iata === arrival) : flights
@@ -120,6 +140,7 @@ Deno.serve(async (req: { json: () => PromiseLike<{ date: any; departure: any; ar
     console.log("fetching from aviation stack")
     data = await fetchAviationStack({ date, departure, arrival, type, iata }, req)
     if (data.length) return returnData(data)
+    console.log("fetching from aviation edge")
     data = await fetchAviationEdge({ date, departure, arrival, type, iata }, req)
     return returnData(data)
   } catch (error: Error) {

@@ -1,7 +1,7 @@
 import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement";
 import useCreatePdf from "~/plugins/pdfmake/useCreatePdf";
 import type { SendPDFMailProps, GeneratePDFProps } from "~/server/api/types";
-import type { ClaimsForm, RowBooking } from "~/types";
+import type { ClaimsForm, Database, RowBooking, RowFlight } from "~/types";
 
 
 
@@ -186,6 +186,7 @@ export const useCompensation = (estimate = false) => {
 }
 
 export const usePrepareClaimSubmission = () => {
+	const supabase = useSupabaseClient<Database>()
 	const { submitFlight, submitBooking, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
 	const claim = useClaim()
 	const { t } = useI18n()
@@ -254,12 +255,17 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
-			console.log('submitting flight...')
-			const { id: flightId } = await submitFlight(claim.flight);
-			console.log('success')
+			console.log('fetch flight for id ...')
+			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: claim.flight.flight.iata, scheduledDeparture: claim.flight.departure.scheduledTime }).single<RowFlight>();
+			
+			const { id: flightId } = existingFlight || (await submitFlight(claim.flight)) || {}
+			
+			if (!flightId || errExisting) {
+				throw new Error(!flightId ? 'no flight' : errExisting?.message)
+			}
 			console.log('submitting booking...')
 			const booking = await submitBooking(claim, flightId);
-			console.log('success', claim.client.passengers)
+			console.log('process claims...')
 			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, booking))
 
 		} catch (error) {

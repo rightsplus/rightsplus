@@ -70,7 +70,7 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
           />
         </h1>
         <span class="text-base font-medium text-neutral-500"
-          >{{ getLocalizedTime(claim.createdAt) }},
+          >{{ getLocalizedDate(claim.createdAt) }},
           {{ getLocalizedTime(claim.createdAt) }}</span
         >
       </div>
@@ -110,7 +110,15 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
       <div class="flex grow basis-0 gap-3 w-full mt-3">
         <ClaimActions :claim="claim" :machine="machine" />
       </div>
-      <Button v-for="item in emails[claim.status]" :key="item.label" @click="item.handler(claim)">{{ item.label }}</Button>
+      <Button
+        tertiary
+        round
+        class="text-sm h-7 mt-5 ml-auto"
+        v-for="item in emails[claim.status]"
+        :key="item.label"
+        @click="item.handler(claim)"
+        >{{ item.label }}</Button
+      >
     </div>
     <hr class="my-5" />
     <div class="flex gap-3 flex-col -mx-5">
