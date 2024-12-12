@@ -5,7 +5,7 @@ import { Markdown, Preview } from "@vue-email/components";
 
 defineProps<{
   title: string;
-  preTitle: string;
+  category: string;
   body: string;
 }>();
 
@@ -14,7 +14,7 @@ defineProps<{
 <template>
   <EmailFrame :preview="body">
     <EmailCard>
-      <EmailPreTitle>{{ preTitle }}</EmailPreTitle>
+      <EmailPreTitle>{{ category }}</EmailPreTitle>
       <EmailTitle is="h1">{{ title }}</EmailTitle>
       <Markdown :source="body" :custom-styles="{
         h1: 'text-2xl font-bold',

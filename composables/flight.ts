@@ -480,7 +480,7 @@ export const useFlights = () => {
 		locale?: string,
 	}, attempts = 3) => {
 		const { departure, arrival, date, locale } = props
-		console.trace('fetch flights')
+		// console.trace('fetch flights')
 		try {
 			if (
 				!date ||

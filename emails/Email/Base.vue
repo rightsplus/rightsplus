@@ -1,9 +1,39 @@
 <script setup lang="ts">
-import { Preview, Tailwind, Html, Head, Body, Font } from "@vue-email/components";
-defineProps<{ preview?: string }>()
+const gray = {
+  "50": "hsl(200deg 60% 98%)",
+  "100": "hsl(200deg 44% 94%)",
+  "200": "hsl(200deg 32% 88%)",
+  "300": "hsl(200deg 25% 80%)",
+  "400": "hsl(200deg 20% 64%)",
+  "500": "hsl(200deg 16% 48%)",
+  "600": "hsl(200deg 16% 32%)",
+  "700": "hsl(200deg 17% 24%)",
+  "800": "hsl(200deg 35% 16%)",
+  "900": "hsl(200deg 45% 8%)",
+  "950": "hsl(217deg 63% 5%)",
+};
+import {
+  Preview,
+  Tailwind,
+  Html,
+  Head,
+  Body,
+  Font,
+} from "@vue-email/components";
+defineProps<{ preview?: string }>();
 </script>
 <template>
-  <Tailwind>
+  <Tailwind
+    :config="{
+      theme: {
+        extend: {
+          colors: {
+            gray,
+          },
+        },
+      },
+    }"
+  >
     <Html>
       <Head>
         <Font
@@ -15,7 +45,7 @@ defineProps<{ preview?: string }>()
           }"
           font-weight="normal"
           font-style="normal"
-      />
+        />
         <Font
           font-family="Inter"
           fallback-font-family="Verdana"

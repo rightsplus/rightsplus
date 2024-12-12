@@ -98,7 +98,7 @@ export default () => {
 				const pdf = await createPdf(await sheet)
 				pdf.getBuffer(resolve)
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			}
 		})
 	}

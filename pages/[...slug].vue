@@ -11,7 +11,7 @@ const { t } = useI18n();
 const { queryLocaleContent } = useI18nContent();
 const route = useRoute();
 const { data } = useAsyncData("page", () => {
-  return queryLocaleContent(route.fullPath).findOne();
+  return queryLocaleContent(route.fullPath).first();
 });
 </script>
 <template>

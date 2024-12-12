@@ -7,6 +7,7 @@ type BaseProps = {
 export const useSupabaseFunctions = () => {
 	const supabase = useSupabaseClient<Database>()
 	const user = useSupabaseUser()
+	const { locale } = useI18n()
 
 	async function fetchFlights<T>(body: BaseProps & {
 		iata: string;
@@ -227,6 +228,8 @@ export const useSupabaseFunctions = () => {
 			console.log('query:', { iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime })
 			console.log('existing flight:', existingFlight)
 			console.log('errExisting', errExisting)
+			
+			return
 			// if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
 			console.log('preparedFlight', preparedFlight)
@@ -270,7 +273,8 @@ export const useSupabaseFunctions = () => {
 		const preparedClaim = {
 			email: passenger.email,
 			client: passenger,
-			bookingId: bookingId
+			bookingId: bookingId,
+			lang: locale.value
 		} as Omit<RowClaim, 'id' | 'createdAt' | 'status' | 'unread'>;
 		try {
 			const { data, error } = await supabase

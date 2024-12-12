@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     '@vue-email/nuxt',
     '@vite-pwa/nuxt',
     "@nuxt/image",
-    '@nuxt/content',
+    '@nuxt/content'
   ],
 
   build: {
@@ -180,20 +180,6 @@ export default defineNuxtConfig({
       prerender: false,
       ssr: false
     },
-  },
-
-  content: {
-    documentDriven: {
-      page: false,
-      navigation: false,
-      surround: false
-    },
-    watch: {
-      ws: {
-        port: 4000,
-        showURL: true
-      }
-    }
   },
 
   compatibilityDate: '2024-07-10',

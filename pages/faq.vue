@@ -19,14 +19,14 @@ function wrapWithEmTags(query: string, text: string) {
   return wrappedText;
 }
 
-const { queryLocaleContent } = useI18nContent();
+const { queryLocaleContent } = useI18nContent('pages');
 const route = useRoute();
 const { data } = useAsyncData("faq", () =>
-  queryLocaleContent(route.fullPath).findOne()
+  queryLocaleContent(route.fullPath).first()
 );
 
 const qa = computed(() => {
-  return convertToQAFormat(data.value?.body?.children || []);
+  return convertToQAFormat(data.value?.body?.value || []);
 });
 
 watch(filter, (query) => {
@@ -62,57 +62,39 @@ type BlockquoteChild = {
   children?: BlockquoteChild[];
 };
 
-type Blockquote = {
-  type: "element";
-  tag: string;
-  props: Record<string, any>;
-  children: BlockquoteChild[];
-};
-
-type Element = {
-  type: "element";
-  tag: string;
-  props: Record<string, any>;
-  children: BlockquoteChild[];
-};
-
 type ProcessedObject = {
   q: string;
   a: string;
   tags?: string[];
 };
 
-function convertToQAFormat(input: MarkdownNode[]): ProcessedObject[] {
-  console.log(input);
+function convertToQAFormat(input: any[]): ProcessedObject[] {
   const array = input
     .map((item, index) => {
-      if (item.tag !== "h2") return;
+      const [tag, __, content] = item;
 
-      const question = item.children
-        ?.filter((child) => child.type === "text")
-        .map((child) => child.value)
-        .join("");
+      if (tag !== "h2") return;
+
+      const question = content;
 
       if (!question) return;
 
-      const answerElement = [...input]
-        .slice(index + 1)
-        .find((i) => i.tag === "p" && i.children?.[0].type === "text");
+      const nextQuestionIndex = input.slice(index + 1).findIndex(([tag]) => tag === "h2");
 
-      const answer = answerElement
-        ? answerElement.children
-            ?.filter((child) => child.type === "text")
-            .map((child) => child.value)
-            .join("")
-        : "";
+      const answer = input
+        .slice(index + 1, nextQuestionIndex + index + 1)
+        .filter(([tag]) => tag === "p")
+        .map(([_,__, content]) => `<p>${content}</p>`).join('')
 
       if (!answer) return;
 
-      const tags = [...input]
+      const tags = input
         .slice(index + 1)
-        .find((i) => i.tag === "blockquote")
-        ?.children?.[0].children?.filter((e) => e?.value && e?.type === "text")
-        ?.map((e) => e.value!.replaceAll("\n", ""));
+        .filter(([tag]) => tag === "blockquote")
+        .map(([_, __, children]) => {
+          const [childTag, childAttributes, childContent] = children;
+          return childContent as string;
+        });
 
       return {
         q: question,
@@ -122,9 +104,9 @@ function convertToQAFormat(input: MarkdownNode[]): ProcessedObject[] {
     })
     .filter((e) => !!e);
 
-  console.log(array);
   return array;
 }
+
 </script>
 <template>
   <div>
@@ -166,7 +148,7 @@ function convertToQAFormat(input: MarkdownNode[]): ProcessedObject[] {
               <span v-html="wrapWithEmTags(filter, item.q)" />
             </template>
             <template #content="{ item }">
-              <div v-html="wrapWithEmTags(filter, item.a)" />
+              <div v-html="wrapWithEmTags(filter, item.a)" class="markdown" />
               <div class="flex flex-wrap gap-1 mt-3" v-if="filter.length >= 2">
                 <span
                   v-for="tag in (item.tags || []).filter((e: string) =>

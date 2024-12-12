@@ -13,12 +13,10 @@ type MachineState<States> = {
   event?: string;
 }
 export type Methods<Context, States extends string> = {
-  [state in States]: [
-    {
-      label: string;
-      handler: (context: Context) => Promise<void>
-    }
-  ]
+  [state in States]: {
+    label: string;
+    handler: (context: Context) => Promise<void>
+  }[]
 }
 
 type GuardProps<Context, States extends string> = {
@@ -60,7 +58,7 @@ const loading = ref(true)
 export const useMachine = <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
   context?: T | undefined;
   initial?: States;
-  methods?: Methods<T, States>
+  methods?: Partial<Methods<T, States>>
 }) => {
 
   type SubscriptionProps = { type: string; action?: string | string[]; event?: string; target?: States, origin?: States }
@@ -163,6 +161,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
       if (!e || typeof e !== 'function') return
       e(cleanObject({ type: 'event', action, event, target, origin }))
     })
+    return target
   };
 
   const subscribe = (callback: (state: SubscriptionProps) => void) => {

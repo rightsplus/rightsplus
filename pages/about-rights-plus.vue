@@ -6,11 +6,9 @@ definePageMeta({
   },
 });
 const { t } = useI18n();
-const { queryLocaleContent } = useI18nContent();
+const { queryLocaleContent } = useI18nContent('pages');
 const route = useRoute();
-const { data } = useAsyncData("about-rights-plus", () =>
-queryLocaleContent(route.fullPath).findOne()
-);
+const { data } = useAsyncData("about-rights-plus", () => queryLocaleContent(route.fullPath).first());
 </script>
 
 <template>

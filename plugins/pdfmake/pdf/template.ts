@@ -2,7 +2,7 @@ import type { ContentTable, TDocumentDefinitions } from 'pdfmake/interfaces'
 // import { getFooterHeight, measurements } from './utils'
 import { theme } from '#tailwind-config'
 const { colors } = theme
-console.log(colors.neutral)
+
 const measurements = {
 	"mm": 2.835,
 	"margin": 56.70,

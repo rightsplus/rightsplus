@@ -24,7 +24,7 @@ const moreDetails = [
     </Container>
     <slot />
     <Container
-      class="bg-gray-800 text-gray-400 text-xs rounded-xl py-1 px-5 sm:py-8 sm:px-12 max-w-3xl mt-5 sm:mt-8 mb-12 leading-none"
+      class="bg-gray-700 text-gray-300 text-xs rounded-xl py-1 px-5 sm:py-8 sm:px-12 max-w-3xl mt-5 sm:mt-8 mb-12 leading-none"
     >
       <Img
         width="72"

@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
 		const vari = new URL(`http://open-al.variflight.com/api/flight?${str}&token=${token}`)
 
 		const response = await fetch(vari.href).then(res => res.json())
-		console.log(await fetch(vari.href).then(res => res.json()))
 		return response
 	} catch (error) {
 		return error

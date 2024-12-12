@@ -1,7 +1,7 @@
 <template>
   <EmailFrame>
     <EmailCard>
-      <EmailPreTitle>{{ preTitle }}</EmailPreTitle>
+      <EmailPreTitle>{{ category }}</EmailPreTitle>
       <EmailTitle is="h1">{{ title }}</EmailTitle>
       <EText class="leading-snug my-3">Hej {{ firstName }},</EText>
       <EText
@@ -68,7 +68,7 @@ defineProps<{
   firstName?: string;
   paragraphs: string[];
   title: string;
-  preTitle: string;
+  category: string;
 }>();
 
 </script>

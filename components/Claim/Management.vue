@@ -110,15 +110,17 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
       <div class="flex grow basis-0 gap-3 w-full mt-3">
         <ClaimActions :claim="claim" :machine="machine" />
       </div>
+      <div class="flex gap-3 mr-auto">
       <Button
         tertiary
         round
-        class="text-sm h-7 mt-5 ml-auto"
+        class="text-sm h-9 mt-5"
         v-for="item in emails[claim.status]"
         :key="item.label"
         @click="item.handler(claim)"
         >{{ item.label }}</Button
       >
+    </div>
     </div>
     <hr class="my-5" />
     <div class="flex gap-3 flex-col -mx-5">

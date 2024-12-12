@@ -358,7 +358,8 @@ export const handleFormKitIconClick = (e: MouseEvent) => {
 // })
 export const formatClaimId = (id: number | string, prependHash = true) => {
 	if (!id) return ""
-	const base = 36 // 10
+	const base = 10 // 10
+	// const base = 36 // 10
 	const length = 7
 	const paddedId = (id).toString(base).toUpperCase().padStart(length, '0')
 	if (prependHash) return '#' + paddedId
@@ -609,8 +610,8 @@ export const getRouteNameFromPath = (path: string, pages = i18nConfig.pages) => 
 
 	return match || ''
 }
-export const getRoutePathFromName = (name: keyof typeof i18nConfig.pages, locale: (typeof i18nConfig.locales)[number]['code'], pages = i18nConfig.pages) => {
-	return pages[name][locale]
+export const getRoutePathFromName = (name: keyof typeof i18nConfig.pages, locale: (typeof i18nConfig.locales)[number]['code'], pages = i18nConfig.pages): keyof typeof i18nConfig.pages => {
+	return pages[name][locale] as keyof typeof i18nConfig.pages
 }
 
 

@@ -9,11 +9,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["update"]);
+const { emails } = useStatusEmail()
 const { state, send, invoke } = props.machine;
 const actions = computed(() => {
   return state.value.events.sort((e) => (e.includes("accept") ? 1 : -1));
 });
-const { send: sendMail } = useSendMail();
 const { t } = useI18n();
 
 const acceptClaimClient = async () => {
@@ -116,6 +116,13 @@ const labels: Partial<Record<CaseStatus, Record<string, string>>> = {
     reject: 'airlineRejects',
   },
 };
+
+const handleClick = (action: string) => {
+  const target = send(action)
+  if (!target) return
+  console.log(target)
+  emails[target]?.forEach(e => e.handler(props.claim));
+}
 </script>
 <template>
   <div class="flex gap-2 w-full">
@@ -127,7 +134,7 @@ const labels: Partial<Record<CaseStatus, Record<string, string>>> = {
       :success="action.includes('accept')"
       :alert="action.includes('reject')"
       class="w-full !h-12 !px-3"
-      @click="() => send(action)"
+      @click="() => handleClick(action)"
     >
       {{ t(`action.${labels[state.value]?.[action] || action}`) }}
     </Button>
