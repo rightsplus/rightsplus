@@ -14,7 +14,7 @@ on:
         type: string
 
 env:
-  DEPLOYMENT_FOLDER: .output/public
+  DEPLOYMENT_FOLDER: dist
 
 jobs:
 # Please do not rename this job
@@ -23,24 +23,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: v20.9
+          node-version: v22.x
 
       - name: Build Node assets
         env:
           ALGOLIA_API_KEY: f3751f249b8d571f0119083fce83fa28
           ALGOLIA_APPLICATION_ID: VOETLFS3LW
-          AVIATIONSTACK_KEY: 97753c8f3eb2a2ab2cafc9e593e85180
+          AVIATION_EDGE_KEY: 71a05e-8a101a
+          AVIATIONSTACK_KEY: 1851534f12752a36955bbc3db36ae905
           CI: true
           GOOGLE_KEY: AIzaSyAym0YbXkqtqyJ4wDN2GMXdQA_wCiFljgE
           GOOGLE_PLACE_ID: ChIJZ3HoNBoXvUcRNoGMYt-J0dY
           SITE_URL: ${{ inputs.site-url }}
+          SMTP_HOST: smtp.ionos.de
+          SMTP_PASS: asHAShda412)12k&*!@)§jkJK023jka
+          SMTP_USER: info@rightsplus.de
           SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10dW53ZGdmbXVla2RqZGVjZ2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzYyOTQ4MTEsImV4cCI6MTk5MTg3MDgxMX0.sXCnYEBWwxVMB1N1NXIlgD8v-sf02aUaORvHIc8xaxM
           SUPABASE_URL: https://mtunwdgfmuekdjdecgdc.supabase.co
         run: |
@@ -55,7 +59,7 @@ jobs:
         with:
           api-key: ${{ secrets.IONOS_API_KEY }}
           service-host: api-eu.ionos.space
-          project-id: 11ceaa0d-057a-4ab5-b50a-8f0407a71f90
+          project-id: 5a0ea18e-c571-437f-b8b0-1d81af360806
           branch-id: ${{ inputs.branch-id }}
           version: ${{ github.sha }}
           folder: ${{ env.DEPLOYMENT_FOLDER }}
