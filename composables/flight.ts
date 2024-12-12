@@ -14,7 +14,7 @@ const getAirports = async (flight: Flight) => {
 
 	if (!departureAirport || !arrivalAirport) {
 		// @todo: here I could actually make sure i load the appropriate airports, if they have not been loaded yet
-		console.warn("Missing airport")
+		console.warn(t("missingAirport"))
 		return {
 			departureAirport: null,
 			arrivalAirport: null,
@@ -33,7 +33,7 @@ export function isBarred(flight: Flight | string | null) {
 	const date = flightDate && new Date(flightDate)
 
 	if (!date || typeof date === 'string') {
-		console.warn("Missing scheduled date", typeof date)
+		console.warn(t("missingDepartureArrivalDate"))
 		return false
 	}
 	return new Date().getFullYear() - date.getFullYear() > 3 ? new Date(new Date().getFullYear() - 3, 0) : false
@@ -65,7 +65,7 @@ export const isExtraordinaryCircumstance = async (flight: Flight | null) => {
 	const arrivalDate = flight.arrival?.scheduledTime && new Date(flight.arrival.scheduledTime)
 
 	if (!departureDate || !arrivalDate) {
-		console.warn("Missing departure or arrival date")
+		console.warn(t("missingDepartureArrivalDate"))
 		return circumstance
 	}
 
@@ -334,22 +334,27 @@ export const useDisruption = () => {
 		const cancelledDelayedReasons = [
 			{
 				value: "dontRemember",
-				label: t('resons.dontRemember.label'),
+				label: t('reasons.dontRemember.label'),
 				icon: "question",
 			},
 			{
 				value: "technicalIssues",
-				label: t('reasons.technicalIssues.label'), icon: "cogs"
+				label: t('reasons.technicalIssues.label'), 
+				icon: "cogs"
 			},
-			{ value: "weatherConditions", label: "Wetterbedingungen", icon: "cloud-sun" },
+			{ 
+				value: "weatherConditions", 
+				label: t('reasons.weatherConditions.label'), 
+				icon: "cloud-sun" 
+			},
 			{
 				value: "lateArrivalOfAircraft",
 				label: t('reasons.lateArrivalOfAircraft.label'),
 				icon: "plane-arrival",
 			},
-			{ value: "crewIssues", label: t('resons.crewIssues.label'), icon: "users" },
-			{ value: "airportCongestion", label: t('resons.airportCongestion.label'), icon: "road" },
-			{ value: "securityIssues", label: t('resons.securityIssues.label'), icon: "shield-alt" },
+			{ value: "crewIssues", label: t('reasons.crewIssues.label'), icon: "users" },
+			{ value: "airportCongestion", label: t('reasons.airportCongestion.label'), icon: "road" },
+			{ value: "securityIssues", label: t('reasons.securityIssues.label'), icon: "shield-alt" },
 			{
 				value: "airTrafficControl",
 				label: t('reasons.airTrafficControl.label'),
@@ -462,6 +467,7 @@ export const transformVariFlight = (flightObject: VariFlight) => {
 const flights = useLocalStorage<Flight[]>('flights', [])
 const flightsByQuery = useLocalStorage<Record<string, Flight[]>>('flightsByQuery', {})
 export const useFlights = () => {
+	const { t } = useI18n()
 	const { fetchProxy, fetchFlights: fetchFlightsSupabase } = useSupabaseFunctions()
 	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
@@ -487,23 +493,23 @@ export const useFlights = () => {
 				!departure ||
 				!arrival
 			) {
-				console.log("Missing date, departure or arrival");
+				console.log(t("missingDateDepartureArrival"))
 				return
 			}
 
 			const query = getQueryString(props)
 			if (Object.keys(flightsByQuery.value).includes(query) && flights.value.length) {
-				console.log("has been queried", Object.keys(flightsByQuery.value), query, flights.value);
+				console.log(t("hasBeenQueried"))
 				return
 			}
 
 
-			console.log('fetchFlightsSupabase')
+			console.log(t('debug.fetchFlightsSupabase'))
 			const data = await fetchFlightsSupabase<Flight[]>({
-				departure,
-				arrival,
-				date,
-			})
+					departure,
+					arrival,
+					date,
+				})
 			console.log(data)
 
 
@@ -534,8 +540,8 @@ export const useFlights = () => {
 
 		} catch (error) {
 			if (attempts > 0) {
-				console.log('fetch failed', error)
-				console.log('remaining attempts:', attempts)
+				console.log(t("fetchFailed"), error)
+				console.log(t("remainingAttempts", { attempts }))
 				fetchFlights(props, attempts - 1)
 			} else {
 				throw error

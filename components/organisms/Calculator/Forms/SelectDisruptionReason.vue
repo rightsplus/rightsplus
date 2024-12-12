@@ -1,6 +1,6 @@
 <template>
   <DropdownButton
-    label="Welchen Grund hat die Airline angegeben?"
+    :label="t('calculator.forms.disruptionReason.label')"
     name="actualArrivalTime"
     v-model="modelValue.disruption.reason"
     :options="reasonOptions"
@@ -11,6 +11,9 @@
 <script setup lang="ts">
 import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import type { ClaimsForm } from "@/types";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   modelValue: ClaimsForm;

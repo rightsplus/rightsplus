@@ -218,8 +218,16 @@ p {
   button ~ .formkit-label[data-has-value="true"] {
     --y: 1rem;
     --scale: 0.7;
-    left: calc(var(--left) + 1.5px) !important;
+    left: calc(var(--left)) !important;
     color: var(--color-neutral-500);
+  }
+  & textarea:focus ~ label.formkit-label,
+  &[data-type="textarea"]:not([data-empty="true"]) label.formkit-label {
+    left: calc(var(--left) + 1.5px) !important;
+  }
+
+  &[data-family="dropdown"]:not([data-empty="true"]) label.formkit-label {
+    left: calc(var(--left) - 0.5px) !important;
   }
 
   &[data-prefix-icon="false"] {

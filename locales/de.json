@@ -88,14 +88,16 @@
   "reasons.behaviouralIssues.label": "Verhaltensprobleme",
   "reasons.restrictedItems.label": "Verbotene Gegenstände",
   "reasons.restrictedDestinations.label": "Eingeschränktes Flugziel",
-  "resons.dontRemember.label": "Ich kann mich nicht erinnern",
+  "reasons.dontRemember.label": "Ich kann mich nicht erinnern",
   "reasons.technicalIssues.label": "Technische Probleme",
   "reasons.lateArrivalOfAircraft.label": "Verspätete Ankunft des Flugzeugs",
-  "resons.crewIssues.label": "Probleme mit der Crew",
-  "resons.airportCongestion.label": "Flughafenüberlastung",
-  "resons.securityIssues.label": "Sicherheitsprobleme",
+  "reasons.crewIssues.label": "Probleme mit der Crew",
+  "reasons.airportCongestion.label": "Flughafenüberlastung",
+  "reasons.securityIssues.label": "Sicherheitsprobleme",
   "reasons.airTrafficControl.label": "Luftverkehrskontrolle",
   "reasons.unexpectedIssues.label": "Unerwartete Probleme",
+
+  "reasons.weatherConditions.label": "Wetterbedingungen",
   "onTime": "pünktlich",
   "landed": "Gelandet",
   "open.mainmenu": "Hauptmenü öffnen",
@@ -313,7 +315,7 @@
     },
     "completeProcess": {
       "title": "Gesamte Abwicklung",
-      "description": "Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.\nDurch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die häufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko."
+      "description": "Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.\nDurch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die h��ufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko."
     },
     "noRisk": {
       "title": "Kein Kosten- & Prozessrisiko",
@@ -324,5 +326,33 @@
     "claimUpTo": "Fordere bis zu {amount}!",
     "claimUpToExtended": "Fordere bis zu {amount} für deinen verspäteten oder annullierten Flug!",
     "close": "Schließen"
+  },
+  "scheduled": "Geplant",
+  "active": "Aktiv",
+  "unknown": "Unbekannt",
+  "diverted": "Umgeleitet",
+  "missingAirport": "Flughafen fehlt",
+  "fetchFailed": "Abruf fehlgeschlagen",
+  "remainingAttempts": "Verbleibende Versuche: {attempts}",
+  "missingDateDepartureArrival": "Datum, Abflug oder Ankunft fehlt",
+  "hasBeenQueried": "Wurde bereits abgefragt",
+  "missingDepartureArrivalDate": "Abflug- oder Ankunftsdatum fehlt",
+  "flightFilter": {
+    "departure": "Nach Abflug filtern",
+    "arrival": "Nach Ankunft filtern",
+    "date": "Nach Datum filtern",
+    "number": "Nach Flugnummer filtern"
+  },
+  "fetchFlightsSupabase": "Flüge von Supabase abrufen",
+  "debug": {
+    "fetchFlights": "Flüge abrufen",
+    "fetchFlightsSupabase": "Flüge von Supabase abrufen"
+  },
+  "calculator": {
+    "forms": {
+      "disruptionReason": {
+        "label": "Welchen Grund hat die Airline angegeben?"
+      }
+    }
   }
 }
