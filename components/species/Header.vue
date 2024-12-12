@@ -53,8 +53,8 @@ const links: ComputedRef<
     title: t("yourRights"),
   },
   {
-    path: "claim-new",
-    name: "claim-new",
+    path: "new-claim",
+    name: "new-claim",
     onClick: () => invoke("reset"),
     title: t("checkClaim"),
     type: "button",

@@ -74,7 +74,7 @@ const routes = computed(
         title: t("ourService"),
         links: [
           {
-            path: "claim-new",
+            path: "new-claim",
             title: t("checkClaim"),
           },
           // {

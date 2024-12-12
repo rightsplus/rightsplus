@@ -23,7 +23,7 @@ export default function (
 	})
 
 	const queryLocaleContent = (path: string) => {
-		const locales = i18nConfig.locales
+		const { locales } = i18nConfig
 		if (!path) return queryCollection(collection).path(`/${collection}/`)
 		const [, localePath] = path.split('/')
 		if (!locales.some(e => e.code === localePath)) {

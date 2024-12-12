@@ -70,13 +70,13 @@ const options = {
 			"en": "/faq",
 			"de": "/faq",
 		},
-		"claim-new": {
-			"en": "/claim/new",
-			"de": "/anspruch/neu",
+		"new-claim": {
+			"en": "/new-claim",
+			"de": "/neuer-anspruch",
 		},
 		"claim-id": {
 			"en": "/claim/[id]",
-			"de": "/anspruch/[id]",
+			"de": "/claim/[id]",
 		},
 		"admin-claims": {
 			"en": "/admin/claims",
