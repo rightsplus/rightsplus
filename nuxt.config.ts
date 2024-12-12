@@ -104,13 +104,13 @@ export default defineNuxtConfig({
   vueEmail: {
     baseUrl: 'https://rightsplus.up.railway.app/',
     autoImport: true,
+    tailwind: {
+      plugins: []
+    }
   },
 
   runtimeConfig: {
     public: {
-      // stripe: {
-      //   key: process.env.STRIPE_KEY,
-      // },
       algolia: {
         applicationId: process.env.ALGOLIA_APPLICATION_ID,
         apiKey: process.env.ALGOLIA_API_KEY,
@@ -122,8 +122,6 @@ export default defineNuxtConfig({
       flight: {
         aviationStack: process.env.AVIATIONSTACK_KEY,
         aviationEdge: process.env.AVIATION_EDGE_KEY,
-        key: process.env.APP_KEY,
-        appId: process.env.APP_ID
       }
     },
   },

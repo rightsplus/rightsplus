@@ -2,7 +2,7 @@
   <div>
     <NuxtLayout>
       <div class="overflow-x-hidden">
-        <img
+        <NuxtImg
           src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
           quality="70"
           width="1920"

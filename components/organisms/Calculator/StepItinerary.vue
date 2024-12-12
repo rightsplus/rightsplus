@@ -83,7 +83,7 @@
           <div
             class="flex items-center justify-center w-7 h-7 border border-neutral-200 rounded-full"
           >
-            <img
+            <NuxtImg
               v-show="!logoError"
               @error="logoError = true"
               @load="logoError = false"

@@ -8,7 +8,7 @@
       'w-12': size === 'lg',
     }"
   >
-      <img
+      <NuxtImg
         v-if="ready && !error"
         :alt="airline.name"
         :src="logo"

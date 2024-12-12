@@ -13,7 +13,7 @@ const { data } = await useAsyncData(route.fullPath, () => {
     <NuxtLayout name="generic">
       <template #category>
         <div class="flex items-center gap-2">
-          <img :src="`/locales/en-EU.svg`" class="relative z-10 w-7 shrink-0" />
+          <NuxtImg :src="`/locales/en-EU.svg`" class="relative z-10 w-7 shrink-0" />
           <span class="font-bold uppercase text-neutral-500">{{
             data?.category
           }}</span>

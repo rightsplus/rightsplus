@@ -111,9 +111,9 @@ function convertToQAFormat(input: any[]): ProcessedObject[] {
 <template>
   <div>
     <NuxtLayout name="generic">
-      <template #category>{{ t(data?.category || "") }}</template>
-      <template #title>{{ t(data?.title || "") }}</template>
-      <template #lead>{{ t(data?.lead || "") }}</template>
+      <template #category>{{ data?.category }}</template>
+      <template #title>{{ data?.title }}</template>
+      <template #lead>{{ data?.lead }}</template>
       <div class="flex flex-col gap-5">
         <div class="flex justify-center">
           <FormKit

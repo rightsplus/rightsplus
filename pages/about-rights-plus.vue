@@ -15,7 +15,7 @@ const { data } = useAsyncData("about-rights-plus", () => queryLocaleContent(rout
   <div>
     <NuxtLayout>
       <section class="min-h-screen pt-48 pb-8 bg-gray-900 text-white">
-        <img
+        <NuxtImg
           src="/images/empty-airport.jpg"
           alt="Airport"
           class="image absolute inset-0 min-h-[70vw] w-full object-cover object-top -z-1 top-8 md:top-6 lg:top-0"
@@ -27,12 +27,12 @@ const { data } = useAsyncData("about-rights-plus", () => queryLocaleContent(rout
           <div class="flex flex-col gap-12 leading-0 h-full">
             <div class="flex flex-col gap-5 mt-[20vw] lg:mt-[40vh] mb-48">
               <span class="uppercase tracking-wider text-primary-600 font-bold"
-                >{{t(data?.category)}}</span
+                >{{data?.category }}</span
               >
               <div class="flex flex-col gap-5 drop-shadow-xl">
-                <h1 class="text-4xl sm:text-6xl font-extrabold">{{ t(data?.title || "") }}</h1>
+                <h1 class="text-4xl sm:text-6xl font-extrabold">{{ data?.title }}</h1>
                 <span class="text-2xl sm:text-3xl font-medium">
-                  {{ t(data?.lead || "") }}
+                  {{ data?.lead }}
                 </span>
                 <ContentRenderer
                   :value="data || {}"
@@ -40,7 +40,7 @@ const { data } = useAsyncData("about-rights-plus", () => queryLocaleContent(rout
                 />
               </div>
               <div class="flex items-center gap-8 mt-24">
-                <img
+                <NuxtImg
                   src="/bawa.jpg"
                   alt="Joachim Bawa"
                   quality="80"

@@ -17,9 +17,9 @@ const { data } = useAsyncData("page", () => {
 <template>
   <div>
     <NuxtLayout name="generic">
-      <template #category>{{ t(data?.category || "") }}</template>
-      <template #title>{{ t(data?.title || "") }}</template>
-      <template #lead>{{ t(data?.lead || "") }}</template>
+      <template #category>{{ data?.category }}</template>
+      <template #title>{{ data?.title }}</template>
+      <template #lead>{{ data?.lead }}</template>
       <ContentRenderer :value="data || {}" class="markdown" />
     </NuxtLayout>
   </div>
