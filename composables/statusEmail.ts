@@ -18,7 +18,7 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 	}
 
 
-	const sendStatusEmail = async (status: CaseStatus, claim: RowClaimExtended, attachment?: Blob) => {
+	const sendStatusEmail = async (status: CaseStatus, claim: RowClaimExtended, attachments?: Record<string, Blob>) => {
 		try {
 
 			const { content, data } = await getParsedMarkdown(status, claim)
@@ -31,7 +31,7 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 					...data,
 					body: content
 				},
-				attachment
+				attachments
 			})
 		} catch (err) {
 			console.error(err)
@@ -43,7 +43,9 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 		dataReceived: [
 			{
 				label: '"Daten erhalten"-Mail (erneut) versenden',
-				handler: (claim) => sendStatusEmail('dataReceived', claim)
+				handler: async (claim) => {
+					sendStatusEmail('dataReceived', claim)
+				}
 			}
 		],
 		rejected: [{
@@ -58,7 +60,7 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 						id: claim.id,
 						flight: claim.booking.flight.data
 					}, i18n))
-					sendStatusEmail('accepted', claim, pdf)
+					sendStatusEmail('accepted', claim, { 'assignmentAgreement.pdf': pdf })
 				}
 			},
 			{
@@ -85,7 +87,7 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 		],
 		airlineRejected: [{
 			label: "",
-			handler: async () => {}
+			handler: async () => { }
 		}]
 	} satisfies Partial<Methods<Context, CaseStatus>>
 	return {

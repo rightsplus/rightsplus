@@ -641,6 +641,10 @@ export function cn(...inputs: ClassValue[]) {
 // Helper function to recursively append nested properties
 export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
 	try {
+		if (obj instanceof Blob) {
+			formData.append(parentKey, obj);
+			return
+		}
 		for (const [key, value] of Object.entries(obj)) {
 			const formKey = parentKey ? `${parentKey}[${key}]` : key;
 			if (value instanceof Blob) {
@@ -652,7 +656,7 @@ export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
 			} else if (value !== null && typeof value === "object") {
 				// Recursively flatten nested objects
 				appendNested(formData, value, formKey);
-			} else {
+			} else if (value != null) {
 				// Append primitive values
 				formData.append(formKey, value as string);
 			}

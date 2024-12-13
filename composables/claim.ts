@@ -13,6 +13,7 @@ export const useSendMail = () => {
 		// Construct FormData
 		const formData = new FormData();
 
+		console.log(props)
 		// Append props and attachments
 		appendNested(formData, props);
 
@@ -187,8 +188,6 @@ export const usePrepareClaimSubmission = () => {
 	const supabase = useSupabaseClient<Database>()
 	const { submitFlight, submitBooking, submitClaim, handleUploadFile, handleUploadSignature } = useSupabaseFunctions()
 	const claim = useClaim()
-	const { t } = useI18n()
-	const { send } = useSendMail();
 	const { emails } = useStatusEmail()
 	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, booking: RowBooking) => {
 		try {
