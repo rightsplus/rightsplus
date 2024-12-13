@@ -339,13 +339,13 @@ export const useDisruption = () => {
 			},
 			{
 				value: "technicalIssues",
-				label: t('reasons.technicalIssues.label'), 
+				label: t('reasons.technicalIssues.label'),
 				icon: "cogs"
 			},
-			{ 
-				value: "weatherConditions", 
-				label: t('reasons.weatherConditions.label'), 
-				icon: "cloud-sun" 
+			{
+				value: "weatherConditions",
+				label: t('reasons.weatherConditions.label'),
+				icon: "cloud-sun"
 			},
 			{
 				value: "lateArrivalOfAircraft",
@@ -506,10 +506,10 @@ export const useFlights = () => {
 
 			console.log(t('debug.fetchFlightsSupabase'))
 			const data = await fetchFlightsSupabase<Flight[]>({
-					departure,
-					arrival,
-					date,
-				})
+				departure,
+				arrival,
+				date,
+			})
 			console.log(data)
 
 
@@ -580,18 +580,32 @@ export const getCities = async (iataCodes: (string | undefined)[], locale?: stri
 	return (await Promise.all(iataCodes.map(async e => await query(e || '')))).map(e => getCityTranslation(e, locale));
 };
 
-export const useCities = <T extends { arrival?: string; departure?: string;[x: string]: string | undefined }>(iataCodes: T, options?: {
-	iata?: boolean
-}): Ref<T> => {
+export const useCities = <T extends ClaimsForm['airport']['trip']>(
+	airports: T,
+	options?: {
+		iata?: boolean
+	}
+): Ref<T> => {
 	const { locale } = useI18n()
 	const cities = ref();
 	const { query } = useAirports()
+	const iataCodes = computed(() => {
+		const a: Record<string, string> = {}
+		for (const [key, value] of Object.entries(airports)) {
+			if (Array.isArray(value)) {
+				value.forEach((e, i) => a[`${key}-${i}`] = e.iata)
+			} else {
+				a[key] = value.iata
+			}
+		}
+		return a
+	})
 	// console.log(arrival)
 	const assign = () => {
-		cities.value = iataCodes
-		query(Object.values(iataCodes).map(e => e || ''))
+		cities.value = iataCodes.value
+		query(Object.values(iataCodes.value).map(e => e || ''))
 			.then((airports) => {
-				Object.entries(iataCodes).forEach(([phase, iata]) => {
+				Object.entries(iataCodes.value).forEach(([phase, iata]) => {
 					let city = iata && airports[iata] && getCityTranslation(airports[iata], locale.value);
 					if (options?.iata) city = city?.concat(' ', `(${iata})`)
 					if (city && cities.value) {

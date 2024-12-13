@@ -22,8 +22,9 @@ const actions = computed(() =>
 );
 
 watch(
-  () => props.claim?.bookingId,
-  (id) => emit("update", { id, data: { unread: false } })
+  () => props.claim?.id,
+  (id) => emit("update", { id, data: { unread: false } }),
+  { immediate: true }
 );
 
 const active = ref(0);

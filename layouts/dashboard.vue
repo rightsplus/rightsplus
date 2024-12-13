@@ -161,11 +161,11 @@ const menu = [
     icon: "folder-closed",
     badge: claims.value?.length,
   },
-  {
-    label: t("booking", 2),
-    href: "admin-bookings",
-    icon: "tickets-airline",
-  },
+  // {
+  //   label: t("booking", 2),
+  //   href: "admin-bookings",
+  //   icon: "tickets-airline",
+  // },
   {
     label: t("flight", 2),
     href: "admin-flights",

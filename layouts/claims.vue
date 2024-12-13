@@ -18,31 +18,4 @@
 <script lang="ts" setup>
 import Header from "@/components/species/Header.vue";
 import Footer from "@/components/species/Footer.vue";
-const user = useSupabaseUser();
-const { auth } = useSupabaseAuthClient();
-const menu = computed(() => [
-  {
-    label: "Deine Forderungen",
-    link: "claim",
-    icon: "plane",
-  },
-  {
-    label: "Profil",
-    link: "profile",
-    icon: "user",
-  },
-  // {
-  //   separator: true,
-  // },
-  // {
-  //   name: "status",
-  //   onClick: () => {
-  //     auth.signOut();
-  //     navigateTo(localeRoute("index"));
-  //   },
-  //   label: "Ausloggen",
-  //   icon: "door-open",
-  //   critical: true,
-  // },
-]);
 </script>

@@ -255,9 +255,14 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
-			console.log('fetch flight for id ...')
-			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: claim.flight.flight.iata, scheduledDeparture: claim.flight.departure.scheduledTime }).single<RowFlight>();
+			console.log('fetch flight for id ...', )
+			console.log({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] })
+
+
+			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] }).single<RowFlight>();
 			
+
+			console.log(claim.flight.departure.scheduledTime)
 			const { id: flightId } = existingFlight || (await submitFlight(claim.flight)) || {}
 			
 			if (!flightId || errExisting) {

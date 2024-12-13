@@ -1,6 +1,6 @@
 ---
-category: legal
-title: privacy
+category: Rechtliches
+title: Datenschutz
 ---
 
 # Datenschutzerklärung für RightsPlus
@@ -9,7 +9,7 @@ title: privacy
 
 Wir bei **RightsPlus** nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Nachfolgend informieren wir Sie darüber, welche Daten wir erheben, wie wir sie verwenden und welche Rechte Sie gemäß der Datenschutz-Grundverordnung (DSGVO) haben.
 
----
+
 
 ## 1. Verantwortlicher
 
@@ -18,7 +18,7 @@ Verantwortlicher für die Datenverarbeitung:
 **[Adresse einfügen]**  
 E-Mail: **[E-Mail-Adresse einfügen]**
 
----
+
 
 ## 2. Erhobene Daten
 
@@ -27,7 +27,7 @@ Wir erheben nur die Daten, die notwendig sind, um unsere Dienste bereitzustellen
 - **Nutzungsdaten:** IP-Adresse, Browsertyp, Zugriffszeiten, besuchte Seiten.  
 - **Weitere Daten:** Nur wenn Sie uns diese aktiv zur Verfügung stellen (z. B. durch Formulare).  
 
----
+
 
 ## 3. Zweck der Datenverarbeitung
 
@@ -36,7 +36,7 @@ Die erhobenen Daten verwenden wir ausschließlich für folgende Zwecke:
 - Kommunikation mit Ihnen, z. B. bei Anfragen oder Supportfällen.  
 - Analyse und Verbesserung unserer Website und Dienstleistungen.  
 
----
+
 
 ## 4. Rechtsgrundlagen
 
@@ -45,7 +45,7 @@ Die Verarbeitung Ihrer Daten erfolgt auf Basis der DSGVO, insbesondere:
 - **Art. 6 Abs. 1 lit. f DSGVO** (Berechtigte Interessen, z. B. zur Verbesserung unseres Angebots).  
 - **Art. 6 Abs. 1 lit. a DSGVO** (Einwilligung, sofern erforderlich).  
 
----
+
 
 ## 5. Weitergabe von Daten
 
@@ -56,13 +56,13 @@ Wir geben Ihre Daten nur weiter, wenn:
 
 Datenübertragungen in Drittländer erfolgen nur bei Vorliegen der gesetzlichen Voraussetzungen der DSGVO.
 
----
+
 
 ## 6. Speicherdauer
 
 Ihre personenbezogenen Daten werden nur so lange gespeichert, wie dies für die Erreichung der genannten Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen.
 
----
+
 
 ## 7. Ihre Rechte
 
@@ -76,19 +76,19 @@ Sie haben folgende Rechte in Bezug auf Ihre Daten:
 
 Zur Ausübung dieser Rechte wenden Sie sich bitte an **[Kontakt einfügen]**.
 
----
+
 
 ## 8. Datensicherheit
 
 Wir setzen technische und organisatorische Maßnahmen ein, um Ihre Daten vor Verlust, Missbrauch und unberechtigtem Zugriff zu schützen. Dazu gehören unter anderem Verschlüsselungstechnologien und regelmäßige Sicherheitsüberprüfungen.
 
----
+
 
 ## 9. Änderungen der Datenschutzerklärung
 
 Diese Datenschutzerklärung kann von Zeit zu Zeit aktualisiert werden. Bitte überprüfen Sie regelmäßig unsere Website, um sich über Änderungen zu informieren.
 
----
+
 
 ## Kontakt
 
@@ -97,6 +97,6 @@ Bei Fragen oder Anliegen zum Datenschutz wenden Sie sich bitte an:
 **[Adresse einfügen]**  
 E-Mail: **[E-Mail-Adresse einfügen]**
 
----
+
 
 *Diese Datenschutzerklärung wurde zuletzt am [Datum einfügen] aktualisiert.*
