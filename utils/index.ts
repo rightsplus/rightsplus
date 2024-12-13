@@ -340,12 +340,19 @@ export const getCityTranslation = (airport: Airport, locale = 'de', highlight = 
 }
 
 export const compressImage = async (file: File, options?: Compressor.Options) => {
-	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => new Compressor(file, {
-		mimeType: 'image/webp',
-		...options,
-		success: resolve,
-		error: reject,
-	}))
+	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => {
+		try {
+			if (!file.type.startsWith('image')) throw new Error('not an image')
+			new Compressor(file, {
+				mimeType: 'image/webp',
+				...options,
+				success: resolve,
+				error: reject,
+			})
+		} catch (err) {
+			resolve?.(file)
+		}
+	})
 }
 
 export const handleFormKitIconClick = (e: MouseEvent) => {
@@ -633,22 +640,25 @@ export function cn(...inputs: ClassValue[]) {
 
 // Helper function to recursively append nested properties
 export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
-	for (const [key, value] of Object.entries(obj)) {
-		const formKey = parentKey ? `${parentKey}[${key}]` : key;
-
-		if (value instanceof Blob) {
-			// Append blobs directly
-			formData.append(formKey, value);
-		} else if (Array.isArray(value)) {
-			// Append array elements
-			value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
-		} else if (value !== null && typeof value === "object") {
-			// Recursively flatten nested objects
-			appendNested(formData, value, formKey);
-		} else {
-			// Append primitive values
-			formData.append(formKey, value as string);
+	try {
+		for (const [key, value] of Object.entries(obj)) {
+			const formKey = parentKey ? `${parentKey}[${key}]` : key;
+			if (value instanceof Blob) {
+				// Append blobs directly
+				formData.append(formKey, value);
+			} else if (Array.isArray(value)) {
+				// Append array elements
+				value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
+			} else if (value !== null && typeof value === "object") {
+				// Recursively flatten nested objects
+				appendNested(formData, value, formKey);
+			} else {
+				// Append primitive values
+				formData.append(formKey, value as string);
+			}
 		}
+	} catch (e) {
+		console.error(e)
 	}
 };
 

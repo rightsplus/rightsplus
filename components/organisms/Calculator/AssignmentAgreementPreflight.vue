@@ -106,7 +106,7 @@ const downloadAssignmentAgreement = async (
     content: (props) => [
       assignmentAgreement({
         ...props,
-        preview: false,
+        preview: true,
         content: markdownBodyToPdfMake(markdown.body.value, {
           ...pseudoRowClaim,
           id: formatClaimId(pseudoRowClaim.id),
@@ -115,6 +115,7 @@ const downloadAssignmentAgreement = async (
     ],
     info: {
       title: i18n.t("assignmentAgreement"),
+      // subtitle: i18n.t("compensationClaim.subtitle"),
       author: "Joachim Bawa",
     },
   });

@@ -7,7 +7,7 @@ import type { ClaimsForm, Database, RowBooking, RowFlight } from "~/types";
 
 
 export const useSendMail = () => {
-	const send = async ({ ...props }: SendPDFMailProps) => {
+	const send = async (props: SendPDFMailProps) => {
 		console.log("sending email");
 
 		// Construct FormData
@@ -16,14 +16,12 @@ export const useSendMail = () => {
 		// Append props and attachments
 		appendNested(formData, props);
 
-		console.log(props)
 
 		// Send FormData
 		const response = await fetch("/api/mail", {
 			method: "POST",
-			headers: useRequestHeaders(["cookie"]), // Ensure headers are compatible with FormData
+			headers: useRequestHeaders(["cookie"]),
 			body: formData,
-			// body: JSON.stringify(props)
 		});
 
 		return response;
@@ -83,7 +81,7 @@ export const useCompensation = (estimate = false) => {
 	const getError = () => {
 		assignLeg()
 		eligible.value = null
-		if (!claim) return 'noClaim' // No claim
+		if (!claim) return 'errors.noClaim' // No claim
 		const { airport, leg, flight, disruption, replacement, connection } = claim
 
 		// TRIP
@@ -91,58 +89,58 @@ export const useCompensation = (estimate = false) => {
 		const legs = generateLegs(airport.trip)
 		// console.log(departure, arrival, trip, legs)
 
-		if (!departure || !Object.keys(departure).length || !arrival || !Object.keys(arrival).length) return 'airport.missing'
+		if (!departure || !Object.keys(departure).length || !arrival || !Object.keys(arrival).length) return 'errors.airport.missing'
 		if (departure.iata === arrival.iata) {
 			// console.log(departure, arrival)
-			return 'airport.identical'
+			return 'errors.airport.identical'
 		}
-		if (!departure.ec261 && !arrival.ec261) return 'ec261.airport'
-		if (!leg || !generateLegs(trip)[leg]) return 'leg.missing'
+		if (!departure.ec261 && !arrival.ec261) return 'errors.ec261.airport'
+		if (!leg || !generateLegs(trip)[leg]) return 'errors.leg.missing'
 
 		// FLIGHT
-		if (!flight) return 'flight.missing'
+		if (!flight) return 'errors.flight.missing'
 		const airline = airlines.value[flight.airline.iata]
-		// if (!airline) return 'airline.missing'
+		// if (!airline) return 'errors.airline.missing'
 
 		if (!departure.ec261 && !airline?.isEuMember) {
 			eligible.value = false
-			return 'ec261.airline' // ineligible
+			return 'errors.ec261.airline' // ineligible
 		}
 
 
 		// DISRUPTION
 
-		if (!disruption || !disruption.type) return 'disruption.missing'
+		if (!disruption || !disruption.type) return 'errors.disruption.missing'
 
 		if (disruption.type === "delayed") {
-			if (!disruption.details) return 'disruption.detail.delay'
+			if (!disruption.details) return 'errors.disruption.detail.delay'
 			if (disruption.details === "<3") {
 				// console.log('connection', connection)
 				const { departure, arrival } = nextLeg(claim)
 				if (!connection || !(departure || arrival)) {
 					eligible.value = false
-					return 'eligible.reason.delay.<3'
+					return 'errors.eligible.reason.delay.<3'
 				}
-				if (!connection.flight) return 'connectionFlight.missing'
+				if (!connection.flight) return 'errors.connectionFlight.missing'
 				if (reachedConnectionFlight(claim)) {
 					eligible.value = false
-					return 'connection.reached'
+					return 'errors.connection.reached'
 				}
 			}
 		} else if (disruption.type === "cancelled") {
-			if (!disruption.details) return 'disruption.detail.cancelled'
+			if (!disruption.details) return 'errors.disruption.detail.cancelled'
 			if (disruption.details === '>14') {
 				eligible.value = false
-				return 'cancelled.>14'
+				return 'errors.cancelled.>14'
 			}
 			if (isReplacementFlightWithinBounds(claim)) {
 				eligible.value = false
-				return 'replacement.withinBounds'
+				return 'errors.replacement.withinBounds'
 			}
 		} else if (disruption.type === "noBoarding") {
 			if (noBoardingReasons.find(e => e.value === disruption.reason)?.selfInflicted) {
 				eligible.value = false
-				return 'disruption.selfInflicted'
+				return 'errors.disruption.selfInflicted'
 			}
 		}
 		eligible.value = true

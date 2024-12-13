@@ -349,5 +349,52 @@
   "status.dataReceived.title": "We'll take it from here",
   "eligible.reason.delay.<3": "You reached your destination with a delay of less than 3 hours and therefore have no claim for compensation.",
   "perPerson": "{value} per person",
-  "continueWithoutStopover": "Continue without stopover"
+  "continueWithoutStopover": "Continue without stopover",
+  "errors": {
+    "noClaim": "No claim data found",
+    "airport": {
+      "missing": "Departure or arrival airport information is missing",
+      "identical": "Departure and arrival airports are identical"
+    },
+    "ec261": {
+      "airport": "Neither departure nor arrival airport is within EC261 jurisdiction",
+      "airline": "Flight not eligible under EC261 - neither departure in EU nor EU airline"
+    },
+    "leg": {
+      "missing": "Flight leg information is missing"
+    },
+    "flight": {
+      "missing": "Flight information is missing"
+    },
+    "airline": {
+      "missing": "Airline information is missing"
+    },
+    "disruption": {
+      "missing": "Disruption information is missing",
+      "selfInflicted": "The denied boarding was due to passenger-related reasons",
+      "detail": {
+        "delay": "Delay details are missing",
+        "cancelled": "Cancellation details are missing"
+      }
+    },
+    "eligible": {
+      "reason": {
+        "delay": {
+          "<3": "Flight delay was less than 3 hours without missed connection"
+        }
+      }
+    },
+    "connection": {
+      "reached": "Connection flight was reached"
+    },
+    "connectionFlight": {
+      "missing": "Connection flight information is missing"
+    },
+    "cancelled": {
+      ">14": "Flight was cancelled more than 14 days before departure"
+    },
+    "replacement": {
+      "withinBounds": "Replacement flight arrived within acceptable time limits"
+    }
+  }
 }

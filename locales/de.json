@@ -150,6 +150,8 @@
   "pricesAndServices": "Preise und Leistungen",
   "pricelist": "Preisliste",
   "assignmentAgreement": "Abtretungserklärung",
+  "compensationClaim": "Entschädigungsanspruch",
+  "compensationClaim.subtitle": "Gemäß Verordnung (EG) Nr. 261/2004",
   "legal": "Rechtliches",
   "legalNotice": "Impressum",
   "tmg": "Angaben gemäß § 5 TMG",
@@ -214,7 +216,7 @@
   "flight.title": "Flug",
   "flight.description": "Welchen Flug hast du genommen?",
   "disruptionDetected.title": "Störung",
-  "disruptionDetected.delayed.description": "Dein Flug ist offenbar mit einer Verspätung von {delay} in {arrival} gelandet",
+  "disruptionDetected.delayed.description": "Dein Flug ist offenbar mit einer Versp��tung von {delay} in {arrival} gelandet",
   "disruptionDetected.cancelled.description": "Dein Flug wurde offenbar annulliert. Möglicherweise hast du ein Recht auf Entschädigung!",
   "noDisruptionDetected.title": "Was ist schief gelaufen?",
   "noDisruptionDetected.description": "Dein Flug ist offenbar pünktlich in {arrival} gelandet",
@@ -315,7 +317,7 @@
     },
     "completeProcess": {
       "title": "Gesamte Abwicklung",
-      "description": "Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.\nDurch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die h��ufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko."
+      "description": "Wir übernehmen die gesamte Abwicklung in Eigenverantwortung. Sie müssen hierfür lediglich den jeweiligen Anspruch an uns übertragen. Selbstverständlich halten wir Sie über den aktuellen Status stets auf dem Laufenden.\nDurch unsere Beauftragung ersparen Sie sich nicht nur frustrierende und zeitintensive Schriftwechsel mit den Fluggesellschaften, die häufig nicht zum gewünschten Erfolg führen, sondern auch gegebenenfalls anfallende Rechtsanwalts- bzw. Prozesskosten und das damit einhergehende Prozessrisiko."
     },
     "noRisk": {
       "title": "Kein Kosten- & Prozessrisiko",
@@ -348,6 +350,53 @@
       "disruptionReason": {
         "label": "Welchen Grund hat die Airline angegeben?"
       }
+    }
+  },
+  "errors": {
+    "noClaim": "Keine Anspruchsdaten gefunden",
+    "airport": {
+      "missing": "Informationen zum Abflug- oder Ankunftsflughafen fehlen",
+      "identical": "Abflug- und Ankunftsflughafen sind identisch"
+    },
+    "ec261": {
+      "airport": "Weder Abflug- noch Ankunftsflughafen fallen unter die EC261-Verordnung",
+      "airline": "Flug nicht nach EC261 berechtigt - weder Abflug in der EU noch EU-Airline"
+    },
+    "leg": {
+      "missing": "Flugetappeninformationen fehlen"
+    },
+    "flight": {
+      "missing": "Fluginformationen fehlen"
+    },
+    "airline": {
+      "missing": "Airline-Informationen fehlen"
+    },
+    "disruption": {
+      "missing": "Störungsinformationen fehlen",
+      "selfInflicted": "Die Nichtbeförderung war auf passagierbezogene Gründe zurückzuführen",
+      "detail": {
+        "delay": "Verspätungsdetails fehlen",
+        "cancelled": "Details zur Stornierung fehlen"
+      }
+    },
+    "eligible": {
+      "reason": {
+        "delay": {
+          "<3": "Flugverspätung war weniger als 3 Stunden ohne verpassten Anschluss"
+        }
+      }
+    },
+    "connection": {
+      "reached": "Anschlussflug wurde erreicht"
+    },
+    "connectionFlight": {
+      "missing": "Informationen zum Anschlussflug fehlen"
+    },
+    "cancelled": {
+      ">14": "Flug wurde mehr als 14 Tage vor Abflug storniert"
+    },
+    "replacement": {
+      "withinBounds": "Ersatzflug kam innerhalb akzeptabler Zeitgrenzen an"
     }
   }
 }

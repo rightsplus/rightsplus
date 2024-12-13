@@ -70,17 +70,24 @@ export default async ({
   info: {
     title: string,
     author?: string,
-    subTitle?: string,
+    subtitle?: string,
     category?: string,
     subject?: string,
     keywords?: string,
   }
 }) => {
-  const { t } = i18n
   const main = [
     {
-      text: t('assignmentAgreement'),
-      style: 'title',
+      stack: [
+        {
+          text: info.title,
+          style: 'title',
+        },
+        info.subtitle ? {
+          text: info.subtitle,
+          style: 'subtitle',
+        } : undefined,
+      ].filter(e => !!e),
       margin: [0, 0, 0, measurements.margin_x2],
     },
     {
