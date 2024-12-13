@@ -147,7 +147,7 @@ const props = defineProps<{
   showFilter?: boolean;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
-const {airlines} = useAirlines()
+const { airlines } = useAirlines();
 const show = ref(false);
 const container = ref(null);
 const group = (index: number) =>
@@ -214,12 +214,14 @@ const fetch = () => {
     loading.value = false;
     return;
   }
-
   fetchFlights({
     departure: props.departure,
     arrival: props.arrival,
     date: props.date,
-  }).finally(() => (loading.value = false));
+  })
+  .then(console.log)
+  .catch(console.log)
+  .finally(() => (loading.value = false));
 };
 onMounted(() => {
   fetch();

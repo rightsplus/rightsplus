@@ -1,6 +1,5 @@
 import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
 import nodemailer from 'nodemailer'
-import { generatePDF as generate } from "@/pdf/pdfGenerator";
 import { useCompiler } from '#vue-email'
 import type { SendMailProps, SendPDFMailProps } from "./types";
 

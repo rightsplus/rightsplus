@@ -343,11 +343,6 @@
     "date": "Nach Datum filtern",
     "number": "Nach Flugnummer filtern"
   },
-  "fetchFlightsSupabase": "Flüge von Supabase abrufen",
-  "debug": {
-    "fetchFlights": "Flüge abrufen",
-    "fetchFlightsSupabase": "Flüge von Supabase abrufen"
-  },
   "calculator": {
     "forms": {
       "disruptionReason": {

@@ -50,7 +50,7 @@
       <span
         class="flex w-full text-xs sm:text-sm text-gray-500"
         v-html="
-          `Copyright © 2015-${new Date().getFullYear()} Rights Plus GbR. ${t(
+          `Copyright © 2024-${new Date().getFullYear()} Rights Plus. ${t(
             'allRightsReserved'
           )}`
         "
