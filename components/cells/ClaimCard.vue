@@ -166,11 +166,6 @@
                 class="text-neutral-400"
               />{{ $n(distance, "km") }}</span
             >
-            <span class="leading-0 flex items-center gap-2"
-              ><FontAwesomeIcon icon="co2" class="text-green-500" /><span>{{
-                $n(calculateCO2e(distance), "kg", { maximumFractionDigits: 0 })
-              }} CO<sub>2</sub>e</span></span
-            >
           </span>
         </div>
         <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
