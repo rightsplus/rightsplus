@@ -223,7 +223,7 @@
   "disruptionType.title": "Grund für Anspruch",
   "disruptionType.description": "Weshalb bist du nicht wie geplant in {arrival} gelandet?",
   "disruptionReason.cancelled.title": "Grund für Annullierung",
-  "disruptionReason.delayed.title": "Grund für Verspätet",
+  "disruptionReason.delayed.title": "Grund für Verspätung",
   "disruptionReason.noBoarding.title": "Grund für Nichtbeförderung",
   "disruptionReason.cancelled.description": "Welchen Grund hat die Fluggesellschaft für die Annullierung angegeben?",
   "disruptionReason.delayed.description": "Welchen Grund hat die Fluggesellschaft für die Verspätung angegeben?",
