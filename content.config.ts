@@ -13,11 +13,19 @@ export default defineContentConfig({
     }),
     emails: defineCollection({
       type: 'page',
-      source: '**/*.md',
+      source: 'emails/**/*.md',
       schema: z.object({
         subject: z.string(),
         category: z.string().optional(),
         preview: z.string().optional(),
+        rawbody: z.string()
+      })
+    }),
+    pdf: defineCollection({
+      type: 'page',
+      source: 'pdf/**/*.md',
+      schema: z.object({
+        category: z.string().optional(),
         rawbody: z.string()
       })
     })

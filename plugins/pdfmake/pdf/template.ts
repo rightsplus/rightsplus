@@ -1,5 +1,5 @@
 import type { ContentTable, TDocumentDefinitions } from 'pdfmake/interfaces'
-// import { getFooterHeight, measurements } from './utils'
+import { hsl2hex } from './utils'
 import { theme } from '#tailwind-config'
 const { colors } = theme
 
@@ -18,23 +18,6 @@ const measurements = {
 }
 const { mm } = measurements
 
-export function hsl2hex(hsl: string) {
-  if (hsl.includes('#')) return hsl
-  const hslArr = hsl
-    .match(/\d+/g)
-    ?.map(num => parseInt(num));
-  if (!hslArr) return hsl
-  const [h, s] = hslArr
-  let [, , l] = hslArr
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = (n: number) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0'); // convert to Hex and prefix "0" if needed
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
 
 export const styles = {
   title: {
@@ -377,4 +360,39 @@ export function getButton(text: string, link: string, margins: number[]) {
     ],
     margin: [(margins?.[0] || 0) - 1, margins?.[1] || 0, margins?.[2] || 0, margins?.[3] || 0],
   }
+}
+
+export const getField = ({ w, h, canvasOptions, fieldOptions, content, }: { w: number, h: number, canvasOptions?: CanvasRect, fieldOptions?: Content, content?: Content[] }) => {
+  const canvas: CanvasRect = {
+    type: 'rect',
+    x: 0,
+    y: 0,
+    w,
+    h,
+    r: 5,
+    color: '#f8f8f8'
+  };
+  if (canvasOptions) {
+    Object.assign(canvas, canvasOptions)
+  }
+  const field: Content = {
+    canvas: [{ ...canvas }],
+  }
+  if (fieldOptions) {
+    Object.assign(field, fieldOptions)
+  }
+  const stack: Content[] = [field]
+  if (content?.length) {
+    for (const block of content) {
+      const isContent = typeof block !== 'string' && typeof block !== 'number' && !Array.isArray(block)
+      const relativeBlock = Object.assign(block, {
+        relativePosition: {
+          x: canvas.x + 10 + (isContent ? block.relativePosition?.x || 0 : 0),
+          y: -canvas.h + (isContent ? block.relativePosition?.y || 0 : 0),
+        }
+      })
+      stack.push(relativeBlock)
+    }
+  }
+  return stack
 }
