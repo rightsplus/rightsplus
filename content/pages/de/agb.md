@@ -128,35 +128,19 @@ Wenn Sie Verbraucher im Sinne des § 13 BGB sind, das heißt, eine natürliche P
 
 ### Widerrufsbelehrung
 
-**Widerrufsrecht**  
-Sie haben das Recht, binnen 14 Tagen ohne Angaben von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsschlusses (im Sinne der Ziffer 3.1), spätestens jedoch mit Erhalt dieser Widerrufsbelehrung. Um Ihr Widerrufsrecht auszuüben, müssen Sie uns:  
-RIGHTS PLUS  
-Joachim Bawa  
-Zülpicher Platz 18  
-50674 Köln  
-Tel.: XXX  
-E-Mail: info@rightsplus.de  
-mittels einer eindeutigen Erklärung (z.B. ein mit der Post versandter Brief, Telefax oder E-Mail unter Angabe Ihrer Fallnummer) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular (s.u.) verwenden, das jedoch nicht vorgeschrieben ist.  
-Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
+**Widerrufsrecht**:brSie haben das Recht, binnen 14 Tagen ohne Angaben von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsschlusses (im Sinne der Ziffer 3.1), spätestens jedoch mit Erhalt dieser Widerrufsbelehrung. Um Ihr Widerrufsrecht auszuüben, müssen Sie uns::brRIGHTS PLUS:brJoachim Bawa:brZülpicher Platz 18:br50674 Köln:brTel.: XXX:brE-Mail: <info@rightsplus.de>:brmittels einer eindeutigen Erklärung (z.B. ein mit der Post versandter Brief, Telefax oder E-Mail unter Angabe Ihrer Fallnummer) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular (s.u.) verwenden, das jedoch nicht vorgeschrieben ist.:brZur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
 
 ### Folgen des Widerrufs
 
-Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Überweisungsgebühren (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Auszahlung als die von uns angebotene SEPA Überweisung gewählt haben), unverzüglich und spätestens binnen 14 Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.  
-Haben Sie verlangt, dass die Dienstleistung während der Widerrufsfrist beginnen soll, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich dieses Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht.
+Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Überweisungsgebühren (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Auszahlung als die von uns angebotene SEPA Überweisung gewählt haben), unverzüglich und spätestens binnen 14 Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.:brHaben Sie verlangt, dass die Dienstleistung während der Widerrufsfrist beginnen soll, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich dieses Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht.
 
 ### Besondere Hinweise
 
-Ihr Widerrufsrecht erlischt vorzeitig, wenn die Dienstleistung von uns vollständig erbracht und mit der Ausführung der Dienstleistung erst nach Ihrer ausdrücklichen Zustimmung begonnen wurde und Sie vor Ausführung der Dienstleistung Ihrer Kenntnis bestätigt haben, dass Sie Ihr Widerrufsrecht bei vollständiger Vertragserfüllung unsererseits verlieren.  
-Wenn Sie den Vertrag widerrufen wollen, dann können Sie dieses Formular ausfüllen:
+Ihr Widerrufsrecht erlischt vorzeitig, wenn die Dienstleistung von uns vollständig erbracht und mit der Ausführung der Dienstleistung erst nach Ihrer ausdrücklichen Zustimmung begonnen wurde und Sie vor Ausführung der Dienstleistung Ihrer Kenntnis bestätigt haben, dass Sie Ihr Widerrufsrecht bei vollständiger Vertragserfüllung unsererseits verlieren.:brWenn Sie den Vertrag widerrufen wollen, dann können Sie dieses Formular ausfüllen:
 
 ### Muster-Widerrufsformular
 
-An:  
-RIGHTS PLUS  
-Joachim Bawa  
-Zülpicher Platz 18  
-50674 Köln  
-E-Mail: info@rightsplus.de
+An::brRIGHTS PLUS:brJoachim Bawa:brZülpicher Platz 18:br50674 Köln:brE-Mail: <info@rightsplus.de>
 
 Hiermit widerrufe(n) ich/wir (\*) den von mir/uns (\*) abgeschlossenen Vertrag über die Erbringung der folgenden Dienstleistungen:
 
@@ -175,7 +159,6 @@ Datum:
 (\*) Unzutreffendes streichen.
 
 **Ende der Widerrufsbelehrung**
-
 
 ## 11. Schlussbestimmungen
 
