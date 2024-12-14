@@ -7,10 +7,10 @@ definePageMeta({
     return !isStaticFile;
   },
 });
-const { t } = useI18n();
+
 const { queryLocaleContent } = useI18nContent();
 const route = useRoute();
-const { data } = useAsyncData("page", () => {
+const { data } = useAsyncData(route.fullPath, () => {
   return queryLocaleContent(route.fullPath).first();
 });
 </script>

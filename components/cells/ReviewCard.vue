@@ -13,10 +13,10 @@
             : undefined
         "
       />
-      <span
+      <!-- <span
         class="text-xs sm:text-sm sm:leading-none font-medium leading-none text-gray-500 ml-auto"
         >{{ review.relative_time_description }}</span
-      >
+      > -->
       <button
         v-if="$attrs.onClose"
         class="h-12 w-12 min-w-[48px] md:h-16 md:w-16 md:min-w-[48px] items-center justify-center -m-3 md:-m-5 text-stone-400 hover:text-primary-500 rounded-xl"

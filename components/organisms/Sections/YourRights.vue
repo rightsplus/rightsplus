@@ -8,7 +8,7 @@
       alt="Airport"
       loading="lazy"
       format="webp"
-      class="absolute inset-0 h-full max-h-screen w-full object-cover -z-1 -scale-x-100"
+      class="absolute inset-0 h-full max-h-screen w-full object-cover -z-1"
     />
     <div class="max-w-5xl mx-auto px-5 sm:px-12 h-full relative z-1">
       <div class="flex flex-col gap-12 leading-0 h-full">
