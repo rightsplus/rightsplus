@@ -216,7 +216,7 @@
   "flight.title": "Flug",
   "flight.description": "Welchen Flug hast du genommen?",
   "disruptionDetected.title": "Störung",
-  "disruptionDetected.delayed.description": "Dein Flug ist offenbar mit einer Versp��tung von {delay} in {arrival} gelandet",
+  "disruptionDetected.delayed.description": "Dein Flug ist offenbar mit einer Verspätung von {delay} in {arrival} gelandet",
   "disruptionDetected.cancelled.description": "Dein Flug wurde offenbar annulliert. Möglicherweise hast du ein Recht auf Entschädigung!",
   "noDisruptionDetected.title": "Was ist schief gelaufen?",
   "noDisruptionDetected.description": "Dein Flug ist offenbar pünktlich in {arrival} gelandet",

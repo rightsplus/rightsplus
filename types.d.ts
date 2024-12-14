@@ -282,6 +282,14 @@ export interface RowBooking extends Row {
   number: string;
   flightId: RowFlight['id'];
   disruption: ClaimsForm['disruption'];
+  trip: {
+    departure: string;
+    arrival: string;
+    layover?: string[]
+  }
+  connectionFlightId?: RowFlight['id']
+  replacementFlightId?: RowFlight['id']
+
 }
 export interface RowClaim extends Row {
   status: CaseStatus;
@@ -291,6 +299,11 @@ export interface RowClaim extends Row {
   unread: boolean;
   notes: string;
   lang: string;
+  protocol: {
+    timestamp: string;
+    type: 'email' | 'note'
+    value: string;
+  }[]
 }
 export type RowClaimExtended = RowClaim & {
   booking: RowBooking & {
@@ -312,6 +325,11 @@ export interface Database {
         Row: RowClaim
         Insert: RowClaim
         Update: RowClaim
+      }
+      bookings: {
+        Row: RowBooking
+        Insert: RowBooking
+        Update: RowBooking
       }
       flights: {
         Row: RowFlight

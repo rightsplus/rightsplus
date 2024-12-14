@@ -570,7 +570,7 @@ export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
 	}
 }
 
-export const getExtendedClaimQuery = () => "*, booking ( flight ( *, airline ( * ) ), disruption, number )"
+export const getExtendedClaimQuery = () => "*, booking ( flight!booking_flightId_fkey ( *, airline ( * ) ), disruption, number, trip )"
 
 
 

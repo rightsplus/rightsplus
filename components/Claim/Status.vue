@@ -2,6 +2,7 @@
   <component :is="hasChangeListener ? Dropdown : 'div'">
     <span
       class="rounded-full px-2.5 py-1.5 text-sm leading-none font-medium flex gap-2 items-center ring-1 ring-white"
+      v-bind="$attrs"
       v-if="status"
       :title="$t(`status.${status}`)"
       :class="[

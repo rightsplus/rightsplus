@@ -260,10 +260,16 @@ export const useSupabaseFunctions = () => {
 		}
 	}
 	const submitBooking = async (claim: ClaimsForm, flightId: number) => {
+		// @todo: add connection and replacement flight
 		const preparedBooking = {
 			flightId,
 			number: claim.client.bookingNumber,
 			disruption: claim.disruption,
+			trip: {
+				departure: claim.airport.trip.departure!.iata,
+				arrival: claim.airport.trip.arrival!.iata,
+				layover: claim.airport.trip.layover?.map(e => e.iata),
+			},
 		} as Omit<RowBooking, 'id' | 'createdAt'>;
 		try {
 			const { data, error } = await supabase

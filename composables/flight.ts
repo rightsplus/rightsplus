@@ -600,7 +600,7 @@ export const useCities = <T extends ClaimsForm['airport']['trip']>(
 		}
 		return a
 	})
-	// console.log(arrival)
+	console.log(airports)
 	const assign = () => {
 		cities.value = iataCodes.value
 		query(Object.values(iataCodes.value).map(e => e || ''))

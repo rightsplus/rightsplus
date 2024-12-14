@@ -1,5 +1,5 @@
 // import { useI18n } from "#i18n"
-import type { CaseStatus, ClaimsForm, ClaimState, RowClaimExtended } from "~/types"
+import { type Database, type CaseStatus, type ClaimsForm, type ClaimState, type RowClaimExtended } from "~/types"
 import type { Methods } from "~/composables/machine"
 import useCreatePdf from "~/plugins/pdfmake/useCreatePdf"
 import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement"
@@ -8,6 +8,7 @@ import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgree
 export const useStatusEmail = <Context extends RowClaimExtended>() => {
 	const i18n = useI18n()
 	const { send } = useSendMail();
+	const supabase = useSupabaseClient<Database>()
 
 	const { generatePDF } = useCreatePdf()
 	const { queryLocaleContent } = useI18nContent('emails')
@@ -18,13 +19,13 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 	}
 
 
-	const sendStatusEmail = async (status: CaseStatus, claim: RowClaimExtended, attachments?: Record<string, Blob>) => {
+	const sendStatusEmail = async ({ status, claim, attachments, to }: { status: CaseStatus, claim: RowClaimExtended, attachments?: Record<string, Blob>, to?: string }) => {
 		try {
 
 			const { content, data } = await getParsedMarkdown(status, claim)
 
-			send({
-				to: claim.client.email,
+			await send({
+				to: to || claim.client.email,
 				subject: data.subject,
 				template: "Status.vue",
 				data: {
@@ -33,6 +34,11 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 				},
 				attachments
 			})
+			const res = await supabase.rpc('append_to_protocol', {
+				claim_id: claim.id,
+				new_data: { timestamp: new Date().toISOString(), type: 'email', value: status }
+			})
+			console.log(res)
 		} catch (err) {
 			console.error(err)
 		}
@@ -44,13 +50,13 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 			{
 				label: '"Daten erhalten"-Mail (erneut) versenden',
 				handler: async (claim) => {
-					sendStatusEmail('dataReceived', claim)
+					sendStatusEmail({ status: 'dataReceived', claim })
 				}
 			}
 		],
 		rejected: [{
 			label: "Wir nehmen den Fall nicht an",
-			handler: (claim) => sendStatusEmail('rejected', claim)
+			handler: (claim) => sendStatusEmail({ status: 'rejected', claim })
 		}],
 		awaitInitialAirlineResponse: [
 			{
@@ -60,25 +66,20 @@ export const useStatusEmail = <Context extends RowClaimExtended>() => {
 						id: claim.id,
 						flight: claim.booking.flight.data
 					}, i18n))
-					sendStatusEmail('accepted', claim, { 'assignmentAgreement.pdf': pdf })
+					sendStatusEmail({ status: 'accepted', claim, attachments: { 'assignmentAgreement.pdf': pdf } })
 				}
 			},
 			{
 				label: "Wir hanben hier einen Fall für euch!",
 				handler: async (claim) => {
 					try {
-						const { content, data } = await getParsedMarkdown('awaitInitialAirlineResponse', claim)
 						const { email } = claim.booking.flight.airline
-						if (!email) return
-						send({
-							to: email,
-							subject: data.subject,
-							template: "Status.vue",
-							data: {
-								...data,
-								body: content
-							},
-						})
+						if (!email) return // @todo: handle when airline has no email
+						const pdf = await generatePDF(assignmentAgreement(claim.client, {
+							id: claim.id,
+							flight: claim.booking.flight.data
+						}, i18n))
+						sendStatusEmail({ status: 'awaitInitialAirlineResponse', claim, attachments: { 'assignmentAgreement.pdf': pdf }, to: email })
 					} catch (err) {
 						console.error(err)
 					}
