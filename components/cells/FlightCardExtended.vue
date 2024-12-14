@@ -5,7 +5,8 @@ import AirlineLogo from "./AirlineLogo.vue";
 import type { ButtonProps } from "../core/Button.vue";
 export type FlightCardProps = {
   flight: Flight;
-  booking: RowBooking;
+  booking?: RowBooking;
+  airport?: ClaimsForm["airport"];
   selected?: boolean;
   is?: string;
   disabled?: boolean;
@@ -25,7 +26,7 @@ const status = useFlightStatus(props.flight, { detailed: true });
 const airportIatas = computed(() => ({
   departure: props.flight.departure,
   arrival: props.flight.arrival,
-}))
+}));
 const city = useCities(airportIatas.value);
 const { airline, pending } = useAirline(props.flight?.airline);
 const { airline: codesharedAirline } = useAirline(
@@ -33,7 +34,23 @@ const { airline: codesharedAirline } = useAirline(
 );
 
 const { locale } = useI18n();
+const trip = computed(() => {
+  if (props.booking) {
+    return props.booking.trip;
+  }
 
+  if (props.airport) {
+    return Object.fromEntries(
+      Object.entries(props.airport.trip).map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return [key, value.map((e) => e.iata)];
+        } else {
+          return [key, value.iata];
+        }
+      })
+    );
+  }
+});
 const arrivalTime = computed(() => {
   const { actualTime } = props.flight?.arrival || {};
   // console.log(flight.value)
@@ -41,12 +58,12 @@ const arrivalTime = computed(() => {
 });
 const { airports, query } = useAirports();
 onMounted(() => {
-  query([props.booking.trip?.departure, props.booking.trip?.arrival]);
+  query([trip.value?.departure, trip.value?.arrival]);
 });
 const distance = computed(() =>
   getAirportDistance(
-    airports.value[props.booking.trip?.departure],
-    airports.value[props.booking.trip?.arrival]
+    airports.value[trip.value?.departure],
+    airports.value[trip.value?.arrival]
   )
 );
 </script>
@@ -114,7 +131,7 @@ const distance = computed(() =>
           <span class="font-bold flex items-center text-sm gap-3"
             ><span class="leading-0 flex items-center gap-2"
               ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
-                getLocalizedDate(flight.arrival.scheduledTime, locale, 'short')
+                getLocalizedDate(flight.arrival.scheduledTime, locale, "short")
               }}</span
             ><span class="leading-0 flex items-center gap-2"
               ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
@@ -132,7 +149,7 @@ const distance = computed(() =>
             <div class="flex items-center gap-3">
               <span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="calendar" class="text-neutral-400" />{{
-                  getLocalizedDate(arrivalTime, locale, 'short')
+                  getLocalizedDate(arrivalTime, locale, "short")
                 }}</span
               ><span class="leading-0 flex items-center gap-2"
                 ><FontAwesomeIcon icon="clock" class="text-neutral-400" />{{
@@ -167,8 +184,8 @@ const distance = computed(() =>
           <span class="text-sm text-neutral-500"
             >{{ t("flightDistance") }} ({{
               t("fromTo", {
-                from: booking.trip?.departure,
-                to: booking.trip?.arrival,
+                from: trip?.departure,
+                to: trip?.arrival,
               })
             }})</span
           >

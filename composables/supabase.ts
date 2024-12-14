@@ -89,6 +89,12 @@ export const useSupabaseFunctions = () => {
 
 		console.log(supabaseQuery)
 
+		try {
+			const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
+
+		} catch (err) {
+			console.log(err)
+		}
 		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
 		console.log('data', flights)

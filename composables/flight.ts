@@ -140,19 +140,15 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 	// // }
 	const { t } = useI18n();
 	return computed(() => {
-		const s = flight?.arrival?.delay > 0 ? "delayed" : flight?.status;
 		const base = "text-sm font-medium leading-none whitespace-nowrap px-2 py-1 -mx-1 rounded-full border "
-		// console.log(s)
-		return {
+		const states = {
 			cancelled: {
 				class: base + "bg-red-100 border-red-200 text-red-600",
 				text: t("cancelled"),
 			},
 			delayed: {
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
-				text: options?.detailed ? t("delayed.by", {
-					value: getDuration(flight?.arrival?.delay || 0),
-				}) : t("delayed"),
+				text: t("delayed"),
 			},
 			diverted: {
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
@@ -173,8 +169,18 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 			unknown: {
 				class: base + "bg-gray-100 border-gray-200 text-gray-600",
 				text: t("unknown"),
-			},
-		}[s || 'unknown'];
+			}
+		}
+		if (!flight) {
+			return states['unknown']
+		}
+		let s: typeof flight.status | 'delayed' = (flight?.status || 'unknown')
+
+		if ((!flight.arrival.actualTime || (new Date(flight.arrival.actualTime) < new Date())) && flight.status === 'active') s = "landed"
+
+		if (flight.arrival.delay > 0) s = "delayed"
+
+		return states[s || 'unknown'];
 
 	});
 }
