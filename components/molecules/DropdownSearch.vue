@@ -6,7 +6,7 @@
       :modelValue="modelValue"
       @update:modelValue="updateInput"
       :prefix-icon="prefixIcon"
-      :suffix-icon="loading ? 'circle-quarter' : suffixIcon || 'circle-quarter'"
+      :suffix-icon="loading ? 'circle-quarter' : suffixIcon || ' '"
       :prefix-icon-class="$attrs['prefix-icon-class']"
       :suffix-icon-class="$attrs['suffix-icon-class']"
       :autocomplete="!showDropdown ? autocomplete : 'one-time-code'"
@@ -27,11 +27,7 @@
       :placeholder="placeholder"
       :disabled="disabled"
       :classes="{
-        outer: `!mb-0 ${
-          !loading && !suffixIcon
-            ? 'hidden-suffix [&_.formkit-suffix-icon]:hidden'
-            : ''
-        }`,
+        outer: '!mb-0',
         suffixIcon: loading ? '[&>svg]:animate-revolve' : '',
         inner: `${
           inputFocused &&

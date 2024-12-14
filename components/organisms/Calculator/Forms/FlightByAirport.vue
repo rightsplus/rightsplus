@@ -43,6 +43,6 @@ const start = () => {
   // console.log(claim)
   // console.log(state.value)
   // return
-  push(localePath("claim-new"));
+  push(localePath("new-claim"));
 };
 </script>

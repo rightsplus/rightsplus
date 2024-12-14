@@ -1,80 +1,4 @@
-<template>
-  <div>
-    <NuxtLayout name="dashboard">
-      <div class="flex w-full" ref="container">
-        <Transition name="fade">
-          <span
-            v-if="status === 'pending'"
-            class="fixed bottom-0 right-0 bg-white p-2 shadow m-5 rounded leading-none"
-            ><FontAwesomeIcon icon="circle-quarter" class="animate-revolve" />
-          </span>
-        </Transition>
 
-        <div
-          class="flex flex-col h-full w-[--width] min-w-64"
-          :style="`--width: ${width}px`"
-        >
-          <div
-            class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0"
-          >
-            <div
-              class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0"
-            >
-              <div class="flex items-stretch gap-1.5 min-w-0">
-                <h1
-                  class="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white min-w-0"
-                >
-                  <span class="truncate">{{ $t("claim", 2) }}</span>
-                </h1>
-                <Badge
-                  v-if="claims?.filter((e) => e.unread).length"
-                  :content="claims?.filter((e) => e.unread).length.toString()"
-                  primary
-                />
-              </div>
-              more
-            </div>
-          </div>
-          <div
-            class="flex-1 flex flex-col overflow-y-auto p-2 h-full"
-            @click.self="activeClaimId = undefined"
-          >
-            <DashboardListItem
-              v-for="claim in claims"
-              :title="formatClaimId(claim.id, true)"
-              :content="
-                [claim.client.firstName, claim.client.lastName].join(' ')
-              "
-              :date="claim.createdAt"
-              :active="claim.id === activeClaimId"
-              :unread="claim.unread"
-              @click="
-                activeClaimId =
-                  activeClaimId !== claim.id ? claim.id : undefined
-              "
-            >
-              <div class="flex items-center gap-2 justify-between">
-                <div class="flex items-center gap-2 text-neutral-400">
-                  <AirlineLogo size="sm" :airline="operatingAirline(claim)" />
-                  <span>{{ operatingAirline(claim).name }}</span>
-                </div>
-                <ClaimStatus :status="claim.status" />
-              </div>
-            </DashboardListItem>
-          </div>
-        </div>
-        <DashboardSeparator vertical @drag="width = $event - offset" />
-        <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
-          <div class="flex-col items-stretch relative w-full flex-1">
-            <div class="flex-1 p-5 w-full h-full">
-              <ClaimManagement :claim="activeClaim" @update="updateData" :key="activeClaim?.id" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </NuxtLayout>
-  </div>
-</template>
 <script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
@@ -117,14 +41,14 @@ const {
   refresh,
   clear,
 } = useAsyncData(async () => {
-  const { data } = await client
+  const { data, error } = await client
     .from("claim")
     .select(getExtendedClaimQuery())
     // .or(`status.is.null,status.neq.done`)
     .order("createdAt", { ascending: false })
     .returns<RowClaimExtended[]>();
 
-  console.log(data);
+  console.log(data, error);
   if (data) {
     queryAirlines(
       airlinesByFlights(data.map((e) => e.booking.flight.data)).map(
@@ -186,3 +110,79 @@ const operatingAirline = (claim: RowClaimExtended) => {
   return airlines.value[iata] || {};
 };
 </script>
+<template>
+  <div>
+    <NuxtLayout name="dashboard">
+      <div class="flex w-full" ref="container">
+        <Transition name="fade">
+          <span
+            v-if="status === 'pending'"
+            class="fixed bottom-0 right-0 bg-white p-2 shadow m-5 rounded leading-none"
+            ><FontAwesomeIcon icon="circle-quarter" class="animate-revolve" />
+          </span>
+        </Transition>
+
+        <div
+          class="flex flex-col h-full w-[--width] min-w-64"
+          :style="`--width: ${width}px`"
+        >
+          <div
+            class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0"
+          >
+            <div
+              class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0"
+            >
+              <div class="flex items-stretch gap-1.5 min-w-0">
+                <h1
+                  class="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white min-w-0"
+                >
+                  <span class="truncate">{{ $t("claim", 2) }}</span>
+                </h1>
+                <Badge
+                  v-if="claims?.filter((e) => e.unread).length"
+                  :content="claims?.filter((e) => e.unread).length.toString()"
+                  primary
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex-1 flex flex-col overflow-y-auto p-2 h-full"
+            @click.self="activeClaimId = undefined"
+          >
+            <DashboardListItem
+              v-for="claim in claims"
+              :title="formatClaimId(claim.id, true)"
+              :content="
+                [claim.client.firstName, claim.client.lastName].join(' ')
+              "
+              :date="claim.createdAt"
+              :active="claim.id === activeClaimId"
+              :unread="claim.unread"
+              @click="
+                activeClaimId =
+                  activeClaimId !== claim.id ? claim.id : undefined
+              "
+            >
+              <div class="flex items-center gap-2 justify-between">
+                <div class="flex items-center gap-2 text-neutral-400">
+                  <AirlineLogo size="sm" :airline="operatingAirline(claim)" />
+                  <span>{{ operatingAirline(claim).name }}</span>
+                </div>
+                <ClaimStatus :status="claim.status" />
+              </div>
+            </DashboardListItem>
+          </div>
+        </div>
+        <DashboardSeparator vertical @drag="width = $event - offset" />
+        <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
+          <div class="flex-col items-stretch relative w-full flex-1">
+            <div class="flex-1 p-5 w-full h-full">
+              <ClaimManagement :claim="activeClaim" @update="updateData" :key="activeClaim?.id" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </NuxtLayout>
+  </div>
+</template>

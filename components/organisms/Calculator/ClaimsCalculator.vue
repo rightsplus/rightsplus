@@ -111,7 +111,7 @@ const filteredFlights = computed(() => {
   return filtered;
 });
 
-const city = useCities({ arrival: claimState.airport.trip.arrival?.iata });
+const city = useCities(claimState.airport.trip);
 
 
 const { prepareClaimSubmission } = usePrepareClaimSubmission();

@@ -167,7 +167,7 @@ p {
   &[data-prefix-icon="true"] {
     --left: 46px;
   }
-  &[data-suffix-icon="true"]:not(.hidden-suffix) {
+  &[data-suffix-icon="true"] {
     --right: 46px;
   }
 }
@@ -220,6 +220,9 @@ p {
     --scale: 0.7;
     left: calc(var(--left) + 1.5px) !important;
     color: var(--color-neutral-500);
+  }
+  &[data-family="dropdown"]:not([data-empty="true"]) label.formkit-label {
+    left: calc(var(--left) - 0.5px) !important;
   }
 
   &[data-prefix-icon="false"] {

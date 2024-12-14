@@ -30,7 +30,6 @@
                   primary
                 />
               </div>
-              more
             </div>
           </div>
           <div

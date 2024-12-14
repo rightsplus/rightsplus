@@ -23,7 +23,7 @@
         <Button tertiary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
-        <Button primary to="claim-new">{{ $t("checkCompensationNow") }}</Button>
+        <Button primary to="new-claim">{{ $t("checkCompensationNow") }}</Button>
       </div>
     </div>
     <div class="flex flex-col gap-5">
@@ -98,6 +98,6 @@ const handleSelect = async (flight: Flight) => {
   claim.date = getISODate(flight.departure.scheduledTime);
   claim.flight = flight;
   send("next");
-  router.push(localePath("claim-new"));
+  router.push(localePath("new-claim"));
 };
 </script>

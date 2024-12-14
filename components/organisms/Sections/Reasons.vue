@@ -19,7 +19,7 @@
         </div>
         <Button
           class="text-white !bg-gray-800 hover:!bg-gray-900 mr-auto"
-          to="claim-new"
+          to="new-claim"
           >{{ t('checkCompensationNow') }}</Button
         >
       </div>
@@ -32,16 +32,16 @@ const { t } = useI18n();
 
 const sections = [
   {
-    titleKey: t("reasonsSection.professionalExpertise.title"),
-    descriptionKey: t("reasonsSection.professionalExpertise.description")
+    titleKey: "reasonsSection.professionalExpertise.title",
+    descriptionKey: "reasonsSection.professionalExpertise.description"
   },
   {
-    titleKey: t("reasonsSection.completeProcess.title"),
-    descriptionKey: t("reasonsSection.completeProcess.description")
+    titleKey: "reasonsSection.completeProcess.title",
+    descriptionKey: "reasonsSection.completeProcess.description"
   },
   {
-    titleKey: t("reasonsSection.noRisk.title"),
-    descriptionKey: t("reasonsSection.noRisk.description")
+    titleKey: "reasonsSection.noRisk.title",
+    descriptionKey: "reasonsSection.noRisk.description"
   }
 ];
 </script>

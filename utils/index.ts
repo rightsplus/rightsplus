@@ -340,12 +340,19 @@ export const getCityTranslation = (airport: Airport, locale = 'de', highlight = 
 }
 
 export const compressImage = async (file: File, options?: Compressor.Options) => {
-	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => new Compressor(file, {
-		mimeType: 'image/webp',
-		...options,
-		success: resolve,
-		error: reject,
-	}))
+	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => {
+		try {
+			if (!file.type.startsWith('image')) throw new Error('not an image')
+			new Compressor(file, {
+				mimeType: 'image/webp',
+				...options,
+				success: resolve,
+				error: reject,
+			})
+		} catch (err) {
+			resolve?.(file)
+		}
+	})
 }
 
 export const handleFormKitIconClick = (e: MouseEvent) => {
@@ -563,7 +570,7 @@ export const formatFileSize = (sizeInBytes: number, decimalPoint = 2) => {
 	}
 }
 
-export const getExtendedClaimQuery = () => "*, booking ( flight ( *, airline ( * ) ), disruption, number )"
+export const getExtendedClaimQuery = () => "*, booking ( flight!booking_flightId_fkey ( *, airline ( * ) ), disruption, number, trip )"
 
 
 
@@ -633,22 +640,29 @@ export function cn(...inputs: ClassValue[]) {
 
 // Helper function to recursively append nested properties
 export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
-	for (const [key, value] of Object.entries(obj)) {
-		const formKey = parentKey ? `${parentKey}[${key}]` : key;
-
-		if (value instanceof Blob) {
-			// Append blobs directly
-			formData.append(formKey, value);
-		} else if (Array.isArray(value)) {
-			// Append array elements
-			value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
-		} else if (value !== null && typeof value === "object") {
-			// Recursively flatten nested objects
-			appendNested(formData, value, formKey);
-		} else {
-			// Append primitive values
-			formData.append(formKey, value as string);
+	try {
+		if (obj instanceof Blob) {
+			formData.append(parentKey, obj);
+			return
 		}
+		for (const [key, value] of Object.entries(obj)) {
+			const formKey = parentKey ? `${parentKey}[${key}]` : key;
+			if (value instanceof Blob) {
+				// Append blobs directly
+				formData.append(formKey, value);
+			} else if (Array.isArray(value)) {
+				// Append array elements
+				value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
+			} else if (value !== null && typeof value === "object") {
+				// Recursively flatten nested objects
+				appendNested(formData, value, formKey);
+			} else if (value != null) {
+				// Append primitive values
+				formData.append(formKey, value as string);
+			}
+		}
+	} catch (e) {
+		console.error(e)
 	}
 };
 
@@ -679,3 +693,121 @@ export function base64ToFile(base64String: string, fileName: string) {
 	// Return the file object
 	return finalFile;
 }
+
+
+
+const resolveBinding = (template: string, doc: Record<string, any>) => {
+	return template
+		.replace(/{{\s*\$doc\.([\w.]+)\s*}}/g, (_, path) => {
+			const value = path.split('.').reduce((acc, key) => acc && acc[key], doc);
+			return value !== undefined ? String(value) : '';
+		})
+}
+
+
+export function parseAndBindMarkdown(template: string, doc: Record<string, any>): { data: Record<string, string>, content: string } {
+	const resolvedVariables = resolveBinding(template, doc)
+
+	// Extract front matter
+	const [fullMatch, innerMatch] = resolvedVariables.match(/^---\\n([\s\S]*?)\\n---(\\n)*/) || [];
+	const frontMatter: Record<string, string> = {};
+
+	if (innerMatch) {
+		const frontMatterLines = innerMatch.split('\\n');
+		for (const line of frontMatterLines) {
+			const [key, ...valueParts] = line.split(':');
+			frontMatter[key.trim()] = valueParts.join(':').trim();
+		}
+	}
+
+	const content = resolvedVariables
+		.replace(fullMatch || '', '')
+		.replaceAll('\\n', '<br />')
+
+	return {
+		data: frontMatter,
+		content,
+	};
+}
+
+import type { Content } from 'pdfmake/interfaces';
+
+type MarkdownBodyNode = [
+	string, // tag
+	Record<string, any>, // attributes
+	...(
+		| string // text content
+		| MarkdownBodyNode // nested node
+		| { value: string } // binding object
+	)[]
+];
+
+export function markdownBodyToPdfMake(
+	body: MarkdownBodyNode[],
+	data: Record<string, any>
+) {
+
+
+	function resolveBinding(value: string): string {
+		const keys = value.replace(/^\$doc\./, "").split(".");
+		return keys.reduce((acc, key) => (acc ? acc[key] : ""), data) || "";
+	}
+
+	function parseNode(node: MarkdownBodyNode | string | { value: string }): Content | string {
+		if (typeof node === "string") {
+			return node; // Plain text
+		}
+
+		if (typeof node === "object" && "value" in node) {
+			return resolveBinding(node.value); // Resolve bindings
+		}
+
+		const [tag, attrs, ...children] = node;
+		if (!children?.length && !attrs.value) return ''
+
+		const parsedChildren = children.map(parseNode);
+
+		switch (tag) {
+			case "p":
+				return { text: parsedChildren, margin: [0, 5] };
+			case "blockquote":
+				return {
+					columnGap: 0,
+					columns: [{
+						text: '',
+						width: 8
+					}, {
+						text: parsedChildren,
+						width: '*'
+					}],
+					margin: [0, 5]
+				};
+			case "pre":
+				return {
+					table: {
+						widths: [5, '*', 5],
+						body: [
+							[{ text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }],
+							[{ text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: parsedChildren.join(''), border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }],
+							[{ text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }, { text: '', border: [false, false, false, false], fillColor: '#f0f0f0' }]
+						],
+					},
+					margin: [0, 5]
+				};
+			case "strong":
+				return { text: parsedChildren.map(text => ({ text, bold: true })) };
+			case "binding":
+				return resolveBinding(attrs.value);
+			default:
+				return parsedChildren;
+		}
+	}
+
+	return body.map(parseNode)
+}
+
+
+
+export const transformCamelToKebab = (str: string) => {
+	return str.replace(/([A-Z])/g, '-$1').toLowerCase();
+};

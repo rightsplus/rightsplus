@@ -55,24 +55,78 @@
 </template>
 
 <script setup lang="ts">
-import type { ClaimsForm, SignatureData } from "~/types";
+import type { ClaimsForm, RowClaimExtended, SignatureData } from "~/types";
 import SignaturePad from "~/components/molecules/SignaturePad.vue";
 import useCreatePdf from "~/plugins/pdfmake/useCreatePdf";
-import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement";
-const localePath = useLocalePath();
-const claim = useClaim()
-const i18n = useI18n()
-const {
-  generatePDF
-} = useCreatePdf()
+import assignmentAgreement from "~/pdf/templates/assignmentAgreement";
+import letterHead from "~/plugins/pdfmake/pdf/documents/letterHead";
 
-const downloadAssignmentAgreement = (passenger: ClaimsForm["client"]["passengers"][number]) => {
-  generatePDF(assignmentAgreement(passenger, claim, i18n), { download: `assignment-agreement-${passenger.lastName}`})
-}
+const localePath = useLocalePath();
+const claim = useClaim();
+const i18n = useI18n();
+const { generatePDF } = useCreatePdf();
+
+const { queryLocaleContent } = useI18nContent("pdf");
+
+const downloadAssignmentAgreement = async (
+  passenger: ClaimsForm["client"]["passengers"][number]
+) => {
+  if (!claim.flight) return;
+  const pseudoRowClaim: RowClaimExtended = {
+    id: 0,
+    lang: i18n.locale.value,
+    client: passenger,
+    booking: {
+      flight: {
+        iata: claim.flight.flight.iata,
+        scheduledDeparture: claim.flight.departure.scheduledTime,
+        airportDeparture: claim.flight.departure.iata,
+        airportArrival: claim.flight.airline.iata,
+      },
+    },
+  };
+
+  const markdown = await queryLocaleContent(
+    `/${pseudoRowClaim.lang || "de"}/assignment-agreement`
+  ).first();
+  // const markdown = await queryLocaleContent(
+  //   `/${pseudoRowClaim.lang || "de"}/compensation-claim`
+  // ).first();
+
+  console.log(markdown);
+  console.log(
+    markdownBodyToPdfMake(markdown.body.value, {
+      ...pseudoRowClaim,
+      id: formatClaimId(pseudoRowClaim.id),
+    })
+  );
+  const document = letterHead({
+    claim: pseudoRowClaim,
+    i18n,
+    content: (props) => [
+      assignmentAgreement({
+        ...props,
+        preview: true,
+        content: markdownBodyToPdfMake(markdown.body.value, {
+          ...pseudoRowClaim,
+          id: formatClaimId(pseudoRowClaim.id),
+        }),
+      }),
+    ],
+    info: {
+      title: i18n.t("assignmentAgreement"),
+      // subtitle: i18n.t("compensationClaim.subtitle"),
+      author: "Joachim Bawa",
+    },
+  });
+  generatePDF(document, {
+    download: `assignment-agreement-${passenger.lastName}`,
+  });
+};
 
 const updateSignature = (val: SignatureData | undefined, i: number) => {
   claim.client.passengers[i].signature = val;
-  console.log(claim)
+  console.log(claim);
 };
 
 const passengerName = (

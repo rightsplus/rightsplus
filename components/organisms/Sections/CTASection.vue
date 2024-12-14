@@ -14,7 +14,7 @@
             {{ t('cta.subtitle') }}
           </h3>
         </div>
-        <Button class="text-white bg-gray-800 hover:bg-gray-900 mr-auto" to="claim-new"
+        <Button class="text-white bg-gray-800 hover:bg-gray-900 mr-auto" to="new-claim"
           >{{ t('checkCompensationNow')}}</Button
         >
       </div>

@@ -43,14 +43,15 @@
   "reasons.behaviouralIssues.label": "Behavioural Issues",
   "reasons.restrictedItems.label": "Restricted Items",
   "reasons.restrictedDestinations.label": "Restricted Destination",
-  "resons.dontRemember.label": "I Don't Remember",
+  "reasons.dontRemember.label": "I Don't Remember",
   "reasons.technicalIssues.label": "Technical Issues",
   "reasons.lateArrivalOfAircraft.label": "Late Arrival of Aircraft",
-  "resons.crewIssues.label": "Crew Issues",
-  "resons.airportCongestion.label": "Airport Congestion",
-  "resons.securityIssues.label": "Security Issues",
+  "reasons.crewIssues.label": "Crew Issues",
+  "reasons.airportCongestion.label": "Airport Congestion",
+  "reasons.securityIssues.label": "Security Issues",
   "reasons.airTrafficControl.label": "Air Traffic Control",
   "reasons.unexpectedIssues.label": "Unexpected Issues",
+  "reasons.weatherConditions.label": "Weather Conditions",
   "onTime": "On Time",
   "landed": "Landed",
   "open.mainmenu": "Open Main Menu",
@@ -268,5 +269,132 @@
     "claimUpTo": "Claim up to {amount}!",
     "claimUpToExtended": "Claim up to {amount} for your delayed or cancelled flight!",
     "close": "Close"
+  },
+  "scheduled": "Scheduled",
+  "active": "Active",
+  "unknown": "Unknown",
+  "diverted": "Diverted",
+  "missingAirport": "Missing airport",
+  "fetchFailed": "Fetch failed",
+  "remainingAttempts": "Remaining attempts: {attempts}",
+  "missingDateDepartureArrival": "Missing date, departure or arrival",
+  "hasBeenQueried": "Has been queried",
+  "missingDepartureArrivalDate": "Missing departure or arrival date",
+  "flightFilter": {
+    "departure": "Filter by departure",
+    "arrival": "Filter by arrival",
+    "date": "Filter by date",
+    "number": "Filter by flight number"
+  },
+  "fetchFlightsSupabase": "Fetching flights from Supabase",
+  "debug": {
+    "fetchFlights": "Fetching flights",
+    "fetchFlightsSupabase": "Fetching flights from Supabase"
+  },
+  "calculator": {
+    "forms": {
+      "disruptionReason": {
+        "label": "What reason did the airline provide?"
+      }
+    }
+  },
+  "status.dataReceived": "Data received",
+  "status.awaitInitialAirlineResponse": "Awaiting airline response",
+  "status.airlineRejected": "Airline rejected",
+  "status.awaitLawyerResponse": "Awaiting lawyer response",
+  "status.airlineRejectedAfterLawyer": "Airline rejected after lawyer",
+  "status.awaitCourtDecision": "Awaiting court decision",
+  "status.awaitAirlinePayment": "Awaiting payment",
+  "status.receivePayment": "Payment received",
+  "status.rejected": "Rejected",
+  "status.caseWithdrawn": "Case withdrawn",
+  "status.caseLost": "Case lost",
+  "status.completed": "Completed",
+  "action.accept": "Accept",
+  "action.reject": "Reject",
+  "action.acceptCase": "Accept case",
+  "action.rejectCase": "Reject case",
+  "action.airlineAccepts": "Airline accepts claims",
+  "action.airlineRejects": "Airline rejects claims",
+  "action.lawyerAccepts": "Lawyer accepts request",
+  "action.lawyerRejects": "Lawyer rejects request",
+  "action.engageLawyer": "Engage lawyer",
+  "action.withdraw": "Withdraw",
+  "action.fileLawsuit": "File lawsuit",
+  "action.win": "Success",
+  "action.lose": "Loss",
+  "action.receivePayment": "Receive payment",
+  "action.payout": "Initiate payout",
+  "dateOfBirth": "Date of birth",
+  "booking": "Booking | Bookings",
+  "flight": "Flight | Flights",
+  "claim": "Claim | Claims",
+  "airline": "Airline | Airlines",
+  "profile": "Profile",
+  "filterBy": "Filter by {value}",
+  "showAll": "Show all {value}",
+  "scheduledArrivalTime": "Scheduled arrival time",
+  "actualArrivalTime": "Actual arrival time",
+  "delayArrivalTime": "Delayed arrival time",
+  "neverArrived": "Never arrived",
+  "flightDistance": "Flight distance",
+  "flightStatus": "Flight status",
+  "checkOtherFlight": "Check other flight",
+  "disruption.comment": "Comment",
+  "disruption.comment.label": "Your explanation helps us process your case",
+  "disruption.comment.placeholder": "Please be as specific as possible ...",
+  "fromTo": "From {from} to {to}",
+  "operatedBy": "operated by {airline}",
+  "status.dataReceived.preTitle": "Data received",
+  "status.dataReceived.title": "We'll take it from here",
+  "eligible.reason.delay.<3": "You reached your destination with a delay of less than 3 hours and therefore have no claim for compensation.",
+  "perPerson": "{value} per person",
+  "continueWithoutStopover": "Continue without stopover",
+  "errors": {
+    "noClaim": "No claim data found",
+    "airport": {
+      "missing": "Departure or arrival airport information is missing",
+      "identical": "Departure and arrival airports are identical"
+    },
+    "ec261": {
+      "airport": "Neither departure nor arrival airport is within EC261 jurisdiction",
+      "airline": "Flight not eligible under EC261 - neither departure in EU nor EU airline"
+    },
+    "leg": {
+      "missing": "Flight leg information is missing"
+    },
+    "flight": {
+      "missing": "Flight information is missing"
+    },
+    "airline": {
+      "missing": "Airline information is missing"
+    },
+    "disruption": {
+      "missing": "Disruption information is missing",
+      "selfInflicted": "The denied boarding was due to passenger-related reasons",
+      "detail": {
+        "delay": "Delay details are missing",
+        "cancelled": "Cancellation details are missing"
+      }
+    },
+    "eligible": {
+      "reason": {
+        "delay": {
+          "<3": "Flight delay was less than 3 hours without missed connection"
+        }
+      }
+    },
+    "connection": {
+      "reached": "Connection flight was reached"
+    },
+    "connectionFlight": {
+      "missing": "Connection flight information is missing"
+    },
+    "cancelled": {
+      ">14": "Flight was cancelled more than 14 days before departure"
+    },
+    "replacement": {
+      "withinBounds": "Replacement flight arrived within acceptable time limits"
+    }
   }
 }

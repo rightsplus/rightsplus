@@ -1,8 +1,7 @@
 import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
 import nodemailer from 'nodemailer'
-import { generatePDF as generate } from "@/pdf/pdfGenerator";
 import { useCompiler } from '#vue-email'
-import type { SendMailProps, SendPDFMailProps } from "./types";
+import type { SendMailProps } from "./types";
 
 const sendMail = async (props: SendMailProps) => {
 
@@ -22,12 +21,9 @@ const sendMail = async (props: SendMailProps) => {
 			to: props.to,
 			subject: props.subject,
 			html: props.html || props.text,
-			attachments: props.attachment && props.pdfBuffer ? [
-				{
-					filename: `${'file'}.pdf`,
-					content: props.pdfBuffer,
-				},
-			] : [],
+			attachments: Object.entries(props.attachments || {}).map(([filename, content]) => ({
+				filename, content
+			}))
 		})
 		return { message: 'Email sent successfully' }
 	} catch (error) {
@@ -45,20 +41,23 @@ const sendMail = async (props: SendMailProps) => {
 // 	return await generate(url.href)
 // }
 
-const reconstructNestedObjectFromMultipart = (formData: MultiPartData[]): any => {
+const reconstructNestedObjectFromMultipart = (formData: Awaited<ReturnType<typeof readMultipartFormData>>): any => {
 	const obj: Record<string, any> = {};
 
+	if (!formData) return obj
 	for (const field of formData) {
 		// Files are stored as Buffers, texts as strings
 		let value: string | Buffer
 
 		try {
-			value = field.name === 'attachment' ? field.data : field.data.toString();
+			value = field.name?.startsWith('attachments') ? field.data : field.data.toString();
 		} catch (e) {
 			value = field.data
 		}
-		setNestedValue(obj, field.name, value);
+		if (field.name) setNestedValue(obj, field.name, value);
 	}
+
+	console.log(obj)
 
 	return obj;
 };
@@ -100,7 +99,6 @@ export default defineEventHandler(async (event) => {
 
 		const response = await sendMail({
 			...body,
-			pdfBuffer: body.attachment,
 			html
 		})
 

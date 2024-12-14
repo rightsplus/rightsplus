@@ -80,10 +80,15 @@ export const useSupabaseFunctions = () => {
 		// console.log(err)
 
 		// return []
+
+		console.log('wait', supabase.from('flight').select('*').returns<RowFlight>())
 		const supabaseQuery = supabase
 			.from('flight')
 			.select('data')
 			.match(match)
+
+		console.log(supabaseQuery)
+
 		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
 		console.log('data', flights)
@@ -176,35 +181,40 @@ export const useSupabaseFunctions = () => {
 	};
 
 	const handleUploadFile = async (file: File, folder?: string) => {
-		if (!file) {
-			throw new Error("No file provided");
-		}
-		// if (!(file instanceof File)) {
-		// 	throw new Error(`${file} is not of type File`);
-		// }
-		const options = {
-			convertSize: 0.5,
-			quality: 0.8,
-			maxWidth: 1080,
-			maxHeight: 1080,
-		};
+		try {
 
-		const resizedFile = await compressImage(file, options);
-		const fileExt = (resizedFile as File).name.split(".").pop();
-		const fileName = `${uuid()}.${fileExt}`;
-		const filePath = [folder, fileName].filter(Boolean).join("/");
-		const { data, error } = await supabase.storage
-			.from("client-files")
-			.upload(filePath, resizedFile, {
-				cacheControl: "3600",
-				upsert: false,
-			});
-		if (error) {
-			console.error(error);
-			throw error;
-		} else {
-			console.log(data);
-			return data.path;
+			if (!file) {
+				throw new Error("No file provided");
+			}
+			// if (!(file instanceof File)) {
+			// 	throw new Error(`${file} is not of type File`);
+			// }
+			const options = {
+				convertSize: 0.5,
+				quality: 0.8,
+				maxWidth: 1080,
+				maxHeight: 1080,
+			};
+
+			const resizedFile = await compressImage(file, options);
+			const fileExt = (resizedFile as File).name.split(".").pop();
+			const fileName = `${uuid()}.${fileExt}`;
+			const filePath = [folder, fileName].filter(Boolean).join("/");
+			const { data, error } = await supabase.storage
+				.from("client-files")
+				.upload(filePath, resizedFile, {
+					cacheControl: "3600",
+					upsert: false,
+				});
+			if (error) {
+				console.error(error);
+				throw error;
+			} else {
+				console.log(data);
+				return data.path;
+			}
+		} catch (err) {
+			console.error(err)
 		}
 	};
 	const submitFlight = async (flight: Flight) => {
@@ -224,11 +234,11 @@ export const useSupabaseFunctions = () => {
 
 		try {
 			console.log('checking existing flight...')
-			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime }).single<RowFlight>();
+			const { data: existingFlight, error: errExisting } = await supabase.from("flight").select().match({ iata: flight.flight.iata, dateDeparture: flight.departure.scheduledTime.split('T')[0] }).single<RowFlight>();
 			console.log('query:', { iata: flight.flight.iata, scheduledDeparture: flight.departure.scheduledTime })
 			console.log('existing flight:', existingFlight)
 			console.log('errExisting', errExisting)
-			
+
 			return
 			// if (errExisting) throw errExisting
 			if (existingFlight) return existingFlight
@@ -250,10 +260,16 @@ export const useSupabaseFunctions = () => {
 		}
 	}
 	const submitBooking = async (claim: ClaimsForm, flightId: number) => {
+		// @todo: add connection and replacement flight
 		const preparedBooking = {
 			flightId,
 			number: claim.client.bookingNumber,
 			disruption: claim.disruption,
+			trip: {
+				departure: claim.airport.trip.departure!.iata,
+				arrival: claim.airport.trip.arrival!.iata,
+				layover: claim.airport.trip.layover?.map(e => e.iata),
+			},
 		} as Omit<RowBooking, 'id' | 'createdAt'>;
 		try {
 			const { data, error } = await supabase

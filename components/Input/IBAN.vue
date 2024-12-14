@@ -1,5 +1,11 @@
 <template>
-  <div :class="['formkit-outer max-w-full mb-3', outerClass]">
+  <div
+    :class="['formkit-outer max-w-full mb-3', outerClass]"
+    data-family="text"
+    :data-empty="!modelValue"
+    data-floating-label="true"
+    :data-suffix-icon="suffixIconComputed && 'true'"
+  >
     <div
       class="relative formkit-inner bg-neutral-100 formkit-disabled:bg-neutral-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none [&>label:first-child>svg]:focus-within:fill-primary-500 flex items-center ring-1 ring-neutral-200 focus-within:ring-primary-500 focus-within:ring-1 [&>label:first-child]:focus-within:text-primary-500 rounded-lg"
       :class="[
@@ -9,10 +15,6 @@
             isFocused && modelValue && IBAN.isValid(modelValue),
         },
       ]"
-      data-family="text"
-      :data-empty="!modelValue"
-      data-floating-label="true"
-      :data-suffix-icon="suffixIconComputed && 'true'"
     >
       <input
         :value="modelValue"
@@ -101,7 +103,9 @@ const valid = computed(() => IBAN.isValid(props.modelValue));
 const ibanMask = computed(() => getIbanMask(props.modelValue));
 const suffixIconComputed = computed(() => {
   const { countryInString, example } = ibanMask.value;
-  return props.modelValue?.length === example?.length ||
-    (props.modelValue?.length >= 2 && !countryInString);
+  return (
+    props.modelValue?.length === example?.length ||
+    (props.modelValue?.length >= 2 && !countryInString)
+  );
 });
 </script>

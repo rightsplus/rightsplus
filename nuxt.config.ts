@@ -72,7 +72,9 @@ export default defineNuxtConfig({
   },
 
   image: {
-    format: ['webp']
+    format: ['webp'],
+    provider: "ipx",
+    debug: true
   },
 
   css: [
@@ -142,40 +144,28 @@ export default defineNuxtConfig({
     }
   },
   routeRules: {
-    '/en/pdf/**': {
-      prerender: false,
-      ssr: false
-    },
-    '/de/pdf/**': {
-      prerender: false,
-      ssr: false
-    },
-    '/pdf/**': {
-      prerender: false,
-      ssr: false
-    },
     '/en/admin/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
     '/de/admin/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
     '/admin/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
     '/en/claim/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
     '/de/anspruch/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
     '/anspruch/**': {
-      prerender: false,
+      prerender: true,
       ssr: false
     },
   },

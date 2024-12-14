@@ -88,14 +88,16 @@
   "reasons.behaviouralIssues.label": "Verhaltensprobleme",
   "reasons.restrictedItems.label": "Verbotene Gegenstände",
   "reasons.restrictedDestinations.label": "Eingeschränktes Flugziel",
-  "resons.dontRemember.label": "Ich kann mich nicht erinnern",
+  "reasons.dontRemember.label": "Ich kann mich nicht erinnern",
   "reasons.technicalIssues.label": "Technische Probleme",
   "reasons.lateArrivalOfAircraft.label": "Verspätete Ankunft des Flugzeugs",
-  "resons.crewIssues.label": "Probleme mit der Crew",
-  "resons.airportCongestion.label": "Flughafenüberlastung",
-  "resons.securityIssues.label": "Sicherheitsprobleme",
+  "reasons.crewIssues.label": "Probleme mit der Crew",
+  "reasons.airportCongestion.label": "Flughafenüberlastung",
+  "reasons.securityIssues.label": "Sicherheitsprobleme",
   "reasons.airTrafficControl.label": "Luftverkehrskontrolle",
   "reasons.unexpectedIssues.label": "Unerwartete Probleme",
+
+  "reasons.weatherConditions.label": "Wetterbedingungen",
   "onTime": "pünktlich",
   "landed": "Gelandet",
   "open.mainmenu": "Hauptmenü öffnen",
@@ -148,6 +150,8 @@
   "pricesAndServices": "Preise und Leistungen",
   "pricelist": "Preisliste",
   "assignmentAgreement": "Abtretungserklärung",
+  "compensationClaim": "Entschädigungsanspruch",
+  "compensationClaim.subtitle": "Gemäß Verordnung (EG) Nr. 261/2004",
   "legal": "Rechtliches",
   "legalNotice": "Impressum",
   "tmg": "Angaben gemäß § 5 TMG",
@@ -221,7 +225,7 @@
   "disruptionType.title": "Grund für Anspruch",
   "disruptionType.description": "Weshalb bist du nicht wie geplant in {arrival} gelandet?",
   "disruptionReason.cancelled.title": "Grund für Annullierung",
-  "disruptionReason.delayed.title": "Grund für Verspätet",
+  "disruptionReason.delayed.title": "Grund für Verspätung",
   "disruptionReason.noBoarding.title": "Grund für Nichtbeförderung",
   "disruptionReason.cancelled.description": "Welchen Grund hat die Fluggesellschaft für die Annullierung angegeben?",
   "disruptionReason.delayed.description": "Welchen Grund hat die Fluggesellschaft für die Verspätung angegeben?",
@@ -306,7 +310,7 @@
     "title": "Sichere dir deine verdiente Entschädigung",
     "subtitle": "Mit unserer einfachen Online-Prüfung kannst du schnell und unkompliziert deine Entschädigungsansprüche prüfen. Und das Beste: Es ist kostenlos und unverbindlich."
   },
-  "reasons": {
+  "reasonsSection": {
     "professionalExpertise": {
       "title": "Fachliche Expertise",
       "description": "Sie profitieren von unserer fachlichen Expertise und Erfahrung auf diesem Gebiet. Wir bieten Ihnen einen kompetenten Service an und legen dabei großen Wert auf effiziente und transparente Arbeit.\nUnsere Erfolgsquote liegt bei 98 % bei den von uns geltend gemachten Ansprüchen. Zur effektiven und erfolgreichen Durchsetzung der Ansprüche arbeiten wir eng mit einer auf das Reiserecht spezialisierten Rechtsanwaltskanzlei zusammen."
@@ -324,5 +328,75 @@
     "claimUpTo": "Fordere bis zu {amount}!",
     "claimUpToExtended": "Fordere bis zu {amount} für deinen verspäteten oder annullierten Flug!",
     "close": "Schließen"
+  },
+  "scheduled": "Geplant",
+  "active": "Aktiv",
+  "unknown": "Unbekannt",
+  "diverted": "Umgeleitet",
+  "missingAirport": "Flughafen fehlt",
+  "fetchFailed": "Abruf fehlgeschlagen",
+  "remainingAttempts": "Verbleibende Versuche: {attempts}",
+  "missingDateDepartureArrival": "Datum, Abflug oder Ankunft fehlt",
+  "hasBeenQueried": "Wurde bereits abgefragt",
+  "missingDepartureArrivalDate": "Abflug- oder Ankunftsdatum fehlt",
+  "flightFilter": {
+    "departure": "Nach Abflug filtern",
+    "arrival": "Nach Ankunft filtern",
+    "date": "Nach Datum filtern",
+    "number": "Nach Flugnummer filtern"
+  },
+  "calculator": {
+    "forms": {
+      "disruptionReason": {
+        "label": "Welchen Grund hat die Airline angegeben?"
+      }
+    }
+  },
+  "errors": {
+    "noClaim": "Keine Anspruchsdaten gefunden",
+    "airport": {
+      "missing": "Informationen zum Abflug- oder Ankunftsflughafen fehlen",
+      "identical": "Abflug- und Ankunftsflughafen sind identisch"
+    },
+    "ec261": {
+      "airport": "Weder Abflug- noch Ankunftsflughafen fallen unter die EC261-Verordnung",
+      "airline": "Flug nicht nach EC261 berechtigt - weder Abflug in der EU noch EU-Airline"
+    },
+    "leg": {
+      "missing": "Flugetappeninformationen fehlen"
+    },
+    "flight": {
+      "missing": "Fluginformationen fehlen"
+    },
+    "airline": {
+      "missing": "Airline-Informationen fehlen"
+    },
+    "disruption": {
+      "missing": "Störungsinformationen fehlen",
+      "selfInflicted": "Die Nichtbeförderung war auf passagierbezogene Gründe zurückzuführen",
+      "detail": {
+        "delay": "Verspätungsdetails fehlen",
+        "cancelled": "Details zur Stornierung fehlen"
+      }
+    },
+    "eligible": {
+      "reason": {
+        "delay": {
+          "<3": "Flugverspätung war weniger als 3 Stunden ohne verpassten Anschluss"
+        }
+      }
+    },
+    "connection": {
+      "reached": "Anschlussflug wurde erreicht"
+    },
+    "connectionFlight": {
+      "missing": "Informationen zum Anschlussflug fehlen"
+    },
+    "cancelled": {
+      ">14": "Flug wurde mehr als 14 Tage vor Abflug storniert"
+    },
+    "replacement": {
+      "withinBounds": "Ersatzflug kam innerhalb akzeptabler Zeitgrenzen an"
+    }
   }
 }

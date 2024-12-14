@@ -1,3 +1,5 @@
+import type { Attachment } from "nodemailer/lib/mailer";
+
 export type Data = {
 	data?: Record<string, string | undefined>;
 }
@@ -10,11 +12,21 @@ export type SendPDFMailProps = Data & {
 	subject: string;
 	text?: string;
 	template?: string;
-	attachment?: Blob
-	// pdf?: GeneratePDFProps
+	// attachments?: { filename: string; content: Blob }[]
+	attachments?: Record<string, Blob>
 }
 
-export type SendMailProps = SendPDFMailProps & {
+export type SendMailProps = Omit<SendPDFMailProps, 'attachments'> & {
 	html?: string;
-	pdfBuffer?: Buffer;
+	attachments?: Record<string, Blob>
+	// attachmentArray?: Attachment[];
+}
+
+declare module 'nodemailer' {
+	namespace Mail {
+
+		interface AttachmentLike {
+			content?: AttachmentLike['content'] & Blob
+		}
+	}
 }

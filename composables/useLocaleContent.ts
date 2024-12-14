@@ -8,12 +8,14 @@ export default () => {
 
 
 	const localeName = (path: string) => {
-		// Remove leading slash and split to get locale and route parts
-		const cleanPath = path.replace(/^\//, '')
-		const pathParts = cleanPath.split('/')
+		const { locales } = i18nConfig
+
+		const [, ...localePath] = path.split('/')
 
 		// Handle both /de/impressum and impressum formats
-		const routePath = pathParts.length > 1 ? `/${pathParts[1]}` : `/${pathParts[0]}`
+		const routePath = locales.some(e => e.code === localePath[0]) ? `/${localePath.slice(1).join("/")}` : `/${localePath.join('/')}`
+
+		console.log(routePath)
 
 		// Find matching route name by checking all locales for each page
 		const [match] = Object.entries(i18nConfig.pages).find(([_, translations]) =>
@@ -21,6 +23,7 @@ export default () => {
 		) || []
 		return match as RouteName || ''
 	}
+
 	const localePath = (name: RouteName | string = route.path, code = locale.value) => {
 		const route = i18nConfig.pages[name as RouteName]
 		type AvailableLocale = keyof typeof route
@@ -57,6 +60,7 @@ export default () => {
 
 	const switchLocale = (code: string, replaceState?: boolean) => {
 		const currentPage = localeName(route.fullPath)
+		console.log(route.fullPath, currentPage)
 		// if (!currentPage) return switchLocalePath(code)
 		if (replaceState) {
 			locale.value = code;

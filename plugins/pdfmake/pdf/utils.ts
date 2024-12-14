@@ -489,67 +489,85 @@ import type { Content } from 'pdfmake/interfaces';
  * @returns An array of pdfmake-styled objects.
  */
 export function markdownToPdfMake(markdown: string): Content[] {
-  const processor = unified().use(remarkParse);
-  const tree = processor.parse(markdown);
+	const processor = unified().use(remarkParse);
+	const tree = processor.parse(markdown);
 
-  const pdfmakeContent: Content[] = [];
+	const pdfmakeContent: Content[] = [];
 
-  /**
-   * Recursively processes nodes to build pdfmake content.
-   * @param node - The AST node to process.
-   * @param parentStyle - The style inherited from the parent node.
-   */
-  const processNode = (node: any, parentStyle: Partial<Content> = {}): void => {
-    switch (node.type) {
-      case 'text':
-        pdfmakeContent.push({ text: node.value, ...parentStyle });
-        break;
-      case 'strong':
-        node.children.forEach((child: any) =>
-          processNode(child, { bold: true, ...parentStyle })
-        );
-        break;
-      // case 'emphasis':
-      //   node.children.forEach((child: any) =>
-      //     processNode(child, { italics: true, ...parentStyle })
-      //   );
-      //   break;
-      case 'heading':
-        const headingStyles: Record<number, Partial<Content>> = {
-          1: { fontSize: 24, bold: true },
-          2: { fontSize: 20, bold: true },
-          3: { fontSize: 18, bold: true },
-        };
-        const style = headingStyles[node.depth] || {};
-        node.children.forEach((child: any) => processNode(child, style));
-        break;
-      case 'paragraph':
-        const paragraphContent: Content[] = [];
-        node.children.forEach((child: any) => {
-          const currentLength = pdfmakeContent.length;
-          processNode(child);
-          paragraphContent.push(...pdfmakeContent.splice(currentLength));
-        });
-        pdfmakeContent.push({ text: paragraphContent });
-        break;
-      case 'list':
-        const listItems = node.children.map((child: any) => {
-          const itemContent: Content[] = [];
-          child.children.forEach((itemChild: any) => processNode(itemChild));
-          return itemContent.map((c) => (c as { text: string }).text || '');
-        });
-        const listType = node.ordered ? 'ol' : 'ul';
-        pdfmakeContent.push({ [listType]: listItems });
-        break;
-      default:
-        if (node.children) {
-          node.children.forEach((child: any) => processNode(child, parentStyle));
-        }
-    }
-  };
+	/**
+	 * Recursively processes nodes to build pdfmake content.
+	 * @param node - The AST node to process.
+	 * @param parentStyle - The style inherited from the parent node.
+	 */
+	const processNode = (node: any, parentStyle: Partial<Content> = {}): void => {
+		switch (node.type) {
+			case 'text':
+				pdfmakeContent.push({ text: node.value, ...parentStyle });
+				break;
+			case 'strong':
+				node.children.forEach((child: any) =>
+					processNode(child, { bold: true, ...parentStyle })
+				);
+				break;
+			// case 'emphasis':
+			//   node.children.forEach((child: any) =>
+			//     processNode(child, { italics: true, ...parentStyle })
+			//   );
+			//   break;
+			case 'heading':
+				const headingStyles: Record<number, Partial<Content>> = {
+					1: { fontSize: 24, bold: true },
+					2: { fontSize: 20, bold: true },
+					3: { fontSize: 18, bold: true },
+				};
+				const style = headingStyles[node.depth] || {};
+				node.children.forEach((child: any) => processNode(child, style));
+				break;
+			case 'paragraph':
+				const paragraphContent: Content[] = [];
+				node.children.forEach((child: any) => {
+					const currentLength = pdfmakeContent.length;
+					processNode(child);
+					paragraphContent.push(...pdfmakeContent.splice(currentLength));
+				});
+				pdfmakeContent.push({ text: paragraphContent });
+				break;
+			case 'list':
+				const listItems = node.children.map((child: any) => {
+					const itemContent: Content[] = [];
+					child.children.forEach((itemChild: any) => processNode(itemChild));
+					return itemContent.map((c) => (c as { text: string }).text || '');
+				});
+				const listType = node.ordered ? 'ol' : 'ul';
+				pdfmakeContent.push({ [listType]: listItems });
+				break;
+			default:
+				if (node.children) {
+					node.children.forEach((child: any) => processNode(child, parentStyle));
+				}
+		}
+	};
 
-  tree.children.forEach((node: any) => processNode(node));
+	tree.children.forEach((node: any) => processNode(node));
 
-	console.log(pdfmakeContent)
-  return pdfmakeContent;
+	return pdfmakeContent;
+}
+
+
+export function hsl2hex(hsl: string) {
+	if (hsl.includes('#')) return hsl
+	const hslArr = hsl
+		.match(/\d+/g)
+		?.map(num => parseInt(num));
+	if (!hslArr) return hsl
+	const [h, s] = hslArr
+	let [, , l] = hslArr
+	l /= 100;
+	const a = s * Math.min(l, 1 - l) / 100;
+	const f = (n: number) => {
+		const k = (n + h / 30) % 12;
+		const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+		return Math.round(255 * color).toString(16).padStart(2, '0'); // convert to Hex and prefix "0" if needed
+	};
+	return `#${f(0)}${f(8)}${f(4)}`;
 }

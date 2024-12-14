@@ -54,7 +54,7 @@ const { invoke } = useMachine<ClaimState, ClaimsForm>(claimMachine, {
 const localePath = useLocalePath();
 const start = () => {
   invoke("reset");
-  push(localePath("claim-new"));
+  push(localePath("new-claim"));
 };
 const scroll = useScroll();
 const show = computed(

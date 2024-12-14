@@ -125,7 +125,7 @@ const handleClick = (action: string) => {
 }
 </script>
 <template>
-  <div class="flex gap-2 w-full">
+  <div class="grid gap-2 w-full">
     <Button
       v-for="action in actions"
       :key="action"
