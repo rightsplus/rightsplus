@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
 import AirportInput from "@/components/organisms/Calculator/Forms/AirportInput.vue";
-import ButtonLarge from "@/components/organisms/Calculator/ButtonLarge.vue";
 import type { Airport, ClaimsForm } from "@/types";
 const { locale } = useI18n();
 
@@ -74,7 +73,6 @@ const convertName = (value?: Airport) =>
   value?.name ? `${value?.name} (${value?.iata})` : "";
 
 const { legs, assignLeg } = useFlightLeg(props.modelValue);
-
 watch(
   props.modelValue.airport.trip,
   () => {
@@ -85,11 +83,10 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
 watch(
   [() => props.modelValue.airport.trip, () => props.modelValue.leg],
-  () => {
-    assignLeg();
-  },
+  assignLeg,
   { deep: true, immediate: true }
 );
 
@@ -113,16 +110,6 @@ const removeLayover = (i: number) => {
   props.modelValue.airport.trip.layover?.splice(i, 1);
 };
 
-const showAddLayoverButton = computed(() => {
-  return (
-    hasLayover.value &&
-    (!props.modelValue.airport.trip.layover?.length ||
-      props.modelValue.airport.trip.layover.every((e) => "iata" in e)) &&
-    (!props.modelValue.airport.trip.layover ||
-      (props.modelValue.airport.trip.layover &&
-        props.modelValue.airport.trip.layover.length < 3))
-  );
-});
 function addLayover() {
   if (!props.modelValue.airport.trip.layover) {
     props.modelValue.airport.trip.layover = [{} as Airport];

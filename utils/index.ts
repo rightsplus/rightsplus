@@ -71,11 +71,12 @@ export const nextLeg = (claim: ClaimsForm) => {
 	const legs = Object.keys(generateLegs?.(claim.airport.trip))
 	const currentLeg = legs.findIndex(e => e === claim.leg)
 	const nextLeg = legs[currentLeg + 1]
+
 	if (nextLeg) {
 		const [dep, arr] = nextLeg.split('-')
-		const departure = [...(claim.airport.trip.layover || []), claim.airport.arrival]?.find(e => e.iata === dep)
-		const arrival = [...(claim.airport.trip.layover || []), claim.airport.arrival]?.find(e => e.iata === arr)
-
+		const options = [...(claim.airport.trip.layover || []), claim.airport.trip.departure, claim.airport.trip.arrival].filter(e => !!e)
+		const departure = options.find(e => e.iata === dep)
+		const arrival = options.find(e => e.iata === arr)
 		return {
 			departure, arrival
 		}
@@ -628,43 +629,6 @@ import { twMerge } from 'tailwind-merge'
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
-
-
-
-
-
-
-
-
-
-
-// Helper function to recursively append nested properties
-export const appendNested = (formData: FormData, obj: any, parentKey = "") => {
-	try {
-		if (obj instanceof Blob) {
-			formData.append(parentKey, obj);
-			return
-		}
-		for (const [key, value] of Object.entries(obj)) {
-			const formKey = parentKey ? `${parentKey}[${key}]` : key;
-			if (value instanceof Blob) {
-				// Append blobs directly
-				formData.append(formKey, value);
-			} else if (Array.isArray(value)) {
-				// Append array elements
-				value.forEach((val, index) => appendNested(formData, val, `${formKey}[${index}]`));
-			} else if (value !== null && typeof value === "object") {
-				// Recursively flatten nested objects
-				appendNested(formData, value, formKey);
-			} else if (value != null) {
-				// Append primitive values
-				formData.append(formKey, value as string);
-			}
-		}
-	} catch (e) {
-		console.error(e)
-	}
-};
 
 
 

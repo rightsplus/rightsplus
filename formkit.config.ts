@@ -46,7 +46,7 @@ const config: DefaultConfigOptions = {
         messages: 'list-none p-0 mt-1 mb-0',
         outer: 'formkit-disabled:opacity-50 min-w-[auto]',
         prefixIcon: 'absolute z-40 w-10 mx-1 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 pointer-events-none',
-        suffixIcon: 'absolute z-40 w-10 mx-1 right-0 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 [[data-suffix-icon-click="true"]_&:hover]:cursor-pointer [[data-suffix-icon-click="true"]_&:hover>svg]:fill-neutral-800 duration-0',
+        suffixIcon: 'absolute z-40 w-10 h-10 -my-3 mx-1 right-0 flex grow-0 shrink-0 [&>svg]:w-full [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto [&>svg]:fill-neutral-400 [[data-suffix-icon-click="true"]_&:hover]:cursor-pointer [[data-suffix-icon-click="true"]_&:hover>svg]:fill-neutral-800 duration-0 focus:outline-none focus:ring-1 focus:ring-orange-500 [&:focus>svg]:fill-orange-500 rounded-full',
       },
       'family:box': {
         decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-white bg-gradient-to-b from-transparent to-neutral-200 ring-1 ring-neutral-200 peer-checked:ring-primary-500 text-transparent peer-checked:text-primary-500',

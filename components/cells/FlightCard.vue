@@ -23,10 +23,10 @@
           ><span class="font-bold">{{ city.departure }}</span>
           {{ $t("to") }}
           <span class="font-bold">{{ city.arrival }}</span>
-          <span v-if="showDate && flight.departure">{{
+          <!-- <span v-if="showDate && flight.departure">{{
             getLocalizedTime(flight.departure.scheduledTime)
-          }}</span></span
-        >
+          }}</span> -->
+        </span>
 
         <span
           v-if="flight.departure && flight.arrival"
@@ -63,7 +63,9 @@
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
-        <span :class="status.class">{{ status.text }}</span>
+        <span :class="status.class" v-if="!actionButton">{{
+          status.text
+        }}</span>
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
@@ -77,7 +79,9 @@
     <template v-if="actionButton">
       <hr class="w-full mt-2" />
       <div class="flex justify-between items-center">
-        <span :class="status.class">{{ status.text }}</span>
+        <span :class="status.class"
+          >{{ status.text }}</span
+        >
         <Button @click="emit('click')" v-bind="actionButton" />
       </div>
     </template>
@@ -108,8 +112,8 @@ const iata = computed(() => {
 const status = useFlightStatus(props.flight, { detailed: true });
 
 const city = useCities({
-  departure: props.flight.departure?.iata,
-  arrival: props.flight.arrival?.iata,
+  departure: props.flight.departure,
+  arrival: props.flight.arrival,
 });
 const { airline, pending } = useAirline(props.flight?.airline);
 const { airline: codesharedAirline } = useAirline(
@@ -129,7 +133,7 @@ const overNight = (flight: Flight) => {
 
   return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
 };
-const { locale } = useI18n()
+const { locale } = useI18n();
 const time = (time: string) => {
   return new Date(time).toLocaleTimeString(locale.value, {
     hour: "2-digit",

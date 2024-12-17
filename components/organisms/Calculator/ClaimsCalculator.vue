@@ -21,7 +21,6 @@ import StepPassengers from "./StepPassengers.vue";
 import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
 import { useElementSize } from "@vueuse/core";
 const claimState = useClaim();
-const supabase = useSupabaseClient();
 const { t } = useI18n();
 const form = ref<HTMLElement>();
 const { state, send, transition, subscribe, invoke } = useMachine<
@@ -33,11 +32,9 @@ subscribe((e) => {
   window.scrollTo({ top: Math.min(window.scrollY, 200) });
   setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
+const { eligible, ineligible } = useCompensation();
 const eligibleDisruption = computed(() => {
-  const active = claimState.flight?.status === "active";
   const cancelled = claimState.flight?.status === "cancelled";
-  const delayed = (claimState.flight?.arrival.delay || 0) > 180;
-  const eligible = cancelled || delayed;
   const props = (primary?: boolean) => ({
     event: () => send(primary ? "continue" : "next"),
     label: primary
@@ -47,7 +44,7 @@ const eligibleDisruption = computed(() => {
       : t("Anspruch aus anderem Grund"),
   });
   return {
-    statement: eligible
+    statement: eligible.value
       ? t("Anspruch auf Entschädigung")
       : t("Kein Anspruch auf Entschädigung"),
     title: t(cancelled ? "cancellation" : "delay"),
@@ -58,16 +55,15 @@ const eligibleDisruption = computed(() => {
           arrival: city.value.arrival,
         }),
     primary: {
-      event: props(eligible).event,
-      label: props(eligible).label,
+      event: props(!ineligible.value).event,
+      label: props(!ineligible.value).label,
     },
     secondary: {
-      event: props(!eligible).event,
-      label: props(!eligible).label,
+      event: props(!!ineligible.value).event,
+      label: props(!!ineligible.value).label,
     },
   };
 });
-const { eligible } = useCompensation();
 
 const eligibleCompensation = computed(() => {
   return {
@@ -113,14 +109,13 @@ const filteredFlights = computed(() => {
 
 const city = useCities(claimState.airport.trip);
 
-
 const { prepareClaimSubmission } = usePrepareClaimSubmission();
 const submit = async () => {
   console.log("submitting");
   try {
-    console.log('claimState', claimState)
+    console.log("claimState", claimState);
     const submission = await prepareClaimSubmission(claimState);
-    console.log('submission', submission)
+    console.log("submission", submission);
     // send("next");
   } catch (error) {
     console.error(error);
@@ -129,9 +124,14 @@ const submit = async () => {
 const { width } = useElementSize(form);
 
 const stackButtons = (w: number) => width.value < w;
-const test = ref([{}]);
+
 const addLayover = () => {
   claimState.airport.trip.layover?.push({} as Airport);
+};
+const localePath = useLocalePath();
+const handleClose = () => {
+  invoke("reset");
+  navigateTo(localePath("index"));
 };
 </script>
 <template>
@@ -141,18 +141,13 @@ const addLayover = () => {
       @submit.prevent
       ref="form"
     >
-      <!-- {{ eligible }} // {{ message }} -->
+      <!-- {{claimState.disruption}} -->
       <ButtonBack
         :showClose="
           !!state.matches(state.initial) || !!state.matches('success')
         "
         @back="invoke('back')"
-        @close="
-          {
-            invoke('reset');
-            navigateTo(useLocalePath()('index'));
-          }
-        "
+        @close="handleClose"
       />
       <Transition
         :name="transition === 'forward' ? 'step-next' : 'step-prev'"
@@ -178,7 +173,9 @@ const addLayover = () => {
                 ? t('continueWithoutStopover')
                 : t('next'),
               disabled: !state.can('next'),
-              tooltip: state.can('next') ? t(state.can('next') + '.title') : undefined,
+              tooltip: state.can('next')
+                ? t(state.can('next') + '.title')
+                : undefined,
               suffixIcon: 'angle-right',
             }"
           />
@@ -200,7 +197,7 @@ const addLayover = () => {
           />
         </StepWrapper> -->
         <StepWrapper v-else-if="state?.matches('chooseLeg')">
-          <SelectLeg :modelValue="claimState" @select="send('next')" />
+          <SelectLeg v-model="claimState" @select="send('next')" />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('flightDate')">
           <SelectFlightDate :modelValue="claimState" @select="send('next')" />
@@ -262,12 +259,18 @@ const addLayover = () => {
             })
           "
         >
-          <div class="flex flex-col gap-3">
-            <SelectDisruptionReason
-              :modelValue="claimState"
-              @select="send('next')"
-            />
-            <AddDisruptionComment v-model="claimState" />
+          <div class="grid gap-3 mt-5">
+            <Callout icon="triangle-exclamation" type="warning"
+              >Es ist wichtig, dass die Angaben vollständig, ordnungsgemäß und
+              wahrheitsgemäß sind</Callout
+            >
+            <div class="grid gap-3">
+              <SelectDisruptionReason
+                :modelValue="claimState"
+                @select="send('next')"
+              />
+              <AddDisruptionComment v-model="claimState" />
+            </div>
           </div>
           <ButtonGroup
             @primary="send('next')"
@@ -318,7 +321,10 @@ const addLayover = () => {
             <ButtonLarge @click="send('no')" :label="t('no')" proceed />
           </div>
         </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('connectionFlightDetails')">
+        <StepWrapper
+          v-else-if="state?.matches('connectionFlightDetails')"
+          :title="t('connectionFlight.title')"
+        >
           <FlightDetails :modelValue="claimState.connection" />
           <ButtonGroup
             @primary="send('next')"
@@ -326,6 +332,19 @@ const addLayover = () => {
               label: t('next'),
               disabled:
                 !claimState.connection.date || !claimState.connection.departure,
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('connectionFlight')">
+          <FlightList
+            :departure="claimState.connection.departure.iata"
+            :arrival="claimState.connection.arrival.iata"
+            :date="claimState.connection.date"
+            :number="claimState.connection.number"
+            :modelValue="claimState.connection.flight"
+            @select="handleSelectConnection"
+            :flight-card="{
+              is: 'button',
             }"
           />
         </StepWrapper>
@@ -357,27 +376,12 @@ const addLayover = () => {
             }"
           />
         </StepWrapper>
-        <StepWrapper v-else-if="state?.matches('connectionFlight')">
-          <FlightList
-            :departure="claimState.connection.departure.iata"
-            :arrival="claimState.connection.arrival.iata"
-            :date="claimState.connection.date"
-            :number="claimState.connection.number"
-            :modelValue="claimState.connection.flight"
-            @select="handleSelectConnection"
-            :flight-card="{
-              is: 'button',
-            }"
-          />
-        </StepWrapper>
         <StepWrapper
           v-else-if="state?.matches('eligibility')"
           :title="eligibleCompensation.title"
           :description="eligibleCompensation.description"
         >
-          <div v-if="claimState.flight">
-            <ClaimCard :claim="claimState" certain />
-          </div>
+          <ClaimCard :claim="claimState" />
           <ButtonGroup
             @primary="eligibleCompensation.primary?.event"
             :primary="

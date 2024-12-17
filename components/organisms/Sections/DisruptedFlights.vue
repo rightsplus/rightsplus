@@ -23,7 +23,7 @@
         <Button tertiary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
-        <Button primary to="new-claim">{{ $t("checkCompensationNow") }}</Button>
+        <Button primary to="new-claim" @click="invoke('reset')">{{ $t("checkCompensationNow") }}</Button>
       </div>
     </div>
     <div class="flex flex-col gap-5">
@@ -42,7 +42,7 @@
       </div>
       <FlightList
         :flights="flights"
-        :limit="page ? 30 : 5"
+        :limit="page ? 300 : 5"
         @select="handleSelect"
         :showFilter="page"
         :flightCard="{
@@ -61,7 +61,13 @@
   </section>
 </template>
 <script lang="ts" setup>
-import type { ClaimsForm, Database, RowFlight, Flight, ClaimState } from "~/types";
+import type {
+  ClaimsForm,
+  Database,
+  RowFlight,
+  Flight,
+  ClaimState,
+} from "~/types";
 import FlightList from "@/components/organisms/Calculator/FlightList.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAirports } from "@/composables/flight";
@@ -69,35 +75,35 @@ const client = useSupabaseClient<Database>();
 const claim = useClaim();
 const router = useRouter();
 const { locale } = useI18n();
-const flights = ref<Flight[]>([]);
 const props = defineProps<{ page?: boolean }>();
-onMounted(async () => {
-  const { data } = await client
+const { data: flights } = await useAsyncData<Flight[]>(async () => {
+  const { data, error } = await client
     .from("flight")
     .select("data")
     .not("data", "is", null)
     .or("delayArrival.gt.180,status.eq.cancelled")
-    .limit(20)
     .returns<RowFlight[]>();
-
-  flights.value = data?.map(({ data }) => data) || [];
+  return data?.map(({ data }) => data) || [];
 });
 import claimMachine from "~/machines/claimSubmission";
-const { send, state, invoke, messages } = useMachine<ClaimState, ClaimsForm>(claimMachine, {
-  context: claim,
-});
+const { send, state, invoke, messages } = useMachine<ClaimState, ClaimsForm>(
+  claimMachine,
+  {
+    context: claim,
+  }
+);
 const { query, airports } = useAirports();
 const localePath = useLocalePath();
-const { assignLeg } = useFlightLeg(claim)
+const { assignLeg } = useFlightLeg(claim);
 const handleSelect = async (flight: Flight) => {
   invoke("reset");
   // await query([flight.departure.iata, flight.arrival.iata]);
   claim.airport.trip.departure = airports.value[flight.departure.iata];
   claim.airport.trip.arrival = airports.value[flight.arrival.iata];
-  assignLeg()
+  assignLeg();
   claim.date = getISODate(flight.departure.scheduledTime);
   claim.flight = flight;
-  send("next");
+  send("next")
   router.push(localePath("new-claim"));
 };
 </script>

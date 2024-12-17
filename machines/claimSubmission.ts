@@ -42,7 +42,7 @@ export default {
       return !!context.flight
     },
     hasEUAirport: ({ context, messages }) => {
-      // console.log([context.airport.departure, context.airport.arrival])
+      console.log([context.airport.departure, context.airport.arrival])
       messages.value.hasEUAirport = "Please provide at least one EU airport"
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },
@@ -79,10 +79,12 @@ export default {
       return !!eligible
     },
     connectionRelevant: ({ context }) => {
+      // console.log('is connection relevant?')
 
       const delay = context.disruption.type === 'delayed' && context.disruption.details === '<3' ? 60 : context.flight?.arrival.delay || 0
       const { departure, arrival } = nextLeg(context)
 
+      // console.log(departure, arrival)
       if (!departure || !arrival) return false
       // @todo: make action
       context.connection.departure = departure
@@ -154,8 +156,20 @@ export default {
     setCancelled: ({ context }) => {
       context.disruption.type = 'cancelled'
     },
+    setHasConnectionFlight: ({ context }) => {
+      context.disruption.connectingFlight = true
+    },
+    removeNoConnectionFlight: ({ context }) => {
+      context.disruption.connectingFlight = false
+      context.connection.flight = null
+    },
+    setHasReplacementFlight: ({ context }) => {
+      context.disruption.replacementFlight = true
+      
+    },
     removeReplacementFlight: ({ context }) => {
       context.replacement.flight = null
+      context.disruption.replacementFlight = false
     }
   },
   states: {
@@ -181,7 +195,7 @@ export default {
           },
           {
             guard: "hasItinerary",
-            target: "eligibility",
+            target: "disruptionDetected",
           },
         ],
       },
@@ -365,10 +379,11 @@ export default {
       on: {
         yes: {
           target: "replacementFlightDetails",
+          actions: 'setHasReplacementFlight'
         },
         no: {
           target: "eligibility",
-          actions: ["removeReplacementFlight"]
+          actions: "removeReplacementFlight"
         },
       },
     },
@@ -393,9 +408,11 @@ export default {
       on: {
         yes: {
           target: "connectionFlightDetails",
+          actions: 'setHasConnectionFlight'
         },
         no: {
           target: "eligibility",
+          actions: 'removeNoConnectionFlight'
         },
       },
     },

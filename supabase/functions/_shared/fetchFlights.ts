@@ -1,5 +1,5 @@
-import type { FlightAviationEdge, FlightAviationStack } from "~/aviation-edge.types";
-import type { Flight, RowAirline, RowFlight } from "~/types";
+import type { FlightAviationEdge, FlightAviationStack } from "~/flight-api.types";
+import type { Flight, FlightStatus, FlightStatusApi, RowAirline, RowFlight } from "~/types";
 
 
 function addMinutesToIsoDate(isoDateStr: string, delay: number | null): string {
@@ -30,7 +30,7 @@ export const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEd
 		estimatedRunway: aviationEdgeFlight.departure.estimatedRunway,
 		actualRunway: aviationEdgeFlight.departure.actualRunway,
 	};
-	
+
 	const delayArrival = parseInt(aviationEdgeFlight.arrival.delay || "0", 10)
 	const arrival: Flight['arrival'] = {
 		iata: aviationEdgeFlight.arrival.iataCode.toUpperCase(),
@@ -76,14 +76,35 @@ function transformFlightPhase(phaseData: FlightAviationStack['arrival'] | Flight
 		actualRunway: phaseData.actual_runway || ''
 	};
 }
+function sanitizeFlightStatus(flight: {
+	status: FlightStatusApi;
+	actualArrival: string;
+	delay: number
+}): FlightStatus {
+	const status = flight.status
+	if (flight.status === 'cancelled') return flight.status
+	if (flight.delay > 0) return 'delayed'
+	if (flight.actualArrival) {
+		const arrival = new Date(flight.actualArrival)
+		const now = new Date()
+		return arrival < now ? 'landed' : 'active'
+	}
+	if (flight.status === 'landed') return 'unknown'
+	return status
+}
 export const transformAviationStackFlight = (flight: FlightAviationStack): Flight => {
-	// @todo: sanitize flight status
 
+	const arrival = transformFlightPhase(flight.arrival)
+	const departure = transformFlightPhase(flight.departure)
 	return {
-		type: "arrival",  // This could be dynamically determined based on context
-		status: flight.flight_status,
-		departure: transformFlightPhase(flight.departure),
-		arrival: transformFlightPhase(flight.arrival),
+		type: "arrival",
+		status: sanitizeFlightStatus({
+			status: flight.flight_status,
+			actualArrival: arrival.actualTime,
+			delay: arrival.delay,
+		}),
+		departure,
+		arrival,
 		airline: {
 			name: flight.airline.name,
 			iata: flight.airline.iata
@@ -92,7 +113,6 @@ export const transformAviationStackFlight = (flight: FlightAviationStack): Fligh
 			number: flight.flight.number,
 			iata: flight.flight.iata
 		},
-		distance: undefined,
 		codeshared: flight.flight.codeshared ? {
 			airline: {
 				name: flight.flight.codeshared.airline_name,

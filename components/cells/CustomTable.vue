@@ -122,7 +122,6 @@
 </template>
 
 <script setup lang="ts">
-import { useStatusEmail } from "~/composables/statusEmail";
 import type { RowClaimExtended } from "~/types";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import { de } from 'date-fns/locale'
@@ -188,7 +187,6 @@ async function initiatePayout(email: string) {
 }
 
 const { send } = useSendMail();
-const { emails } = useStatusEmail();
 const sendEmail = async (to: any) => {
   const [passenger] = to.item.client.passengers;
   const [departure, arrival] = await getCities(

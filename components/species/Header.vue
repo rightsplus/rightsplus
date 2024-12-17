@@ -43,10 +43,10 @@ const links: ComputedRef<
     critical?: string;
   }[]
 > = computed(() => [
-  // {
-  //   path: "delayed-and-cancelled-flights",
-  //   title: t("disruptedFlights"),
-  // },
+  {
+    path: "delayed-and-cancelled-flights",
+    title: t("disruptedFlights"),
+  },
   {
     path: "your-passenger-rights",
     name: "your-passenger-rights",

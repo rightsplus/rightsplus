@@ -80,7 +80,7 @@
   "disruptions.noBoarding.label": "Boarding untersagt / verpasst",
   "disruptions.noBoarding.sublabel": "Du wurdest am Gate abgewiesen",
   "reasons.missingOrInvalidTravelDocuments.label": "Fehlende oder ungültige Reisedokumente",
-  "reasons.lateArrival.label": "Verspätete Ankunft",
+  "reasons.lateArrival.label": "Verspätete Ankunft der Reisenden",
   "reasons.overbooking.label": "Überbuchung",
   "reasons.healthIssues.label": "Gesundheitsprobleme",
   "reasons.intoxication.label": "Alkoholisierung",
@@ -230,13 +230,14 @@
   "disruptionReason.cancelled.description": "Welchen Grund hat die Fluggesellschaft für die Annullierung angegeben?",
   "disruptionReason.delayed.description": "Welchen Grund hat die Fluggesellschaft für die Verspätung angegeben?",
   "disruptionReason.noBoarding.description": "Aus welchem Grund warst du nicht im Flugzeug nach {arrival}?",
+  "connectionFlight.title": "Anschlussflug",
+  "connectionFlight.description": "Welchen Anschlussflug hast du genommen?",
+  "connectionFlightYN.description": "Hast du aufgrund der Verspätung deinen Anschlussflug verpasst?",
+  "connectionFlightDetails.description": "Gibt die Daten zu deinem Anschlussflug an",
   "replacementFlight.title": "Ersatzflug",
+  "replacementFlight.description": "Welcher Ersatzflug wurde dir angeboten?",
   "replacementFlightYN.description": "Hat dir die Airline einen Ersatzflug angeboten?",
   "replacementFlightDetails.description": "Gibt die Daten zu deinem Ersatzflug an",
-  "connectionFlight.title": "Anschlussflug",
-  "connectionFlightYN.description": "Hast du aufgrund der Verspätung deinen Anschlussflug verpasst?",
-  "connectionFlightDetails.description": "Welchen Anschlussflug hast du genommen?",
-  "replacementFlight.description": "Welcher Ersatzflug wurde dir angeboten?",
   "eligible.title": "Glückwunsch!",
   "eligible.description": "Du hast gute Aussichten auf eine Entschädigungszahlung!",
   "ineligible.title": "Sorry!",
@@ -379,11 +380,9 @@
         "cancelled": "Details zur Stornierung fehlen"
       }
     },
-    "eligible": {
-      "reason": {
-        "delay": {
-          "<3": "Flugverspätung war weniger als 3 Stunden ohne verpassten Anschluss"
-        }
+    "delayed": {
+      "<3": {
+        "noConnection": "Flugverspätung war weniger als 3 Stunden"
       }
     },
     "connection": {
@@ -397,6 +396,9 @@
     },
     "replacement": {
       "withinBounds": "Ersatzflug kam innerhalb akzeptabler Zeitgrenzen an"
+    },
+    "landed": {
+      "onTime": "Flug ist pünktlich gelanded"
     }
   }
 }

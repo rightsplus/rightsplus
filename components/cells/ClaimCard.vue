@@ -1,5 +1,3 @@
-
-
 <script setup lang="ts">
 import type { ClaimsForm, Flight } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -13,13 +11,13 @@ const props = defineProps<{
 const flight = computed(() => props.claim.flight);
 const emit = defineEmits(["click"]);
 
-const { compensation, message } = useCompensation(
-  !props.certain
-);
+const { compensation, message, ineligible, eligible } = useCompensation();
 </script>
 <template>
-  <div v-if="flight" class="flex flex-col gap-5">
-    <div class="bg-neutral-100 rounded-lg p-5 min-h-20 flex flex-col gap-3 justify-center">
+  <div class="flex flex-col gap-5">
+    <div
+      class="bg-neutral-100 rounded-lg p-5 min-h-20 flex flex-col gap-3 justify-center"
+    >
       <!-- Compensation -->
       <!-- {{ compensation }} // {{ distance }} -->
       <!-- {{
@@ -29,11 +27,17 @@ const { compensation, message } = useCompensation(
         ? "eligible"
         : `unknown: ${message}`
     }} -->
-      <div class="flex flex-col">
-        <span class="text-center" v-if="message">{{ message }}</span>
+      <div class="flex flex-col gap-3">
+        status: {{ flight?.status }}<br />
+        eligible: {{ eligible }}<br />
+        ineligible: {{ ineligible }}<br />
+        message: {{ message }}<br />
+        <span class="text-center" v-if="ineligible || message">{{
+          ineligible || message
+        }}</span>
         <div
-          class="flex flex-col justify-center text-center items-center gap-3 p-3"
-          v-if="!certain || compensation"
+          class="flex flex-col justify-center text-center items-center gap-3 px-3"
+          v-if="flight && !ineligible"
         >
           <FontAwesomeIcon
             class="shrink-0 text-xl"
@@ -44,7 +48,7 @@ const { compensation, message } = useCompensation(
           <div class="flex flex-col gap-2">
             <span
               class="text-xs text-neutral-500 leading-none"
-              v-if="!certain"
+              v-if="!eligible && !eligible"
               >{{
                 $t(
                   compensation
@@ -70,11 +74,9 @@ const { compensation, message } = useCompensation(
     </div>
 
     <CellsFlightCardExtended
+      v-if="flight"
       :flight="flight"
       :airport="claim.airport"
     />
   </div>
-  <div v-else>{{ flight }}</div>
-
-  <!-- <pre>{{ flight }}</pre> -->
 </template>

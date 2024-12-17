@@ -19,7 +19,6 @@
       :modelValue="modelValue.departure"
       @update:modelValue="modelValue.departure = $event"
       floatingLabel
-      class="mb-5"
     />
     <InputDateCalendar v-model="model.date!" label="Datum" calendar name="replacement-flight-date" :inline="false"/>
   </div>

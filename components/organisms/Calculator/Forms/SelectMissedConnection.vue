@@ -3,10 +3,10 @@
     class="flex flex-col gap-3 mt-5"
     v-if="
       modelValue.disruption.type === 'delayed' &&
-        ['<3'].includes(modelValue.disruption.details || '') &&
-        modelValue.airport.trip.layover?.some(
-          e => e.iata === modelValue.flight?.arrival.iata
-        )
+      ['<3'].includes(modelValue.disruption.details || '') &&
+      modelValue.airport.trip.layover?.some(
+        (e) => e.iata === modelValue.flight?.arrival.iata
+      )
     "
   >
     <SectionSubHeader :label="`Hast du deinen Anschlussflug verpasst?`" />
@@ -14,7 +14,7 @@
       <ButtonLarge
         v-for="c in [
           { value: false, label: $t('no') },
-          { value: true, label: $t('yes') }
+          { value: true, label: $t('yes') },
         ]"
         :key="c.value.toString()"
         @click.prevent="modelValue.disruption.connectingFlight = c.value"
@@ -30,27 +30,23 @@
         getFilteredFlights({
           departure: modelValue.airport.arrival?.iata,
           arrival: modelValue.airport.trip?.arrival?.iata,
-          date: props.modelValue.flight_date,
-          custom: filterConnectionFlights
+          date: props.modelValue.date || undefined,
+          custom: filterConnectionFlights,
         })
       "
-      :modelValue="modelValue.connectingFlight"
+      :modelValue="modelValue.connection.flight"
       @update:modelValue="
-        e => {
-          modelValue.connectingFlight = e;
+        (e) => {
+          modelValue.connection.flight = e;
         }
       "
     />
-    less time thant 45 min:
+    less time than 45 min:
     {{
-      (new Date(modelValue.connectingFlight?.departure.actual).getTime() -
-        new Date(
-          modelValue.flight?.arrival.actual_runway ||
-            modelValue.flight?.arrival.actual ||
-            modelValue.flight?.arrival.scheduled
-        ).getTime()) /
-        1000 /
-        60
+      (new Date(modelValue.connection.flight.departure.actualTime).getTime() -
+        new Date(modelValue.flight.arrival.actualTime).getTime()) /
+      1000 /
+      60
     }}
     min
   </div>
@@ -66,7 +62,7 @@ const props = defineProps<{
   modelValue: ClaimsForm;
 }>();
 const { disruptions } = useDisruption();
-const { getFilteredFlights } = useFlights()
+const { getFilteredFlights } = useFlights();
 
 const filterConnectionFlights = (flight: Flight) => {
   if (!props.modelValue.flight) return false;

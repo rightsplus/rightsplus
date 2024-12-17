@@ -2,7 +2,7 @@
   <Teleport to="body" :disabled="!teleport">
     <Transition name="dropdown">
       <ul
-        class="peer-focus:none bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-52 overflow-y-auto w-full absolute z-9999"
+        class="peer-focus:none bg-white rounded-b-lg ring-1 ring-primary-500 z-10 max-h-72 overflow-y-auto w-full absolute z-9999"
         :class="class"
         :style="style"
         ref="options"

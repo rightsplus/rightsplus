@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex gap-3 p-3 border rounded-lg text-sm"
+    class="flex gap-3.5 p-3 border rounded-lg text-sm"
     :class="{
       'border-neutral-200 bg-neutral-100 text-neutral-600': !type,
       'border-red-200 bg-red-100 text-red-600': type === 'error',
@@ -9,7 +9,7 @@
       'border-yellow-200 bg-yellow-100 text-yellow-700': type === 'warning'
     }"
   >
-    <FontAwesomeIcon v-if="icon" :icon="icon" class="my-1 shrink-0" />
+    <FontAwesomeIcon v-if="icon" :icon="icon" class="my-1 shrink-0 w-4 mx-[0.5px]" />
     <div class="flex flex-col gap-1">
       <span v-if="$slots.title" class="text-base font-bold"
         ><slot name="title"

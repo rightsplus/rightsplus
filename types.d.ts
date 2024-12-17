@@ -33,8 +33,8 @@ export type ClaimState = "loading"
   | "success"
 
 export type CaseStatus = "dataReceived"
-	| "awaitInitialAirlineResponse"
-	| "airlineRejected"
+  | "awaitInitialAirlineResponse"
+  | "airlineRejected"
   | "awaitLawyerResponse"
   | "airlineRejectedAfterLawyer"
   | "awaitCourtDecision"
@@ -44,7 +44,7 @@ export type CaseStatus = "dataReceived"
   | "caseWithdrawn"
   | "caseLost"
   | "completed"
-  // export type CaseStatus = "dataReceived"
+// export type CaseStatus = "dataReceived"
 // 	| "compensationClaimChecked"
 // 	| "orderRejected"
 // 	| "reminderForAssignmentDeclaration"
@@ -104,6 +104,8 @@ export interface ClaimsForm {
     reason: string | null;
     comment: string | null;
     selfInflicted?: boolean;
+    replacementFlight?: boolean
+    connectingFlight?: boolean
   };
   replacement: {
     departure: Airport;
@@ -191,14 +193,15 @@ export type FlightPhase<T = 'departure' | 'arrival'> = {
   estimatedRunway: string;
   actualRunway: string;
 }
+export type FlightStatusApi = "landed" | "scheduled" | "cancelled" | "active" | "unknown"
+export type FlightStatus = FlightStatusApi | "delayed"
 export interface Flight {
   type: "arrival" | "departure";
-  status: "landed" | "diverted" | "cancelled" | "scheduled" | "active" | "unknown";
+  status: FlightStatus;
   departure: FlightPhase;
   arrival: FlightPhase;
   airline: AirlineInfo;
   flight: FlightInfo;
-  distance?: number;
   codeshared?: CodeSharedInfo;
 }
 
@@ -208,7 +211,7 @@ export interface Leg extends Record<'departure' | 'arrival', {
   flight?: Flight;
   date: string;
 }
-export { FlightAviationEdge, AirlineAviationEdge, VariFlight } from "./aviation-edge.types"
+export { FlightAviationEdge, AirlineAviationEdge, VariFlight } from "./flight-api.types"
 /* Airline */
 export interface Airline {
   id: string;

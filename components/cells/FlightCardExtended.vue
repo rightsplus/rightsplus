@@ -73,13 +73,13 @@ const distance = computed(() =>
   >
     <div class="flex flex-wrap @md:flex-nowrap gap-3 sm:gap-5">
       <div class="grid flex-col @md:basis-1/2 w-full grow">
-        <span
+        <!-- <span
           class="text-xs text-neutral-500"
           v-if="city.departure && city.arrival"
           ><span class="font-bold">{{ city.departure }}</span>
           {{ t("to") }}
           <span class="font-bold">{{ city.arrival }}</span></span
-        >
+        > -->
         <div class="flex items-center justify-between gap-2">
           <div class="flex flex-col">
             <span class="font-bold text-xl">{{ flight.departure.iata }}</span>

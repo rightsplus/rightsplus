@@ -22,13 +22,7 @@
       />
     </div>
     <ol>
-      <!-- <li
-        class="flex gap-3 items-center text-base font-medium"
-        v-if="flight?.distance"
-      >
-        <span><FontAwesomeIcon icon="route" /></span>
-        <span>{{ $n(flight.distance, "km") }}</span>
-      </li>
+      <!--
       <li
         v-if="!isEuMember"
         class="flex gap-3 items-center text-base font-medium"

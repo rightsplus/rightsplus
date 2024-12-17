@@ -27,8 +27,8 @@
           },
         ]"
         :key="c.value.toString()"
-        @click.prevent="modelValue.disruption.replacement = c.value"
-        :selected="modelValue.disruption.replacement === c.value"
+        @click.prevent="modelValue.disruption.replacementFlight = c.value"
+        :selected="modelValue.disruption.replacementFlight === c.value"
         :name="c.value.toString()"
         :label="c.label"
         :subLabel="c.subLabel"
@@ -38,7 +38,7 @@
 
     <div
       class="flex flex-col gap-3 mt-5"
-      v-if="modelValue.disruption.replacement"
+      v-if="modelValue.disruption.replacementFlight"
     >
       <FormKit
         label="Flugnummer"
@@ -51,14 +51,14 @@
           getFilteredFlights({
             departure: modelValue.airport.departure?.iata,
             arrival: modelValue.airport.arrival?.iata,
-            date: props.modelValue.flight_date,
+            date: props.modelValue.date || undefined,
             custom: isReplacementFlightWithinBounds,
           })
         "
-        :modelValue="modelValue.disruption.replacementFlight"
+        :modelValue="modelValue.replacement.flight"
         @update:modelValue="
           (e) => {
-            modelValue.disruption.replacementFlight = e;
+            modelValue.replacement.flight = e;
           }
         "
       />
@@ -80,15 +80,15 @@
           { value: true, label: $t('yes') },
         ]"
         :key="c.value.toString()"
-        @click.prevent="modelValue.disruption.replacement = c.value"
-        :selected="modelValue.disruption.replacement === c.value"
+        @click.prevent="modelValue.disruption.replacementFlight = c.value"
+        :selected="modelValue.disruption.replacementFlight === c.value"
         :name="c.value.toString()"
         :label="c.label"
       />
     </div>
     <div
       class="flex flex-col gap-3 mt-5"
-      v-if="modelValue.disruption.replacement"
+      v-if="modelValue.disruption.replacementFlight"
     >
       <SectionSubHeader :label="`Ist dein Ersatzflug hier aufgeführt?`" />
       <FlightList
@@ -96,14 +96,14 @@
           getFilteredFlights({
             departure: modelValue.airport.departure?.iata,
             arrival: modelValue.airport.arrival?.iata,
-            date: props.modelValue.flight_date,
+            date: props.modelValue.date || undefined,
             custom: isReplacementFlightWithinBounds,
           })
         "
-        :modelValue="modelValue.disruption.replacementFlight"
+        :modelValue="modelValue.replacement.flight"
         @update:modelValue="
           (e) => {
-            modelValue.disruption.replacementFlight = e;
+            modelValue.replacement.flight = e;
           }
         "
       />

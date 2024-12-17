@@ -39,14 +39,10 @@ import type { MaskInputOptions } from "maska";
 
 export const useScroll = () => {
 	const scroll = ref(0);
-	const onScroll = () => {
-		scroll.value = window.scrollY;
-	}
 	onMounted(() => {
+		const onScroll = () => scroll.value = window.scrollY;
 		window.addEventListener('scroll', onScroll);
-	});
-	onUnmounted(() => {
-		window.removeEventListener('scroll', onScroll);
+		onUnmounted(() => window.removeEventListener('scroll', onScroll));
 	});
 	return scroll;
 }
@@ -63,16 +59,16 @@ export const usePosition = () => {
 			width: `${width}px`
 		};
 	}
-	const elementObserver = new MutationObserver(setPosition);
-
 	onMounted(() => {
-		elementObserver.observe(element.value!, { attributes: true, subtree: true });
+		const elementObserver = new MutationObserver(setPosition);
+		elementObserver?.observe(element.value!, { attributes: true, subtree: true });
 		window.addEventListener('resize', setPosition)
+		onUnmounted(() => {
+			elementObserver?.disconnect()
+			window.removeEventListener('resize', setPosition)
+		});
 	});
-	onUnmounted(() => {
-		elementObserver.disconnect()
-		window.removeEventListener('resize', setPosition)
-	});
+
 	return [element, position] as const;
 }
 export const useMask = () => {

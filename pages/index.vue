@@ -32,9 +32,9 @@
         </section>
         <div class="bg-white z-5 relative">
           <CompensationBanner />
+          <!-- <DisruptedFlights id="below-the-fold" /> -->
           <ProcessSummary />
           <YourRights />
-          <!-- <DisruptedFlights id="below-the-fold" /> -->
           <Reasons />
           <Stats class="bg-gray-700 text-white" />
           <FeeCalculator />

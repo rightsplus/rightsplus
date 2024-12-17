@@ -85,13 +85,13 @@ export const useSupabaseFunctions = () => {
 		const supabaseQuery = supabase
 			.from('flight')
 			.select('data')
+			.range(100, 200)
 			.match(match)
 
 		console.log(supabaseQuery)
 
 		try {
-			const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
-
+			await (or ? supabaseQuery.or(or) : supabaseQuery)
 		} catch (err) {
 			console.log(err)
 		}

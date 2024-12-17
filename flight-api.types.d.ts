@@ -1,3 +1,5 @@
+import type { FlightStatus, FlightStatusApi } from "./types";
+
 export interface VariFlight {
   FlightNo: string;
   FlightCompany: string;
@@ -53,7 +55,7 @@ export interface VariFlight {
 
 export interface FlightAviationEdge {
   type: "arrival" | "departure";
-  status: "landed" | "scheduled" | "cancelled" | "active" | "unknown";
+  status: FlightStatusApi;
   departure: {
     iataCode: string;
     icaoCode: string;
@@ -120,7 +122,7 @@ export interface AirlineAviationEdge {
 
 export interface FlightAviationStack {
   flight_date: string;
-  flight_status: "landed" | "scheduled" | "cancelled" | "active" | "unknown";
+  flight_status: FlightStatusApi;
   departure: {
       airport: string;
       timezone: string;

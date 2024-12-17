@@ -255,23 +255,24 @@ export const useDisruption = () => {
 		const disruptions = [
 			{
 				value: "delayed" as ClaimsForm['disruption']['type'],
-				label: t("disruptions.delayed.label"),
+				label: ucfirst(t("disruptions.delayed.label")),
 				sublabel: t("disruptions.delayed.sublabel"),
 				icon: "clock",
 			},
 			{
 				value: "cancelled" as ClaimsForm['disruption']['type'],
-				label: t("disruptions.cancelled.label"),
+				label: ucfirst(t("disruptions.cancelled.label")),
 				sublabel: t("disruptions.cancelled.sublabel"),
 				icon: "arrow-right-arrow-left",
 			},
 			{
 				value: "noBoarding" as ClaimsForm['disruption']['type'],
-				label: t("disruptions.noBoarding.label"),
+				label: ucfirst(t("disruptions.noBoarding.label")),
 				sublabel: t("disruptions.noBoarding.sublabel"),
 				icon: "ban",
 			},
 		];
+
 		const noBoardingReasons = [
 			{
 				value: "missingOrInvalidTravelDocuments",
@@ -358,9 +359,21 @@ export const useDisruption = () => {
 				label: t('reasons.lateArrivalOfAircraft.label'),
 				icon: "plane-arrival",
 			},
-			{ value: "crewIssues", label: t('reasons.crewIssues.label'), icon: "users" },
-			{ value: "airportCongestion", label: t('reasons.airportCongestion.label'), icon: "road" },
-			{ value: "securityIssues", label: t('reasons.securityIssues.label'), icon: "shield-alt" },
+			{
+				value: "crewIssues",
+				label: t('reasons.crewIssues.label'),
+				icon: "users"
+			},
+			{
+				value: "airportCongestion",
+				label: t('reasons.airportCongestion.label'),
+				icon: "road"
+			},
+			{
+				value: "securityIssues",
+				label: t('reasons.securityIssues.label'),
+				icon: "shield-alt"
+			},
 			{
 				value: "airTrafficControl",
 				label: t('reasons.airTrafficControl.label'),
@@ -382,7 +395,7 @@ export const useDisruption = () => {
 			cancelledDetails,
 			disruptions,
 			noBoardingReasons,
-			cancelledDelayedReasons,
+			cancelledDelayedReasons
 		}
 	} catch (error) {
 		console.error(error)
@@ -451,7 +464,6 @@ export const transformVariFlight = (flightObject: VariFlight) => {
 			number: FlightNo,
 			iata: FlightNo, // You might want to fetch this from somewhere
 		},
-		distance: parseInt(distance),
 		codeshared: {
 			airline: {
 				name: '',
@@ -535,6 +547,7 @@ export const useFlights = () => {
 			flights.value = mappedFlight
 			flightsByQuery.value ??= {}
 			flightsByQuery.value[query] ??= mappedFlight
+			console.log(mappedFlight)
 
 
 
@@ -606,7 +619,6 @@ export const useCities = <T extends ClaimsForm['airport']['trip']>(
 		}
 		return a
 	})
-	console.log(airports)
 	const assign = () => {
 		cities.value = iataCodes.value
 		query(Object.values(iataCodes.value).map(e => e || ''))
@@ -652,20 +664,20 @@ export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): { pending: R
 	return { airline, pending }
 }
 
-
 export const useFlightLeg = (claim: ClaimsForm) => {
 	const { airports, query } = useAirports()
-	const legs = computed(() => generateLegs?.(claim.airport.trip));
-
+	const legs = computed(() => generateLegs(claim.airport.trip));
+	
+	// @todo: do not call this function all the time
 	const assignLeg = async () => {
-
 		const iatasLeg = Object.keys(legs.value);
 		if (iatasLeg.length <= 1) claim.leg = iatasLeg[0];
 		const [departure, arrival] = claim.leg?.split("-") || [];
 		await query([departure, arrival])
 
 		Object.assign(claim.airport, { departure: airports.value[departure], arrival: airports.value[arrival] });
+		// console.log('assiigni')
 	};
 
-	return { legs, assignLeg, airport: claim.airport }
+	return { legs, assignLeg }
 }

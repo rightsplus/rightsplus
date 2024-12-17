@@ -1,128 +1,4 @@
-<template>
-  <div ref="container">
-    <div
-      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-      v-if="!allFlights.length && loading"
-    >
-      <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
-      <span class="text-neutral-500">Flüge werden geladen ...</span>
-    </div>
-    <div
-      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
-      v-else-if="!allFlights.length"
-    >
-      <FontAwesomeIcon icon="plane-slash" class="text-xl" />
-      <span class="text-neutral-500">Keine Flüge gefunden</span>
-      <span class="text-neutral-500 text-xs"
-        >{{ departure }} &rsaquo; {{ arrival }}, {{ date }}</span
-      >
-      <Button
-        tertiary
-        @click="fetch"
-        class="text-sm"
-        prefixIcon="arrow-rotate-right"
-        >erneut laden</Button
-      >
-    </div>
-    <div class="flex flex-col gap-5" v-else>
-      <div
-        class="flex gap-2 flex-wrap"
-        v-if="allFlights.length > 12 && showFilter"
-      >
-        <DropdownButton
-          v-model="selectedAirline"
-          name="airline"
-          :label="$t('filterBy', { value: $t('airline') })"
-          :options="[
-            ...filteredAirlines.map((flight) => ({
-              value: flight.airline.iata,
-              label: airlines[flight.airline.iata]?.name || flight.airline.name,
-              prepend: {
-                component: AirlineLogo,
-                props: {
-                  airline: flight.airline,
-                  size: 'xs',
-                },
-              },
-            })),
-          ]"
-          placeholder="Filtern ..."
-          class="w-full"
-        />
-        <!-- <span
-          class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
-          :class="{
-            'bg-primary-500 text-white hover:!bg-primary-600':
-              flight.airline.iata === selectedAirline,
-            'pointer-events-none opacity-50':
-              !filteredFlights
-                .map((e) => e.airline.iata)
-                .includes(flight.airline.iata) &&
-              selectedAirline !== flight.airline.iata,
-          }"
-          v-for="flight in Object.values(
-          allFlights.reduce(
-            (acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
-            {} as Record<string, Flight>
-          )
-        )"
-          @click="
-            () => {
-              if (selectedAirline === flight.airline.iata) {
-                selectedAirline = undefined;
-              } else {
-                selectedAirline = flight.airline.iata;
-              }
-            }
-          "
-          ><AirlineLogo :airline="flight.airline" size="xs" />{{
-            flight.airline.name
-          }}</span
-        > -->
-      </div>
-      <FlightFrequency
-        :flights="allFlights"
-        :time="time"
-        @select="selectTime"
-        v-if="filteredDayTimeButtons?.length > 7"
-      />
 
-      <!-- <div
-        v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
-        class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
-      >
-        <ButtonLarge
-          v-for="timeOfDay in filteredDayTimeButtons"
-          :key="timeOfDay.value"
-          :name="timeOfDay.value"
-          :label="$t(timeOfDay.value)"
-          :subLabel="timeOfDay.subLabel"
-          @click="selectTimeOfDay(timeOfDay.value)"
-          :selected="dayTime === timeOfDay.value"
-          class="grow basis-0 shrink-0 min-w-[140px]"
-        />
-      </div> -->
-      <ListGroupTransition
-        class="flex flex-col gap-5"
-        :style="`--total: ${filteredFlights.length};`"
-      >
-        <FlightCard
-          v-for="(flight, index) in filteredFlights"
-          :key="`${flight.flight?.iata}`"
-          :flight="flight"
-          @click="handleSelect(flight)"
-          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
-          class="w-full"
-          :selected="flight.flight.iata === modelValue?.flight.iata"
-          :class="{
-            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
-          }"
-          v-bind="flightCard"
-        />
-      </ListGroupTransition>
-    </div>
-  </div>
-</template>
 <script lang="ts" setup>
 import type { Database, Flight } from "@/types";
 import FlightCard, {
@@ -175,8 +51,8 @@ const allFlights = computed(() => {
     getFilteredFlights({
       departure: props.departure,
       arrival: props.arrival,
-      date: props.date,
-      number: props.number,
+      date: props.date || undefined,
+      number: props.number || undefined,
     })
   ).filter((e) => e.flight.iata && e.flight.number);
 });
@@ -329,3 +205,128 @@ watch(filteredDayTimeButtons, () => {
 //   { immediate: true, deep: true }
 // );
 </script>
+<template>
+  <div ref="container">
+    <div
+      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+      v-if="!allFlights.length && loading"
+    >
+      <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
+      <span class="text-neutral-500">Flüge werden geladen ...</span>
+    </div>
+    <div
+      class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
+      v-else-if="!allFlights.length"
+    >
+      <FontAwesomeIcon icon="plane-slash" class="text-xl" />
+      <span class="text-neutral-500">Keine Flüge gefunden</span>
+      <span class="text-neutral-500 text-xs"
+        >{{ departure }} &rsaquo; {{ arrival }}, {{ date }}</span
+      >
+      <Button
+        tertiary
+        @click="fetch"
+        class="text-sm"
+        prefixIcon="arrow-rotate-right"
+        >erneut laden</Button
+      >
+    </div>
+    <div class="flex flex-col gap-5" v-else>
+      <div
+        class="flex gap-2 flex-wrap"
+        v-if="allFlights.length > 12 && showFilter"
+      >
+        <DropdownButton
+          v-model="selectedAirline"
+          name="airline"
+          :label="$t('filterBy', { value: $t('airline') })"
+          :options="[
+            ...filteredAirlines.map((flight) => ({
+              value: flight.airline.iata,
+              label: airlines[flight.airline.iata]?.name || flight.airline.name,
+              prepend: {
+                component: AirlineLogo,
+                props: {
+                  airline: flight.airline,
+                  size: 'xs',
+                },
+              },
+            })),
+          ]"
+          placeholder="Filtern ..."
+          class="w-full"
+        />
+        <!-- <span
+          class="bg-neutral-100 cursor-pointer hover:bg-neutral-200 rounded p-2 text-sm leading-none flex items-center gap-2"
+          :class="{
+            'bg-primary-500 text-white hover:!bg-primary-600':
+              flight.airline.iata === selectedAirline,
+            'pointer-events-none opacity-50':
+              !filteredFlights
+                .map((e) => e.airline.iata)
+                .includes(flight.airline.iata) &&
+              selectedAirline !== flight.airline.iata,
+          }"
+          v-for="flight in Object.values(
+          allFlights.reduce(
+            (acc, curr) => ({ ...acc, [curr.airline.iata]: curr }),
+            {} as Record<string, Flight>
+          )
+        )"
+          @click="
+            () => {
+              if (selectedAirline === flight.airline.iata) {
+                selectedAirline = undefined;
+              } else {
+                selectedAirline = flight.airline.iata;
+              }
+            }
+          "
+          ><AirlineLogo :airline="flight.airline" size="xs" />{{
+            flight.airline.name
+          }}</span
+        > -->
+      </div>
+      <FlightFrequency
+        :flights="allFlights"
+        :time="time"
+        @select="selectTime"
+        v-if="filteredDayTimeButtons?.length > 7"
+      />
+
+      <!-- <div
+        v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
+        class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
+      >
+        <ButtonLarge
+          v-for="timeOfDay in filteredDayTimeButtons"
+          :key="timeOfDay.value"
+          :name="timeOfDay.value"
+          :label="$t(timeOfDay.value)"
+          :subLabel="timeOfDay.subLabel"
+          @click="selectTimeOfDay(timeOfDay.value)"
+          :selected="dayTime === timeOfDay.value"
+          class="grow basis-0 shrink-0 min-w-[140px]"
+        />
+      </div> -->
+      <ListGroupTransition
+        class="flex flex-col gap-5"
+        :style="`--total: ${filteredFlights.length};`"
+      >
+        <FlightCard
+          v-for="(flight, index) in filteredFlights"
+          :key="`${flight.flight?.iata}`"
+          :flight="flight"
+          @click="handleSelect(flight)"
+          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
+          class="w-full"
+          :selected="`${flight.departure.scheduledTime}-${flight.flight.iata}` === `${modelValue?.departure.scheduledTime}-${modelValue?.flight.iata}`"
+          :class="{
+            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
+          }"
+          v-bind="flightCard"
+        />
+      </ListGroupTransition>
+    </div>
+  </div>
+</template>

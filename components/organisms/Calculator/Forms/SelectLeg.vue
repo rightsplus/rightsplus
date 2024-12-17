@@ -6,27 +6,19 @@
       class="w-full flex flex-col gap-1"
       :class="{ 'col-span-full': Object.values(legs).length !== 2 }"
     >
-      <ButtonLeg
-        @click="
-          () => {
-            modelValue.leg = key;
-            assignLeg();
-            $emit('select');
-          }
-        "
-        :leg="leg"
-      />
+      <ButtonLeg @click="handleSelect(key)" :leg="leg" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ClaimsForm } from "@/types";
+import type { ClaimsForm } from "~/types";
 import ButtonLeg from "../ButtonLeg.vue";
-const props = defineProps<{
-  modelValue: ClaimsForm;
-}>();
-
-const { legs, assignLeg } = useFlightLeg(props.modelValue)
-
+const claim = defineModel<ClaimsForm>({ required: true });
+const { legs, assignLeg } = useFlightLeg(claim.value);
+const emit = defineEmits(["select"]);
+const handleSelect = (key: string) => {
+  claim.value.leg = key;
+  assignLeg().then(() => emit("select"));
+};
 </script>

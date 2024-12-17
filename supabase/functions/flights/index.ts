@@ -3,7 +3,7 @@ import type { Flight, FlightAviationEdge, RowAirline } from '~/types.js'
 import { corsHeaders } from '../_shared/cors.ts'
 import { transformAviationEdgeFlight, transformAviationStackFlight, prepareFlight } from '../_shared/fetchFlights.ts'
 import { createClient } from 'supabase'
-import type { FlightAviationStack } from '~/aviation-edge.types.js'
+import type { FlightAviationStack } from '~/flight-api.types.js'
 
 const saveFlightsToSupabase = async (
   flights: Flight[],

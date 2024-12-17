@@ -5,7 +5,7 @@ import useCreatePdf from "~/plugins/pdfmake/useCreatePdf"
 import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement"
 
 
-export const useStatusEmail = <Context extends RowClaimExtended>() => {
+export default <Context extends RowClaimExtended>() => {
 	const i18n = useI18n()
 	const { send } = useSendMail();
 	const supabase = useSupabaseClient<Database>()
