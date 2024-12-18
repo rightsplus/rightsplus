@@ -1,4 +1,4 @@
-import { state, claim, airports, airlines, admin } from '@/store'
+import { state, claim, airports, admin } from '@/store'
 import IBAN from 'iban';
 import { euMember } from 'is-european';
 import type { Airline, Airport } from '@/types';
@@ -22,14 +22,15 @@ const initialResults: ProcessClaimResponse = {
 }
 export const useProcessClaim = () => {
   const { noBoardingReasons } = useDisruption()
-  const airline = ref<Airline>()
+  const { query, airlines } = useAirlines()
 
   const result = ref<ProcessClaimResponse>(initialResults)
   const assign = () => {
-    result.value.completed = processClaim().completed
-    result.value.sectionComplete = processClaim().sectionComplete
-    result.value.message = processClaim().message
-    result.value.eligible = processClaim().eligible
+    const { completed, sectionComplete, message, eligible } = processClaim()
+    result.value.completed = completed
+    result.value.sectionComplete = sectionComplete
+    result.value.message = message
+    result.value.eligible = eligible
   }
 
 
@@ -175,7 +176,14 @@ export const useProcessClaim = () => {
     response.completed = 2
     return response
   }
-  onMounted(() => useAirlines().then(processClaim))
+  onMounted(() => {
+    console.log('init 1')
+    query().then(e => {
+      console.log('init 2')
+      processClaim()
+    })
+  }
+  )
   watch(claim, assign, { immediate: true, deep: true })
   return result
 }

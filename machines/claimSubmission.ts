@@ -1,5 +1,5 @@
 import IBAN from "iban";
-import type { Machine } from "~/composables/machine";
+import type { Machine } from "~/composables/useMachine";
 import { defaultClaim } from "~/store";
 import type { Airport, ClaimState, ClaimsForm } from "~/types";
 import { nextLeg } from "~/utils";
@@ -42,7 +42,7 @@ export default {
       return !!context.flight
     },
     hasEUAirport: ({ context, messages }) => {
-      console.log([context.airport.departure, context.airport.arrival])
+      // console.log([context.airport.departure, context.airport.arrival])
       messages.value.hasEUAirport = "Please provide at least one EU airport"
       return [context.airport.departure, context.airport.arrival]?.some(e => e?.ec261)
     },

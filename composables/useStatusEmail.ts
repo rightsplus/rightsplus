@@ -1,6 +1,6 @@
 // import { useI18n } from "#i18n"
 import { type Database, type CaseStatus, type ClaimsForm, type ClaimState, type RowClaimExtended } from "~/types"
-import type { Methods } from "~/composables/machine"
+import type { Methods } from "~/composables/useMachine"
 import useCreatePdf from "~/plugins/pdfmake/useCreatePdf"
 import assignmentAgreement from "~/plugins/pdfmake/pdf/documents/assignmentAgreement"
 

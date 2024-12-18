@@ -85,7 +85,6 @@ export const useSupabaseFunctions = () => {
 		const supabaseQuery = supabase
 			.from('flight')
 			.select('data')
-			.range(100, 200)
 			.match(match)
 
 		console.log(supabaseQuery)

@@ -1,4 +1,5 @@
-import type { ClaimsForm, Flight, FlightStatus, RowAirline } from "~/types";
+import type { ClaimsForm, ClaimState, Flight, FlightStatus, RowAirline } from "~/types";
+import claimMachine from "~/machines/claimSubmission";
 
 
 //
@@ -190,6 +191,11 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 export default () => {
 	const { t } = useI18n()
 	const claim = useClaim()
+
+	const machine = useMachine<ClaimState, ClaimsForm>(claimMachine, {
+		context: claim,
+	});
+	
 	const { assignLeg } = useFlightLeg(claim);
 
 	const { airlines } = useAirlines()
@@ -224,7 +230,7 @@ export default () => {
 		}
 	}
 
-	watch(claim, () => {
+	watch(() => machine.state.value, () => {
 		const { compensation: c, distance: d, message: m, ineligible: i, eligible: e, } = getCompensation()
 
 		compensation.value = c

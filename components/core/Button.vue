@@ -1,9 +1,10 @@
 <template>
   <component
+    :bind="$attrs"
     :is="component"
     :to="path"
     :title="tooltip"
-    :disabled="disabled"
+    :disabled="isDisabled"
     class="font-medium text-base flex items-center justify-center gap-2 leading-none px-5 h-14 cursor-pointer focus-visible:outline-none focus-visible:ring-1 ring-offset-2"
     :class="[
       {
@@ -32,12 +33,11 @@
           secondary && info,
         'bg-blue-100 text-blue-500 hover:text-blue-600 hover:bg-blue-200':
           tertiary && info,
-        'pointer-events-none opacity-50': disabled,
+        'pointer-events-none opacity-50': isDisabled,
       },
       round ? 'rounded-full' : 'rounded-lg',
     ]"
     :aria-label="label"
-    :bind="$attrs"
   >
     <FontAwesomeIcon v-if="prefixIcon" :icon="prefixIcon" class="shrink-0" />
     <span class="truncate leading-normal" v-if="$slots?.default"><slot /></span>
@@ -58,7 +58,7 @@ export type ButtonProps = {
   tooltip?: string;
   alert?: boolean;
   variant?: "primary" | "secondary" | "tertiary";
-  color?: ""
+  color?: "";
   success?: boolean;
   info?: boolean;
   round?: boolean;
@@ -72,4 +72,12 @@ const component = computed(() => {
 const path = computed(() => {
   if (props.to) return localePath(props.to);
 });
+const isDisabled = ref<boolean>();
+watch(
+  () => props.disabled,
+  (newValue) => {
+    nextTick(() => (isDisabled.value = !!newValue));
+  },
+  { immediate: true }
+);
 </script>

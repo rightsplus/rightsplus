@@ -187,10 +187,14 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 
 
 export const useAirlines = () => {
+	const claim = useClaim()
 	const client = useSupabaseClient()
 	async function query(iata: string): Promise<RowAirline>
-	async function query(iata: string[]): Promise<Record<string, RowAirline>>
-	async function query(iata: string | string[]): Promise<RowAirline | Record<string, RowAirline>> {
+	async function query(iata?: string[]): Promise<Record<string, RowAirline>>
+	async function query(iata?: string | string[]): Promise<RowAirline | Record<string, RowAirline>> {
+		if (!iata) {
+			iata = [claim.flight?.flight.iata, claim.connection.flight?.flight.iata, claim.replacement.flight?.flight.iata].filter(e => !!e) as string[]
+		}
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
@@ -667,7 +671,7 @@ export const useAirline = <T extends AirlineInfo>(airlineInfo?: T): { pending: R
 export const useFlightLeg = (claim: ClaimsForm) => {
 	const { airports, query } = useAirports()
 	const legs = computed(() => generateLegs(claim.airport.trip));
-	
+
 	// @todo: do not call this function all the time
 	const assignLeg = async () => {
 		const iatasLeg = Object.keys(legs.value);

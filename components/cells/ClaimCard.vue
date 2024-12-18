@@ -28,10 +28,10 @@ const { compensation, message, ineligible, eligible } = useCompensation();
         : `unknown: ${message}`
     }} -->
       <div class="flex flex-col gap-3">
-        status: {{ flight?.status }}<br />
+        <!-- status: {{ flight?.status }}<br />
         eligible: {{ eligible }}<br />
         ineligible: {{ ineligible }}<br />
-        message: {{ message }}<br />
+        message: {{ message }}<br /> -->
         <span class="text-center" v-if="ineligible || message">{{
           ineligible || message
         }}</span>

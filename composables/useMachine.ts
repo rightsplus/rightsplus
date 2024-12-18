@@ -21,7 +21,7 @@ export type Methods<Context, States extends string> = {
 
 type GuardProps<Context, States extends string> = {
   context: Context;
-  methods: Methods<Context, States>
+  methods: Partial<Methods<Context, States>>
   states: Ref<States[]>;
   messages: Ref<Record<string, string>>;
   event?: string;
@@ -55,7 +55,7 @@ const loading = ref(true)
 
 
 
-export const useMachine = <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
+export default <States extends string, T extends Record<string, any>>(machine: Machine<States, T>, options?: {
   context?: T | undefined;
   initial?: States;
   methods?: Partial<Methods<T, States>>
@@ -99,18 +99,29 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     const { guard, guardType, event } = e || {}
     if (!guard) return true
     const clause = (g: string) => {
+      // console.log('clause', g)
       const res = machine.guards[g]?.({ context, methods, states, messages, event })
       if (res) delete messages.value[g]
       return res
     }
     if (Array.isArray(guard)) {
-      if (guardType === 'or') return guard.some(clause)
-      if (guardType === 'xor') return !guard.some(clause)
+      if (guardType === 'or') {
+        // console.log('OR', guard, guard.some(clause))
+        return guard.some(clause)
+      }
+      if (guardType === 'xor') {
+        // console.log('XOR', guard, !guard.some(clause))
+        return !guard.some(clause)
+      }
+
+      // console.log('AND', guard, guard.every(clause))
       return guard.every(clause)
     }
 
+    // console.log('NOT', guard, !clause(guard))
     if (guardType === 'not') return !clause(guard)
-
+      
+    // console.log('/', guard, clause(guard))
     return clause(guard)
   }
 
@@ -119,13 +130,15 @@ export const useMachine = <States extends string, T extends Record<string, any>>
     if (!nextState) return { target: undefined, action: undefined }
     let nextTarget: States | undefined = undefined;
     let nextAction: string | string[] | undefined = undefined;
+    // console.log('nextState', nextState)
     if (nextState && 'target' in nextState && nextState.target) {
       if (event) nextState.event = event
       if (guardClause(nextState)) nextTarget = nextState.target;
     } else if (Array.isArray(nextState)) {
       if (event) nextState.forEach(e => e.event = event)
-      nextTarget =
-        nextState.find(guardClause)?.target;
+    nextTarget =
+      nextState.find(guardClause)?.target;
+      // console.log('getNext', state, event, nextState, nextTarget)
     }
     if (nextState && 'actions' in nextState && nextState.actions) {
       if (guardClause(nextState)) nextAction = nextState.actions;
@@ -139,6 +152,7 @@ export const useMachine = <States extends string, T extends Record<string, any>>
 
   const can = (event: string) => {
     const { target, action } = getNext({ event })
+    // console.log('can', event, target, action)
     return target || action
   }
   // watch(transition, (newValue) => {

@@ -1,4 +1,4 @@
-import type { Machine } from "~/composables/machine";
+import type { Machine } from "~/composables/useMachine";
 import type { CaseStatus, RowClaimExtended } from "~/types";
 
 // import { createMachine } from 'xstate'
