@@ -18,7 +18,8 @@ import claimMachine from "~/machines/claimSubmission";
 import type { ClaimsForm, ClaimState, Airport, Flight } from "~/types";
 import AddBookingNumber from "./Forms/AddBookingNumber.vue";
 import StepPassengers from "./StepPassengers.vue";
-import AssignmentAgreementPreflight from "./AssignmentAgreementPreflight.vue";
+import AssignmentAgreementSignature from "./AssignmentAgreementSignature.vue";
+import Preflight from "./Preflight.vue";
 import { useElementSize } from "@vueuse/core";
 const claimState = useClaim();
 const { t } = useI18n();
@@ -116,7 +117,7 @@ const submit = async () => {
     console.log("claimState", claimState);
     const submission = await prepareClaimSubmission(claimState);
     console.log("submission", submission);
-    // send("next");
+    send("next");
   } catch (error) {
     console.error(error);
   }
@@ -425,11 +426,21 @@ const handleClose = () => {
           />
         </StepWrapper>
         <StepWrapper v-else-if="state?.matches('assignmentAgreement')">
-          <AssignmentAgreementPreflight :modelValue="claimState" />
+          <AssignmentAgreementSignature :modelValue="claimState" />
+          <ButtonGroup
+            @primary="send('next')"
+            :primary="{
+              label: t('Angaben prüfen'),
+              disabled: !state.can('next'),
+            }"
+          />
+        </StepWrapper>
+        <StepWrapper v-else-if="state?.matches('preflight')">
+          <Preflight />
           <ButtonGroup
             @primary="submit"
             :primary="{
-              label: t('next'),
+              label: t('Entschädigungsanspruch verbindlich abtreten'),
               disabled: !state.can('next'),
             }"
           />

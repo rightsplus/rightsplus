@@ -1,5 +1,5 @@
 ---
-title: Price and Service Directory
+title: Price and Services
 lead: For the basic enforcement of claims under the Air Passenger Rights Regulation, RightsPlus receives compensation staggered according to the amount of the compensation claim.
 ---
 

@@ -31,9 +31,10 @@ const props = defineProps<{
 }>();
 const { locale, t } = useI18n();
 const arrivalCity = ref();
+const { getCities } = useGetCities()
 onMounted(() => {
   if (!props.modelValue.flight?.arrival.iata) return;
-  getCities([props.modelValue.flight?.arrival.iata], locale.value).then(
+  getCities([props.modelValue.flight?.arrival.iata], { locale: locale.value }).then(
     ([arrival]) => {
       arrivalCity.value = arrival;
     }

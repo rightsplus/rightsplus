@@ -1,8 +1,7 @@
-import { spanColumns, getField } from '../template'
+import { spanColumns } from '../template'
 import type { TDocumentDefinitions } from 'pdfmake/interfaces'
-import { markdownToPdfMake, validateSVG, measurements } from "../utils"
+import { validateSVG, measurements } from "../utils"
 import type { RowClaimExtended } from '~/types'
-import assignmentAgreement from '~/pdf/templates/assignmentAgreement'
 
 
 async function letterHeadSide({ claim, i18n }: { claim: RowClaimExtended, i18n: ReturnType<typeof useI18n> }) {
@@ -40,9 +39,9 @@ async function letterHeadSide({ claim, i18n }: { claim: RowClaimExtended, i18n: 
     },
     {
       stack: [
-        'RightsPlus GbR',
-        'Sandeldamm 24a',
-        '63450 Hanau',
+        'RightsPlus',
+        'Zülpicher Platz 18',
+        '50674 Köln',
       ],
       margin: [0, 0, 0, measurements.margin_x5],
     },

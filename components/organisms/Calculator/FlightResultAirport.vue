@@ -48,7 +48,8 @@ const props = defineProps<{
 }>();
 const city = ref()
 const { locale } = useI18n();
-onMounted(() => getCities([props.flight?.iata], locale.value).then(([c]) => city.value = c));
+const { getCities } = useGetCities()
+onMounted(() => getCities([props.flight?.iata], { locale: locale.value }).then(([c]) => city.value = c));
 // getHumanReadableWeather(props.flight).then((data) => {
 //   weather.value = data;
 // });

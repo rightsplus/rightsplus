@@ -6,8 +6,8 @@ Ich,
 
 erkläre hiermit, dass ich meinen Anspruch auf Entschädigung gemäß der Verordnung (EG) Nr. 261/2004 in Bezug auf den
 
-> Flug **DE2184** am **26.10.2019**&#13;
-> von **Madrid (MAD)** nach **Frankfurt am Main (FRA)**
+> Flug **{{ $doc.booking.flight.iata }}** am **{{ $doc.booking.flight.dateDeparture }}**&#13;
+> von **{{ $doc.booking.flight.airportDeparture }}** nach **{{ $doc.booking.flight.airportArrival }}**
 
 hiermit an **RightsPlus GbR**, unbedingt und unwiderruflich abtrete.
 

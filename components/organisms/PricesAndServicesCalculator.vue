@@ -1,9 +1,9 @@
 <template>
   <div class="">
     <div class="flex flex-col gap-3">
-      <span class="uppercase tracking-wider text-yellow-800/70 font-bold"
-        >{{ t('flightRoute')}}</span
-      >
+      <span class="uppercase tracking-wider text-yellow-800/70 font-bold">{{
+        t("flightRoute")
+      }}</span>
       <div
         :class="cn('grid gap-4', stackButtons ? 'grid-rows-3' : 'grid-cols-3')"
       >
@@ -13,7 +13,7 @@
           :name="option.label"
           @click="distance = option.value"
           :label="option.label"
-          :preLabel="option.preLabel"
+          :prelabel="option.prelabel"
           :selected="distance === option.value"
           class="bg-yellow-800/5 hover:bg-yellow-800/10 hover:border-yellow-800/5"
         />
@@ -74,7 +74,7 @@ const withinEU = ref(false);
 const { t, n } = useI18n();
 const distances = ref([
   {
-    preLabel: t("lessThan").trim(),
+    prelabel: t("lessThan").trim(),
     label: n(1500, "km").replace(/\s/g, "\u00a0"),
     value: 1000,
   },
@@ -83,7 +83,7 @@ const distances = ref([
     value: 2000,
   },
   {
-    preLabel: t("moreThan").trim(),
+    prelabel: t("moreThan").trim(),
     label: n(3500, "km").replace(/\s/g, "\u00a0"),
     value: 4000,
   },

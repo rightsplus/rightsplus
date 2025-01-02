@@ -67,7 +67,7 @@ const mapAirports = (airport: Airport) => ({
     airport._highlightResult?.iata.value
   })`,
   sublabel: [
-    getCityTranslation(airport, locale.value, true),
+    getCityTranslation(airport, { highlight: true, locale: locale.value }),
     countries.getName(airport.country_code, locale.value),
   ]
     .filter(Boolean)
@@ -121,7 +121,6 @@ const fallbackPlaceholder = computed(() => {
     CPH: "Copenhagen",
     ARN: "Stockholm",
     OSL: "Oslo",
-    
   };
   const arrivals = {
     JFK: "New York",

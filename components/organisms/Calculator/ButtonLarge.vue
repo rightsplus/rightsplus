@@ -5,29 +5,35 @@
       '!bg-gray-700 text-white': selected,
     }"
   >
-    <span class="leading-none" v-if="icon"><FontAwesomeIcon :icon="icon" class="text-sm" /></span>
+    <span class="leading-none" v-if="icon"
+      ><FontAwesomeIcon :icon="icon" class="text-sm"
+    /></span>
     <div class="flex flex-col items-start gap-1" v-if="label || subLabel">
-      <span class="text-xs leading-none" v-if="preLabel">{{ preLabel }}</span>
+      <span class="text-xs leading-none" v-if="prelabel">{{ prelabel }}</span>
       <span class="text-base font-medium leading-none" v-if="label">{{
         label
       }}</span>
       <span class="text-xs leading-none" v-if="subLabel">{{ subLabel }}</span>
     </div>
     <slot />
-    <FontAwesomeIcon v-if="proceed" icon="angle-right" class="ml-auto text-neutral-400 text-base" />
+    <FontAwesomeIcon
+      v-if="proceed"
+      icon="angle-right"
+      class="ml-auto text-neutral-400 text-base"
+    />
   </button>
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 defineProps<{
-  selected?: boolean
-  name?: string
-  label?: string
-  icon?: string
-  preLabel?: string
-  subLabel?: string
-  proceed?: boolean
-}>()
+  selected?: boolean;
+  name?: string;
+  label?: string;
+  icon?: string;
+  prelabel?: string;
+  subLabel?: string;
+  proceed?: boolean;
+}>();
 </script>

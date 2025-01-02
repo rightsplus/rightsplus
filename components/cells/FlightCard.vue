@@ -19,10 +19,10 @@
       <div class="flex flex-col items-start text-start">
         <span
           class="text-sm leading-none"
-          v-if="airports && flight.departure && flight.arrival"
-          ><span class="font-bold">{{ city.departure }}</span>
+          v-if="flight.departure && flight.arrival"
+          ><span class="font-bold">{{ city.departure?.city }}</span>
           {{ $t("to") }}
-          <span class="font-bold">{{ city.arrival }}</span>
+          <span class="font-bold">{{ city.arrival?.city }}</span>
           <!-- <span v-if="showDate && flight.departure">{{
             getLocalizedTime(flight.departure.scheduledTime)
           }}</span> -->
@@ -79,9 +79,7 @@
     <template v-if="actionButton">
       <hr class="w-full mt-2" />
       <div class="flex justify-between items-center">
-        <span :class="status.class"
-          >{{ status.text }}</span
-        >
+        <span :class="status.class">{{ status.text }}</span>
         <Button @click="emit('click')" v-bind="actionButton" />
       </div>
     </template>
@@ -111,10 +109,21 @@ const iata = computed(() => {
 });
 const status = useFlightStatus(props.flight, { detailed: true });
 
-const city = useCities({
-  departure: props.flight.departure,
-  arrival: props.flight.arrival,
+const { getCities, cities } = useGetCities();
+const city = computed(() => {
+  return {
+    departure: cities.value[props.flight.departure.iata]?.[locale.value],
+    arrival: cities.value[props.flight.arrival.iata]?.[locale.value],
+  };
 });
+watch(
+  () => props.flight,
+  ({ departure, arrival }) => {
+    getCities([departure.iata, arrival.iata]);
+  },
+  { deep: true, immediate: true }
+);
+
 const { airline, pending } = useAirline(props.flight?.airline);
 const { airline: codesharedAirline } = useAirline(
   props.flight?.codeshared?.airline
@@ -134,19 +143,4 @@ const overNight = (flight: Flight) => {
   return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
 };
 const { locale } = useI18n();
-const time = (time: string) => {
-  return new Date(time).toLocaleTimeString(locale.value, {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "UTC",
-  });
-};
-const date = (date: string) => {
-  return new Date(date).toLocaleDateString(locale.value, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    timeZone: "UTC",
-  });
-};
 </script>

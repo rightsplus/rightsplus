@@ -40,8 +40,8 @@ const { locale } = useI18n();
 
 const departureCity = ref()
 const arrivalCity = ref()
-
-getCities([props.leg.departure.airport?.iata, props.leg.arrival.airport?.iata], locale.value).then(
+const { getCities } = useGetCities()
+getCities([props.leg.departure.airport?.iata, props.leg.arrival.airport?.iata], { locale: locale.value }).then(
   ([departure, arrival]) => {
     departureCity.value = departure
     arrivalCity.value = arrival

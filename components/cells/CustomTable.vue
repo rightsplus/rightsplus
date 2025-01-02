@@ -29,9 +29,17 @@
       <template #body="{ data }: { data: RowClaimExtended }">
         <span
           class="text-xs font-medium p-1 rounded"
-          :class="getStatus(data.booking.flight.status, data.booking.flight.delayArrival).class"
+          :class="
+            getStatus(
+              data.booking.flight.status,
+              data.booking.flight.delayArrival
+            ).class
+          "
           >{{
-            getStatus(data.booking.flight.status, data.booking.flight.delayArrival).text
+            getStatus(
+              data.booking.flight.status,
+              data.booking.flight.delayArrival
+            ).text
           }}</span
         >
       </template>
@@ -41,8 +49,10 @@
         <span
           class="text-xs font-medium"
           :class="
-            getStatus(data.booking.flight.status, data.booking.flight.delayArrival).value ===
-            'delayed'
+            getStatus(
+              data.booking.flight.status,
+              data.booking.flight.delayArrival
+            ).value === 'delayed'
               ? 'text-red-500'
               : ''
           "
@@ -124,7 +134,7 @@
 <script setup lang="ts">
 import type { RowClaimExtended } from "~/types";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
-import { de } from 'date-fns/locale'
+import { de } from "date-fns/locale";
 
 const props = defineProps<{
   data: RowClaimExtended[];
@@ -137,7 +147,6 @@ const getStatus = (status: string, delay: number) => {
     delayed: "bg-yellow-100 text-yellow-700",
     landed: "bg-green-100 text-green-600",
   };
-
 
   const newStatus =
     status === "cancelled" || delay < 180
@@ -187,12 +196,13 @@ async function initiatePayout(email: string) {
 }
 
 const { send } = useSendMail();
+const { getCities } = useGetCities();
 const sendEmail = async (to: any) => {
   const [passenger] = to.item.client.passengers;
-  const [departure, arrival] = await getCities(
-    [to.item.flights.airport_departure, to.item.flights.airport_arrival],
-    locale.value
-  );
+  const [departure, arrival] = await getCities([
+    to.item.flights.airport_departure,
+    to.item.flights.airport_arrival,
+  ]);
   const data = {
     name: [passenger?.firstName, passenger?.lastName].join(" "),
     firstName: passenger?.firstName,

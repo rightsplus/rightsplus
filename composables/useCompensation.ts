@@ -2,11 +2,6 @@ import type { ClaimsForm, ClaimState, Flight, FlightStatus, RowAirline } from "~
 import claimMachine from "~/machines/claimSubmission";
 
 
-//
-const credibleFlightStatus = (flight: Flight | null): FlightStatus | undefined => {
-	if (!flight) return
-	if (['cancelled', 'delayed', 'landed'].includes(flight.status)) return flight.status
-}
 
 const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirline>): {
 	ineligible: string | false | null;
@@ -53,7 +48,7 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 			console.log('incredible')
 			return
 		}
-		
+
 		if (flight.status === "delayed") {
 			if (flight.arrival.delay < 180) {
 				const { departure, arrival } = nextLeg(claim);
@@ -195,7 +190,7 @@ export default () => {
 	const machine = useMachine<ClaimState, ClaimsForm>(claimMachine, {
 		context: claim,
 	});
-	
+
 	const { assignLeg } = useFlightLeg(claim);
 
 	const { airlines } = useAirlines()
@@ -215,10 +210,12 @@ export default () => {
 
 		let compensation = 0
 		if (!ineligible) {
+			const delay = claim.flight?.arrival.delay || 0
 			compensation = 250
 			if (distance > 1500) compensation = 400
 			const beyondEU = [claim.airport.departure, claim.airport.arrival].some(e => !e?.ec261)
 			if (distance > 3500 && beyondEU) compensation = 600
+			if (distance > 3500 && delay > 180 && delay < 240) compensation /= 2
 		}
 		console.log('ineligible', ineligible)
 		return {
@@ -238,6 +235,7 @@ export default () => {
 		message.value = m
 		eligible.value = e
 		ineligible.value = i
+		claim.isEligible = e
 	}, { immediate: true, deep: true })
 
 	return { compensation, distance, message, ineligible, eligible }

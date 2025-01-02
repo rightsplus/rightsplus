@@ -173,11 +173,12 @@ watch(
   },
   { immediate: true, deep: true }
 );
+const { getCities } = useGetCities()
 watch(
   () => props.modelValue.flight,
   () => {
     if (props.modelValue.flight)
-      getCities([props.modelValue.flight.arrival.iata], locale.value).then(
+      getCities([props.modelValue.flight.arrival.iata], { locale: locale.value }).then(
         ([arrival]) => {
           arrivalCity.value = arrival;
         }

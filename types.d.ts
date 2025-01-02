@@ -30,6 +30,7 @@ export type ClaimState = "loading"
   | "passengers"
   | "assignmentAgreement"
   | "eligibility"
+  | "preflight"
   | "success"
 
 export type CaseStatus = "dataReceived"
@@ -86,6 +87,7 @@ export type DisruptionDetail = '<3' | '3-4' | '>4' | '<8' | '7-14' | '>14'
 
 export interface ClaimsForm {
   id?: number;
+  isEligible: boolean | null;
   airport: {
     departure: Airport;
     arrival: Airport;

@@ -1,4 +1,70 @@
-import type { ClaimsForm, Database, RowBooking, RowFlight } from "~/types";
+import type { ClaimsForm, Database, RowBooking, RowClaimExtended, RowFlight } from "~/types";
+
+
+type FormattedRowClaim = RowClaimExtended & {
+	id: string
+}
+type ClaimProps = {
+	claim: ClaimsForm;
+	passengerIndex: number;
+	lang?: string;
+}
+type RowClaimProps = {
+	claimRow: RowClaimExtended;
+}
+type ReturnFormattedRowClaim = {
+	format: (props: ClaimProps | RowClaimProps) => Promise<FormattedRowClaim | undefined>
+}
+export function useFormatClaim(): ReturnFormattedRowClaim {
+	const { getCities } = useGetCities()
+	const { locale } = useI18n()
+	const format = async (props: ClaimProps | RowClaimProps) => {
+		let rowClaim: RowClaimExtended
+		if ('claim' in props && 'passengerIndex' in props) {
+			const passenger = props.passengerIndex != null && props.claim.client.passengers[props.passengerIndex]
+			if (!passenger || !props.claim?.flight) return
+			rowClaim = {
+				id: 0,
+				lang: props.lang || locale.value,
+				client: passenger,
+				booking: {
+					flight: {
+						iata: props.claim?.flight?.flight.iata,
+						scheduledDeparture: props.claim?.flight?.departure.scheduledTime,
+						airportDeparture: props.claim?.flight?.departure.iata,
+						airportArrival: props.claim?.flight?.arrival.iata,
+					},
+				},
+			};
+		} else if (props.claimRow) {
+			rowClaim = props.claimRow
+		} else {
+			return
+		}
+
+		const [departureCity, arrivalCity] = await getCities([rowClaim.booking.flight.airportDeparture, rowClaim.booking.flight.airportArrival], { locale: rowClaim.lang, iata: true })
+
+		const formattedRowClaim = upsert(rowClaim, {
+			booking: {
+				flight: {
+					dateDeparture: getLocalizedDate(
+						rowClaim.booking.flight.dateDeparture,
+						rowClaim.lang,
+						"short"
+					),
+					airportDeparture: departureCity.airport,
+					airportArrival: arrivalCity.airport,
+				},
+			},
+		});
+		return {
+			...formattedRowClaim,
+			id: formatClaimId(rowClaim.id),
+		} as FormattedRowClaim
+	}
+
+	return { format }
+}
 
 export const usePrepareClaimSubmission = () => {
 	const supabase = useSupabaseClient<Database>()
@@ -71,26 +137,15 @@ export const usePrepareClaimSubmission = () => {
 			console.log('fetch flight for id ...',)
 			console.log({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] })
 
-
-			try {
-
-				const { data: existingFlight, error: errExisting } = await supabase
-					.from("flight")
-					.select('data')
-					.match({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] })
-					.single<RowFlight>();
-					console.log(existingFlight, errExisting)
-			} catch (err) {
-				console.log(err)
-			}
 			const { data: existingFlight, error: errExisting } = await supabase
 				.from("flight")
-				.select('data')
+				.select('*')
 				.match({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] })
 				.single<RowFlight>();
 
 
-			console.log(claim.flight.departure.scheduledTime)
+			console.log('existingFlight', existingFlight)
+
 			const { id: flightId } = existingFlight || (await submitFlight(claim.flight)) || {}
 
 			if (!flightId || errExisting) {

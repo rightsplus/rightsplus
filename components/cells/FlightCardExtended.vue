@@ -22,12 +22,19 @@ const { t, n } = useI18n();
 const iata = computed(() => {
   return `${props.flight.airline.iata} ${props.flight.flight.number}`;
 });
-const status = useFlightStatus(props.flight, { detailed: true });
-const airportIatas = computed(() => ({
-  departure: props.flight.departure,
-  arrival: props.flight.arrival,
-}));
-const city = useCities(airportIatas.value);
+const status = useFlightStatus(props.flight);
+const { getCities, cities } = useGetCities();
+const city = computed(() => {
+  return {
+    departure: cities.value[props.flight.departure.iata]?.[locale.value],
+    arrival: cities.value[props.flight.arrival.iata]?.[locale.value],
+  };
+});
+watch(
+  () => props.flight,
+  ({ departure, arrival }) => getCities([departure.iata, arrival.iata]),
+  { deep: true, immediate: true }
+);
 const { airline, pending } = useAirline(props.flight?.airline);
 const { airline: codesharedAirline } = useAirline(
   props.flight?.codeshared?.airline
@@ -83,12 +90,16 @@ const distance = computed(() =>
         <div class="flex items-center justify-between gap-2">
           <div class="flex flex-col">
             <span class="font-bold text-xl">{{ flight.departure.iata }}</span>
-            <span class="text-sm text-neutral-500">{{ city.departure }}</span>
+            <span class="text-sm text-neutral-500">{{
+              city.departure.city
+            }}</span>
           </div>
-          <FontAwesomeIcon icon="plane" class="text-gray-400" />
+          <FontAwesomeIcon icon="plane" class="text-gray-400 shrink-0" />
           <div class="flex flex-col items-end">
             <span class="font-bold text-xl">{{ flight.arrival.iata }}</span>
-            <span class="text-sm text-neutral-500">{{ city.arrival }}</span>
+            <span class="text-sm text-neutral-500">{{
+              city.arrival.city
+            }}</span>
           </div>
         </div>
       </div>
@@ -159,8 +170,8 @@ const distance = computed(() =>
             </div>
             <div class="flex items-center gap-3">
               <span
-                class="leading-0 flex items-center gap-2 text-orange-500"
                 v-if="flight.arrival.delay"
+                class="leading-0 flex items-center gap-2 text-orange-500"
                 >{{
                   t("delayed.by", { value: getDuration(flight.arrival.delay) })
                 }}</span

@@ -67,6 +67,7 @@ export const defaultClaim = {
     number: '',
     flight: null,
   },
+  isEligible: null
 } as ClaimsForm
 
 export const claim: ClaimsForm = reactive(JSON.parse(JSON.stringify(defaultClaim)))

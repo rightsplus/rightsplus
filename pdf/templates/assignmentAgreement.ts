@@ -4,7 +4,7 @@ import { markdownToPdfMake, validateSVG } from "~/plugins/pdfmake/pdf/utils";
 import type { RowClaimExtended } from "~/types";
 
 export default ({ claim, i18n, content, preview }: { claim: RowClaimExtended, i18n: ReturnType<typeof useI18n>, content: Content[], preview?: boolean }) => {
-	const { locale } = i18n
+	const { t, locale } = i18n
 
 	const rect = {
 		w: spanColumns(4.5),
@@ -20,7 +20,7 @@ export default ({ claim, i18n, content, preview }: { claim: RowClaimExtended, i1
 			y: -5
 		}
 	} : {
-		text: '×',
+		text: '',
 		fontSize: 16,
 		relativePosition: {
 			y: 2
@@ -51,7 +51,7 @@ export default ({ claim, i18n, content, preview }: { claim: RowClaimExtended, i1
 							},
 						}),
 						{
-							text: 'Ort, Datum',
+							text: t('date')
 						},
 					],
 					width: '*', // Column takes 40% of the total width
@@ -67,7 +67,7 @@ export default ({ claim, i18n, content, preview }: { claim: RowClaimExtended, i1
 							content: [signature]
 						}),
 						{
-							text: 'Unterschrift',
+							text: t('signature'),
 						},
 					],
 					width: '*', // Column takes 50% of the total width

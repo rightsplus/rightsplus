@@ -151,11 +151,13 @@ export default () => {
 		}))
 	}
 
-	const generatePDF = async (document: Promise<TDocumentDefinitions>, { download }: { download?: string } = {}) => {
+	const generatePDF = async (document: Promise<TDocumentDefinitions>, { download, open }: { download?: string, open?: boolean } = {}) => {
 		const page = await getPage(document)
 		const pages = await mergePages({ page })
 		const blob = await generateBlob(pages);
 		if (download) invokeDownload(blob, download)
+		if (open) openPDF(pages);
+
 		return blob
 	}
 
@@ -183,8 +185,23 @@ const convertToUint8Array = (buffer: ArrayBuffer) => {
 	const array = new Uint8Array(buffer)
 	if (array.length > 4000) return array
 }
+const getLink = (pdf: string) => {
+	return `data:application/pdf;base64,${pdf}`
+}
+
+function openPDF(pdf: string): void {
+	const newWindow = window.open();
+	if (newWindow) {
+		newWindow.document.write(
+			`<iframe src="${getLink(pdf)}" width="100%" height="100%" style="border: none;"></iframe>`
+		);
+	} else {
+		console.error("Failed to open a new tab or window.");
+	}
+}
+
 const generateBlob = (pdf: string): Promise<Blob> => {
-	const linkSource = `data:application/pdf;base64,${pdf}`
+	const linkSource = getLink(pdf)
 	return new Promise((resolve, reject) => {
 		fetch(linkSource)
 			.then((response) => response.blob().then(resolve))

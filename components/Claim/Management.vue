@@ -8,6 +8,8 @@ import claimProcessing from "~/machines/claimProcessing";
 import { date } from "@formkit/i18n";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightCardExtended from "../cells/FlightCardExtended.vue";
+import DisruptionCard from "../cells/DisruptionCard.vue";
+import PassengerCard from "../cells/PassengerCard.vue";
 
 const props = defineProps<{ claim?: RowClaimExtended }>();
 
@@ -34,10 +36,7 @@ const active = ref(0);
 const items = ref([
   { label: "Flug", icon: "plane", component: FlightCard },
   { label: "Flughafen", icon: "tower-control" },
-  { label: "Störung", icon: "ban" },
-  { label: "Passagier", icon: "user" },
   { label: "Airline", icon: "plane-tail" },
-  { label: "Notizen", icon: "note-sticky" },
   // { label: "Wetter", icon: "sun" },
 ]);
 
@@ -111,11 +110,13 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
             /> </template
         ></TabMenu>
         <div class="p-5">
-          <div v-if="active === 0">
+          <div v-if="active === 0" class="flex flex-col gap-5">
             <FlightCardExtended
               :flight="claim.booking.flight.data"
               :booking="claim.booking"
             />
+            <DisruptionCard :disruption="claim.booking.disruption" />
+            <PassengerCard :passenger="claim.client" />
           </div>
           <div v-else-if="active === 1">
             <ClaimManageAirport :claim="claim" />

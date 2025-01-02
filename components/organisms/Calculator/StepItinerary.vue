@@ -206,12 +206,12 @@ const filteredFlights = computed(() => {
   });
   return filtered;
 });
-
+const { getCities } = useGetCities()
 watch(
   () => props.modelValue.date || props.modelValue.airport,
   () => {
     const { departure, arrival } = props.modelValue.airport;
-    getCities([departure?.iata, arrival?.iata], locale.value).then(
+    getCities([departure?.iata, arrival?.iata], { locale: locale.value }).then(
       ([departure, arrival]) => {
         departureCity.value = departure;
         arrivalCity.value = arrival;

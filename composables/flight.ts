@@ -148,7 +148,9 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 			},
 			delayed: {
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
-				text: t("delayed"),
+				text: options?.detailed ? t('delayed.by', {
+					value: getDuration(flight?.arrival?.delay || 0),
+				}) : t("delayed"),
 			},
 			diverted: {
 				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
@@ -247,14 +249,42 @@ export const useDisruption = () => {
 	try {
 		const format = new Intl.NumberFormat(locale.value);
 		const delayedDetails = [
-			{ value: "<3" as ClaimsForm['disruption']['details'], preLabel: t("fewerThan").trim(), label: t("hours", 3) },
-			{ value: "3-4" as ClaimsForm['disruption']['details'], label: t("hours", { n: format.formatRange(3, 4) }, 3) }, // bei +3500 km: Vergütung 50%
-			{ value: ">4" as ClaimsForm['disruption']['details'], preLabel: t("moreThan").trim(), label: t("hours", 4) },
+			{
+				value: "<3" as ClaimsForm['disruption']['details'],
+				prelabel: t("fewerThan").trim(),
+				label: t("hours", 3),
+				sublabel: t("delayedFewerThan", 3),
+			},
+			{
+				value: "3-4" as ClaimsForm['disruption']['details'],
+				label: t("hours", { n: format.formatRange(3, 4) }, 3),
+				sublabel: t("delayedBetween", { n: format.formatRange(3, 4) }),
+			}, // bei +3500 km: Vergütung 50%
+			{
+				value: ">4" as ClaimsForm['disruption']['details'],
+				prelabel: t("moreThan").trim(),
+				label: t("hours", 4),
+				sublabel: t("delayedMoreThan", 4),
+			},
 		];
 		const cancelledDetails = [
-			{ value: "<8" as ClaimsForm['disruption']['details'], preLabel: t("fewerThan").trim(), label: t("days", 7) },
-			{ value: "8-14" as ClaimsForm['disruption']['details'], label: t("days", { n: format.formatRange(8, 14) }, 8) },
-			{ value: ">14" as ClaimsForm['disruption']['details'], preLabel: t("moreThan").trim(), label: t("days", 14) },
+			{
+				value: "<8" as ClaimsForm['disruption']['details'],
+				prelabel: t("fewerThan").trim(),
+				label: t("days", 7),
+				sublabel: t("cancellationAnnouncedFewerThan", 7),
+			},
+			{
+				value: "8-14" as ClaimsForm['disruption']['details'],
+				label: t("days", { n: format.formatRange(8, 14) }, 8),
+				sublabel: t("cancellationAnnouncedBetween", { n: format.formatRange(8, 14) }),
+			},
+			{
+				value: ">14" as ClaimsForm['disruption']['details'],
+				prelabel: t("moreThan").trim(),
+				label: t("days", 14),
+				sublabel: t("cancellationAnnouncedMoreThan", 14),
+			},
 		];
 		const disruptions = [
 			{
@@ -598,26 +628,66 @@ export const useFlights = () => {
 	return { flights, fetchFlights, getFilteredFlights }
 }
 
-export const getCities = async (iataCodes: (string | undefined)[], locale?: string) => {
+// make composable
+const cities = useLocalStorage<{
+	[iata: string]: {
+		[locale: string]: {
+			city: string
+			airport: string
+		}
+	}
+}>('cities', {})
+export const useGetCities = () => {
+	const { locale } = useI18n()
 	const { query } = useAirports()
-	return (await Promise.all(iataCodes.map(async e => await query(e || '')))).map(e => getCityTranslation(e, locale));
-};
+
+	const getCities = async (iataCodes: string[], options: {
+		locale?: string;
+		iata?: boolean
+	} = {}) => {
+		options.locale = options?.locale || locale.value
+		const uncached = iataCodes.filter(e => !cities.value[e]?.[options.locale!])
+
+		if (uncached.length) {
+			await Promise.all(uncached.map(async e => {
+				const airportObject = await query(e)
+				const city = getCityTranslation(airportObject, { locale: options.locale, iata: false }) || e
+				const airport = getCityTranslation(airportObject, { locale: options.locale, iata: true }) || e
+				cities.value[e] ??= {}
+				cities.value[e][options.locale!] = {
+					city,
+					airport
+				}
+			}))
+		}
+
+		return iataCodes.map(e => {
+			return cities.value[e][options.locale!]
+		})
+	};
+	return { getCities, cities }
+}
 
 export const useCities = <T extends ClaimsForm['airport']['trip']>(
 	airports: T,
 	options?: {
+		locale?: string
 		iata?: boolean
 	}
-): Ref<T> => {
+) => {
 	const { locale } = useI18n()
-	const cities = ref();
+	const cities = ref<{
+		[phase: `layover-${number}`]: string
+		departure?: string
+		arrival?: string
+	}>({});
 	const { query } = useAirports()
 	const iataCodes = computed(() => {
 		const a: Record<string, string> = {}
 		for (const [key, value] of Object.entries(airports)) {
 			if (Array.isArray(value)) {
 				value.forEach((e, i) => a[`${key}-${i}`] = e.iata)
-			} else {
+			} else if (value?.iata) {
 				a[key] = value.iata
 			}
 		}
@@ -628,8 +698,7 @@ export const useCities = <T extends ClaimsForm['airport']['trip']>(
 		query(Object.values(iataCodes.value).map(e => e || ''))
 			.then((airports) => {
 				Object.entries(iataCodes.value).forEach(([phase, iata]) => {
-					let city = iata && airports[iata] && getCityTranslation(airports[iata], locale.value);
-					if (options?.iata) city = city?.concat(' ', `(${iata})`)
+					const city = iata && airports[iata] && getCityTranslation(airports[iata], { ...options, locale: options?.locale || locale.value });
 					if (city && cities.value) {
 						cities.value[phase] = city
 					}

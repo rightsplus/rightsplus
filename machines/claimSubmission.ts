@@ -75,8 +75,7 @@ export default {
       return isReplacementFlightWithinBounds(context)
     },
     isEligible: ({ context }) => {
-      const { eligible } = useCompensation()
-      return !!eligible
+      return !!context.isEligible
     },
     connectionRelevant: ({ context }) => {
       // console.log('is connection relevant?')
@@ -428,7 +427,7 @@ export default {
         next: [
           {
             target: "bookingNumber",
-            // guard: "isEligible"
+            guard: "isEligible"
           },
         ],
         reset: [
@@ -454,6 +453,11 @@ export default {
       },
     },
     passengers: {
+      init: {
+        guard: 'isEligible',
+        guardType: 'not',
+        target: 'itinerary'
+      },
       on: {
         next: {
           target: "assignmentAgreement",
@@ -462,9 +466,26 @@ export default {
       },
     },
     assignmentAgreement: {
+      init: {
+        guard: 'passengersComplete',
+        guardType: 'not',
+        actions: 'back'
+      },
       on: {
         next: {
           guard: "agreedToTerms",
+          target: "preflight",
+        },
+      },
+    },
+    preflight: {
+      init: {
+        guard: "agreedToTerms",
+        guardType: "not",
+        actions: "reset",
+      },
+      on: {
+        next: {
           target: "success",
           actions: "submitClaim",
         },

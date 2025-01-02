@@ -1,4 +1,4 @@
-import type { Airline, Airport, ClaimsForm, Leg, RowAirline } from "@/types";
+import type { Airline, Airport, ClaimsForm, FlightStatus, Flight, Leg, RowAirline } from "@/types";
 
 import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { airlines, airports, claim } from "~~/store";
@@ -332,12 +332,15 @@ export const queryAirlines = async (query?: string) => {
 	// }, {} as Record<string, Airline>))
 }
 
-export const getCityTranslation = (airport: Airport, locale = 'de', highlight = false) => {
+export const getCityTranslation = (airport: Airport, { locale = 'de', highlight = false, iata }: { locale?: string, highlight?: boolean; iata?: boolean } = {}) => {
 	if (!airport) return;
+	let city = airport.city_translations?.[locale] || airport.city
 	if (highlight) {
-		return airport._highlightResult?.city_translations?.[locale]?.value || airport._highlightResult?.city.value
+		city = airport._highlightResult?.city_translations?.[locale]?.value || airport._highlightResult?.city.value || city
 	}
-	return airport.city_translations?.[locale] || airport.city
+
+	if (iata) city = city?.concat(' ', `(${airport.iata})`)
+	return city
 }
 
 export const compressImage = async (file: File, options?: Compressor.Options) => {
@@ -633,6 +636,7 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export function base64ToFile(base64String: string, fileName: string) {
+	console.log(base64String)
 	// Split the Base64 string into data and the MIME type
 	const [header, data] = base64String.split(',');
 	const [, mimeType] = header.match(/:(.*?);/) || []; // Extract MIME type from the header
@@ -658,6 +662,14 @@ export function base64ToFile(base64String: string, fileName: string) {
 	return finalFile;
 }
 
+export function blobToDataURL(blob: Blob): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve(reader.result as string);
+		reader.onerror = reject;
+		reader.readAsDataURL(blob);
+	});
+}
 
 
 const resolveBinding = (template: string, doc: Record<string, any>) => {
@@ -770,8 +782,33 @@ export function markdownBodyToPdfMake(
 	return body.map(parseNode)
 }
 
+//
+export const credibleFlightStatus = (flight: Flight | null): FlightStatus | undefined => {
+	if (!flight) return
+	if (['cancelled', 'delayed', 'landed'].includes(flight.status)) return flight.status
+}
 
 
 export const transformCamelToKebab = (str: string) => {
 	return str.replace(/([A-Z])/g, '-$1').toLowerCase();
 };
+
+type DeepPartial<T> = T extends object
+	? T extends Function
+	? T
+	: { [K in keyof T]?: DeepPartial<T[K]> }
+	: T;
+
+export function upsert<T extends object>(target: T, source: DeepPartial<T>): T {
+	for (const key in source) {
+		if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+			if (!(key in target)) {
+				target[key] = {} as T[keyof T];
+			}
+			upsert(target[key] as object, source[key] as object);
+		} else {
+			target[key] = source[key] as T[keyof T];
+		}
+	}
+	return target;
+}

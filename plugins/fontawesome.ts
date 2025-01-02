@@ -103,7 +103,9 @@ import {
   faCloudArrowUp,
   faLeaf,
   faNoteSticky,
-  faPen
+  faPen,
+  faComment,
+  faMessage
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple, faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons'
 library.add(
@@ -223,7 +225,9 @@ library.add(
   faCloudSlash,
   faLeaf,
   faCo2,
-  faNoteSticky
+  faNoteSticky,
+  faComment,
+  faMessage
 )
 
 config.autoAddCss = false

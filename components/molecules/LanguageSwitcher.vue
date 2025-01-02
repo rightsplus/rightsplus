@@ -8,10 +8,10 @@ const isOpen = ref(false);
 <template>
   <button
     @click="isOpen = true"
-    class="flex gap-2 p-3 rounded-lg"
+    class="flex gap-2 p-3 py-2 rounded-lg items-center"
     v-bind="$attrs"
   >
-    <span class="text-base min-w-[auto] whitespace-nowrap">{{
+    <span class="text-sm min-w-[auto] whitespace-nowrap">{{
       localeProperties.code.toUpperCase()
     }}</span>
     <span

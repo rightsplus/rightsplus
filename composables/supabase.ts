@@ -81,19 +81,15 @@ export const useSupabaseFunctions = () => {
 
 		// return []
 
-		console.log('wait', supabase.from('flight').select('*').returns<RowFlight>())
+		console.log('wait')
 		const supabaseQuery = supabase
 			.from('flight')
 			.select('data')
 			.match(match)
+			.abortSignal(AbortSignal.timeout(5000))
 
 		console.log(supabaseQuery)
 
-		try {
-			await (or ? supabaseQuery.or(or) : supabaseQuery)
-		} catch (err) {
-			console.log(err)
-		}
 		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
 		console.log('data', flights)

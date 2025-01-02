@@ -1,20 +1,20 @@
 <template>
-    <div class="grid gap-3">
-      <ButtonLarge
-        v-for="c in type === 'cancelled' ? cancelledDetails : delayedDetails"
-        :key="c.value"
-        @click.prevent="
-          () => {
-            modelValue.disruption.details = c.value;
-            $emit('select');
-          }
-        "
-        :selected="modelValue.disruption.details === c.value"
-        :name="c.value"
-        :label="c.label"
-        :preLabel="c.preLabel"
-        proceed
-      />
+  <div class="grid gap-3">
+    <ButtonLarge
+      v-for="c in type === 'cancelled' ? cancelledDetails : delayedDetails"
+      :key="c.value"
+      @click.prevent="
+        () => {
+          modelValue.disruption.details = c.value;
+          $emit('select');
+        }
+      "
+      :selected="modelValue.disruption.details === c.value"
+      :name="c.value"
+      :label="c.label"
+      :prelabel="c.prelabel"
+      proceed
+    />
   </div>
 </template>
 

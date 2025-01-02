@@ -12,7 +12,7 @@
         format("woff2-variations");
     // src: url("../fonts/Nunito-VariableFont_wght.ttf") format("woff2-variations");
     font-weight: 400 700;
-    font-variation-settings: "slnt" 0 -10;
+    font-style: normal;
     font-feature-settings: "liga" 1, "calt" 1;
     unicode-range: U+0020-007F, U+00A0-00FF;
   }
@@ -82,10 +82,7 @@ a {
     margin-block: var(--h-12);
   }
 
-  p + p {
-    margin-top: var(--m-3);
-  }
-  p + ul {
+  :is(p, ul, ol) + :is(p, ul, ol) {
     margin-top: var(--m-3);
   }
 

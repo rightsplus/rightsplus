@@ -31,9 +31,7 @@
       />
       <div class="flex flex-col">
         <Truncate class="text-sm flex">{{ file.name }}</Truncate
-        ><span class="text-neutral-500 text-xs">{{
-          getSize(file.size)
-        }}</span>
+        ><span class="text-neutral-500 text-xs">{{ getSize(file.size) }}</span>
       </div>
       <button
         @click="delete files[file.name]"
@@ -77,7 +75,7 @@ const realFiles = computed(() =>
 const errors = ref<boolean[]>([]);
 const preview = ref<string[]>();
 
-const getSize = formatFileSize
+const getSize = formatFileSize;
 const generatePreview = (files?: Record<string, string>) => {
   if (!files) return;
   try {
