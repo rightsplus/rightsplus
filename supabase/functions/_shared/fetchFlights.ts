@@ -10,62 +10,50 @@ function addMinutesToIsoDate(isoDateStr: string, delay: number | null): string {
 	return date.toISOString();
 }
 
-export const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Flight => {
-	const airline: Flight['airline'] = {
-		name: aviationEdgeFlight.airline.name,
-		iata: aviationEdgeFlight.airline.iataCode.toUpperCase(),
-	};
-
-	const flight: Flight['flight'] = {
-		number: aviationEdgeFlight.flight.number,
-		iata: aviationEdgeFlight.flight.iataNumber.toUpperCase(),
-	};
-	const delayDepature = parseInt(aviationEdgeFlight.departure.delay || "0", 10)
-	const departure: Flight['departure'] = {
-		iata: aviationEdgeFlight.departure.iataCode.toUpperCase(),
+function transformAviationEdgeFlightPhase(phaseData: FlightAviationEdge['arrival'] | FlightAviationEdge['departure']) {
+	const delayDepature = parseInt(phaseData.delay || "0", 10)
+	return {
+		iata: phaseData.iataCode.toUpperCase(),
 		delay: delayDepature,
-		scheduledTime: aviationEdgeFlight.departure.scheduledTime,
-		estimatedTime: aviationEdgeFlight.departure.estimatedTime,
-		actualTime: aviationEdgeFlight.departure.actualTime || addMinutesToIsoDate(aviationEdgeFlight.departure.scheduledTime, delayDepature),
-		estimatedRunway: aviationEdgeFlight.departure.estimatedRunway,
-		actualRunway: aviationEdgeFlight.departure.actualRunway,
+		scheduledTime: phaseData.scheduledTime,
+		estimatedTime: phaseData.estimatedTime,
+		actualTime: phaseData.actualTime || addMinutesToIsoDate(phaseData.scheduledTime, delayDepature),
+		estimatedRunway: phaseData.estimatedRunway,
+		actualRunway: phaseData.actualRunway,
 	};
-
-	const delayArrival = parseInt(aviationEdgeFlight.arrival.delay || "0", 10)
-	const arrival: Flight['arrival'] = {
-		iata: aviationEdgeFlight.arrival.iataCode.toUpperCase(),
-		delay: delayArrival,
-		scheduledTime: aviationEdgeFlight.arrival.scheduledTime,
-		estimatedTime: aviationEdgeFlight.arrival.estimatedTime,
-		actualTime: aviationEdgeFlight.arrival.actualTime || addMinutesToIsoDate(aviationEdgeFlight.departure.scheduledTime, delayArrival),
-		estimatedRunway: aviationEdgeFlight.arrival.estimatedRunway,
-		actualRunway: aviationEdgeFlight.arrival.actualRunway,
-	};
-
+}
+function transformAirline(airline: FlightAviationEdge['airline']) {
+	return {
+		name: airline.name,
+		iata: airline.iataCode.toUpperCase(),
+	}
+}
+function transformFlight(flight: FlightAviationEdge['flight']) {
+	return {
+		number: flight.number,
+		iata: flight.iataNumber.toUpperCase(),
+	}
+}
+export const transformAviationEdgeFlight = (aviationEdgeFlight: FlightAviationEdge): Flight => {
 	const transformedFlight: Flight = {
 		type: aviationEdgeFlight.type,
 		status: aviationEdgeFlight.status,
-		departure,
-		arrival,
-		airline,
-		flight,
+		departure: transformAviationEdgeFlightPhase(aviationEdgeFlight.departure),
+		arrival: transformAviationEdgeFlightPhase(aviationEdgeFlight.arrival),
+		airline: transformAirline(aviationEdgeFlight.airline),
+		flight: transformFlight(aviationEdgeFlight.flight),
 	};
 
 	if (aviationEdgeFlight.codeshared) {
+		const { airline, flight } = aviationEdgeFlight.codeshared
 		transformedFlight.codeshared = {
-			airline: {
-				name: aviationEdgeFlight.codeshared.airline.name,
-				iata: aviationEdgeFlight.codeshared.airline.iataCode.toUpperCase(),
-			},
-			flight: {
-				number: aviationEdgeFlight.codeshared.flight.number,
-				iata: aviationEdgeFlight.codeshared.flight.iataNumber.toUpperCase(),
-			},
+			airline: transformAirline(airline),
+			flight: transformFlight(flight),
 		}
 	}
 	return transformedFlight
 }
-function transformFlightPhase(phaseData: FlightAviationStack['arrival'] | FlightAviationStack['departure']) {
+function transformAviationStackFlightPhase(phaseData: FlightAviationStack['arrival'] | FlightAviationStack['departure']) {
 	return {
 		iata: phaseData.iata,
 		delay: phaseData.delay || 0,
@@ -92,10 +80,11 @@ function sanitizeFlightStatus(flight: {
 	if (flight.status === 'landed') return 'unknown'
 	return status
 }
+
 export const transformAviationStackFlight = (flight: FlightAviationStack): Flight => {
 
-	const arrival = transformFlightPhase(flight.arrival)
-	const departure = transformFlightPhase(flight.departure)
+	const arrival = transformAviationStackFlightPhase(flight.arrival)
+	const departure = transformAviationStackFlightPhase(flight.departure)
 	return {
 		type: "arrival",
 		status: sanitizeFlightStatus({

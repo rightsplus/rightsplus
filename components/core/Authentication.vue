@@ -29,7 +29,7 @@
         :class="inPopup && 'p-5 md:p-10'"
         :mode="mode"
         @changeMode="mode = $event"
-        @submit="submit"
+        @submit="signIn"
         @resetPassword="resetPassword"
       />
       <AuthenticationForm
@@ -37,7 +37,7 @@
         :class="inPopup && 'p-5 md:p-10'"
         :mode="mode"
         @changeMode="mode = $event"
-        @submit="submit"
+        @submit="signIn"
         @resetPassword="resetPassword"
       />
     </Transition>
@@ -70,7 +70,6 @@ const signIn = async ({
   redirectTo?: string;
 }) => {
   setLoading(true, provider);
-
   const { email, password } = form || {};
   let res;
   if (provider) {
@@ -79,59 +78,25 @@ const signIn = async ({
       options: { redirectTo },
     });
   } else if (password) {
-    res = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    if (mode.value === "signIn") {
+      res = await supabase.auth.signInWithPassword({ email, password });
+    } else {
+      res = await supabase.auth.signUp({ email, password });
+    }
   } else {
     res = await supabase.auth.signInWithOtp({ email });
   }
+  console.log(res);
   setLoading(false, provider);
   console.log(user.value, res);
   navigateTo(redirectTo);
   if (user.value) emit("success", provider);
-  else console.log("no user");
-};
-const signUp = async ({
-  form,
-  provider,
-  redirectTo,
-}: {
-  form: { email: string; password: string };
-  provider?: Provider;
-  redirectTo?: string;
-}) => {
-  // console.log(form, provider, redirectTo);
-  // return 
-  const { email, password } = form || {};
-  setLoading(true, provider);
-  let res;
-  try {
-    if (provider) {
-      res = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo },
-      });
-    } else if (email && password) {
-      res = await supabase.auth.signUp({
-        email,
-        password,
-      });
-    }
-    setLoading(false, provider);
-
-    if (user.value) emit("success", provider);
-    else console.log("no user");
-  } catch (error) {
-    console.log(error);
-  }
+  else console.log("no user", res);
 };
 
 const resetPassword = async ({ email }: { email: string }) => {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 };
-
-const submit = mode.value === "signIn" ? signIn : signUp;
 </script>
 <style scoped lang="postcss">
 a,

@@ -3,8 +3,8 @@
     <div class="flex flex-col items-start gap-2">
       <!-- {{ state.value }} -->
       <div class="flex flex-col gap-2 w-full" v-if="loading">
-        <span class="bg-gray-200 rounded w-48 h-8 mt-1" />
-        <span class="bg-gray-200 rounded w-96 h-5 max-w-full" />
+        <span class="bg-neutral-200 rounded w-48 h-10 mt-1" />
+        <span class="bg-neutral-200 rounded w-96 h-5 max-w-full" />
       </div>
       <div class="flex flex-col gap-2" v-else>
         <h2 class="text-3xl sm:text-4xl font-bold" :key="state.value">

@@ -31,7 +31,20 @@
           <FormKit name="email" label="Email" type="email" required />
           <FormKit
             name="password"
-            label="Password"
+            :label="(form.password && invalidPassword) || 'Password'"
+            type="password"
+            required
+            placeholder="8+ characters"
+            suffix-icon="eye-slash"
+            @suffix-icon-click="handleTogglePassword"
+          />
+          <FormKit
+            v-if="mode === 'signUp'"
+            name="passwordConfirmation"
+            :label="
+              (form.passwordConfirmation && notMatchingPasswords) ||
+              'Confirm Password'
+            "
             type="password"
             required
             placeholder="8+ characters"
@@ -70,8 +83,11 @@
             type="button"
             @click="submitForm"
             :suffix-icon="loading.email ? 'circle-quarter' : ' '"
+            :disabled="!validForm"
             :classes="{
-              outer: loading.email ? '[&_.formkit-icon_svg]:animate-revolve' : '',
+              outer: loading.email
+                ? '[&_.formkit-icon_svg]:animate-revolve'
+                : '',
             }"
             >{{ $t(mode) }}</FormKit
           >
@@ -135,8 +151,40 @@ const loading = ref({} as Record<Provider | "email", boolean>);
 const form = ref({
   email: props.initialEmail || "",
   password: "",
+  passwordConfirmation: "",
   terms: false,
 });
+
+const invalidEmail = computed(() => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(form.value.email)) return "Invalid email format";
+});
+const invalidPassword = computed(() => {
+  if (!form.value.password) return "Password is required";
+  if (form.value.password.length < 8)
+    return "Password must be at least 8 characters long";
+  if (/\s/.test(form.value.password)) return "Password must not contain spaces";
+  if (!/[a-z]/.test(form.value.password))
+    return "Password must contain at least one lowercase letter";
+  if (!/[A-Z]/.test(form.value.password))
+    return "Password must contain at least one uppercase letter";
+  if (!/[0-9]/.test(form.value.password))
+    return "Password must contain at least one number";
+  if (!/[^a-zA-Z0-9]/.test(form.value.password))
+    return "Password must contain at least one special character";
+});
+const notMatchingPasswords = computed(() => {
+  if (
+    props.mode === "signUp" &&
+    form.value.password !== form.value.passwordConfirmation
+  )
+    return "Passwords do not match";
+});
+
+const validForm = computed(
+  () =>
+    !invalidEmail.value && !invalidPassword.value && !notMatchingPasswords.value
+);
 
 const handleTogglePassword = (node, e) => {
   node.props.suffixIcon = node.props.suffixIcon === "eye" ? "eye-slash" : "eye";

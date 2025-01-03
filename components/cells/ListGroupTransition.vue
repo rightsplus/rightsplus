@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ height: `${height}px` }" class="wrapper">
+  <div :style="{ height: `${height}px` }" class="duration-300 ease-out">
     <TransitionGroup
       :name="name || 'list'"
       :tag="tag || 'div'"
@@ -21,14 +21,4 @@ defineProps<{
 }>();
 const content = ref<HTMLElement>();
 const { height } = useElementSize(content);
-const { default: defaultSlots } = useSlots();
-const length = defaultSlots?.()[0]?.children?.length || 0;
-
 </script>
-
-<style lang="scss" scoped>
-.wrapper {
-  height: var(--height);
-  transition: 1s;
-}
-</style>

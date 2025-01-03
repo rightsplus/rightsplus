@@ -86,14 +86,17 @@ export const useSupabaseFunctions = () => {
 			.from('flight')
 			.select('data')
 			.match(match)
-			.abortSignal(AbortSignal.timeout(5000))
+			.abortSignal(AbortSignal.timeout(100))
 
 		console.log(supabaseQuery)
+
+		// if (supabaseQuery.single.)
 
 		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
 		console.log('data', flights)
 		console.log('error', errFlights)
+		// if (errFlights)
 
 		const mappedFlights = flights?.map(e => e.data)
 		console.timeEnd('fetching supabase')

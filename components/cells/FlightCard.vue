@@ -8,9 +8,34 @@
       'hover:bg-neutral-50 hover:border-neutral-100 focus-ring':
         !selected && !disabled && is === 'button',
     }"
-    @click="actionButton ? undefined : emit('click')"
+    @click="
+      actionButton
+        ? undefined
+        : emit(flight.type === 'toggle' ? 'toggle' : 'click')
+    "
   >
-    <div class="flex gap-2 sm:gap-5 items-center w-full">
+    <div
+      v-if="flight.type === 'toggle'"
+      class="flex gap-2 items-center w-full justify-center text-sm text-gray-400"
+    >
+      <div class="hidden @md:flex gap-1 flex-row-reverse" v-if="!groupOpen">
+        <AirlineLogo
+          v-for="airline in flight.airlines"
+          :airline="airline"
+          size="sm"
+          class="-ml-4"
+        />
+      </div>
+      <span class="font-medium">{{
+        groupOpen ? "Weniger Anzeigen" : "Mehr Anzeigen"
+      }}</span
+      ><FontAwesomeIcon
+        icon="angle-down"
+        class="duration-300"
+        :class="groupOpen ? 'rotate-180' : ''"
+      />
+    </div>
+    <div v-else class="flex gap-2 sm:gap-5 items-center w-full">
       <AirlineLogo
         class="-ml-2 hidden @md:flex"
         :airline="flight.airline"
@@ -46,26 +71,32 @@
           />
           <div :class="{ 'text-neutral-200 bg-neutral-200 rounded': pending }">
             <span>{{ airline?.name }}</span
-            >{{ " "
-            }}<span v-if="codesharedAirline?.name" class="opacity-50">
-              {{
+            ><span v-if="codesharedAirline?.name" class="opacity-50">
+              {{ " "
+              }}{{
                 $t("operatedBy", {
                   airline: codesharedAirline?.name,
                 })
               }}</span
+            ><span v-if="actionButton" class="text-gray-500">
+              {{ " · " }}{{ iata }}</span
             >
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col gap-1 items-center ml-auto shrink-0">
+      <div class="flex flex-col gap-2 items-end ml-auto shrink-0">
         <span
+          v-if="!actionButton"
           class="ml-auto text-gray-400 text-base font-medium leading-none whitespace-nowrap"
           >{{ iata }}</span
         >
-        <span :class="status.class" v-if="!actionButton">{{
-          status.text
-        }}</span>
+        <span :class="status.class">{{ status.text }}</span>
+        <Button
+          v-if="actionButton"
+          @click="emit('click')"
+          v-bind="actionButton"
+        />
       </div>
       <FontAwesomeIcon
         v-if="is === 'button'"
@@ -73,16 +104,6 @@
         class="text-gray-400 text-base shrink-0"
       />
     </div>
-    <template v-if="compensation">
-      <hr class="w-full mt-2" />
-    </template>
-    <template v-if="actionButton">
-      <hr class="w-full mt-2" />
-      <div class="flex justify-between items-center">
-        <span :class="status.class">{{ status.text }}</span>
-        <Button @click="emit('click')" v-bind="actionButton" />
-      </div>
-    </template>
   </component>
 </template>
 
@@ -100,10 +121,11 @@ export type FlightCardProps = {
   compensation?: boolean;
   actionButton?: ButtonProps;
   showDate?: boolean;
+  groupOpen?: boolean;
 };
 const props = defineProps<FlightCardProps>();
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(["click", "toggle"]);
 const iata = computed(() => {
   return `${props.flight.airline.iata} ${props.flight.flight.number}`;
 });
@@ -139,6 +161,8 @@ const overNight = (flight: Flight) => {
     (getTime(flight.arrival.scheduledTime) -
       getTime(flight.departure?.scheduledTime)) /
     (1000 * 60 * 60 * 24);
+  if (timeDifferenceDays < 0)
+    console.log(flight.arrival.scheduledTime, flight.departure?.scheduledTime);
 
   return timeDifferenceDays !== 0 ? Math.floor(timeDifferenceDays) : 0;
 };

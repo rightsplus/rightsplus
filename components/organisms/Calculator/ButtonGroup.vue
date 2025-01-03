@@ -9,21 +9,24 @@
       'duration-150': ready,
     }"
   >
-    <Button
-      v-if="secondary"
-      class="px-2"
-      tertiary
-      @click="$emit('secondary')"
-      v-bind="secondary"
-      >{{ secondary.label }}</Button
-    >
-    <Button
-      v-if="primary"
-      class="px-2"
-      primary
-      @click="$emit('primary')"
-      v-bind="primary"
-      >{{ primary.label }}</Button
+    <Button v-if="!ready" tertiary disabled />
+    <template v-else>
+      <Button
+        v-if="secondary"
+        class="px-2"
+        tertiary
+        @click="$emit('secondary')"
+        v-bind="secondary"
+        >{{ secondary.label }}</Button
+      >
+      <Button
+        v-if="primary"
+        class="px-2"
+        primary
+        @click="$emit('primary')"
+        v-bind="primary"
+        >{{ primary.label }}</Button
+      ></template
     >
   </div>
 </template>

@@ -61,6 +61,7 @@
             modelValue.replacement.flight = e;
           }
         "
+        hide-codeshared
       />
     </div>
   </div>
@@ -106,6 +107,7 @@
             modelValue.replacement.flight = e;
           }
         "
+        hide-codeshared
       />
     </div>
   </div>
@@ -122,19 +124,18 @@ const props = defineProps<{
 }>();
 
 const { locale } = useI18n();
-const { getFilteredFlights } = useFlights()
-const { getCities } = useGetCities()
+const { getFilteredFlights } = useFlights();
+const { getCities } = useGetCities();
 const arrivalCity = ref();
 watch(
   () => props.modelValue.airport,
   () => {
-    getCities([props.modelValue.airport.trip.arrival?.iata], { locale: locale.value }).then(
-      ([arrival]) => {
-        arrivalCity.value = arrival;
-      }
-    );
+    getCities([props.modelValue.airport.trip.arrival?.iata], {
+      locale: locale.value,
+    }).then(([arrival]) => {
+      arrivalCity.value = arrival;
+    });
   },
   { immediate: true, deep: true }
 );
-
 </script>

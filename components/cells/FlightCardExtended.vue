@@ -78,6 +78,12 @@ const distance = computed(() =>
   <div
     class="rounded-lg py-3 px-5 @container border border-transparent bg-neutral-100 text-gray-800 grid gap-3"
   >
+    <!-- <pre>{{ new Date(flight.departure.scheduledTime) }}</pre>
+    <pre>{{ new Date(flight.departure.actualTime) }}</pre>
+    <pre>{{ flight.departure.delay }}</pre>
+    <pre>{{ new Date(flight.arrival.scheduledTime) }}</pre>
+    <pre>{{ new Date(flight.arrival.actualTime) }}</pre>
+    <pre>{{ flight.arrival.delay }}</pre> -->
     <div class="flex flex-wrap @md:flex-nowrap gap-3 sm:gap-5">
       <div class="grid flex-col @md:basis-1/2 w-full grow">
         <!-- <span
@@ -91,14 +97,14 @@ const distance = computed(() =>
           <div class="flex flex-col">
             <span class="font-bold text-xl">{{ flight.departure.iata }}</span>
             <span class="text-sm text-neutral-500">{{
-              city.departure.city
+              city.departure?.city
             }}</span>
           </div>
           <FontAwesomeIcon icon="plane" class="text-gray-400 shrink-0" />
           <div class="flex flex-col items-end">
             <span class="font-bold text-xl">{{ flight.arrival.iata }}</span>
             <span class="text-sm text-neutral-500">{{
-              city.arrival.city
+              city.arrival?.city
             }}</span>
           </div>
         </div>

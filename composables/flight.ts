@@ -446,8 +446,9 @@ export const useDisruption = () => {
 
 export const sortByScheduled = (a: Flight, b: Flight) =>
 	new Date(a.departure.scheduledTime).getTime() -
-	new Date(b.departure.scheduledTime).getTime() + (a.codeshared ? 1 : 0) -
-	(b.codeshared ? 1 : 0);
+	new Date(b.departure.scheduledTime).getTime()
+	+ (a.codeshared ? 1 : 0) - (b.codeshared ? 1 : 0)
+	+ parseInt(a.flight.number, 10) - parseInt(b.flight.number, 10);
 
 export const removeDuplicateFlights = (flights: Flight[]) => {
 	const uniqueFlights = new Set();

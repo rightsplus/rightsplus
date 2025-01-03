@@ -132,7 +132,6 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 			if (disruption.details === "<3") {
 				const { departure, arrival } = nextLeg(claim);
 
-				console.log(connection)
 				if (!connection || !(departure || arrival)) {
 					ineligible = 'errors.delayed.<3.noConnection';
 					return ineligible

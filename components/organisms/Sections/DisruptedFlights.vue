@@ -23,7 +23,9 @@
         <Button tertiary to="delayed-and-cancelled-flights" v-if="!page"
           >Weitere Flüge</Button
         >
-        <Button primary to="new-claim" @click="invoke('reset')">{{ $t("checkCompensationNow") }}</Button>
+        <Button primary to="new-claim" @click="invoke('reset')">{{
+          $t("checkCompensationNow")
+        }}</Button>
       </div>
     </div>
     <div class="flex flex-col gap-5">
@@ -48,14 +50,14 @@
         :flightCard="{
           showDate: true,
           airports: true,
-          compensation: false,
           actionButton: {
             label: $t('checkClaim'),
             suffixIcon: 'arrow-right',
             tertiary: true,
-            class: 'h-9 text-sm ml-auto',
+            class: 'h-8 text-sm ml-auto px-2 -mr-1',
           },
         }"
+        hide-codeshared
       />
     </div>
   </section>
@@ -103,7 +105,7 @@ const handleSelect = async (flight: Flight) => {
   assignLeg();
   claim.date = getISODate(flight.departure.scheduledTime);
   claim.flight = flight;
-  send("next")
+  send("next");
   router.push(localePath("new-claim"));
 };
 </script>

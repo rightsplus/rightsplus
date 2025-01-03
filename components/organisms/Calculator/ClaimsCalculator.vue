@@ -221,7 +221,7 @@ const handleClose = () => {
             :flight-card="{
               is: 'button',
             }"
-            showFilter
+            show-filter
           />
         </StepWrapper>
         <StepWrapper

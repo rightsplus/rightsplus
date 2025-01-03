@@ -9,5 +9,6 @@
 definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
+  redirect: "/admin/claims",
 });
 </script>

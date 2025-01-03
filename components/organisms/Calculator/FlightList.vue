@@ -1,4 +1,3 @@
-
 <script lang="ts" setup>
 import type { Database, Flight } from "@/types";
 import FlightCard, {
@@ -21,16 +20,44 @@ const props = defineProps<{
   limit?: number;
   flightCard?: Partial<FlightCardProps>;
   showFilter?: boolean;
+  hideCodeshared?: boolean;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const { airlines } = useAirlines();
 const show = ref(false);
 const container = ref(null);
-const group = (index: number) =>
-  filteredFlights.value[index + 1]?.departure?.scheduledTime ===
-    filteredFlights.value[index].departure?.scheduledTime &&
-  operatingAirline(filteredFlights.value[index + 1]) ===
-    operatingAirline(filteredFlights.value[index]);
+const groups = ref(new Map<string, Map<string, Flight>>());
+const getId = (flight: Flight) => {
+  if (!flight?.departure) return;
+  return `${flight.departure.scheduledTime}-${flight.flight.iata}`;
+};
+const getKey = (flight: Flight) => {
+  if (!flight?.departure) return;
+  return `${flight.departure.scheduledTime}-${operatingAirline(flight)}`;
+};
+
+const group = (index: number, list: Flight[], max?: number): boolean => {
+  const [flight, nextFlight] = [list[index], list[index + 1]];
+  const currentFlightKey = getKey(flight);
+  if (!currentFlightKey) return true;
+  if (!groups.value.get(currentFlightKey)) {
+    groups.value.set(currentFlightKey, new Map());
+  }
+  const flightMap = groups.value.get(currentFlightKey);
+
+  if (!flightMap?.get(flight.flight.iata)) {
+    flightMap?.set(flight.flight.iata, flight);
+  }
+
+  const indexInMap = [...(groups.value.get(currentFlightKey)?.values() || [])]
+    .sort(sortByScheduled)
+    .findIndex((e) => e.flight.iata === flight.flight.iata);
+
+  return max
+    ? indexInMap < max
+    : nextFlight && currentFlightKey === getKey(nextFlight);
+};
+
 useIntersectionObserver(
   container,
   ([{ isIntersecting }]) => {
@@ -40,12 +67,6 @@ useIntersectionObserver(
 );
 
 const allFlights = computed(() => {
-  // console.log(props.flights, getFilteredFlights({
-  //     departure: props.departure,
-  //     arrival: props.arrival,
-  //     date: props.date,
-  //     number: props.number,
-  //   }))
   return (
     props.flights ||
     getFilteredFlights({
@@ -54,28 +75,210 @@ const allFlights = computed(() => {
       date: props.date || undefined,
       number: props.number || undefined,
     })
-  ).filter((e) => e.flight.iata && e.flight.number);
+  ).filter((e) => {
+    const excludedNames = ["cargo", "fedex", "dhl", "ups"];
+    if (
+      excludedNames.some((name) =>
+        e.airline.name.toLocaleLowerCase().includes(name)
+      )
+    ) {
+      return false;
+    }
+    if (props.hideCodeshared && e.codeshared) return false;
+    return e.flight.iata && e.flight.number;
+  });
 });
-const filteredFlights = computed(() =>
-  allFlights.value
-    .filter(() => show.value)
-    .filter((e) => dayTimeFilter(e))
-    .filter((e) => timeFilter(e))
-    .filter((e) => airlineFilter(e))
+
+const selectedAirline = ref();
+const airlineFilter = (flight: Flight) => {
+  if (!selectedAirline.value) {
+    return true;
+  }
+
+  return (
+    flight.airline.iata === selectedAirline.value ||
+    flight.codeshared?.airline.iata === selectedAirline.value
+  );
+};
+const filteredDayTimeButtons = computed(() => {
+  // Create a Set of valid time periods for O(1) lookup
+  const validPeriods = new Set<string>();
+
+  for (const flight of allFlights.value) {
+    const departureTime = getDepartureTime(flight.departure?.scheduledTime);
+
+    if (departureTime < 1300) validPeriods.add("morning");
+    else if (departureTime <= 1800) validPeriods.add("afternoon");
+    else validPeriods.add("evening");
+
+    // Early exit if all periods are found
+    if (validPeriods.size === 3) break;
+  }
+
+  return timesOfDay.filter((button) => validPeriods.has(button.value));
+});
+
+const openGroups = ref(new Set());
+
+// Cache parsed times to avoid repeated parsing
+const timeCache = new Map<string, number>();
+
+const getDepartureTime = (scheduledTime?: string): number => {
+  if (!scheduledTime) return 0;
+
+  if (!timeCache.has(scheduledTime)) {
+    timeCache.set(scheduledTime, parseInt(get24HTime(scheduledTime)));
+  }
+
+  return timeCache.get(scheduledTime)!;
+};
+
+const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
+  if (!time) return true;
+
+  const departureTime = getDepartureTime(flight.departure?.scheduledTime);
+
+  switch (time) {
+    case "morning":
+      return departureTime < 1300;
+    case "afternoon":
+      return departureTime >= 1300 && departureTime <= 1800;
+    case "evening":
+      return departureTime > 1800;
+    default:
+      return true;
+  }
+};
+
+const timeFilter = (flight: Flight, t = time.value) => {
+  if (!t) return true;
+  const departureTime = getDepartureTime(flight.departure?.scheduledTime);
+  return t === Math.floor(departureTime / 100);
+};
+
+const filteredFlights = computed(() => {
+  if (!show.value) return [];
+  const n = 3;
+
+  // Apply filters once
+  const filtered = allFlights.value
+    .filter((e) => dayTimeFilter(e) && timeFilter(e) && airlineFilter(e))
     .slice(0, props.limit || Infinity)
-    .sort(sortByScheduled)
-);
+    .sort(sortByScheduled);
+
+  // Pre-calculate keys and maps for better performance
+  const flightMaps = new Map<
+    string,
+    {
+      flights: Flight[];
+      size: number;
+      open: boolean;
+      containsSelected: boolean;
+    }
+  >();
+
+  // Group flights in a single pass
+  filtered.forEach((flight) => {
+    const key = getKey(flight);
+    if (!key) return;
+
+    if (!flightMaps.has(key)) {
+      flightMaps.set(key, {
+        flights: [],
+        size: 0,
+        open: false,
+        containsSelected: false,
+      });
+    }
+    const group = flightMaps.get(key)!;
+    group.flights.push(flight);
+    group.size++;
+
+    console.log(group, group.size > n - 1);
+    if (
+      !!props.modelValue &&
+      key === getKey(props.modelValue) &&
+      getId(props.modelValue) === getId(flight) &&
+      group.size > n - 1
+    ) {
+      group.containsSelected = true;
+    }
+
+    group.open =
+      selectedAirline.value ||
+      openGroups.value.has(key) ||
+      group.containsSelected;
+  });
+
+  // Process groups in a single pass
+  const result: Flight[] = [];
+
+  filtered.forEach((flight) => {
+    const key = getKey(flight);
+    if (!key) return;
+
+    const group = flightMaps.get(key)!;
+    const indexInMap = group.flights.indexOf(flight);
+    // result.push(flight);
+    // return;
+    if (
+      (group.open && indexInMap + 1 === group.size) ||
+      group.size <= n - 1 || // 5 <= 6 - 1
+      group.size === n || // 5 === 6
+      group.open ||
+      indexInMap < n - 1
+    ) {
+      result.push(flight);
+    }
+    if (
+      group.size === indexInMap + 1 &&
+      group.size > n &&
+      !group.containsSelected
+    ) {
+      // Get all airlines from hidden flights (after index n-1)
+      const hiddenAirlines = group.flights
+        .slice(n - 1)
+        .filter((flight, i, arr) => {
+          return (
+            arr.findIndex((a) => a.airline.iata === flight.airline.iata) === i
+          );
+        })
+        .map((f) => f.airline)
+        .reverse(); // Remove duplicates
+
+      result.push({
+        ...flight,
+        flight: {
+          ...flight.flight,
+          iata: "XX",
+        },
+        type: "toggle",
+        airlines: hiddenAirlines,
+      });
+    }
+  });
+
+  return result;
+});
 const filteredAirlines = computed(() => {
-  const airlines = airlinesByFlights(allFlights.value).sort((a, b) =>
+  const airlineMap = new Map<string, Flight>();
+
+  for (const flight of allFlights.value) {
+    const iata = flight.airline.iata;
+    if (!airlineMap.has(iata)) {
+      airlineMap.set(iata, flight);
+    }
+  }
+
+  return Array.from(airlineMap.values()).sort((a, b) =>
     a.airline.name.localeCompare(b.airline.name)
   );
-  return airlines;
 });
 const loading = ref(true);
 const operatingAirline = (flight: Flight) =>
   flight?.codeshared?.airline.iata || flight?.airline.iata;
-  
-const supabase = useSupabaseClient<Database>()
+
+const supabase = useSupabaseClient<Database>();
 onMounted(() => {
   // console.log('delete')
   // supabase
@@ -95,9 +298,9 @@ const fetch = () => {
     arrival: props.arrival,
     date: props.date,
   })
-  .then(console.log)
-  .catch(console.log)
-  .finally(() => (loading.value = false));
+    .then(console.log)
+    .catch(console.log)
+    .finally(() => (loading.value = false));
 };
 onMounted(() => {
   fetch();
@@ -142,42 +345,6 @@ const timesOfDay = [
     subLabel: "18:00 - 24:00",
   },
 ];
-const dayTimeFilter = (flight: Flight, time = dayTime.value) => {
-  if (!time) return true;
-  const { scheduledTime } = flight.departure || {};
-  const departureTime = parseInt(get24HTime(scheduledTime));
-  if (time === "morning") {
-    return departureTime < 1300;
-  }
-  if (time === "afternoon") {
-    return departureTime >= 1300 && departureTime <= 1800;
-  }
-  if (time === "evening") {
-    return departureTime > 1800;
-  }
-};
-const timeFilter = (flight: Flight, t = time.value) => {
-  if (!t) return true;
-  return (
-    t === parseInt(get24HTime(flight.departure?.scheduledTime).slice(0, -2))
-  );
-};
-const selectedAirline = ref();
-const airlineFilter = (flight: Flight) => {
-  return (
-    (!selectedAirline.value ||
-      flight.airline.iata === selectedAirline.value ||
-      flight.codeshared?.airline.iata === selectedAirline.value) &&
-    !flight.airline.name.toLocaleLowerCase().includes("cargo")
-  );
-};
-const filteredDayTimeButtons = computed(() =>
-  timesOfDay.filter((button: { value: string; subLabel: string }) => {
-    return allFlights.value?.some((flight) =>
-      dayTimeFilter(flight, button.value)
-    );
-  })
-);
 
 watch(filteredDayTimeButtons, () => {
   if (!dayTime.value) return;
@@ -187,23 +354,14 @@ watch(filteredDayTimeButtons, () => {
     dayTime.value = null;
   }
 });
-// watch(
-//   () => props.allFlights && dayTime.value,
-//   () => {
-//     if (
-//       !props.allFlights
-//         .filter((e) => dayTimeFilter(e, dayTime.value))
-//         .some(
-//           (flight) =>
-//             flight.flight.iata?.toUpperCase() ===
-//               props.modelValue?.flight?.iata || !props.modelValue?.status
-//         )
-//     ) {
-//       emit("update:modelValue", null);
-//     }
-//   },
-//   { immediate: true, deep: true }
-// );
+const toggleFlightGroup = (flight: Flight) => {
+  const key = getKey(flight);
+  if (openGroups.value.has(key)) {
+    openGroups.value.delete(getKey(flight));
+  } else {
+    openGroups.value.add(getKey(flight));
+  }
+};
 </script>
 <template>
   <div ref="container">
@@ -234,7 +392,7 @@ watch(filteredDayTimeButtons, () => {
     <div class="flex flex-col gap-5" v-else>
       <div
         class="flex gap-2 flex-wrap"
-        v-if="allFlights.length > 12 && showFilter"
+        v-if="allFlights.length > 7 && showFilter"
       >
         <DropdownButton
           v-model="selectedAirline"
@@ -293,8 +451,7 @@ watch(filteredDayTimeButtons, () => {
         @select="selectTime"
         v-if="filteredDayTimeButtons?.length > 7"
       />
-
-      <!-- <div
+      <div
         v-if="allFlights.length > 7 && filteredDayTimeButtons?.length > 1"
         class="relative flex gap-5 mb-5 overflow-x-auto -mx-5 px-5"
       >
@@ -308,7 +465,7 @@ watch(filteredDayTimeButtons, () => {
           :selected="dayTime === timeOfDay.value"
           class="grow basis-0 shrink-0 min-w-[140px]"
         />
-      </div> -->
+      </div>
       <ListGroupTransition
         class="flex flex-col gap-5"
         :style="`--total: ${filteredFlights.length};`"
@@ -318,14 +475,37 @@ watch(filteredDayTimeButtons, () => {
           :key="`${flight.flight?.iata}`"
           :flight="flight"
           @click="handleSelect(flight)"
-          :style="`top: ${(index + 1) * 100 - 100}px; --i: ${index + 1};`"
+          @toggle="toggleFlightGroup(flight)"
+          :group-open="openGroups.has(getKey(flight))"
+          :style="{
+            top: `${
+              index * (flight.type === 'toggle' ? 49.5 : 81.5) +
+              (group(index, filteredFlights) ? 4 : 20)
+            }px`,
+            '--i': index + 1,
+          }"
           class="w-full"
-          :selected="`${flight.departure.scheduledTime}-${flight.flight.iata}` === `${modelValue?.departure.scheduledTime}-${modelValue?.flight.iata}`"
+          :selected="
+            `${flight.departure.scheduledTime}-${flight.flight.iata}` ===
+            `${modelValue?.departure.scheduledTime}-${modelValue?.flight.iata}`
+          "
           :class="{
-            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(index),
+            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(
+              index,
+              filteredFlights
+            ),
           }"
           v-bind="flightCard"
         />
+        <!-- <ButtonLarge
+          :key="'no-flight'"
+          :style="`top: ${(filteredFlights.length + 1) * 100 - 100}px; --i: ${
+            filteredFlights.length + 1
+          };`"
+          class="text-center"
+        >
+          Mein Flug ist nicht aufgeführt
+        </ButtonLarge> -->
       </ListGroupTransition>
     </div>
   </div>

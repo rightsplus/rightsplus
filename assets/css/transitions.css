@@ -1,12 +1,10 @@
 .list-container,
-/* apply transition to moving elements */
 .list-move,
-/* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  /* transition: all var(--transition-duration-1000, 3000ms) transition-duration: 1000ms; */
   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   transition-property: opacity, transform;
+  transition-duration: var(--transition-duration-200, 75ms);
 }
 
 .list-enter-from,
@@ -18,7 +16,6 @@
 .list-leave-active {
   position: absolute;
   transition-delay: calc(50ms * var(--i, 1));
-  transition-duration: var(--transition-duration-200, 75ms);
 }
 
 .list-enter-active {

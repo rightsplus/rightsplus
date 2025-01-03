@@ -198,14 +198,16 @@ export type FlightPhase<T = 'departure' | 'arrival'> = {
 export type FlightStatusApi = "landed" | "scheduled" | "cancelled" | "active" | "unknown"
 export type FlightStatus = FlightStatusApi | "delayed"
 export interface Flight {
-  type: "arrival" | "departure";
+  type: "departure" | "arrival" | "more" | "fewer";
   status: FlightStatus;
   departure: FlightPhase;
   arrival: FlightPhase;
   airline: AirlineInfo;
   flight: FlightInfo;
   codeshared?: CodeSharedInfo;
+  airlines?: AirlineInfo[];
 }
+
 
 export interface Leg extends Record<'departure' | 'arrival', {
   airport: Airport;
