@@ -65,6 +65,7 @@
     "pdfmake": "^0.2.15",
     "primevue": "^3.29.1",
     "puppeteer": "^22.12.1",
+    "radix-vue": "^1.9.12",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
     "signature_pad": "^5.0.4",

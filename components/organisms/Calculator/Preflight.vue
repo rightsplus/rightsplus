@@ -13,42 +13,6 @@ const { localePath } = useLocaleContent();
 const claim = useClaim();
 const i18n = useI18n();
 const { t } = i18n;
-const { generatePDF } = useCreatePdf();
-
-const { queryLocaleContent } = useI18nContent("pdf");
-const { format } = useFormatClaim();
-const downloadAssignmentAgreement = async (
-  claim: ClaimsForm,
-  passengerIndex: number
-) => {
-  if (!claim.flight) return;
-  const pseudoRowClaim = await format({ claim, passengerIndex });
-  if (!pseudoRowClaim) {
-    throw new Error("claim could not be formatted");
-  }
-  console.log(pseudoRowClaim.lang);
-  const markdown = await queryLocaleContent(
-    `/${pseudoRowClaim.lang || "de"}/assignment-agreement`
-  ).first();
-
-  const document = letterHead({
-    claim: pseudoRowClaim,
-    i18n,
-    content: (props) => [
-      assignmentAgreement({
-        ...props,
-        preview: true,
-        content: markdownBodyToPdfMake(markdown.body.value, pseudoRowClaim),
-      }),
-    ],
-    info: {
-      title: i18n.t("assignmentAgreement"),
-      // subtitle: i18n.t("compensationClaim.subtitle"),
-      author: "Joachim Bawa",
-    },
-  });
-  generatePDF(document, { open: true });
-};
 </script>
 <template>
   <div class="grid gap-5 mt-5">

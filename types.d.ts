@@ -45,6 +45,7 @@ export type CaseStatus = "dataReceived"
   | "caseWithdrawn"
   | "caseLost"
   | "completed"
+  | "accepted"
 // export type CaseStatus = "dataReceived"
 // 	| "compensationClaimChecked"
 // 	| "orderRejected"
@@ -198,14 +199,13 @@ export type FlightPhase<T = 'departure' | 'arrival'> = {
 export type FlightStatusApi = "landed" | "scheduled" | "cancelled" | "active" | "unknown"
 export type FlightStatus = FlightStatusApi | "delayed"
 export interface Flight {
-  type: "departure" | "arrival" | "more" | "fewer";
+  type: "arrival" | "departure";
   status: FlightStatus;
   departure: FlightPhase;
   arrival: FlightPhase;
   airline: AirlineInfo;
   flight: FlightInfo;
   codeshared?: CodeSharedInfo;
-  airlines?: AirlineInfo[];
 }
 
 
@@ -354,8 +354,8 @@ export interface Database {
 
 
 export type SignatureData = {
-  data: PointGroup[];
   svg: string;
+  data?: PointGroup[];
 }
 
 import '@nuxtjs/algolia'

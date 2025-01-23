@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
@@ -8,9 +7,7 @@ definePageMeta({
 
 import type { CaseStatus, Database, RowClaimExtended } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { data } from "autoprefixer";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
-import { admin } from "~/store";
 
 // watch(state.value, ({ value }) =>
 //   updateData(activeClaimId.value, { status: value as CaseStatus })
@@ -28,19 +25,11 @@ const client = useSupabaseClient<Database>();
 const { locale } = useI18n();
 const { query: queryAirlines, airlines } = useAirlines();
 
-
 function base10ToBase36(num: number): string {
   return num.toString(36);
 }
 
-
-const {
-  data: claims,
-  status,
-  error,
-  refresh,
-  clear,
-} = useAsyncData(async () => {
+const { data: claims, status } = useAsyncData(async () => {
   const { data, error } = await client
     .from("claim")
     .select(getExtendedClaimQuery())
@@ -178,7 +167,11 @@ const operatingAirline = (claim: RowClaimExtended) => {
         <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
           <div class="flex-col items-stretch relative w-full flex-1">
             <div class="flex-1 p-5 w-full h-full">
-              <ClaimManagement :claim="activeClaim" @update="updateData" :key="activeClaim?.id" />
+              <ClaimManagement
+                :claim="activeClaim"
+                @update="updateData"
+                :key="activeClaim?.id"
+              />
             </div>
           </div>
         </div>

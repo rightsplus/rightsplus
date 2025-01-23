@@ -82,15 +82,23 @@ export const useSupabaseFunctions = () => {
 		// return []
 
 		console.log('wait')
-		const supabaseQuery = supabase
+
+		let supabaseQuery = supabase
 			.from('flight')
 			.select('data')
 			.match(match)
-			.abortSignal(AbortSignal.timeout(100))
+			.abortSignal(AbortSignal.timeout(2000))
 
 		console.log(supabaseQuery)
 
-		// if (supabaseQuery.single.)
+		if (supabaseQuery.signal?.aborted) {
+			console.log('fetching again with longer wait')
+			supabaseQuery = supabase
+				.from('flight')
+				.select('data')
+				.match(match)
+				.abortSignal(AbortSignal.timeout(5000))
+		}
 
 		const { data: flights, error: errFlights } = await (or ? supabaseQuery.or(or) : supabaseQuery)
 
@@ -108,6 +116,7 @@ export const useSupabaseFunctions = () => {
 
 		console.log('fetching aviation stack/edge')
 		const { data, error } = await supabase.functions.invoke("flights", { body })
+		console.error(error)
 		console.log('fetching aviation stack/edge done', data, error)
 		if (error) {
 			throw error;

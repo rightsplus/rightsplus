@@ -1,17 +1,136 @@
 import type { FlightAviationEdge, FlightAviationStack } from "~/flight-api.types";
-import type { Flight, FlightStatus, FlightStatusApi, RowAirline, RowFlight } from "~/types";
+import type { Flight, FlightPhase, FlightStatus, FlightStatusApi, RowAirline, RowFlight } from "~/types";
+import { createClient } from 'supabase'
 
+
+const uniqueAirlineIatas = <F extends Flight>(flights: F[]) => {
+	return Array.from<string>(flights.reduce((map: Set<string>, flight: F) => {
+		map.add(flight.airline.iata);
+		return map;
+	}, new Set<string>()))
+}
+const fetchAirlines = async (
+	iatas: string[],
+	req: { headers: { get: (arg0: string) => any } } | undefined
+) => {
+	const authHeader = req?.headers?.get('Authorization');
+	if (!authHeader) throw new Error('Missing Authorization header');
+	const supabase = createClient(
+		Deno.env.get('SUPABASE_URL') || '',
+		Deno.env.get('SUPABASE_ANON_KEY') || ''
+	);
+
+	const { data: airlines, error } = await supabase.from('airline').select('*').in('iata', iatas);
+	if (error) throw new Error(`Failed to fetch airlines: ${error.message}`);
+
+	const airlineMap = new Map<string, RowAirline>();
+	for (const airline of airlines) {
+		airlineMap.set(airline.iata, airline);
+	}
+
+	return airlineMap
+}
+
+
+export const credibleFlightStatus = (flight: Flight | null): FlightStatus | undefined => {
+	if (!flight) return
+	if (['cancelled', 'delayed', 'landed'].includes(flight.status)) return flight.status
+}
+
+
+export const correctedFlightStatus = (flight: Flight): FlightStatus => {
+	const credible = credibleFlightStatus(flight);
+	if (credible) return credible;
+
+	const now = new Date();
+
+	if (flight.status === 'active') {
+		if (flight.arrival.actualTime && new Date(flight.arrival.actualTime) < now) {
+			return "landed";
+		}
+	}
+
+	if (flight.status === 'scheduled') {
+		if (
+			flight.departure.actualTime &&
+			flight.arrival.actualTime &&
+			new Date(flight.departure.actualTime) < now &&
+			new Date(flight.arrival.actualTime) > now
+		) {
+			return "active";
+		}
+		if (flight.departure.scheduledTime && new Date(flight.departure.scheduledTime) > now) {
+			return "scheduled";
+		}
+	}
+
+	return 'unknown';
+};
+
+export const getOperatingAirline = ({ codeshared, airline }: Flight) => codeshared?.airline.iata || airline.iata;
+
+export const getCodesharedFlightId = (flight: Flight) => {
+	if (!flight?.departure) return;
+	return `${flight.departure.scheduledTime}-${getOperatingAirline(flight)}`;
+};
+
+export const consolidateFlights = async (flights: Flight[], req: { headers: { get: (arg0: string) => any } } | undefined, updateAirlines = false): Promise<Flight[]> => {
+
+	const airlines = updateAirlines ? await fetchAirlines(uniqueAirlineIatas(flights), req) : new Map<string, RowAirline>();
+
+	const flightMaps = new Map<
+		string,
+		{
+			flights: Flight[];
+			credibleCommon: {
+				departure?: FlightPhase;
+				arrival?: FlightPhase;
+				status?: FlightStatus;
+			}
+		}
+	>();
+
+	for (const flight of flights) {
+		const groupKey = getCodesharedFlightId(flight);
+		if (!groupKey) continue;
+
+		if (!flightMaps.has(groupKey)) {
+			flightMaps.set(groupKey, {
+				flights: [],
+				credibleCommon: {}
+			});
+		}
+		const group = flightMaps.get(groupKey);
+		if (!group) continue;
+
+		if (updateAirlines) {
+			const { name, iata } = airlines.get(flight.airline.iata) || flight.airline
+			flight.airline.name = name;
+			flight.airline.iata = iata;
+			if (flight.codeshared) {
+				const { name, iata } = airlines.get(flight.codeshared.airline.iata) || flight.codeshared.airline;
+				flight.codeshared.airline.name = name
+				flight.codeshared.airline.iata = iata
+			}
+		}
+		group.flights.push(flight);
+		group.credibleCommon.status = correctedFlightStatus(flight);
+		if (flight.arrival.actualTime) {
+			group.credibleCommon.arrival = flight.arrival;
+		}
+	}
+	return [...flightMaps.values()].flatMap(e => e.flights.map(f => ({ ...f, ...e.credibleCommon })))
+}
 
 function addMinutesToIsoDate(isoDateStr: string, delay: number | null): string {
-	console.log(isoDateStr, delay)
-	if (!isoDateStr || !delay) return ''
+	if (!isoDateStr || delay == null) return ''
 	const date = new Date(isoDateStr);
 	date.setMinutes(date.getMinutes() + delay);
 	return date.toISOString();
 }
 
 function transformAviationEdgeFlightPhase(phaseData: FlightAviationEdge['arrival'] | FlightAviationEdge['departure']) {
-	const delayDepature = parseInt(phaseData.delay || "0", 10)
+	const delayDepature = Number.parseInt(phaseData.delay || "0", 10)
 	return {
 		iata: phaseData.iataCode.toUpperCase(),
 		delay: delayDepature,

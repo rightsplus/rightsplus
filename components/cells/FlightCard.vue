@@ -1,7 +1,14 @@
 <template>
+  <div
+    v-if="flight.type === 'separator'"
+    class="text-center font-bold text-gray-400"
+  >
+    {{ getLocalizedDate(flight.departure.scheduledTime) }}
+  </div>
   <component
+    v-else
     :is="is || 'div'"
-    class="rounded-lg py-3 px-5 @container border border-transparent flex flex-col gap-3"
+    class="flight rounded-lg py-3 px-5 @container border border-transparent flex flex-col gap-3"
     :class="{
       'bg-gray-700 text-white': selected,
       'bg-neutral-100 text-gray-800': !selected,
@@ -69,17 +76,17 @@
             size="sm"
             class="ml-auto @md:hidden"
           />
-          <div :class="{ 'text-neutral-200 bg-neutral-200 rounded': pending }">
-            <span>{{ airline?.name }}</span
-            ><span v-if="codesharedAirline?.name" class="opacity-50">
+          <div :class="{ 'text-neutral-200 bg-neutral-200 rounded': false }">
+            <span>{{ flight.airline?.name }}</span
+            ><span v-if="flight.codeshared?.airline?.name" class="opacity-50">
               {{ " "
               }}{{
                 $t("operatedBy", {
-                  airline: codesharedAirline?.name,
+                  airline: flight.codeshared?.airline?.name,
                 })
               }}</span
             ><span v-if="actionButton" class="text-gray-500">
-              {{ " · " }}{{ iata }}</span
+              {{ " · " }}{{ flight.allFlightIatas.join(" · ") }}</span
             >
           </div>
         </div>
@@ -144,11 +151,6 @@ watch(
     getCities([departure.iata, arrival.iata]);
   },
   { deep: true, immediate: true }
-);
-
-const { airline, pending } = useAirline(props.flight?.airline);
-const { airline: codesharedAirline } = useAirline(
-  props.flight?.codeshared?.airline
 );
 
 const overNight = (flight: Flight) => {

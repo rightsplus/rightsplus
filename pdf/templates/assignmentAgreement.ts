@@ -26,6 +26,7 @@ export default ({ claim, i18n, content, preview }: { claim: RowClaimExtended, i1
 			y: 2
 		}
 	}
+	console.log(preview, claim.client.signature?.svg, signature)
 	const dateOfSignature = setSignature ? {
 		content: [{
 			text: getLocalizedDate(new Date(), locale.value),

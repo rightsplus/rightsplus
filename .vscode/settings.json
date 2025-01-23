@@ -6,5 +6,6 @@
   "editor.formatOnSaveMode": "file", // required to format on save
   "files.autoSave": "onFocusChange", // optional but recommended
   "vs-code-prettier-eslint.prettierLast": false,
-  "github.copilot.chat.completionContext.typescript.mode": "on" // set as "true" to run 'prettier' last not first
+  "github.copilot.chat.completionContext.typescript.mode": "on",
+  "editor.fontSize": 14 // set as "true" to run 'prettier' last not first
 }

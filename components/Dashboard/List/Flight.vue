@@ -21,18 +21,23 @@
         </span>
         <span class="flex items-center gap-2">
           <CellsAirlineLogo :airline="flight.airline" size="xs" />
-          <span class="text-neutral-500 font-medium leading-none line-clamp-1 text-xs -my-1 py-1" :class="{ '!text-neutral-200 bg-neutral-200 rounded': airlinePending }">{{ airline.name }}</span>
+          <span
+            class="text-neutral-500 font-medium leading-none line-clamp-1 text-xs -my-1 py-1"
+            >{{ flight.airline.name }}</span
+          >
         </span>
       </div>
       <span> {{ flight.departure.iata }} → {{ flight.arrival.iata }} </span>
       <div class="grid">
-      <span>
-        {{ getLocalizedDate(flight.departure.scheduledTime, locale, 'short') }}
-      </span>
-      <span>
-        {{ getLocalizedTime(flight.departure.scheduledTime, locale) }} →
-        {{ getLocalizedTime(flight.arrival.scheduledTime, locale) }}
-      </span>
+        <span>
+          {{
+            getLocalizedDate(flight.departure.scheduledTime, locale, "short")
+          }}
+        </span>
+        <span>
+          {{ getLocalizedTime(flight.departure.scheduledTime, locale) }} →
+          {{ getLocalizedTime(flight.arrival.scheduledTime, locale) }}
+        </span>
       </div>
       <span>
         {{ flight.status }}
@@ -48,8 +53,7 @@ const props = defineProps<{
   flight: Flight;
   active: boolean;
 }>();
-const { locale } = useI18n()
-const { airline, pending: airlinePending } = useAirline(props.flight.airline);
+const { locale } = useI18n();
 </script>
 
 <style lang="scss">

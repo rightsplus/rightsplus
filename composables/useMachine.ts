@@ -12,10 +12,10 @@ type MachineState<States> = {
   guardType?: "and" | "or" | "xor";
   event?: string;
 }
-export type Methods<Context, States extends string> = {
+export type Methods<Context, States extends string, T = Promise<void>> = {
   [state in States]: {
     label: string;
-    handler: (context: Context) => Promise<void>
+    handler: (context: Context, attachments?: { [fileName: string]: Blob }) => T
   }[]
 }
 
@@ -120,7 +120,7 @@ export default <States extends string, T extends Record<string, any>>(machine: M
 
     // console.log('NOT', guard, !clause(guard))
     if (guardType === 'not') return !clause(guard)
-      
+
     // console.log('/', guard, clause(guard))
     return clause(guard)
   }
@@ -136,8 +136,8 @@ export default <States extends string, T extends Record<string, any>>(machine: M
       if (guardClause(nextState)) nextTarget = nextState.target;
     } else if (Array.isArray(nextState)) {
       if (event) nextState.forEach(e => e.event = event)
-    nextTarget =
-      nextState.find(guardClause)?.target;
+      nextTarget =
+        nextState.find(guardClause)?.target;
       // console.log('getNext', state, event, nextState, nextTarget)
     }
     if (nextState && 'actions' in nextState && nextState.actions) {

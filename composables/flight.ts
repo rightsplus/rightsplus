@@ -1,4 +1,4 @@
-import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo } from "@/types";
+import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo, type FlightStatus } from "@/types";
 import { useLocalStorage } from "@vueuse/core";
 import { airports } from "~/store";
 import { airlines } from "~/store";
@@ -140,47 +140,48 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 	// // }
 	const { t } = useI18n();
 	return computed(() => {
-		const base = "text-sm font-medium leading-none whitespace-nowrap px-2 py-1 -mx-1 rounded-full border "
+		const base = "text-sm font-medium leading-none whitespace-nowrap px-2 py-1 -mx-1 rounded-full border"
+		const delay = flight?.arrival?.delay || 0
+		const red = "bg-red-100 border-red-200 text-red-600"
+		const yellow = "bg-yellow-100 border-yellow-200 text-yellow-700"
+		const green = "bg-green-100 border-green-200 text-green-600"
+		const gray = "bg-gray-100 border-gray-200 text-gray-600"
 		const states = {
 			cancelled: {
-				class: base + "bg-red-100 border-red-200 text-red-600",
+				class: cn(base, red),
 				text: t("cancelled"),
 			},
 			delayed: {
-				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
+				class: cn(base, delay < 30 ? green : delay > 180 ? red : yellow),
 				text: options?.detailed ? t('delayed.by', {
-					value: getDuration(flight?.arrival?.delay || 0),
+					value: getDuration(delay),
 				}) : t("delayed"),
 			},
 			diverted: {
-				class: base + "bg-yellow-100 border-yellow-200 text-yellow-700",
+				class: cn(base, yellow),
 				text: t("diverted"),
 			},
 			landed: {
-				class: base + "bg-green-100 border-green-200 text-green-600",
+				class: cn(base, green),
 				text: t("onTime"),
 			},
 			scheduled: {
-				class: base + "bg-green-100 border-green-200 text-green-600",
+				class: cn(base, green),
 				text: t("scheduled"),
 			},
 			active: {
-				class: base + "bg-green-100 border-green-200 text-green-600",
+				class: cn(base, green),
 				text: t("active"),
 			},
 			unknown: {
-				class: base + "bg-gray-100 border-gray-200 text-gray-600",
+				class: cn(base, gray),
 				text: t("unknown"),
 			}
 		}
 		if (!flight) {
 			return states['unknown']
 		}
-		let s: typeof flight.status | 'delayed' = (flight?.status || 'unknown')
-
-		if ((!flight.arrival.actualTime || (new Date(flight.arrival.actualTime) < new Date())) && flight.status === 'active') s = "landed"
-
-		if (flight.arrival.delay > 0) s = "delayed"
+		const s: FlightStatus = flight.arrival.delay > 0 ? "delayed" : flight.status
 
 		return states[s || 'unknown'];
 
@@ -232,7 +233,7 @@ export const useAirports = () => {
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airports.value[iata]) return
-			await queryAirports(algolia, iata)
+			if (iata) await queryAirports(algolia, iata)
 		}))
 		return Array.isArray(iata) ? airports.value : airports.value[iata]
 	}
@@ -444,11 +445,18 @@ export const useDisruption = () => {
 	}
 }
 
-export const sortByScheduled = (a: Flight, b: Flight) =>
-	new Date(a.departure.scheduledTime).getTime() -
-	new Date(b.departure.scheduledTime).getTime()
-	+ (a.codeshared ? 1 : 0) - (b.codeshared ? 1 : 0)
-	+ parseInt(a.flight.number, 10) - parseInt(b.flight.number, 10);
+export const sortByScheduled = (a: Flight, b: Flight, sort: "ASC" | "DESC" = 'ASC') => {
+	const departureTimeA = new Date(a.departure.scheduledTime).getTime();
+	const departureTimeB = new Date(b.departure.scheduledTime).getTime();
+	const codesharedDiff = (a.codeshared ? 1 : 0) - (b.codeshared ? 1 : 0);
+	const flightNumberDiff = parseInt(a.flight.number, 10) - parseInt(b.flight.number, 10);
+
+	if (sort === 'ASC') {
+		return departureTimeA - departureTimeB + codesharedDiff + flightNumberDiff;
+	} else {
+		return departureTimeB - departureTimeA + codesharedDiff + flightNumberDiff;
+	}
+}
 
 export const removeDuplicateFlights = (flights: Flight[]) => {
 	const uniqueFlights = new Set();
@@ -582,7 +590,6 @@ export const useFlights = () => {
 			flights.value = mappedFlight
 			flightsByQuery.value ??= {}
 			flightsByQuery.value[query] ??= mappedFlight
-			console.log(mappedFlight)
 
 
 
@@ -617,13 +624,14 @@ export const useFlights = () => {
 				(!arrival || flight.arrival.iata === arrival) &&
 				(!number || flight.flight.iata === number) &&
 				(!date ||
-					getISODate(flight[flight.type].scheduledTime) ===
+					getISODate(flight.departure.scheduledTime) ===
 					getISODate(date))
 				&& (!custom || custom && custom(flight))
 			);
 		};
 
 		const f = flightsByQuery.value[getQueryString(props)] || flights.value
+		console.log(getQueryString(props), flightsByQuery.value[getQueryString(props)])
 		return f.filter(filterFlights)
 	}
 	return { flights, fetchFlights, getFilteredFlights }

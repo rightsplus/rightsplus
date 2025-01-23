@@ -57,6 +57,7 @@
             class: 'h-8 text-sm ml-auto px-2 -mr-1',
           },
         }"
+        sort-reverse
         hide-codeshared
       />
     </div>

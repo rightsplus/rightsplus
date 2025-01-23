@@ -184,9 +184,9 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
             :icon="entry.type === 'email' ? 'envelope' : 'info-circle'"
             class="text-gray-400"
           />
-          <span class="tabular-nums">{{
-            formatDateRelative(entry.timestamp)
-          }}</span>
+          <span class="tabular-nums">
+            {{ formatDateRelative(entry.timestamp) }}</span
+          >
           <span>{{
             entry.type === "email" ? t(`status.${entry.value}`) : entry.value
           }}</span>

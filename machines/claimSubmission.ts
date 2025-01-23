@@ -1,8 +1,7 @@
 import IBAN from "iban";
 import type { Machine } from "~/composables/useMachine";
 import { defaultClaim } from "~/store";
-import type { Airport, ClaimState, ClaimsForm } from "~/types";
-import { nextLeg } from "~/utils";
+import type { ClaimState, ClaimsForm } from "~/types";
 
 // import { createMachine } from 'xstate'
 
@@ -164,7 +163,7 @@ export default {
     },
     setHasReplacementFlight: ({ context }) => {
       context.disruption.replacementFlight = true
-      
+
     },
     removeReplacementFlight: ({ context }) => {
       context.replacement.flight = null

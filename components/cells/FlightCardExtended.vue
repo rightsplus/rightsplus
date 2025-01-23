@@ -35,10 +35,6 @@ watch(
   ({ departure, arrival }) => getCities([departure.iata, arrival.iata]),
   { deep: true, immediate: true }
 );
-const { airline, pending } = useAirline(props.flight?.airline);
-const { airline: codesharedAirline } = useAirline(
-  props.flight?.codeshared?.airline
-);
 
 const { locale } = useI18n();
 const trip = computed(() => {
@@ -119,13 +115,13 @@ const distance = computed(() =>
           <AirlineLogo :airline="flight.airline" size="sm" />
           <div class="flex flex-col gap-1">
             <span class="flex flex-col gap-1">
-              <span class="font-bold">{{ airline?.name }}</span>
+              <span class="font-bold">{{ flight.airline?.name }}</span>
               <span
-                v-if="codesharedAirline?.name"
+                v-if="flight.codeshared?.airline?.name"
                 class="opacity-50 text-xs leading-none"
                 >{{
                   t("operatedBy", {
-                    airline: codesharedAirline?.name,
+                    airline: flight.codeshared?.airline?.name,
                   })
                 }}</span
               >

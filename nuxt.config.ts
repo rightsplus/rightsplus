@@ -122,7 +122,7 @@ export default defineNuxtConfig({
         placeId: process.env.GOOGLE_PLACE_ID
       },
       flight: {
-        aviationStack: process.env.AVIATIONSTACK_KEY,
+        aviationStack: process.env.AVIATION_STACK_KEY,
         aviationEdge: process.env.AVIATION_EDGE_KEY,
       }
     },

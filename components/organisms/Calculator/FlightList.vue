@@ -21,6 +21,7 @@ const props = defineProps<{
   flightCard?: Partial<FlightCardProps>;
   showFilter?: boolean;
   hideCodeshared?: boolean;
+  sortReverse?: boolean;
 }>();
 const { fetchFlights, flights, getFilteredFlights } = useFlights();
 const { airlines } = useAirlines();
@@ -31,14 +32,10 @@ const getId = (flight: Flight) => {
   if (!flight?.departure) return;
   return `${flight.departure.scheduledTime}-${flight.flight.iata}`;
 };
-const getKey = (flight: Flight) => {
-  if (!flight?.departure) return;
-  return `${flight.departure.scheduledTime}-${operatingAirline(flight)}`;
-};
 
 const group = (index: number, list: Flight[], max?: number): boolean => {
   const [flight, nextFlight] = [list[index], list[index + 1]];
-  const currentFlightKey = getKey(flight);
+  const currentFlightKey = getCodesharedFlightId(flight);
   if (!currentFlightKey) return true;
   if (!groups.value.get(currentFlightKey)) {
     groups.value.set(currentFlightKey, new Map());
@@ -55,7 +52,7 @@ const group = (index: number, list: Flight[], max?: number): boolean => {
 
   return max
     ? indexInMap < max
-    : nextFlight && currentFlightKey === getKey(nextFlight);
+    : nextFlight && currentFlightKey === getCodesharedFlightId(nextFlight);
 };
 
 useIntersectionObserver(
@@ -161,10 +158,11 @@ const filteredFlights = computed(() => {
   const n = 3;
 
   // Apply filters once
+  // const filtered = allFlights.value
   const filtered = allFlights.value
     .filter((e) => dayTimeFilter(e) && timeFilter(e) && airlineFilter(e))
     .slice(0, props.limit || Infinity)
-    .sort(sortByScheduled);
+    .sort((a, b) => sortByScheduled(a, b, props.sortReverse ? "DESC" : "ASC"));
 
   // Pre-calculate keys and maps for better performance
   const flightMaps = new Map<
@@ -174,12 +172,13 @@ const filteredFlights = computed(() => {
       size: number;
       open: boolean;
       containsSelected: boolean;
+      allFlightIatas: string[];
     }
   >();
 
   // Group flights in a single pass
   filtered.forEach((flight) => {
-    const key = getKey(flight);
+    const key = getCodesharedFlightId(flight);
     if (!key) return;
 
     if (!flightMaps.has(key)) {
@@ -188,16 +187,16 @@ const filteredFlights = computed(() => {
         size: 0,
         open: false,
         containsSelected: false,
+        allFlightIatas: [],
       });
     }
     const group = flightMaps.get(key)!;
     group.flights.push(flight);
     group.size++;
 
-    console.log(group, group.size > n - 1);
     if (
       !!props.modelValue &&
-      key === getKey(props.modelValue) &&
+      key === getCodesharedFlightId(props.modelValue) &&
       getId(props.modelValue) === getId(flight) &&
       group.size > n - 1
     ) {
@@ -207,19 +206,25 @@ const filteredFlights = computed(() => {
     group.open =
       selectedAirline.value ||
       openGroups.value.has(key) ||
-      group.containsSelected;
+      group.containsSelected ||
+      filtered.length < 7;
   });
 
   // Process groups in a single pass
   const result: Flight[] = [];
+  let currentDate: string;
 
   filtered.forEach((flight) => {
-    const key = getKey(flight);
+    const key = getCodesharedFlightId(flight);
+    const updatedFlight = flight;
     if (!key) return;
 
     const group = flightMaps.get(key)!;
-    const indexInMap = group.flights.indexOf(flight);
-    // result.push(flight);
+    updatedFlight.allFlightIatas = group.flights.map(
+      (e) => `${e.airline.iata} ${e.flight.number}`
+    );
+    const indexInMap = group.flights.indexOf(updatedFlight);
+    // result.push(updatedFlight);
     // return;
     if (
       (group.open && indexInMap + 1 === group.size) ||
@@ -228,12 +233,21 @@ const filteredFlights = computed(() => {
       group.open ||
       indexInMap < n - 1
     ) {
-      result.push(flight);
+      const thisDate = getISODate(updatedFlight.departure.scheduledTime);
+      if (thisDate !== currentDate) {
+        const daySeparator = { ...updatedFlight };
+        daySeparator.flight.iata = "00";
+        daySeparator.type = "separator";
+        result.push(daySeparator);
+        currentDate = thisDate;
+      }
+      result.push(updatedFlight);
     }
     if (
       group.size === indexInMap + 1 &&
       group.size > n &&
-      !group.containsSelected
+      !group.containsSelected &&
+      filtered.length > 7
     ) {
       // Get all airlines from hidden flights (after index n-1)
       const hiddenAirlines = group.flights
@@ -246,15 +260,12 @@ const filteredFlights = computed(() => {
         .map((f) => f.airline)
         .reverse(); // Remove duplicates
 
-      result.push({
-        ...flight,
-        flight: {
-          ...flight.flight,
-          iata: "XX",
-        },
-        type: "toggle",
-        airlines: hiddenAirlines,
-      });
+      const toggleButton = { ...updatedFlight };
+      toggleButton.flight.iata = "XX";
+      toggleButton.type = "toggle";
+      toggleButton.airlines = hiddenAirlines;
+
+      result.push(toggleButton);
     }
   });
 
@@ -275,8 +286,6 @@ const filteredAirlines = computed(() => {
   );
 });
 const loading = ref(true);
-const operatingAirline = (flight: Flight) =>
-  flight?.codeshared?.airline.iata || flight?.airline.iata;
 
 const supabase = useSupabaseClient<Database>();
 onMounted(() => {
@@ -355,11 +364,11 @@ watch(filteredDayTimeButtons, () => {
   }
 });
 const toggleFlightGroup = (flight: Flight) => {
-  const key = getKey(flight);
+  const key = getCodesharedFlightId(flight);
   if (openGroups.value.has(key)) {
-    openGroups.value.delete(getKey(flight));
+    openGroups.value.delete(getCodesharedFlightId(flight));
   } else {
-    openGroups.value.add(getKey(flight));
+    openGroups.value.add(getCodesharedFlightId(flight));
   }
 };
 </script>
@@ -370,7 +379,7 @@ const toggleFlightGroup = (flight: Flight) => {
       v-if="!allFlights.length && loading"
     >
       <FontAwesomeIcon icon="circle-quarter" class="animate-revolve text-xl" />
-      <span class="text-neutral-500">Flüge werden geladen ...</span>
+      <span class="text-neutral-500">Flüge werden gesucht ...</span>
     </div>
     <div
       class="flex flex-col gap-5 bg-neutral-100 items-center justify-center font-medium rounded-xl p-12"
@@ -476,7 +485,7 @@ const toggleFlightGroup = (flight: Flight) => {
           :flight="flight"
           @click="handleSelect(flight)"
           @toggle="toggleFlightGroup(flight)"
-          :group-open="openGroups.has(getKey(flight))"
+          :group-open="openGroups.has(getCodesharedFlightId(flight))"
           :style="{
             top: `${
               index * (flight.type === 'toggle' ? 49.5 : 81.5) +
@@ -490,7 +499,7 @@ const toggleFlightGroup = (flight: Flight) => {
             `${modelValue?.departure.scheduledTime}-${modelValue?.flight.iata}`
           "
           :class="{
-            'rounded-b-none -mb-4 [&_+_*]:rounded-t-none': group(
+            'rounded-b-none -mb-4 [&.flight_+_*]:rounded-t-none': group(
               index,
               filteredFlights
             ),
