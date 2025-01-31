@@ -30,7 +30,7 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 	};
 
 	const tripError = validateTrip();
-	console.log('tripError', tripError)
+	// console.log('tripError', tripError)
 	if (tripError) message ??= tripError;
 
 	// Validate flight details
@@ -45,7 +45,7 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 
 
 		if (!credibleFlightStatus(flight)) {
-			console.log('incredible')
+			// console.log('incredible')
 			return
 		}
 
@@ -53,7 +53,7 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 			if (flight.arrival.delay < 180) {
 				const { departure, arrival } = nextLeg(claim);
 
-				console.log('flight.srarys', departure, arrival)
+				// console.log('flight.srarys', departure, arrival)
 				// if (!disruption.connectingFlight) return ineligible
 				if (!(departure || arrival) || flight.arrival.delay < 30) {
 					ineligible = 'errors.delayed.<3.noConnection';
@@ -84,14 +84,14 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 	};
 
 	const flightError = validateFlight();
-	console.log('flightError', flightError)
+	// console.log('flightError', flightError)
 	if (flightError) message ??= flightError;
 
 
 	// If disruption has not yet been defined 
 	// make a guesstimate base on the flight data
 	if (!disruption || !disruption.type) {
-		console.log("A")
+		// console.log("A")
 		return {
 			ineligible,
 			message
