@@ -220,6 +220,7 @@ const closePreview = () => {
     titleClass="!text-xl"
   >
     <StatusEmailPreview
+      v-if="!!emailPreview.length"
       v-for="email in emailPreview"
       :key="email.id"
       :title="email.status"

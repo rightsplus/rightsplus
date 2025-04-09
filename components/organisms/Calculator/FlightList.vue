@@ -75,8 +75,16 @@ const allFlights = computed(() => {
   ).filter((e) => {
     const excludedNames = ["cargo", "fedex", "dhl", "ups"];
     if (
-      excludedNames.some((name) =>
-        e.airline.name.toLocaleLowerCase().includes(name)
+      excludedNames.some((f) =>
+        e.airline.name?.toLowerCase()?.includes(f || "")
+      )
+    ) {
+      return false;
+    }
+    const excludedIatas = ["DJ"];
+    if (
+      excludedIatas.some((f) =>
+        e.airline.iata?.toUpperCase()?.includes(f || "")
       )
     ) {
       return false;

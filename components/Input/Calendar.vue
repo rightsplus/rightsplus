@@ -14,7 +14,7 @@
       :min-date="minDate ? new Date(minDate) : undefined"
       :max-date="new Date()"
       expanded
-      :locale="useI18n().locale.value"
+      :locale="locale"
       is-required
       :borderless="borderless"
       :attributes="[
@@ -31,6 +31,7 @@
 import { useElementSize } from "@vueuse/core";
 import { DatePicker } from "v-calendar";
 import "v-calendar/dist/style.css";
+const { locale } = useI18n();
 
 const container = ref<HTMLDivElement>();
 const calendar = ref<typeof DatePicker>();
@@ -40,20 +41,23 @@ export type CalendarProps = {
   modelValue: string | null;
   minDate?: string | Date;
   borderless?: boolean;
-}
+};
 const props = defineProps<CalendarProps>();
 const emit = defineEmits(["update:modelValue", "update:page", "select"]);
 const updateModelValue = (value?: Date) => {
   emit("update:modelValue", value ? getISODate(value) : undefined);
 };
-const dayClick = (value: Date) => {
+const dayClick = (_: any, event: any) => {
   emit("select");
+  event.target.blur();
 };
 // onMounted(() => {
 //   if (!props.modelValue) updateModelValue();
 // });
-watch(() => props.modelValue, e => calendar.value?.move(e))
-
+watch(
+  () => props.modelValue,
+  (e) => calendar.value?.move(e)
+);
 </script>
 <style lang="postcss">
 .vc-weekdays .vc-weekday {

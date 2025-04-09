@@ -6,9 +6,11 @@
   </div>
 </template>
 <script setup lang="ts">
+// const localePath = useLocalePath();
+
 definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
-  redirect: "/admin/claims",
+  redirect: "/de/admin/ansprueche",
 });
 </script>

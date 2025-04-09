@@ -1,4 +1,4 @@
-import { type RowAirline, type Airport, type ClaimsForm, type Flight, type VariFlight, type FlightPhase, type AirlineInfo, type FlightStatus } from "@/types";
+import type { RowAirline, Airport, ClaimsForm, Flight, VariFlight, FlightPhase, AirlineInfo, FlightStatus } from "@/types";
 import { useLocalStorage } from "@vueuse/core";
 import { airports } from "~/store";
 import { airlines } from "~/store";
@@ -190,14 +190,11 @@ export const useFlightStatus = (flight: Flight, options?: { detailed: boolean })
 
 
 export const useAirlines = () => {
-	const claim = useClaim()
 	const client = useSupabaseClient()
 	async function query(iata: string): Promise<RowAirline>
 	async function query(iata?: string[]): Promise<Record<string, RowAirline>>
 	async function query(iata?: string | string[]): Promise<RowAirline | Record<string, RowAirline>> {
-		if (!iata) {
-			iata = [claim.flight?.flight.iata, claim.connection.flight?.flight.iata, claim.replacement.flight?.flight.iata].filter(e => !!e) as string[]
-		}
+		if (!iata) return airlines.value
 		const iatas = Array.isArray(iata) ? iata : [iata]
 		await Promise.all(iatas.map(async (iata) => {
 			if (airlines.value[iata]) return
@@ -532,7 +529,6 @@ export const useFlights = () => {
 	const { fetchProxy, fetchFlights: fetchFlightsSupabase } = useSupabaseFunctions()
 	// const { airports } = { airports: ref({})}
 	const { airports } = useAirports()
-	const { airlines, query: queryAirlines } = useAirlines()
 
 	const getQueryString = ({ date, departure, arrival }: {
 		date?: string,

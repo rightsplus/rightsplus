@@ -170,7 +170,6 @@ import SectionSubHeader from "./SectionSubHeader.vue";
 import FlightList from "./FlightList.vue";
 import type { ClaimsForm, Flight } from "@/types";
 import Callout from "~/components/core/Callout.vue";
-import { get24HTime } from "@/utils";
 import AccordionItem from "../Accordion/AccordionItem.vue";
 import { useElementSize } from "@vueuse/core";
 import SelectRoute from "./Forms/SelectLeg.vue";

@@ -248,13 +248,14 @@ interface Row {
   id: number;
   createdAt: string;
 }
-export interface UsersTable {
+export interface RowUser {
   id: number;
   first_name: string;
   last_name: string;
   email: string;
   iban: string;
   agreed_to_terms: boolean;
+  role: 'admin' | undefined;
 }
 export interface RowAirline extends Row {
   iata: string;
@@ -324,9 +325,9 @@ export interface Database {
   public: {
     Tables: {
       users: {
-        Row: UsersTable
-        Insert: UsersTable
-        Update: UsersTable
+        Row: RowUser
+        Insert: RowUser
+        Update: RowUser
       }
       claims: {
         Row: RowClaim

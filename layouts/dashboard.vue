@@ -106,7 +106,9 @@
               >
                 <span class="text-xs leading-0"
                   >Angemeldet als
-                  {{ user?.user_metadata.name.split(" ")[0] }}</span
+                  {{
+                    user?.user_metadata.name?.split(" ")[0] || user?.email
+                  }}</span
                 ><Button
                   alert
                   tertiary
@@ -134,16 +136,17 @@ import type { Database } from "~/types";
 const localeRoute = useLocaleRoute();
 const { t } = useI18n();
 const user = useSupabaseUser();
-const { auth } = useSupabaseAuthClient();
+const client = useSupabaseClient<Database>();
+
 const width = ref(250);
 const signOut = () => {
-  auth.signOut();
+  client.auth.signOut();
+  user.value = null;
   navigateTo(localeRoute("index"));
 };
 definePageMeta({
   middleware: ["auth"],
 });
-const client = useSupabaseClient<Database>();
 
 const { data: claims } = useAsyncData("claims", async () => {
   const { data: claims, error } = await client

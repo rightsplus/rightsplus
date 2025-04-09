@@ -1,6 +1,9 @@
 <template>
-  <div class="pt-24">{{  $route.name }}</div>
-  <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0" v-if="claim">
+  <div class="pt-24">{{ $route.name }}</div>
+  <section
+    class="flex flex-col flex-grow w-full first:mt-0 last:mb-0"
+    v-if="claim"
+  >
     <div class="flex flex-col space-y-12 w-full" v-if="claimId">
       <!-- <FormKit
         v-model="bookingNumber"
@@ -29,7 +32,10 @@
         </h2>
         <div class="flex flex-col items-end">
           <span class="text-gray-500">Status</span
-          ><span class="font-semibold text-sm bg-green-200 rounded text-green-700 px-2 py-1">in Bearbeitung</span>
+          ><span
+            class="font-semibold text-sm bg-green-200 rounded text-green-700 px-2 py-1"
+            >in Bearbeitung</span
+          >
         </div>
       </div>
       <hr />
@@ -169,7 +175,7 @@ watchDebounced(
   bookingNumber,
   (value) => {
     if (value) {
-      navigateTo(`/claim/${formatClaimId(claimId, false)}?b=${value}`);
+      // navigateTo(`/claim/${formatClaimId(claimId, false)}?b=${value}`);
       fetchClaim(claimId, value).then((e) => (claim.value = e.data));
     }
   },

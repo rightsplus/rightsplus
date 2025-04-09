@@ -45,18 +45,20 @@ const boardingPass = computed(() => {
         >
 
         <span class="text-sm">{{ t("iban") }}: {{ passenger.iban }}</span>
-        <div v-if="passenger.isMinor">
-          <span class="text-sm"
-            >{{ t("isMinor") }}:
-            {{ passenger.isMinor ? t("yes") : t("no") }}</span
-          >
-          <span class="text-sm"
-            >{{ t("dateOfBirth") }}: {{ passenger.dateOfBirth }}</span
-          >
-          <span class="text-sm"
-            >{{ t("guardian") }}: {{ passenger.guardian?.firstName }}
-            {{ passenger.guardian?.lastName }}</span
-          >
+        <div v-if="passenger.isMinor" class="text-sm">
+          <span
+            >{{
+              [
+                `${t("isMinor")}: ${passenger.isMinor ? t("yes") : t("no")}`,
+                `${t("dateOfBirth")}: ${getLocalizedDate(
+                  passenger.dateOfBirth
+                )}`,
+                `${t("guardian")}: ${passenger.guardian?.firstName} ${
+                  passenger.guardian?.lastName
+                }`,
+              ].join(" · ")
+            }}
+          </span>
         </div>
       </div>
     </div>

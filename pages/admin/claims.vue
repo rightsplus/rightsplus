@@ -37,7 +37,7 @@ const { data: claims, status } = useAsyncData(async () => {
     .order("createdAt", { ascending: false })
     .returns<RowClaimExtended[]>();
 
-  console.log(data, error);
+  // console.log(data, error);
   if (data) {
     queryAirlines(
       airlinesByFlights(data.map((e) => e.booking.flight.data)).map(
@@ -50,7 +50,7 @@ const { data: claims, status } = useAsyncData(async () => {
 watch(
   status,
   () => {
-    console.log(status.value, claims.value);
+    // console.log(status.value, claims.value);
   },
   { immediate: true }
 );

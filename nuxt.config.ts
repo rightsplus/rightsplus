@@ -57,7 +57,7 @@ export default defineNuxtConfig({
         '/en', '/de' // Include all locale versions here
       ],
     },
-    static: true,
+    static: process.env.NODE_ENV === 'production',
     logLevel: 'debug', // Captures detailed logs during prerendering
     devProxy: {
       host: 'localhost',
@@ -73,7 +73,6 @@ export default defineNuxtConfig({
 
   image: {
     format: ['webp'],
-    provider: "ipx",
     debug: true
   },
 
@@ -91,6 +90,10 @@ export default defineNuxtConfig({
   pwa,
   i18n,
   postcss,
+
+  supabase: {
+    redirect: false,
+  },
 
 
   tailwindcss: {
@@ -130,6 +133,10 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
   },
 
   ssr: true,
