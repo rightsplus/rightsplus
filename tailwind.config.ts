@@ -93,7 +93,6 @@ module.exports = {
       transitionDuration: 'transition-duration',
       transitionProperty: 'transition-property',
       transitionDelay: 'transition-delay',
-      transitionDuration: 'transition-duration',
       transitionTimingFunction: 'transition-timing-function',
       outlineStyle: 'outline-style',
       outlineWidth: 'outline-width',

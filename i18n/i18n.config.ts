@@ -14,5 +14,5 @@ const format = () => ({
 
 export default defineI18nConfig(() => ({
 	numberFormats: locales.reduce((a, { code }) => ({ ...a, [code]: format() }), {}),
-	fallbackLocale: 'de'
+	fallbackLocale: 'de',
 }))

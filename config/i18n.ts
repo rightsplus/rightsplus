@@ -29,6 +29,9 @@ const options = {
 	strategy: "prefix_and_default" as Strategies,
 	// strategy: "prefix_except_default" as Strategies,
 	customRoutes: 'config',
+	bundle: {
+		optimizeTranslationDirective: false
+	},
 	pages: {
 		"index": {
 			"en": "/",
