@@ -150,32 +150,6 @@ export default defineNuxtConfig({
       })
     }
   },
-  routeRules: {
-    '/en/admin/**': {
-      prerender: true,
-      ssr: false
-    },
-    '/de/admin/**': {
-      prerender: true,
-      ssr: false
-    },
-    '/admin/**': {
-      prerender: true,
-      ssr: false
-    },
-    '/en/claim/**': {
-      prerender: true,
-      ssr: false
-    },
-    '/de/anspruch/**': {
-      prerender: true,
-      ssr: false
-    },
-    '/anspruch/**': {
-      prerender: true,
-      ssr: false
-    },
-  },
 
   compatibilityDate: '2024-07-10',
 })
