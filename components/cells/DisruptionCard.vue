@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import type { Flight, ClaimsForm } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faPlaneSlash,
-  faClock,
-  faExclamationTriangle,
-  faExchangeAlt,
-  faPlaneDeparture,
-  faPlaneArrival,
-} from "@fortawesome/free-solid-svg-icons";
-import { useI18n } from "vue-i18n";
 
 export type DisruptionCardProps = {
   disruption: ClaimsForm["disruption"];

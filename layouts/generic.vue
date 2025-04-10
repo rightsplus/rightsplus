@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Header from "@/components/species/Header.vue";
 import Footer from "@/components/species/Footer.vue";
-const slots = useSlots()
+const slots = useSlots();
 
 onMounted(() => {
-  scrollTo({ top: 0, behavior: "smooth" })
+  scrollTo({ top: 0, behavior: "smooth" });
 });
 const route = useRoute();
 
@@ -24,7 +24,9 @@ withDefaults(defineProps<Props>(), {
       :class="route.meta.classes?.main"
     >
       <div class="px-5 sm:px-12 h-full col-start-2">
-        <article class="gap-y-12 grid grid-cols-1 sm:grid-cols-[1fr,min(896px,calc(100vw-6rem)),1fr] [&>*]:col-start-2">
+        <article
+          class="gap-y-12 grid grid-cols-1 sm:grid-cols-[1fr,min(896px,calc(100vw-6rem)),1fr] [&>*]:col-start-2"
+        >
           <div class="flex flex-col gap-3 leading-0">
             <slot name="before" />
             <span

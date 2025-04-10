@@ -6,7 +6,6 @@ import type {
   RowClaimExtended,
 } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
-import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   claim: RowClaimExtended;

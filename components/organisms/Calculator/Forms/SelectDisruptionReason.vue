@@ -11,7 +11,6 @@
 <script setup lang="ts">
 import DropdownButton from "@/components/molecules/DropdownButton.vue";
 import type { ClaimsForm } from "@/types";
-import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 

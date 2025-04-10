@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ClaimsForm } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useI18n } from "vue-i18n";
 
 export type PassengerCardProps = {
   passenger: ClaimsForm["client"]["passengers"][number];

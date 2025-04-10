@@ -21,6 +21,7 @@ export const locales = [
 		file: 'en.json',
 	}
 ] as const satisfies LocaleObject[]
+
 const options = {
 	locales,
 	langDir: 'locales',
@@ -28,7 +29,6 @@ const options = {
 	strategy: "prefix_and_default" as Strategies,
 	// strategy: "prefix_except_default" as Strategies,
 	customRoutes: 'config',
-	vueI18n: 'config/i18n.options.ts',
 	pages: {
 		"index": {
 			"en": "/",

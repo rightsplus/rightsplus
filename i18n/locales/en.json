@@ -41,15 +41,9 @@
   "bookingNumber": "Booking Number",
   "bookingNumber.description": "Please enter your booking number",
   "bookingNumber.title": "Booking Number",
-  "calculator": {
-    "forms": {
-      "disruptionReason": {
-        "label": "What reason did the airline provide?"
-      }
-    }
-  },
   "calculator.flight.selectRoute": "Which flight did you have issues with?",
   "calculator.flight.title": "Where did you fly to?",
+  "calculator.forms.disruptionReason.label": "What reason did the airline provide?",
   "cancellation": "Cancellation",
   "cancellationAnnouncedBetween": "Cancellation announced {n} days before departure",
   "cancellationAnnouncedFewerThan": "Cancellation announced fewer than {n} day before departure | Cancellation announced fewer than {n} days before departure",
@@ -66,11 +60,9 @@
   "claim": "Claim | Claims",
   "claimEU": "Claim under EU Law",
   "claimId": "Claim ID",
-  "compensationBanner": {
-    "claimUpTo": "Claim up to {amount}!",
-    "claimUpToExtended": "Claim up to {amount} for your delayed or cancelled flight!",
-    "close": "Close"
-  },
+  "compensationBanner.claimUpTo": "Claim up to {amount}!",
+  "compensationBanner.claimUpToExtended": "Claim up to {amount} for your delayed or cancelled flight!",
+  "compensationBanner.close": "Close",
   "completeProcess": "Complete Process",
   "connectionFlight.title": "Connecting Flight",
   "connectionFlightDetails.description": "Which connecting flight did you take?",
@@ -79,18 +71,14 @@
   "continueWithEmail": "Continue with Email",
   "continueWithoutStopover": "Continue without stopover",
   "country": "Country",
-  "cta": {
-    "subtitle": "With our simple online check, you can quickly and easily verify your compensation claims. And the best part: It's free and non-binding.",
-    "title": "Secure your deserved compensation"
-  },
+  "cta.subtitle": "With our simple online check, you can quickly and easily verify your compensation claims. And the best part: It's free and non-binding.",
+  "cta.title": "Secure your deserved compensation",
   "customerService": "Customer Service",
   "date": "Date",
   "dateOfBirth": "Date of birth",
   "days": "{n} Day | {n} Days",
-  "debug": {
-    "fetchFlights": "Fetching flights",
-    "fetchFlightsSupabase": "Fetching flights from Supabase"
-  },
+  "debug.fetchFlights": "Fetching flights",
+  "debug.fetchFlightsSupabase": "Fetching flights from Supabase",
   "delay": "Delay",
   "delayArrivalTime": "Delayed arrival time",
   "delayed": "Delayed",
@@ -135,53 +123,23 @@
   "eligible.reason.delay.<3": "You reached your destination with a delay of less than 3 hours and therefore have no claim for compensation.",
   "eligible.title": "Congratulations!",
   "email": "Email",
-  "errors": {
-    "airline": {
-      "missing": "Airline information is missing"
-    },
-    "airport": {
-      "identical": "Departure and arrival airports are identical",
-      "missing": "Departure or arrival airport information is missing"
-    },
-    "cancelled": {
-      ">14": "Flight was cancelled more than 14 days before departure"
-    },
-    "connection": {
-      "reached": "Connection flight was reached"
-    },
-    "connectionFlight": {
-      "missing": "Connection flight information is missing"
-    },
-    "disruption": {
-      "detail": {
-        "cancelled": "Cancellation details are missing",
-        "delay": "Delay details are missing"
-      },
-      "missing": "Disruption information is missing",
-      "selfInflicted": "The denied boarding was due to passenger-related reasons"
-    },
-    "ec261": {
-      "airline": "Flight not eligible under EC261 - neither departure in EU nor EU airline",
-      "airport": "Neither departure nor arrival airport is within EC261 jurisdiction"
-    },
-    "eligible": {
-      "reason": {
-        "delay": {
-          "<3": "Flight delay was less than 3 hours without missed connection"
-        }
-      }
-    },
-    "flight": {
-      "missing": "Flight information is missing"
-    },
-    "leg": {
-      "missing": "Flight leg information is missing"
-    },
-    "noClaim": "No claim data found",
-    "replacement": {
-      "withinBounds": "Replacement flight arrived within acceptable time limits"
-    }
-  },
+  "errors.airline.missing": "Airline information is missing",
+  "errors.airport.identical": "Departure and arrival airports are identical",
+  "errors.airport.missing": "Departure or arrival airport information is missing",
+  "errors.cancelled.>14": "Flight was cancelled more than 14 days before departure",
+  "errors.connection.reached": "Connection flight was reached",
+  "errors.connectionFlight.missing": "Connection flight information is missing",
+  "errors.disruption.detail.cancelled": "Cancellation details are missing",
+  "errors.disruption.detail.delay": "Delay details are missing",
+  "errors.disruption.missing": "Disruption information is missing",
+  "errors.disruption.selfInflicted": "The denied boarding was due to passenger-related reasons",
+  "errors.ec261.airline": "Flight not eligible under EC261 - neither departure in EU nor EU airline",
+  "errors.ec261.airport": "Neither departure nor arrival airport is within EC261 jurisdiction",
+  "errors.eligible.reason.delay.<3": "Flight delay was less than 3 hours without missed connection",
+  "errors.flight.missing": "Flight information is missing",
+  "errors.leg.missing": "Flight leg information is missing",
+  "errors.noClaim": "No claim data found",
+  "errors.replacement.withinBounds": "Replacement flight arrived within acceptable time limits",
   "evening": "Evening",
   "faq": "FAQ",
   "faq.category": "Customer Service",
@@ -190,10 +148,8 @@
   "faq.not_found": "Your question is not listed? Give us a call or send us an email!",
   "faq.search": "Search by keywords",
   "faq.title": "How can we help?",
-  "feeCalculator": {
-    "description": "Our fee depends on your compensation. We only get paid if you receive compensation. This means we are committed and motivated to secure high compensation for you. This way, we both benefit.",
-    "title": "Compensation Amount and Fee"
-  },
+  "feeCalculator.description": "Our fee depends on your compensation. We only get paid if you receive compensation. This means we are committed and motivated to secure high compensation for you. This way, we both benefit.",
+  "feeCalculator.title": "Compensation Amount and Fee",
   "fetchFailed": "Fetch failed",
   "fetchFlightsSupabase": "Fetching flights from Supabase",
   "fewerThan": "Fewer than {n}",
@@ -207,12 +163,10 @@
   "flightDate.title": "Flight Date",
   "flightDelayedOrCancelled": "Flight Delayed or Cancelled?",
   "flightDistance": "Flight distance",
-  "flightFilter": {
-    "arrival": "Filter by arrival",
-    "date": "Filter by date",
-    "departure": "Filter by departure",
-    "number": "Filter by flight number"
-  },
+  "flightFilter.arrival": "Filter by arrival",
+  "flightFilter.date": "Filter by date",
+  "flightFilter.departure": "Filter by departure",
+  "flightFilter.number": "Filter by flight number",
   "flightNumber": "Flight Number",
   "flightRoute": "Flight Route",
   "flightStatus": "Flight status",
@@ -278,26 +232,14 @@
   "pricesAndServices": "Prices and Services",
   "privacy": "Privacy",
   "privacyPolicy": "Privacy Policy",
-  "process": {
-    "summary": {
-      "mainTitle": "Secure Your Compensation in 3 Steps",
-      "steps": {
-        "check": {
-          "description": "Based on flight route and date",
-          "title": "Check Compensation Claim"
-        },
-        "contact": {
-          "description": "To submit your claim",
-          "title": "Enter Contact Details"
-        },
-        "receive": {
-          "description": "Within 2 weeks",
-          "title": "Receive Compensation"
-        }
-      },
-      "subtitle": "With RightsPlus, we enforce your claims according to EU law."
-    }
-  },
+  "process.summary.mainTitle": "Secure Your Compensation in 3 Steps",
+  "process.summary.steps.check.description": "Based on flight route and date",
+  "process.summary.steps.check.title": "Check Compensation Claim",
+  "process.summary.steps.contact.description": "To submit your claim",
+  "process.summary.steps.contact.title": "Enter Contact Details",
+  "process.summary.steps.receive.description": "Within 2 weeks",
+  "process.summary.steps.receive.title": "Receive Compensation",
+  "process.summary.subtitle": "With RightsPlus, we enforce your claims according to EU law.",
   "professionalExpertise": "Professional Expertise",
   "profile": "Profile",
   "reason": "Reason",
@@ -319,20 +261,12 @@
   "reasons.technicalIssues.label": "Technical Issues",
   "reasons.unexpectedIssues.label": "Unexpected Issues",
   "reasons.weatherConditions.label": "Weather Conditions",
-  "reasonsSection": {
-    "completeProcess": {
-      "description": "We handle the entire process independently. You only need to transfer the respective claim to us. Of course, we keep you updated on the current status at all times.\nBy engaging us, you not only save yourself frustrating and time-consuming correspondence with airlines that often doesn't lead to the desired success, but also any legal fees and associated litigation risks that may arise.",
-      "title": "Complete Process"
-    },
-    "noRisk": {
-      "description": "You bear no cost or process risk. There are no hidden costs or risks.\nOnly in the case of successful enforcement of the claim do we receive a proportional fee of 25% (incl. VAT). In this regard, we refer to our price and service list.",
-      "title": "No Cost & Process Risk"
-    },
-    "professionalExpertise": {
-      "description": "You benefit from our professional expertise and experience in this field. We offer you a competent service and place great emphasis on efficient and transparent work.\nOur success rate is 98% for the claims we process. For effective and successful enforcement of claims, we work closely with a law firm specializing in travel law.",
-      "title": "Professional Expertise"
-    }
-  },
+  "reasonsSection.completeProcess.description": "We handle the entire process independently. You only need to transfer the respective claim to us. Of course, we keep you updated on the current status at all times.\nBy engaging us, you not only save yourself frustrating and time-consuming correspondence with airlines that often doesn't lead to the desired success, but also any legal fees and associated litigation risks that may arise.",
+  "reasonsSection.completeProcess.title": "Complete Process",
+  "reasonsSection.noRisk.description": "You bear no cost or process risk. There are no hidden costs or risks.\nOnly in the case of successful enforcement of the claim do we receive a proportional fee of 25% (incl. VAT). In this regard, we refer to our price and service list.",
+  "reasonsSection.noRisk.title": "No Cost & Process Risk",
+  "reasonsSection.professionalExpertise.description": "You benefit from our professional expertise and experience in this field. We offer you a competent service and place great emphasis on efficient and transparent work.\nOur success rate is 98% for the claims we process. For effective and successful enforcement of claims, we work closely with a law firm specializing in travel law.",
+  "reasonsSection.professionalExpertise.title": "Professional Expertise",
   "rebooked": "Rebooked",
   "remainingAttempts": "Remaining attempts: {attempts}",
   "remove": "Remove {value}",
@@ -340,11 +274,9 @@
   "replacementFlight.title": "Replacement Flight",
   "replacementFlightDetails.description": "Provide details about your replacement flight",
   "replacementFlightYN.description": "Did the airline offer you a replacement flight?",
-  "reviews": {
-    "subtitle": "Our customers speak for themselves! Over 500 satisfied users have already relied on the simple and effective compensation claims process through RightsPlus.",
-    "title": "RightsPlus Customer Reviews",
-    "viewMore": "View more reviews"
-  },
+  "reviews.subtitle": "Our customers speak for themselves! Over 500 satisfied users have already relied on the simple and effective compensation claims process through RightsPlus.",
+  "reviews.title": "RightsPlus Customer Reviews",
+  "reviews.viewMore": "View more reviews",
   "scheduled": "Scheduled",
   "scheduledArrivalTime": "Scheduled arrival time",
   "selectLanguage": "Select Language",
@@ -356,20 +288,12 @@
   "signUpAt": "Sign Up at {platform}!",
   "signUpWith": "Sign Up with {provider}",
   "signature": "Signature",
-  "stats": {
-    "0": {
-      "description": "Cases processed",
-      "title": "400+"
-    },
-    "1": {
-      "description": "in compensation secured",
-      "title": "€25k"
-    },
-    "2": {
-      "description": "Success rate",
-      "title": "98%"
-    }
-  },
+  "stats.0.description": "Cases processed",
+  "stats.0.title": "400+",
+  "stats.1.description": "in compensation secured",
+  "stats.1.title": "€25k",
+  "stats.2.description": "Success rate",
+  "stats.2.title": "98%",
   "status.airlineRejected": "Airline rejected",
   "status.airlineRejectedAfterLawyer": "Airline rejected after lawyer",
   "status.awaitAirlinePayment": "Awaiting payment",

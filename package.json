@@ -14,7 +14,7 @@
     "@nuxt/content": "^3.0.0-alpha.8",
     "@nuxt/image": "^1.5.0",
     "@nuxtjs/algolia": "^1.7.0",
-    "@nuxtjs/i18n": "9.3",
+    "@nuxtjs/i18n": "^9.5.3",
     "@nuxtjs/supabase": "^1.5.0",
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@types/iban": "^0.0.35",
@@ -77,6 +77,16 @@
     "v-calendar": "^3.1.2",
     "vue-email": "^0.8.11",
     "vue-uuid": "^3.0.0"
+  },
+  "resolutions": {
+    "@intlify/shared": "10.0.1",
+    "@intlify/core": "10.0.1",
+    "@intlify/core-base": "10.0.1",
+    "@intlify/devtools-if": "10.0.1",
+    "@intlify/message-compiler": "10.0.1",
+    "@intlify/vue-devtools": "10.0.1",
+    "@intlify/vue-i18n-bridge": "10.0.1",
+    "vue-i18n": "10.0.1"
   },
   "packageManager": "yarn@4.5.3"
 }
