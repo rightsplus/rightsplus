@@ -16,26 +16,43 @@ export default <Context extends RowClaimExtended>() => {
 	}
 
 
-	const sendStatusEmail = async ({ status, claim, attachments, to }: { status: CaseStatus, claim: RowClaimExtended, attachments?: Record<string, Blob>, to?: string }) => {
-		const id = uuid()
+	const sendStatusEmail = async ({ status, claim, attachments, to, immediate = true }: { status: CaseStatus, claim: RowClaimExtended, attachments?: Record<string, Blob>, to?: string, immediate?: boolean }) => {
 		try {
+			console.log('sending status email', status, claim, attachments, to)
 			const markdown = await getParsedMarkdown(status, claim)
+			console.log('markdown', markdown)
 			const recipientEmail = to || claim.client.email
+			console.log('recipientEmail', recipientEmail)
 			const sendMail = async (props: { content?: string, attachments?: Record<string, Blob> } = {}) => {
-				await send({
-					to: recipientEmail,
-					subject: markdown.data.subject,
-					template: "Status.vue",
-					data: {
-						...markdown.data,
-						body: props.content || markdown.content
-					},
-					attachments: props.attachments || attachments
-				})
-				await supabase.rpc('append_to_protocol', {
-					claim_id: claim.id,
-					new_data: { timestamp: new Date().toISOString(), type: 'email', value: status }
-				})
+				console.log('sending email', recipientEmail, markdown.data.subject, props.content, props.attachments)
+				try {
+					const response = await send({
+						to: recipientEmail,
+						subject: markdown.data.subject,
+						template: "Status.vue",
+						data: {
+							...markdown.data,
+							body: props.content || markdown.content
+						},
+						attachments: props.attachments || attachments
+					})
+					console.log('response', response)
+					if (!response.ok) {
+						throw new Error(response.statusText)
+					}
+					console.log('email sent', recipientEmail, markdown.data.subject, props.content, props.attachments)
+					await supabase.rpc('append_to_protocol', {
+						claim_id: claim.id,
+						new_data: { timestamp: new Date().toISOString(), type: 'email', value: status }
+					})
+					console.log('email appended to protocol', recipientEmail, markdown.data.subject, props.content, props.attachments)
+					return response
+				} catch (err) {
+					throw err
+				}
+			}
+			if (immediate) {
+				await sendMail()
 			}
 			return {
 				recipientEmail,
@@ -46,11 +63,7 @@ export default <Context extends RowClaimExtended>() => {
 				sendMail
 			}
 		} catch (err) {
-			console.error(err)
-			return {
-				id,
-				status
-			}
+			throw err
 		}
 	}
 
@@ -58,39 +71,44 @@ export default <Context extends RowClaimExtended>() => {
 		dataReceived: [
 			{
 				label: '"Daten erhalten"-Mail (erneut) versenden',
-				handler: async (claim) => sendStatusEmail({ status: 'dataReceived', claim })
+				handler: async ({ context: claim, immediate, attachments }) => {
+					console.log('sending dataReceived email', claim, attachments)
+					return sendStatusEmail({
+						status: 'dataReceived', claim, immediate, attachments
+					})
+				}
 			}
 		],
 		rejected: [{
 			label: "Wir nehmen den Fall nicht an",
-			handler: (claim) => sendStatusEmail({ status: 'rejected', claim })
+			handler: ({ context: claim, immediate }) => sendStatusEmail({ status: 'rejected', claim, immediate })
 		}],
 		awaitInitialAirlineResponse: [
 			{
-				label: "Wir nehmen den Fall an",
-				handler: (claim, attachments) => {
+				label: "Wir nehmen den Fall an (Kunden-Email)",
+				handler: ({ context: claim, immediate, attachments }) => {
 					const pdf = attachments?.["assignment-agreement.pdf"]
 					return sendStatusEmail({
-						status: 'accepted', claim, attachments: pdf ? {
+						status: 'accepted', claim, immediate, attachments: pdf ? {
 							"assignment-agreement.pdf": pdf
 						} : undefined
 					})
 				},
 			},
 			{
-				label: "Wir hanben hier einen Fall für euch!",
-				handler: async (claim, attachments) => {
+				label: "Wir hanben hier einen Fall für euch! (Airline-Email)",
+				handler: async ({ context: claim, immediate, attachments }) => {
 					try {
 						const pdf = attachments?.["assignment-agreement.pdf"]
 						const { email } = claim.booking.flight.airline
 						if (!email) return // @todo: handle when airline has no email
 						return sendStatusEmail({
-							status: 'awaitInitialAirlineResponse', claim, attachments: pdf ? {
+							status: 'awaitInitialAirlineResponse', claim, immediate, attachments: pdf ? {
 								"assignment-agreement.pdf": pdf
 							} : undefined, to: email
 						})
 					} catch (err) {
-						console.error(err)
+						throw err
 					}
 				}
 			},

@@ -35,7 +35,7 @@ const { data: claims, status } = useAsyncData(async () => {
     .select(getExtendedClaimQuery())
     // .or(`status.is.null,status.neq.done`)
     .order("createdAt", { ascending: false })
-    .returns<RowClaimExtended[]>();
+    .overrideTypes<RowClaimExtended[]>();
 
   // console.log(data, error);
   if (data) {

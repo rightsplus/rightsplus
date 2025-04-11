@@ -82,6 +82,10 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
         <span class="text-base font-medium text-neutral-500 truncate">{{
           [claim.client.firstName, claim.client.lastName].join(" ")
         }}</span>
+        ·
+        <span class="text-base font-medium text-neutral-500">{{
+          claim.booking.number
+        }}</span>
       </div>
 
       <hr class="my-5" />
@@ -121,9 +125,12 @@ const f = computed(() => props.claim?.booking?.flight.data || {});
           <div v-else-if="active === 1">
             <ClaimManageAirport :claim="claim" />
           </div>
-          <pre v-else-if="active === 2">{{ claim.booking.disruption }}</pre>
+          <pre
+            v-else-if="active === 2"
+          ><CellsAirlineLogo :airline="claim.booking.flight.airline"
+          /></pre>
           <pre v-else-if="active === 3">{{ claim.client }}</pre>
-          <pre v-else-if="active === 4">{{ claim.booking.flight.airline }}</pre>
+          <pre v-else-if="active === 4">{{ claim.booking.disruption }}</pre>
           <div v-else-if="active === 5">
             <FormKit
               type="textarea"

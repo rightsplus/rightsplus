@@ -154,7 +154,10 @@ const distance = computed(() =>
           </span>
         </div>
         <!-- @todo: maybe do not check for status ...-->
-        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
+        <div
+          class="flex flex-col gap-1"
+          v-if="flight?.status !== 'unknown' && arrivalTime"
+        >
           <span class="text-sm text-neutral-500">{{
             t("actualArrivalTime")
           }}</span>
@@ -211,7 +214,7 @@ const distance = computed(() =>
             >
           </span>
         </div>
-        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
+        <div class="flex flex-col gap-1" v-if="flight?.status !== 'unknown'">
           <span class="text-sm text-neutral-500">{{ t("flightStatus") }}</span>
           <span class="font-medium flex items-center text-sm gap-3"
             ><span :class="status.class">{{ status.text }}</span>

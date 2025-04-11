@@ -537,12 +537,15 @@ export const useFlights = () => {
 	}) => [departure, arrival, getISODate(date)].filter(Boolean).join('-');
 
 	const fetchFlights = async (props: {
-		date: string,
-		departure?: string,
-		arrival?: string,
-		locale?: string,
-	}, attempts = 3) => {
-		const { departure, arrival, date, locale } = props
+		date: string;
+		departure?: string;
+		arrival?: string;
+		locale?: string;
+		force?: boolean;
+	},
+		attempts = 3
+	) => {
+		const { departure, arrival, date, locale, force = false } = props;
 		// console.trace('fetch flights')
 		try {
 			if (
@@ -555,7 +558,7 @@ export const useFlights = () => {
 			}
 
 			const query = getQueryString(props)
-			if (Object.keys(flightsByQuery.value).includes(query) && flights.value.length) {
+			if (Object.keys(flightsByQuery.value).includes(query) && flights.value.length && !force) {
 				console.log(t("hasBeenQueried"))
 				return
 			}

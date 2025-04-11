@@ -15,7 +15,11 @@ type MachineState<States> = {
 export type Methods<Context, States extends string, T = Promise<void>> = {
   [state in States]: {
     label: string;
-    handler: (context: Context, attachments?: { [fileName: string]: Blob }) => T
+    handler: (props: {
+      context: Context,
+      attachments?: { [fileName: string]: Blob },
+      immediate?: boolean
+    }) => T
   }[]
 }
 

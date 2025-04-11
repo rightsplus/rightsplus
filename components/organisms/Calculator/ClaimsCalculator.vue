@@ -117,9 +117,9 @@ const submit = async () => {
     console.log("claimState", claimState);
     const submission = await prepareClaimSubmission(claimState);
     console.log("submission", submission);
-    send("next");
+    // send("next");
   } catch (error) {
-    console.error(error);
+    console.log("error");
   }
 };
 const { width } = useElementSize(form);
@@ -143,10 +143,9 @@ const handleClose = () => {
       ref="form"
     >
       <!-- {{claimState.disruption}} -->
+      <!-- || !!state.matches('success') -->
       <ButtonBack
-        :showClose="
-          !!state.matches(state.initial) || !!state.matches('success')
-        "
+        :showClose="!!state.matches(state.initial)"
         @back="invoke('back')"
         @close="handleClose"
       />
@@ -371,6 +370,14 @@ const handleClose = () => {
             :date="claimState.replacement.date"
             :number="claimState.replacement.number"
             :modelValue="claimState.replacement.flight"
+            :custom="
+              (e) => {
+                return (
+                  `${e.airline.iata}${e.flight.number}` !==
+                  claimState.flight?.flight.iata
+                );
+              }
+            "
             @select="handleSelectReplacement"
             :flight-card="{
               is: 'button',
@@ -440,7 +447,7 @@ const handleClose = () => {
           <ButtonGroup
             @primary="submit"
             :primary="{
-              label: t('Entschädigungsanspruch verbindlich abtreten'),
+              label: t('assignClaim'),
               disabled: !state.can('next'),
             }"
           />

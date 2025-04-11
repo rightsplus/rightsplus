@@ -12,17 +12,18 @@ const i18n = useI18n();
 const { generatePDF } = useCreatePdf();
 
 const { queryLocaleContent } = useI18nContent("pdf");
-const { format } = useFormatClaim()
+const { format } = useFormatClaim();
 const downloadAssignmentAgreement = async (
   claim: ClaimsForm,
   passengerIndex: number
 ) => {
+  console.log(claim, passengerIndex);
   if (!claim.flight) return;
-  const pseudoRowClaim = await format({ claim, passengerIndex })
+  const pseudoRowClaim = await format({ claim, passengerIndex });
   if (!pseudoRowClaim) {
-    throw new Error('claim could not be formatted')
+    throw new Error("claim could not be formatted");
   }
-  console.log(pseudoRowClaim.lang)
+  console.log(pseudoRowClaim.lang);
   const markdown = await queryLocaleContent(
     `/${pseudoRowClaim.lang || "de"}/assignment-agreement`
   ).first();

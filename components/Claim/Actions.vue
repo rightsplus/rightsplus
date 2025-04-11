@@ -186,9 +186,10 @@ const handleClick = async (action: string) => {
   if (!target) return;
   if (!emails[target]) return;
   emailPreview.value = await Promise.all(
-    emails[target].map((e) => e.handler(props.claim, attachments))
+    emails[target].map((e) =>
+      e.handler({ context: props.claim, attachments, immediate: false })
+    )
   );
-  console.log(emailPreview.value);
 };
 const closePreview = () => {
   invoke("back");

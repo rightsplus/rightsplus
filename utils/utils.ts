@@ -400,8 +400,8 @@ export const getCityTranslation = (airport: Airport, { locale = 'de', highlight 
 	return city
 }
 
-export const compressImage = async (file: File, options?: Compressor.Options) => {
-	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => {
+export const compressImage = async <T extends File | Blob>(file: T, options?: Compressor.Options) => {
+	return new Promise((resolve: (value: T) => void, reject: Compressor.Options['error']) => {
 		try {
 			if (!file.type.startsWith('image')) throw new Error('not an image')
 			new Compressor(file, {
@@ -746,7 +746,7 @@ export function parseAndBindMarkdown(template: string, doc: Record<string, any>)
 	const frontMatter: Record<string, string> = {};
 
 	if (innerMatch) {
-		const frontMatterLines = innerMatch.split('\\n');
+		const frontMatterLines = innerMatch.replace(fullMatch || '', '').split('\\n');
 		for (const line of frontMatterLines) {
 			const [key, ...valueParts] = line.split(':');
 			frontMatter[key.trim()] = valueParts.join(':').trim();

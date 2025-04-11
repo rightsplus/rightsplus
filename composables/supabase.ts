@@ -1,4 +1,4 @@
-import type { ClaimsForm, RowClaim, Database, Flight, RowFlight, RowBooking } from "@/types";
+import type { ClaimsForm, RowClaim, Database, Flight, RowFlight, RowBooking, RowClaimExtended } from "@/types";
 
 type BaseProps = {
 	date: string;
@@ -109,14 +109,13 @@ export const useSupabaseFunctions = () => {
 		const mappedFlights = flights?.map(e => e.data)
 		console.timeEnd('fetching supabase')
 		if (mappedFlights?.length) {
-			console.log('flights cached')
+			console.log('flights cached in supabase')
 			return mappedFlights as T
 		}
-		console.log('flights not cached')
+		console.log('flights not cached in supabase')
 
 		console.log('fetching aviation stack/edge')
 		const { data, error } = await supabase.functions.invoke("flights", { body })
-		console.error(error)
 		console.log('fetching aviation stack/edge done', data, error)
 		if (error) {
 			throw error;
@@ -176,21 +175,37 @@ export const useSupabaseFunctions = () => {
 	// 	// Handle the result (data, error) as needed
 	// 	return { data, error, index };
 	// });
-	const handleUploadSignature = async (signature: string, folder?: string) => {
-		const signatureSVG = new Blob([signature], {
-			type: "image/svg+xml",
-		});
-
-		const filePath = [folder, `signature.svg`].join("/");
-
-		const { data, error } = await supabase.storage
-			.from("client-files")
-			.upload(filePath, signatureSVG, {
-				cacheControl: "3600",
-				upsert: false,
+	const handleUploadSignature = async (signature: string, folder?: string): Promise<{ path: string, name: string, data: Blob | null }> => {
+		try {
+			const name = `signature.svg`
+			const signatureSVG = new Blob([signature], {
+				type: "image/svg+xml",
 			});
 
-		return { data, error };
+			const filePath = [folder, name].join("/");
+
+			const { data, error } = await supabase.storage
+				.from("client-files")
+				.upload(filePath, signatureSVG, {
+					cacheControl: "3600",
+					upsert: false,
+				});
+			if (error) {
+				throw error
+			}
+			return {
+				name,
+				path: data.path,
+				data: signatureSVG
+			}
+		} catch (err) {
+			console.error(err)
+			return {
+				name: '',
+				path: '',
+				data: null
+			}
+		}
 	};
 
 	const handleUploadFile = async (file: File, folder?: string) => {
@@ -220,14 +235,21 @@ export const useSupabaseFunctions = () => {
 					upsert: false,
 				});
 			if (error) {
-				console.error(error);
 				throw error;
-			} else {
-				console.log(data);
-				return data.path;
 			}
+			const blob = new Blob([resizedFile], { type: resizedFile.type });
+			return {
+				name: fileName,
+				path: data.path,
+				data: blob
+			};
 		} catch (err) {
 			console.error(err)
+			return {
+				path: '',
+				name: '',
+				data: null
+			}
 		}
 	};
 	const submitFlight = async (flight: Flight) => {
@@ -310,7 +332,7 @@ export const useSupabaseFunctions = () => {
 				.from("claim")
 				.insert([preparedClaim])
 				.select(getExtendedClaimQuery())
-				.single<RowClaim>()
+				.single<RowClaimExtended>()
 			if (error) throw error
 			return data
 		} catch (error) {
