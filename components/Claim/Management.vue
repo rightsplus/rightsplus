@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import TabMenu from "primevue/tabmenu";
-import "primevue/resources/themes/lara-light-green/theme.css";
+// import "primevue/resources/themes/lara-light-green/theme.css";
 import FlightCard from "@/components/cells/FlightCard.vue";
 
 import type { CaseStatus, RowClaimExtended, RowFlight } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
-import { date } from "@formkit/i18n";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import FlightCardExtended from "../cells/FlightCardExtended.vue";
 import DisruptionCard from "../cells/DisruptionCard.vue";

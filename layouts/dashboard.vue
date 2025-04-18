@@ -1,5 +1,8 @@
 <template>
-  <div class="fixed inset-0 flex overflow-hidden bg-white">
+  <div>
+    <slot />
+  </div>
+  <!-- <div class="fixed inset-0 flex overflow-hidden bg-white">
     <div
       data-n-ids='{"dashboard:panel:0":"dashboard:panel:0"}'
       class="flex-col items-stretch relative w-full border-b md:border-b-0 border-gray-100 dark:border-gray-800 md:w-[--width] flex-shrink-0 hidden md:flex"
@@ -127,7 +130,7 @@
     <div class="flex flex-1 w-full min-w-0">
       <slot />
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts" setup>
