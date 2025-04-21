@@ -27,6 +27,7 @@ const options = {
 	langDir: 'locales',
 	defaultLocale: 'de',
 	strategy: "prefix_and_default" as Strategies,
+	// strategy: "prefix_and_default" as Strategies,
 	// strategy: "prefix_except_default" as Strategies,
 	customRoutes: 'config',
 	bundle: {
@@ -81,9 +82,9 @@ const options = {
 			"en": "/claim/[id]",
 			"de": "/claim/[id]",
 		},
-		"admin-claims": {
-			"en": "/admin/claims",
-			"de": "/admin/ansprueche",
+		"admin-claim": {
+			"en": "/admin/claim",
+			"de": "/admin/claim",
 		},
 		"admin-bookings": {
 			"en": "/admin/bookings",

@@ -11,6 +11,6 @@
 definePageMeta({
   middleware: ["auth"],
   layout: "dashboard",
-  redirect: "/de/admin/ansprueche",
+  redirect: "/de/admin/claim",
 });
 </script>

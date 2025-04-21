@@ -1,3 +1,29 @@
+<script setup lang="ts">
+const { locale } = useI18n();
+defineProps<{
+  title: string;
+  active: boolean;
+  content?: string;
+  date?: string | Date;
+  unread?: boolean | null;
+  badge?: string;
+  id?: number;
+}>();
+</script>
+
+<style lang="scss">
+.group {
+  &:first-child,
+  &.active,
+  &.active + *,
+  &:hover,
+  &:hover + * {
+    hr {
+      opacity: 0;
+    }
+  }
+}
+</style>
 <template>
   <div
     class="text-sm cursor-pointer text-gray-900 group"
@@ -15,7 +41,10 @@
         '!bg-primary-100': active,
       }"
     >
-      <div class="w-5 flex items-center aspect-square self-start" v-if="unread !== null">
+      <div
+        class="w-5 flex items-center aspect-square self-start"
+        v-if="unread !== null"
+      >
         <Transition name="scale">
           <Badge primary v-if="unread" />
         </Transition>
@@ -44,28 +73,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-  title: string;
-  active: boolean;
-  content?: string;
-  date?: string | Date;
-  unread?: boolean | null;
-  badge?: string;
-}>();
-</script>
-
-<style lang="scss">
-.group {
-  &:first-child,
-  &.active,
-  &.active + *,
-  &:hover,
-  &:hover + * {
-    hr {
-      opacity: 0;
-    }
-  }
-}
-</style>

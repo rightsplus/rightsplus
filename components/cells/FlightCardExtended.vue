@@ -72,7 +72,7 @@ const distance = computed(() =>
 </script>
 <template>
   <div
-    class="rounded-lg py-3 px-5 @container border border-transparent bg-neutral-100 text-gray-800 grid gap-3"
+    class="rounded-lg py-3 px-5 @container border border-transparent bg-white text-gray-800 grid gap-3"
   >
     <!-- <pre>{{ new Date(flight.departure.scheduledTime) }}</pre>
     <pre>{{ new Date(flight.departure.actualTime) }}</pre>
