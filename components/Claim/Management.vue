@@ -192,7 +192,7 @@ const assignWidth = (event?: number) => {
             class="text-sm h-9"
             v-for="item in emails[claim.status]"
             :key="item.label"
-            @click="item.handler(claim)"
+            @click="item.handler({ context: claim })"
             >{{ item.label }}</Button
           >
         </div>
