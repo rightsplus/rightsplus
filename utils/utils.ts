@@ -1,6 +1,5 @@
 import type { Airline, Airport, ClaimsForm, FlightStatus, Flight, Leg, RowAirline, FlightPhase } from "@/types";
 
-import { UseSearchReturnType } from "@nuxtjs/algolia/dist/runtime/composables/useAlgoliaSearch";
 import { airlines, airports, claim } from "~~/store";
 import type { State } from "~~/store";
 import Compressor from "compressorjs";
@@ -19,8 +18,64 @@ export const getAirlineLogo = (iata?: string, size = 100) => {
 	return `https://content.r9cdn.net/rimg/provider-logos/airlines/v/${code}.png?crop=false&width=${size}&height=${size}`;
 	// return `https://serkowebtest.blob.core.windows.net/airline-logos/${code}_1x.png`
 }
+export const getAirportDistanceVincenty = (
+	departureAirport?: Airport,
+	arrivalAirport?: Airport
+): number => {
+	if (!departureAirport || !arrivalAirport) return 0;
+
+	const { latitude: lat1, longitude: lon1 } = departureAirport;
+	const { latitude: lat2, longitude: lon2 } = arrivalAirport;
+
+	const toRad = (deg: number) => (deg * Math.PI) / 180;
+
+	const a = 6378137; // Semi-major axis of Earth (meters)
+	const f = 1 / 298.257223563; // Flattening (WGS-84)
+	const b = (1 - f) * a; // Semi-minor axis
+
+	const φ1 = toRad(lat1);
+	const φ2 = toRad(lat2);
+	const L = toRad(lon2 - lon1);
+
+	let λ = L;
+	let sinλ, cosλ, sinσ, cosσ, σ, sinα, cos2α, C;
+	let λPrev;
+	let iterLimit = 100;
+
+	do {
+		sinλ = Math.sin(λ);
+		cosλ = Math.cos(λ);
+		sinσ = Math.sqrt(
+			(Math.cos(φ2) * sinλ) ** 2 +
+			(Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * cosλ) ** 2
+		);
+		cosσ = Math.sin(φ1) * Math.sin(φ2) + Math.cos(φ1) * Math.cos(φ2) * cosλ;
+		σ = Math.atan2(sinσ, cosσ);
+		sinα = (Math.cos(φ1) * Math.cos(φ2) * sinλ) / sinσ;
+		cos2α = 1 - sinα ** 2;
+		C = (f / 16) * cos2α * (4 + f * (4 - 3 * cos2α));
+		λPrev = λ;
+		λ = L + (1 - C) * f * sinα *
+			(σ + C * sinσ * (cosσ + C * cosσ * (-1 + 2 * cosσ ** 2)));
+	} while (Math.abs(λ - λPrev) > 1e-12 && --iterLimit > 0);
+
+	if (iterLimit === 0) return NaN; // Fail if no convergence
+
+	const u2 = (cos2α * (a ** 2 - b ** 2)) / (b ** 2);
+	const A = 1 + (u2 / 16384) * (4096 + u2 * (-768 + u2 * (320 - 175 * u2)));
+	const B = (u2 / 1024) * (256 + u2 * (-128 + u2 * (74 - 47 * u2)));
+	const Δσ = B * sinσ * (cosσ + (B / 4) *
+		(cosσ * (-1 + 2 * cosσ ** 2) -
+			(B / 6) * cosσ * (-3 + 4 * sinσ ** 2) * (-3 + 4 * cosσ ** 2)));
+
+	const s = b * A * (σ - Δσ); // Distance in meters
+	return Math.round(s / 1000); // Convert to km and round
+};
+
+
 export const getAirportDistance = (departureAirport?: Airport, arrivalAirport?: Airport) => {
 	if (!departureAirport || !arrivalAirport) return 0;
+	return getAirportDistanceVincenty(departureAirport, arrivalAirport)
 	const { latitude: lat1, longitude: lon1 } = departureAirport;
 	const { latitude: lat2, longitude: lon2 } = arrivalAirport;
 	const R = 6371; // radius of the earth in km
@@ -302,7 +357,7 @@ export const getDuration = (totalMinutes: number) => {
 	return [h, m].filter(Boolean).join(' ')
 }
 
-export const queryAirports = async (algolia: UseSearchReturnType<Airport>, query?: string) => {
+export const queryAirports = async (algolia: any, query?: string) => {
 	const { hits } = await algolia.search({ query })
 	hits.forEach((hit: Airport) => {
 		const a = { ...hit };
@@ -345,8 +400,8 @@ export const getCityTranslation = (airport: Airport, { locale = 'de', highlight 
 	return city
 }
 
-export const compressImage = async (file: File, options?: Compressor.Options) => {
-	return new Promise((resolve: Compressor.Options['success'], reject: Compressor.Options['error']) => {
+export const compressImage = async <T extends File | Blob>(file: T, options?: Compressor.Options) => {
+	return new Promise((resolve: (value: T) => void, reject: Compressor.Options['error']) => {
 		try {
 			if (!file.type.startsWith('image')) throw new Error('not an image')
 			new Compressor(file, {
@@ -691,7 +746,7 @@ export function parseAndBindMarkdown(template: string, doc: Record<string, any>)
 	const frontMatter: Record<string, string> = {};
 
 	if (innerMatch) {
-		const frontMatterLines = innerMatch.split('\\n');
+		const frontMatterLines = innerMatch.replace(fullMatch || '', '').split('\\n');
 		for (const line of frontMatterLines) {
 			const [key, ...valueParts] = line.split(':');
 			frontMatter[key.trim()] = valueParts.join(':').trim();

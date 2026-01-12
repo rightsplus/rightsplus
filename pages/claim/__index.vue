@@ -1,19 +1,19 @@
 <template>
-    <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0">
-      <div class="flex flex-col space-y-12 w-full">
-        <div class="flex flex-col">
-          <h2 class="font-semibold text-xl">Aktuelle Forderungen</h2>
-          <OrganismsCalculatorClaimsList :claims="claims" />
-        </div>
+  <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0">
+    <div class="flex flex-col space-y-12 w-full">
+      <div class="flex flex-col">
+        <h2 class="font-semibold text-xl">Aktuelle Forderungen</h2>
+        <OrganismsCalculatorClaimsList :claims="claims" />
       </div>
-    </section>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
 import type { ClaimsForm } from "@/types";
 const user = useSupabaseUser();
 const client = useSupabaseClient();
-const router = useRouter()
+const router = useRouter();
 definePageMeta({
   title: "Deine Forderungen",
   description: "",
@@ -22,7 +22,7 @@ definePageMeta({
 });
 
 watch(user, (val) => {
-  if (!val) router.push("/login");
+  // if (!val) router.push("/login");
 });
 const claims = ref(
   null as
@@ -36,7 +36,7 @@ const { query: queryAirports } = useAirports();
 
 useAsyncData("claims", async () => {
   if (!user.value?.email) return;
-  console.log(client)
+  console.log(client);
   const { data, error } = await client
     .from("claims")
     .select(
@@ -49,13 +49,15 @@ useAsyncData("claims", async () => {
     .eq("email", user.value.email);
   if (error) throw error;
   return data;
-}).then(({ data }) => {
-  console.log(data)
-  if (!data.value) return;
-  claims.value = data.value;
-  data.value?.forEach(({ flights }) => {
-    if (flights.data)
-    queryAirports([flights.data.departure?.iata, flights.arrival?.iata]);
-  });
-}).catch(console.log)
+})
+  .then(({ data }) => {
+    console.log(data);
+    if (!data.value) return;
+    claims.value = data.value;
+    data.value?.forEach(({ flights }) => {
+      if (flights.data)
+        queryAirports([flights.data.departure?.iata, flights.arrival?.iata]);
+    });
+  })
+  .catch(console.log);
 </script>

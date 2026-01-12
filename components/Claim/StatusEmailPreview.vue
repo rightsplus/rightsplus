@@ -1,13 +1,13 @@
-<!-- components/Claim/StatusEmailPreview.vue -->
 <script setup lang="ts">
-import { FormKit } from "@formkit/vue"; // Ensure FormKit is installed and imported
-
-import Button, { type ButtonProps } from "@/components/core/Button.vue";
+import { FormKit } from "@formkit/vue";
+import Button from "@/components/core/Button.vue";
 
 const { sendStatusEmail } = useStatusEmail();
 const props = defineProps<{
   title: string;
   emailData: Awaited<ReturnType<typeof sendStatusEmail>>;
+  index: number;
+  total: number;
 }>();
 
 const emailContent = ref(
@@ -32,55 +32,92 @@ const removeAttachment = (name: string) => {
 };
 
 const sendEmail = () => {
-  props.emailData.sendMail?.({
-    content: emailContent.value.replaceAll("\n", "<br />"),
-    attachments: attachments.value,
-  });
+  props.emailData
+    .sendMail?.({
+      content: emailContent.value.replaceAll("\n", "<br />"),
+      attachments: attachments.value,
+    })
+    .then(() => {
+      success.value = true;
+    })
+    .catch(() => {
+      success.value = false;
+    });
   // Logic to send the email using props.emailData and emailContent.value
   console.log("Sending email with content:", emailContent.value);
   console.log("Attachments:", attachments.value);
 };
 
-const cancel = () => {
-  // Logic to handle cancellation
-  console.log("Email sending canceled");
-};
+const emit = defineEmits<{
+  (e: "success"): void;
+  (e: "error"): void;
+}>();
+
+onMounted(() => {
+  emit(
+    "success",
+    new Promise((resolve, reject) => {
+      props.emailData
+        .sendMail?.({
+          content: emailContent.value.replaceAll("\n", "<br />"),
+          attachments: attachments.value,
+        })
+        .then(() => {
+          resolve(true);
+        })
+        .catch(() => {
+          reject(false);
+        });
+    })
+  );
+});
 </script>
 
 <template>
-  <div class="flex gap-5">
-    <div class="flex flex-col">
-      <h2 class="text-lg font-bold mb-4">An {{ emailData.recipientEmail }}</h2>
-      <FormKit
-        type="email"
-        v-model="emailContent"
-        label="Email"
-        class="w-full mb-4"
-      />
-      <FormKit
-        type="textarea"
-        v-model="emailContent"
-        label="Nachricht"
-        placeholder="Write your email here..."
-        class="w-full mb-4 min-h-96"
-      />
-    </div>
-    <div class="mb-4">
-      <div
-        v-for="[key, attachment] in Object.entries(attachments)"
-        :key="key"
-        class="attachment-preview flex items-center justify-between mb-2"
-      >
-        <span class="text-gray-700">{{ key }}</span>
-        <Button
-          @click="removeAttachment(key)"
-          class="text-red-500 hover:underline"
-        >
-          Remove
-        </Button>
+  <div
+    class="grid grid-rows-[auto_auto] gap-5"
+    :class="{ 'opacity-50 pointer-events-none cursor-not-allowed': success }"
+  >
+    <div class="grid grid-cols-[1fr_auto] gap-5">
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col">
+          <span class="text-sm text-neutral-500">
+            Email {{ index + 1 }} von {{ total }}
+          </span>
+          <h2 class="text-lg font-bold">An {{ emailData.recipientEmail }}</h2>
+        </div>
+        <FormKit
+          type="email"
+          v-model="recipientEmail"
+          label="Email"
+          class="w-full"
+        />
+        <FormKit
+          type="textarea"
+          v-model="emailContent"
+          label="Nachricht"
+          placeholder="Write your email here..."
+          class="w-full max-h-[200px] grow"
+        />
       </div>
-      <input type="file" @change="addAttachment" class="border rounded p-2" />
-      <Button @click="sendEmail" primary size="small"> Send </Button>
+      <div class="mb-4">
+        <h3 class="text-lg font-bold">Anhänge</h3>
+        <div
+          v-for="[key, attachment] in Object.entries(attachments)"
+          :key="key"
+          class="attachment-preview flex items-center justify-between mb-2"
+        >
+          <span class="text-gray-700">{{ key }}</span>
+          <Button
+            @click="removeAttachment(key)"
+            class="text-red-500 hover:underline"
+          >
+            Remove
+          </Button>
+        </div>
+        <input type="file" @change="addAttachment" class="border rounded p-2" />
+      </div>
     </div>
+    <Button @click="sendEmail" primary> Send </Button>
   </div>
 </template>

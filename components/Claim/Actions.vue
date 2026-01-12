@@ -6,7 +6,6 @@ import type {
   RowClaimExtended,
 } from "~/types";
 import claimProcessing from "~/machines/claimProcessing";
-import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   claim: RowClaimExtended;
@@ -187,9 +186,10 @@ const handleClick = async (action: string) => {
   if (!target) return;
   if (!emails[target]) return;
   emailPreview.value = await Promise.all(
-    emails[target].map((e) => e.handler(props.claim, attachments))
+    emails[target].map((e) =>
+      e.handler({ context: props.claim, attachments, immediate: false })
+    )
   );
-  console.log(emailPreview.value);
 };
 const closePreview = () => {
   invoke("back");
@@ -197,7 +197,7 @@ const closePreview = () => {
 };
 </script>
 <template>
-  <div class="grid gap-2 w-full">
+  <div class="grid gap-2 w-full" v-if="actions.length">
     <Button
       v-for="action in actions"
       :key="action"
@@ -215,15 +215,17 @@ const closePreview = () => {
     :open="!!emailPreview.length"
     @closeOutside="closePreview"
     @close="closePreview"
-    class="p-5 sm:p-8 @container w-[1200px]"
+    class="p-5 sm:p-8 @container !w-[960px] flex flex-col gap-10"
     :title="t('Emails überprüfen')"
-    titleClass="!text-xl"
   >
     <StatusEmailPreview
-      v-for="email in emailPreview"
+      v-if="!!emailPreview.length"
+      v-for="(email, index) in emailPreview"
       :key="email.id"
       :title="email.status"
       :emailData="email"
+      :index="index"
+      :total="emailPreview.length"
     />
   </Popup>
 </template>

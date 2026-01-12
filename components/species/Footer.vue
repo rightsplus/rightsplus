@@ -1,7 +1,7 @@
 <template>
   <footer
     class="text-neutral-300 bg-gray-800 z-10 w-full p-5 sm:p-12 lg:p-24 @container"
-    :class="$route.meta.classes?.footer"
+    :class="route.meta.classes?.footer"
   >
     <nav
       class="grid @2xl:grid-cols-12 gap-5 gap-y-12 md:gap-12 max-w-5xl mx-auto w-full"
@@ -66,6 +66,7 @@ import LanguageSwitcher from "@/components/molecules/LanguageSwitcher.vue";
 const { t } = useI18n();
 import { type RouteName } from "~/composables/useLocaleContent";
 const { localePath } = useLocaleContent();
+const route = useRoute();
 
 const routes = computed(
   () =>
@@ -92,7 +93,7 @@ const routes = computed(
         ],
       },
       {
-        title: t("about").trim(),
+        title: t("about", { name: "" }).trim(),
         links: [
           // {
           //   path: "blog",

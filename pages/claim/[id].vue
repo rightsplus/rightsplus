@@ -1,6 +1,63 @@
+<script lang="ts" setup>
+import { watchDebounced } from "@vueuse/core";
+import type { CaseStatus, Database, RowClaimExtended } from "@/types";
+
+const user = useSupabaseUser();
+const client = useSupabaseClient();
+const route = useRoute();
+const claim = ref();
+
+const claimId = parseInt(route.params.id as string, 10);
+definePageMeta({
+  title: "Anspruch",
+  description: "",
+});
+
+const bookingNumber = ref(route.query.b as string);
+const fetchClaim = async (claimId: number, bookingNumber: string) => {
+  const { data, error } = await client
+    .from("booking")
+    .select("*")
+    .eq("number", bookingNumber)
+    .single();
+  // .eq("number", bookingNumber)
+  // .single();
+  // bookingId.then(async (e) => console.log(await e.text()));
+  console.log("bookingId", data, error);
+  if (!data) {
+    throw new Error("Booking not found");
+  }
+  return client
+    .from("claim")
+    .select(
+      `
+        *,
+        booking ( *, flight!booking_flightId_fkey ( * ) )
+      `
+    )
+    .eq("id", claimId)
+    .eq("bookingId", data.id)
+    .single();
+};
+watchDebounced(
+  bookingNumber,
+  (value) => {
+    if (value) {
+      // navigateTo(`/claim/${formatClaimId(claimId, false)}?b=${value}`);
+      fetchClaim(claimId, value).then((e) => {
+        claim.value = e.data;
+        console.log("claim", claim.value);
+      });
+    }
+  },
+  { immediate: true, debounce: 500 }
+);
+</script>
 <template>
-  <div class="pt-24">{{  $route.name }}</div>
-  <section class="flex flex-col flex-grow w-full first:mt-0 last:mb-0" v-if="claim">
+  <section
+    class="flex flex-col flex-grow w-full first:mt-0 last:mb-0"
+    v-if="claim"
+  >
     <div class="flex flex-col space-y-12 w-full" v-if="claimId">
       <!-- <FormKit
         v-model="bookingNumber"
@@ -28,8 +85,8 @@
           }}</span>
         </h2>
         <div class="flex flex-col items-end">
-          <span class="text-gray-500">Status</span
-          ><span class="font-semibold text-sm bg-green-200 rounded text-green-700 px-2 py-1">in Bearbeitung</span>
+          <span class="text-gray-500">Status</span>
+          <ClaimStatus :status="claim.status" class="-mx-0.5" />
         </div>
       </div>
       <hr />
@@ -40,9 +97,9 @@
           <div class="flex flex-col text-base">
             <div class="text-gray-500 leading-tight">{{ $t("Flug") }}</div>
             <div class="flex gap-[1ch]">
-              <div>{{ claim.flights.data.departure.iata }}</div>
+              <div>{{ claim.booking.flight.data.departure.iata }}</div>
               nach
-              <div>{{ claim.flights.data.arrival.iata }}</div>
+              <div>{{ claim.booking.flight.data.arrival.iata }}</div>
             </div>
           </div>
 
@@ -50,9 +107,7 @@
             <div class="text-gray-500 leading-tight">
               {{ $t("Passagier") }}
             </div>
-            <div v-for="passenger in claim.client.passengers">
-              {{ [passenger.firstName, passenger.lastName].join(" ") }}
-            </div>
+            {{ [claim.client.firstName, claim.client.lastName].join(" ") }}
           </div>
 
           <div class="flex flex-col text-base">
@@ -60,7 +115,7 @@
               {{ $t("bookingNumber") }}
             </div>
             <div>
-              {{ claim.booking_number }}
+              {{ claim.booking.number }}
             </div>
           </div>
         </div>
@@ -71,7 +126,7 @@
               {{ $t("Art der Störung") }}
             </div>
             <div>
-              {{ $t(claim.disruption.type) }}
+              {{ $t(claim.booking.disruption.type) }}
             </div>
           </div>
 
@@ -80,7 +135,7 @@
               {{ $t("Details") }}
             </div>
             <div>
-              {{ $t(claim.disruption.details) }}
+              {{ $t(claim.booking.disruption.details) }}
             </div>
           </div>
 
@@ -89,7 +144,7 @@
               {{ $t("Grund der Störung") }}
             </div>
             <div>
-              {{ $t(claim.disruption.reason) }}
+              {{ $t(`reasons.${claim.booking.disruption.reason}.label`) }}
             </div>
           </div>
         </div>
@@ -103,7 +158,7 @@
               {{ $t("email") }}
             </div>
             <div>
-              {{ claim.client.passengers[0].email }}
+              {{ claim.client.email }}
             </div>
           </div>
           <div class="flex flex-col text-base">
@@ -111,11 +166,11 @@
               {{ $t("iban") }}
             </div>
             <div class="flex gap-1 mt-1">
-              <div class="bg-neutral-600 w-10 h-3.5 rounded-sm" />
-              <div class="bg-neutral-600 w-10 h-3.5 rounded-sm" />
-              <div class="bg-neutral-600 w-10 h-3.5 rounded-sm" />
-              <div class="bg-neutral-600 w-10 h-3.5 rounded-sm" />
-              <div class="bg-neutral-600 w-5 h-3.5 rounded-sm" />
+              <div class="bg-neutral-300 w-10 h-3.5 rounded-sm" />
+              <div class="bg-neutral-300 w-10 h-3.5 rounded-sm" />
+              <div class="bg-neutral-300 w-10 h-3.5 rounded-sm" />
+              <div class="bg-neutral-300 w-10 h-3.5 rounded-sm" />
+              <div class="bg-neutral-300 w-5 h-3.5 rounded-sm" />
             </div>
           </div>
           <div class="flex flex-col text-base">
@@ -123,10 +178,10 @@
               {{ $t("address") }}
             </div>
             <div class="flex flex-col">
-              <span>{{ claim.client.passengers[0].address.street }}</span>
+              <span>{{ claim.client.address.street }}</span>
               <span
-                >{{ claim.client.passengers[0].address.postalCode }}
-                {{ claim.client.passengers[0].address.city }}</span
+                >{{ claim.client.address.postalCode }}
+                {{ claim.client.address.city }}</span
               >
             </div>
           </div>
@@ -136,43 +191,3 @@
     <!-- <pre>{{ claim }}</pre> -->
   </section>
 </template>
-<script lang="ts" setup>
-import { watchDebounced } from "@vueuse/core";
-
-const user = useSupabaseUser();
-const client = useSupabaseClient();
-const route = useRoute();
-const claim = ref();
-
-const claimId = parseInt(route.params.id as string, 10);
-definePageMeta({
-  title: "Anspruch",
-  description: "",
-  layout: "claims",
-});
-const bookingNumber = ref(route.query.b as string);
-const fetchClaim = (claimId: number, bookingNumber: string) => {
-  return client
-    .from("claims")
-    .select(
-      `
-        *,
-        users ( * ),
-        flights ( * )
-      `
-    )
-    .eq("id", claimId)
-    .eq("booking_number", bookingNumber)
-    .single();
-};
-watchDebounced(
-  bookingNumber,
-  (value) => {
-    if (value) {
-      navigateTo(`/claim/${formatClaimId(claimId, false)}?b=${value}`);
-      fetchClaim(claimId, value).then((e) => (claim.value = e.data));
-    }
-  },
-  { immediate: true, debounce: 500 }
-);
-</script>

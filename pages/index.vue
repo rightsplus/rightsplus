@@ -2,12 +2,12 @@
   <div>
     <NuxtLayout>
       <div class="overflow-x-hidden">
-        <NuxtImg
-          src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
-          quality="70"
+        <!-- quality="70"
           width="1920"
           height="1080"
-          format="webp"
+          format="webp" -->
+        <NuxtImg
+          src="/images/jessica-newendyke-eEYAbuxP1gA-unsplash.jpg"
           alt="Airport"
           preload
           class="absolute inset-0 h-[115%] w-full object-cover z-1"

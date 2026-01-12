@@ -11,5 +11,5 @@
 <script lang="ts" setup>
 import Header from "@/components/species/Header.vue";
 import Footer from "@/components/species/Footer.vue";
-const { meta } = useRoute()
+const { meta } = useRoute();
 </script>

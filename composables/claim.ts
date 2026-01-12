@@ -15,6 +15,22 @@ type RowClaimProps = {
 type ReturnFormattedRowClaim = {
 	format: (props: ClaimProps | RowClaimProps) => Promise<FormattedRowClaim | undefined>
 }
+
+
+const assignName = (acc: Record<string, Blob>, curr: { path: string, name: string, data: Blob | null }) => {
+	if (curr?.path && curr.data) {
+		const [ext, ...names] = curr.name.split(".").reverse()
+		const name = names.join(".")
+
+		if (acc[name]) {
+			acc[`${name}-${uuid()}.${ext}`] = curr.data
+		} else {
+			acc[`${name}.${ext}`] = curr.data
+		}
+	}
+	return acc
+}
+
 export function useFormatClaim(): ReturnFormattedRowClaim {
 	const { getCities } = useGetCities()
 	const { locale } = useI18n()
@@ -72,6 +88,7 @@ export const usePrepareClaimSubmission = () => {
 	const claim = useClaim()
 	const { emails } = useStatusEmail()
 	const processClaimPerPassenger = async (passenger: ClaimsForm['client']['passengers'][number], passengerIndex: number, booking: RowBooking) => {
+
 		try {
 			if (!passenger.signature) {
 				throw Error('No Signature')
@@ -88,7 +105,7 @@ export const usePrepareClaimSubmission = () => {
 			const storageFolderClaim = [formatClaimId(claimResponse.id, false), passenger.lastName].join("/");
 
 			// console.log(passenger.signature.svg, passenger.boardingPass)
-			await Promise.all([
+			const attachments = (await Promise.all([
 				// Signature
 				handleUploadSignature(
 					passenger.signature.svg,
@@ -100,33 +117,19 @@ export const usePrepareClaimSubmission = () => {
 					base64ToFile(file, name),
 					[storageFolderClaim, "boarding-pass"].join("/")
 				)) : [])
-			])
+			].filter(Boolean))).filter(e => e.data !== null)
 
-			// const fileName = `${uuid.v4()}.svg`;
-			emails.dataReceived?.forEach(e => e.handler(claimResponse));
-			// send({
-			// 	to: passenger.email,
-			// 	subject: "Deine Anfrage wurde erfolgreich eingereicht",
-			// 	template: "Status.vue",
-			// 	// pdf: {
-			// 	// 	template: "assignment-letter",
-			// 	// 	fileName: [
-			// 	// 		t("assignmentLetter"),
-			// 	// 		claim.client.passengers[0].lastName,
-			// 	// 	].join("-"),
-			// 	// },
-			// 	data: {
-			// 		name: [passenger?.firstName, passenger?.lastName].join(" "),
-			// 		firstName: passenger?.firstName,
-			// 		claimId: formatClaimId(claimResponse.id),
-			// 		bookingNumber: booking.number,
-			// 		status: "dataReceived",
-			// 		...emails.dataReceived(claimResponse),
-			// 	},
-			// });
+
+			console.log('ready to send emails', emails.dataReceived, claimResponse)
+			return await Promise.all((emails.dataReceived || [])?.map(e => {
+				return e.handler({
+					context: claimResponse
+				})
+			}));
+
 		} catch (error) {
 			console.log(error);
-			return;
+			throw error
 		}
 
 	}
@@ -134,9 +137,6 @@ export const usePrepareClaimSubmission = () => {
 	const prepareClaimSubmission = async (claim: ClaimsForm) => {
 		try {
 			if (!claim.flight) return;
-			console.log('fetch flight for id ...',)
-			console.log({ iata: claim.flight.flight.iata, dateDeparture: claim.flight.departure.scheduledTime.split('T')[0] })
-
 			const { data: existingFlight, error: errExisting } = await supabase
 				.from("flight")
 				.select('*')
@@ -154,10 +154,10 @@ export const usePrepareClaimSubmission = () => {
 			console.log('submitting booking...')
 			const booking = await submitBooking(claim, flightId);
 			console.log('process claims...')
-			claim.client.passengers.forEach((passenger, index) => processClaimPerPassenger(passenger, index, booking))
+			return await Promise.all(claim.client.passengers.map((passenger, index) => processClaimPerPassenger(passenger, index, booking)))
 
 		} catch (error) {
-			console.log(error);
+			throw error
 		}
 	};
 	return { prepareClaimSubmission }

@@ -113,7 +113,7 @@ const processEligibility = (claim: ClaimsForm, airlines: Record<string, RowAirli
 	// If the client was denied boarding by no fault of their owninflicted
 	// we believe the client
 	if (disruption.type === 'noBoarding' && !disruption.selfInflicted) {
-		console.log("C")
+		// console.log("C")
 		return {
 			ineligible: false,
 			message: ''

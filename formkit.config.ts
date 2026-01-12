@@ -1,4 +1,4 @@
-import { de } from '@formkit/i18n'
+import { de, en } from '@formkit/i18n'
 import type { DefaultConfigOptions } from '@formkit/vue'
 import { generateClasses } from '@formkit/themes'
 // import { createAutoAnimatePlugin } from '@formkit/addons'
@@ -19,7 +19,7 @@ Object.entries(library.definitions)
   })
 
 const config: DefaultConfigOptions = {
-  locales: { de },
+  locales: { de, en },
   locale: 'de',
   plugins: [
     // createAutoAnimatePlugin({

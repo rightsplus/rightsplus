@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import type { Flight, ClaimsForm } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faPlaneSlash,
-  faClock,
-  faExclamationTriangle,
-  faExchangeAlt,
-  faPlaneDeparture,
-  faPlaneArrival,
-} from "@fortawesome/free-solid-svg-icons";
-import { useI18n } from "vue-i18n";
 
 export type DisruptionCardProps = {
   disruption: ClaimsForm["disruption"];
@@ -51,7 +42,7 @@ const reason = computed(() => {
 <template>
   <div
     v-if="props.disruption"
-    class="rounded-lg py-3 px-3 @container border border-transparent flex flex-col gap-3 bg-neutral-100 text-gray-800"
+    class="rounded-lg py-3 px-3 @container border border-transparent flex flex-col gap-3 bg-white text-gray-800"
   >
     <div v-if="disruption.details" class="flex gap-2">
       <FontAwesomeIcon

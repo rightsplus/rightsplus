@@ -104,31 +104,4 @@ onMounted(() => {
       });
   }
 });
-
-const handleUploadFile = async (file: File) => {
-  if (!file) {
-    return "";
-  }
-  const options = {
-    convertSize: 0.5,
-    quality: 0.8,
-    maxWidth: 1080,
-    maxHeight: 1080,
-  };
-  const resizedFile = await compressImage(file, options);
-  const fileExt = resizedFile.name.split(".").pop();
-  const fileName = `${uuid.v4()}.${fileExt}`;
-  const filePath = `${user.value?.id}/${fileName}`;
-  const { data, error } = await client.storage
-    .from("client-files")
-    .upload(filePath, resizedFile, {
-      cacheControl: "3600",
-      upsert: false,
-    });
-  if (error) {
-    throw error;
-  } else {
-    return data.path;
-  }
-};
 </script>

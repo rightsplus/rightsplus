@@ -12,14 +12,12 @@ export type SendPDFMailProps = Data & {
 	subject: string;
 	text?: string;
 	template?: string;
-	// attachments?: { filename: string; content: Blob }[]
 	attachments?: Record<string, Blob>
 }
 
 export type SendMailProps = Omit<SendPDFMailProps, 'attachments'> & {
 	html?: string;
 	attachments?: Record<string, Blob>
-	// attachmentArray?: Attachment[];
 }
 
 declare module 'nodemailer' {

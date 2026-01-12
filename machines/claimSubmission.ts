@@ -95,7 +95,10 @@ export default {
       return delay > 0 && delay < 180 && departure
     },
     tooLittleDelay: ({ context }) => {
-      const delay = context.disruption.type === 'delayed' && context.disruption.details === '<3' ? 60 : context.flight?.arrival.delay || 0
+      let delay = context.flight?.arrival.delay || 0
+      if (context.disruption.type === 'delayed' && context.disruption.details === '<3') delay = 60
+      if (context.flight?.status === 'unknown' && context.disruption.details === '3-4') delay = 180
+      if (context.flight?.status === 'unknown' && context.disruption.details === '>4') delay = 240
 
       return delay < 180
     },

@@ -1,0 +1,273 @@
+@layer reset, base, overrides;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Inter";
+    src: local("Inter"),
+      url("../fonts/InterVariable.woff2") format("woff2-variations");
+    /* url("../fonts/Inter-VariableFont_slnt,wght.woff2") format("woff2-variations"); */
+    font-weight: 400 700;
+    font-style: normal;
+    font-feature-settings: "liga" 1, "calt" 1;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-1 ring-primary-500 ring-offset-2;
+}
+
+* {
+  min-width: 0;
+}
+
+body {
+  min-width: var(--min-w-80);
+}
+
+a {
+  cursor: pointer;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-weight: var(--font-bold);
+  line-height: 1.2;
+  margin-block: 1em;
+}
+
+.markdown h1 a:hover,
+.markdown h2 a:hover,
+.markdown h3 a:hover,
+.markdown h4 a:hover {
+  text-decoration: none;
+}
+
+.markdown h1 a:hover::before,
+.markdown h2 a:hover::before,
+.markdown h3 a:hover::before,
+.markdown h4 a:hover::before {
+  content: "#";
+  position: absolute;
+  transform: translateX(-100%);
+  padding: 0 0.5ex;
+  @apply text-neutral-300;
+}
+
+.markdown h1 {
+  font-size: var(--text-4xl);
+}
+
+.markdown h2 {
+  font-size: var(--text-3xl);
+}
+
+.markdown h3 {
+  font-size: var(--text-2xl);
+}
+
+.markdown h4 {
+  font-size: var(--text-xl);
+}
+
+.markdown a {
+  color: var(--color-gold-500);
+}
+
+.markdown a:hover {
+  text-decoration: underline;
+}
+
+.markdown hr {
+  border: 1px solid var(--color-gray-200);
+  margin-block: var(--h-12);
+}
+
+.markdown :is(p, ul, ol)+ :is(p, ul, ol) {
+  margin-top: var(--m-3);
+}
+
+.markdown ul {
+  list-style: disc;
+  padding-left: var(--p-5);
+}
+
+.markdown ol {
+  list-style: decimal;
+  padding-left: var(--p-5);
+}
+
+@media (max-width: 767px) {
+  .markdown h1 {
+    font-size: var(--text-3xl);
+  }
+
+  .markdown h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .markdown h3 {
+    font-size: var(--text-1xl);
+  }
+
+  .markdown h4 {
+    font-size: var(--text-lg);
+  }
+}
+
+.markdown table {
+  @apply w-full table-fixed my-5;
+}
+
+.markdown table td,
+.markdown table th {
+  @apply px-3 py-2 align-top hyphens-auto leading-tight;
+}
+
+.markdown table thead th,
+.markdown table tr:nth-child(even) td {
+  @apply first:rounded-l-lg last:rounded-r-lg bg-neutral-100;
+}
+
+span a[target="_blank"]:after,
+label a[target="_blank"]:after,
+p a[target="_blank"]:after {
+  content: "\00a0\2197";
+}
+
+.text-shadow {
+  text-shadow: 0 5px 15px var(--tw-shadow-color, black);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"]) {
+  --left: calc(var(--p-4) + 1px);
+  --right: var(--p-4);
+  --y: var(--p-4);
+  --x: 0;
+  --scale: 1;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"]) .formkit-inner {
+  position: relative;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"]) .formkit-inner .formkit-icon {
+  top: var(--y);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"]) .formkit-input {
+  padding-left: var(--left);
+  padding-right: var(--right);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-prefix-icon="true"] {
+  --left: 46px;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-suffix-icon="true"] {
+  --right: 46px;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] {
+  --y: 1.25rem;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] .formkit-input {
+  padding-top: calc(var(--p-4) * 1.5);
+  padding-bottom: calc(var(--p-4) * 0.5);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] label.formkit-label {
+  pointer-events: none;
+  background-color: transparent !important;
+  font-weight: 500 !important;
+  font-size: var(--text-base) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform-origin: 0;
+  padding: var(--p-1) !important;
+  margin: calc(var(--m-1) * -1) !important;
+  cursor: text;
+  top: 0 !important;
+  width: calc((100% - var(--left) - var(--right)) / var(--scale));
+  transform: scale(var(--scale)) translateY(var(--y)) !important;
+  left: var(--left) !important;
+  opacity: 1 !important;
+  color: var(--color-neutral-400);
+  transition-property: transform, left, top;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(.125, 1.25, .125, 1);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"]:not([data-empty="true"]) label.formkit-label {
+  --y: 1.25rem;
+  left: var(--left) !important;
+  color: var(--color-neutral-500);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] input:focus~label.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] textarea:focus~label.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-type="textarea"]:not([data-empty="true"]) label.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-family="text"]:not([data-empty="true"]) label.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-expanded="true"] label.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] button~.formkit-label[data-has-value="true"] {
+  --y: 1rem;
+  --scale: 0.7;
+  left: calc(var(--left) + 1.5px) !important;
+  color: var(--color-neutral-500);
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-family="dropdown"]:not([data-empty="true"]) label.formkit-label {
+  left: calc(var(--left) - 0.5px) !important;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-prefix-icon="false"] {
+  --left: 10px;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-prefix-icon="false"] input:focus~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-prefix-icon="false"] textarea:focus~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-prefix-icon="false"][data-family="text"]:not([data-empty="true"]) .formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-prefix-icon="false"][data-expanded="true"] .formkit-label {
+  left: var(--left) !important;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] textarea~.formkit-label {
+  white-space: pre-wrap;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] button~.formkit-label {
+  --y: 1rem;
+  left: var(--left) !important;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] button.active~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] input:focus~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] textarea:focus~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] .formkit-label[data-has-value="true"],
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-complete="true"] .formkit-label {
+  --top: 25%;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] textarea:focus~.formkit-label,
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] textarea~.formkit-label[data-has-value="true"],
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-complete="true"] textarea~.formkit-label {
+  --top: -0.5em;
+  white-space: nowrap;
+}
+
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"] button~.formkit-label[data-has-value="true"],
+.formkit-outer:is([data-family="text"], [data-type="textarea"], [data-family="dropdown"])[data-floating-label="true"][data-complete="true"] button~.formkit-label {
+  --top: 0em;
+}

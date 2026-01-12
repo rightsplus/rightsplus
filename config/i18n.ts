@@ -21,14 +21,18 @@ export const locales = [
 		file: 'en.json',
 	}
 ] as const satisfies LocaleObject[]
+
 const options = {
 	locales,
 	langDir: 'locales',
 	defaultLocale: 'de',
 	strategy: "prefix_and_default" as Strategies,
+	// strategy: "prefix_and_default" as Strategies,
 	// strategy: "prefix_except_default" as Strategies,
 	customRoutes: 'config',
-	vueI18n: 'config/i18n.options.ts',
+	bundle: {
+		optimizeTranslationDirective: false
+	},
 	pages: {
 		"index": {
 			"en": "/",
@@ -78,9 +82,9 @@ const options = {
 			"en": "/claim/[id]",
 			"de": "/claim/[id]",
 		},
-		"admin-claims": {
-			"en": "/admin/claims",
-			"de": "/admin/ansprueche",
+		"admin-claim": {
+			"en": "/admin/claim",
+			"de": "/admin/claim",
 		},
 		"admin-bookings": {
 			"en": "/admin/bookings",

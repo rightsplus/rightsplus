@@ -1,7 +1,7 @@
 ---
 category: Daten erhalten
 title: Wir sind dran!
-subject: Wir übernehmen ab hier das Steuer!
+subject: Wir übernehmen ab hier das Steuer! | Fallnummer {{ $doc.id }}
 ---
 
 Hey {{ $doc.client.firstName }},

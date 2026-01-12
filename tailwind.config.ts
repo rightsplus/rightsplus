@@ -77,7 +77,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('@formkit/tailwindcss'),
+    require('@formkit/themes'),
     require('@tailwindcss/container-queries'),
     require('@tailwindcss/forms'),
     require('tailwindcss-unimportant'),
@@ -93,7 +93,6 @@ module.exports = {
       transitionDuration: 'transition-duration',
       transitionProperty: 'transition-property',
       transitionDelay: 'transition-delay',
-      transitionDuration: 'transition-duration',
       transitionTimingFunction: 'transition-timing-function',
       outlineStyle: 'outline-style',
       outlineWidth: 'outline-width',

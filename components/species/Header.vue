@@ -4,8 +4,6 @@ import BurgerIcon from "~/components/molecules/BurgerIcon.vue";
 import Logo from "~/assets/logo";
 import type { Database } from "@/types";
 import claimMachine from "~/machines/claimSubmission";
-const { auth } = useSupabaseAuthClient();
-// const localePath = useLocalePath();
 interface Route {
   name: string;
   path: string;
@@ -77,6 +75,7 @@ watch(
   (value) => (document.body.style.overflow = value ? "hidden" : "auto")
 );
 const { meta, path } = useRoute();
+const { localePath } = useLocaleContent();
 // const { path } = useRouter()
 </script>
 <template>
@@ -98,10 +97,10 @@ const { meta, path } = useRoute();
     >
       <div class="p-3 flex items-center gap-3">
         <span class="">Angemeldet als Admin</span>
-        <NuxtLinkLocale
+        <NuxtLink
           class="rounded-full hover:bg-blue-600 bg-blue-500 text-white px-3 py-1.5 font-medium"
-          to="admin-claims"
-          >Zum Dashboard</NuxtLinkLocale
+          :to="localePath('admin-claim')"
+          >Zum Dashboard</NuxtLink
         >
       </div>
     </div>

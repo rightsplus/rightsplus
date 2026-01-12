@@ -16,6 +16,7 @@ const props = defineProps<{
   arrival?: string;
   date?: string | null;
   number?: string | null;
+  custom?: (flight: Flight) => boolean;
   modelValue?: Flight | null;
   limit?: number;
   flightCard?: Partial<FlightCardProps>;
@@ -71,12 +72,21 @@ const allFlights = computed(() => {
       arrival: props.arrival,
       date: props.date || undefined,
       number: props.number || undefined,
+      custom: props.custom || undefined,
     })
   ).filter((e) => {
     const excludedNames = ["cargo", "fedex", "dhl", "ups"];
     if (
-      excludedNames.some((name) =>
-        e.airline.name.toLocaleLowerCase().includes(name)
+      excludedNames.some((f) =>
+        e.airline.name?.toLowerCase()?.includes(f || "")
+      )
+    ) {
+      return false;
+    }
+    const excludedIatas = ["DJ"];
+    if (
+      excludedIatas.some((f) =>
+        e.airline.iata?.toUpperCase()?.includes(f || "")
       )
     ) {
       return false;
@@ -296,7 +306,7 @@ onMounted(() => {
   //   .lt('id', "200000")
   //   .then(e => console.log(e))
 });
-const fetch = () => {
+const fetch = (force = false) => {
   loading.value = true;
   if (!props.date) {
     loading.value = false;
@@ -306,6 +316,7 @@ const fetch = () => {
     departure: props.departure,
     arrival: props.arrival,
     date: props.date,
+    force,
   })
     .then(console.log)
     .catch(console.log)
@@ -392,7 +403,7 @@ const toggleFlightGroup = (flight: Flight) => {
       >
       <Button
         tertiary
-        @click="fetch"
+        @click="fetch(true)"
         class="text-sm"
         prefixIcon="arrow-rotate-right"
         >erneut laden</Button

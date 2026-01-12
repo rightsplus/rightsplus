@@ -31,21 +31,16 @@
   <Popup
     :open="signatureOpen"
     @closeOutside="signatureOpen = false"
-    class="max-h-[90vh] p-12 "
+    class="max-h-[90vh] p-12"
     title="Unterschrift"
   >
-  <div class="flex flex-col gap-12">
-    <SignaturePad
-      v-for="passenger, i in claim.client.passengers"
-      @update="(e) => updateSignature(e, i)"
-      :name="
-        [
-          passenger.firstName,
-          passenger.lastName,
-        ].join(' ')
-      "
-    />
-  </div>
+    <div class="flex flex-col gap-12">
+      <SignaturePad
+        v-for="(passenger, i) in claim.client.passengers"
+        @update="(e) => updateSignature(e, i)"
+        :name="[passenger.firstName, passenger.lastName].join(' ')"
+      />
+    </div>
 
     <div class="flex gap-2 items-center mt-5">
       <i18n-t
@@ -54,9 +49,21 @@
         for="terms"
         class="text-sm mb-1 [&>a]:text-primary-500 [&>a:hover]:underline"
       >
-            <template v-slot:terms><NuxtLink class="font-medium" to="terms-and-conditions">{{ $t("termsAndConditions") }}</NuxtLink></template>
-            <template v-slot:pricelist><NuxtLink class="font-medium" to="pricelist">{{ $t("pricelist") }}</NuxtLink></template>
-            <template v-slot:assignmentAgreement><NuxtLink class="font-medium" to="assignment-agreement">{{ $t("privacyPolicy") }}</NuxtLink></template>
+        <template v-slot:terms
+          ><NuxtLink class="font-medium" to="terms-and-conditions">{{
+            $t("termsAndConditions")
+          }}</NuxtLink></template
+        >
+        <template v-slot:pricelist
+          ><NuxtLink class="font-medium" to="pricelist">{{
+            $t("pricelist")
+          }}</NuxtLink></template
+        >
+        <template v-slot:assignmentAgreement
+          ><NuxtLink class="font-medium" to="assignment-agreement">{{
+            $t("privacyPolicy")
+          }}</NuxtLink></template
+        >
       </i18n-t>
     </div>
     <div class="flex gap-5 justify-end text-base mt-12">
@@ -68,7 +75,7 @@
           signatures = [];
         "
       >
-        {{ $t('cancel')}}
+        {{ $t("cancel") }}
       </button>
       <FormKit
         type="button"
@@ -100,9 +107,13 @@ import SignaturePad from "@/components/molecules/SignaturePad.vue";
 import { watchDebounced } from "@vueuse/core";
 const user = useSupabaseUser();
 const client = useSupabaseClient();
-const { auth } = useSupabaseAuthClient();
-const { userExists, submitFlight, submitClaim, handleUploadFile, handleUploadSignatures } =
-  useSupabaseFunctions();
+const {
+  userExists,
+  submitFlight,
+  submitClaim,
+  handleUploadFile,
+  handleUploadSignatures,
+} = useSupabaseFunctions();
 const { steps, index, step } = useSteps();
 const claim = useClaim();
 const { send } = useSendMail();
@@ -112,7 +123,9 @@ const router = useRouter();
 const authOpen = ref(false);
 const signatureOpen = ref(false);
 const signatures = ref<string[]>([]);
-const missingSignatures = computed(() => claim.client.passengers.some((e, i) => !signatures.value[i]))
+const missingSignatures = computed(() =>
+  claim.client.passengers.some((e, i) => !signatures.value[i])
+);
 const signUpMode = ref<"signIn" | "signUp">();
 
 const passengerHasAccount = ref(false);
@@ -158,7 +171,7 @@ const submit = async () => {
     let claimResponse;
     try {
       claimResponse = await submitClaim(claim);
-      const data = convertAssignmentAgreementData(claim)
+      const data = convertAssignmentAgreementData(claim);
       // const email = send({
       //   to: claim.client.passengers[0].email,
       //   subject: "Deine Anfrage wurde erfolgreich eingereicht",
@@ -200,7 +213,9 @@ const submit = async () => {
         console.log(signatures.value);
         return;
       }
-      const results = await Promise.all(handleUploadSignatures(claimResponse.id, signatures.value));
+      const results = await Promise.all(
+        handleUploadSignatures(claimResponse.id, signatures.value)
+      );
 
       console.log(results);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { locales } from "./i18n";
+import { locales } from "../config/i18n";
 
 const format = () => ({
 	kg: { style: 'unit', unit: 'kilogram', unitDisplay: 'narrow' },
@@ -11,7 +11,8 @@ const format = () => ({
 	percent: { style: 'percent', maximumFractionDigits: 2 },
 	currency: { style: 'currency', currency: 'EUR' },
 })
+
 export default defineI18nConfig(() => ({
 	numberFormats: locales.reduce((a, { code }) => ({ ...a, [code]: format() }), {}),
-	fallbackLocale: 'de'
+	fallbackLocale: 'de',
 }))

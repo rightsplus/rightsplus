@@ -1,31 +1,128 @@
-import { serverSupabaseUser, serverSupabaseClient } from "#supabase/server";
-import nodemailer from 'nodemailer'
+import nodemailer, { type SentMessageInfo } from 'nodemailer'
 import { useCompiler } from '#vue-email'
 import type { SendMailProps } from "./types";
+import { ImapFlow } from 'imapflow'
+import mailcomposer from 'mailcomposer'
 
-const sendMail = async (props: SendMailProps) => {
 
-	const transporter = nodemailer.createTransport({
-		host: process.env.SMTP_HOST,
-		secure: true, // upgrade later with STARTTLS
-		port: 465,
+const smtpHost = process.env.SMTP_HOST
+const smtpPass = process.env.SMTP_PASS
+const from = process.env.SMTP_USER
+const imapHost = process.env.IMAP_HOST
+const sentFolder = process.env.SENT_FOLDER
+
+// Reuse transporter to avoid creating new connections on every request
+let transporter: any = null
+
+const getTransporter = () => {
+	if (!transporter && smtpHost && from && smtpPass) {
+		transporter = nodemailer.createTransport({
+			host: smtpHost,
+			secure: true,
+			port: 465,
+			auth: {
+				user: from,
+				pass: smtpPass,
+			},
+			pool: true, // Use connection pooling
+			maxConnections: 5, // Limit concurrent connections
+			maxMessages: 100, // Limit messages per connection
+		})
+	}
+	return transporter
+}
+
+
+const saveEmailToSentFolder = async (raw: SentMessageInfo) => {
+	if (!from) {
+		throw new Error('SMTP user is not defined')
+	}
+
+	if (!imapHost) {
+		throw new Error('IMAP host is not defined')
+	}
+
+	// Connect to IMAP and append
+	const client = new ImapFlow({
+		host: imapHost,
+		port: 993,
+		secure: true,
 		auth: {
-			user: process.env.SMTP_USER,
-			pass: process.env.SMTP_PASS,
-		},
+			user: from,
+			pass: smtpPass,
+		}
 	})
 
 	try {
-		transporter.sendMail({
-			from: `"Joachim von RightsPlus" ${process.env.SMTP_USER}`,
+		await client.connect()
+		// Append raw email to "Sent" folder
+		await client.append(sentFolder || 'Sent', raw, ['\\Seen'])
+	} finally {
+		// Always close connection, even on error
+		try {
+			await client.logout()
+		} catch (e) {
+			// Ignore logout errors, connection might already be closed
+		}
+	}
+}
+
+type SendMailFormData = Omit<SendMailProps, 'attachments'> & {
+	attachments: Record<string, Buffer<ArrayBufferLike>>
+}
+
+const sendMail = async (props: SendMailFormData) => {
+	if (!imapHost) {
+		throw new Error('IMAP host is not defined')
+	}
+
+	if (!smtpHost) {
+		throw new Error('SMTP host is not defined')
+	}
+
+	if (!from) {
+		throw new Error('SMTP user is not defined')
+	}
+
+	if (!smtpPass) {
+		throw new Error('SMTP password is not defined')
+	}
+
+	const transporter = getTransporter()
+	if (!transporter) {
+		throw new Error('Failed to create email transporter')
+	}
+
+	try {
+		const mail = {
+			from: `"Joachim von RightsPlus" <${process.env.SMTP_USER}>`,
 			to: props.to,
 			subject: props.subject,
 			html: props.html || props.text,
 			attachments: Object.entries(props.attachments || {}).map(([filename, content]) => ({
 				filename, content
 			}))
+		}
+
+		// 1. Generate raw message
+		const compiledMail = mailcomposer(mail)
+		const raw = await new Promise<Buffer>((resolve, reject) => {
+			compiledMail.build((err: any, message: any) => {
+				if (err) return reject(err)
+				resolve(message)
+			})
 		})
+
+
+
+		// 2. Send via SMTP
+		await (transporter.sendMail(mail) as Promise<SentMessageInfo>)
+
+		// 3. Append to "Sent"
+		await saveEmailToSentFolder(raw)
+
 		return { message: 'Email sent successfully' }
+
 	} catch (error) {
 		console.log('error', error)
 		return { message: "Something went wrong" + error }
@@ -93,8 +190,18 @@ export default defineEventHandler(async (event) => {
 			});
 		}
 
+		// Check total size to prevent memory issues (limit to 10MB total)
+		const totalSize = formData.reduce((sum, field) => sum + (field.data?.length || 0), 0)
+		if (totalSize > 10 * 1024 * 1024) {
+			throw createError({
+				statusCode: 413,
+				statusMessage: "Request entity too large. Maximum size is 10MB",
+			});
+		}
+
 		// Process the FormData
 		const body = reconstructNestedObjectFromMultipart(formData)
+
 		const html = body.template ? (await useCompiler(body.template, { props: body.data })).html : undefined
 
 		const response = await sendMail({

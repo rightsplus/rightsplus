@@ -8,7 +8,9 @@ definePageMeta({
 import type { CaseStatus, Database, RowClaimExtended } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AirlineLogo from "~/components/cells/AirlineLogo.vue";
+import { replaceUrl } from "~/composables/useLocaleContent";
 
+const adminStore = useAdminState();
 // watch(state.value, ({ value }) =>
 //   updateData(activeClaimId.value, { status: value as CaseStatus })
 // );
@@ -35,22 +37,23 @@ const { data: claims, status } = useAsyncData(async () => {
     .select(getExtendedClaimQuery())
     // .or(`status.is.null,status.neq.done`)
     .order("createdAt", { ascending: false })
-    .returns<RowClaimExtended[]>();
+    .overrideTypes<RowClaimExtended[]>();
 
-  console.log(data, error);
   if (data) {
     queryAirlines(
       airlinesByFlights(data.map((e) => e.booking.flight.data)).map(
         (e) => e.airline.iata
       )
     );
+
+    adminStore.claims = data;
   }
   return data;
 });
 watch(
   status,
   () => {
-    console.log(status.value, claims.value);
+    // console.log(status.value, claims.value);
   },
   { immediate: true }
 );
@@ -71,12 +74,33 @@ const updateData = (props: {
       Object.assign(claims.value?.find((e) => e.id === claim?.id) || {}, claim);
     });
 };
-const activeClaimId = ref<RowClaimExtended["id"]>();
+const route = useRoute();
+const { id } = route.query;
+
+const activeClaimId = ref<RowClaimExtended["id"] | undefined>(
+  id ? parseInt(id as string) : undefined
+);
 const activeClaim = ref<RowClaimExtended>();
-watch(activeClaimId, (id) => {
-  const nextClaim = claims.value?.find((e) => e.id === id);
-  activeClaim.value = nextClaim;
+watch(activeClaimId, () => {
+  const newUrl = new URL(window.location.href);
+  if (activeClaimId.value) {
+    newUrl.searchParams.set("id", activeClaimId.value.toString());
+    replaceUrl(newUrl.toString());
+  } else {
+    newUrl.searchParams.delete("id");
+    replaceUrl(newUrl.toString());
+  }
 });
+watchEffect(() => {
+  const nextClaim = claims.value?.find((e) => e.id === activeClaimId.value);
+  activeClaim.value = nextClaim;
+  console.log(nextClaim);
+});
+const localeRoute = useLocaleRoute();
+// watch(activeClaimId, () => {
+//   console.log(localeRoute("admin-claim"));
+//   replaceUrl(localeRoute("admin-claim", { id: activeClaimId.value }));
+// });
 const date = (d: string) => new Date(d).toLocaleDateString(locale.value);
 const time = (d: string) =>
   new Date(d).toLocaleString(locale.value, {
@@ -102,7 +126,7 @@ const operatingAirline = (claim: RowClaimExtended) => {
 <template>
   <div>
     <NuxtLayout name="dashboard">
-      <div class="flex w-full" ref="container">
+      <div class="flex w-full min-h-0" ref="container">
         <Transition name="fade">
           <span
             v-if="status === 'pending'"
@@ -112,33 +136,11 @@ const operatingAirline = (claim: RowClaimExtended) => {
         </Transition>
 
         <div
-          class="flex flex-col h-full w-[--width] min-w-64"
+          class="flex flex-col w-[--width] min-w-64"
           :style="`--width: ${width}px`"
         >
-          <div
-            class="h-16 flex-shrink-0 flex items-center border-b border-gray-100 px-4 gap-x-4 min-w-0"
-          >
-            <div
-              class="flex items-center justify-between flex-1 gap-x-1.5 min-w-0"
-            >
-              <div class="flex items-stretch gap-1.5 min-w-0">
-                <h1
-                  class="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white min-w-0"
-                >
-                  <span class="truncate">{{ $t("claim", 2) }}</span>
-                </h1>
-                <Badge
-                  v-if="claims?.filter((e) => e.unread).length"
-                  :content="claims?.filter((e) => e.unread).length.toString()"
-                  primary
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            class="flex-1 flex flex-col overflow-y-auto p-2 h-full"
-            @click.self="activeClaimId = undefined"
-          >
+          <div class="flex-1 flex flex-col overflow-y-auto p-2">
+            <!-- @click.self="activeClaimId = undefined" -->
             <DashboardListItem
               v-for="claim in claims"
               :title="formatClaimId(claim.id, true)"
@@ -148,10 +150,8 @@ const operatingAirline = (claim: RowClaimExtended) => {
               :date="claim.createdAt"
               :active="claim.id === activeClaimId"
               :unread="claim.unread"
-              @click="
-                activeClaimId =
-                  activeClaimId !== claim.id ? claim.id : undefined
-              "
+              :id="claim.id"
+              @click="activeClaimId = claim.id"
             >
               <div class="flex items-center gap-2 justify-between">
                 <div class="flex items-center gap-2 text-neutral-400">
@@ -166,7 +166,7 @@ const operatingAirline = (claim: RowClaimExtended) => {
         <DashboardSeparator vertical @drag="width = $event - offset" />
         <div class="flex-1 flex flex-col overflow-y-auto p-0 w-full">
           <div class="flex-col items-stretch relative w-full flex-1">
-            <div class="flex-1 p-5 w-full h-full">
+            <div class="w-full h-full">
               <ClaimManagement
                 :claim="activeClaim"
                 @update="updateData"

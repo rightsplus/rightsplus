@@ -30,7 +30,7 @@
             </div>
             <button
               v-if="$attrs.onClose"
-              class="h-12 w-12 min-w-[48px] md:h-16 md:w-16 md:min-w-[48px] items-center justify-center -m-3 md:-m-5 text-stone-400 hover:text-primary-500 rounded-xl"
+              class="h-10 w-10 md:h-10 md:w-10 items-center justify-center -m-3 md:-m-5 text-stone-400 hover:bg-neutral-100 rounded-full"
               @click="$emit('close')"
             >
               <FontAwesomeIcon icon="xmark" />
@@ -56,6 +56,6 @@ const props = defineProps<{
 
 watch(
   () => props.open,
-  value => (document.body.style.overflow = value ? "hidden" : "auto")
+  (value) => (document.body.style.overflow = value ? "hidden" : "auto")
 );
 </script>

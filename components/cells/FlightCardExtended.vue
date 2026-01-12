@@ -72,7 +72,7 @@ const distance = computed(() =>
 </script>
 <template>
   <div
-    class="rounded-lg py-3 px-5 @container border border-transparent bg-neutral-100 text-gray-800 grid gap-3"
+    class="rounded-lg py-3 px-5 @container border border-transparent bg-white text-gray-800 grid gap-3"
   >
     <!-- <pre>{{ new Date(flight.departure.scheduledTime) }}</pre>
     <pre>{{ new Date(flight.departure.actualTime) }}</pre>
@@ -154,7 +154,10 @@ const distance = computed(() =>
           </span>
         </div>
         <!-- @todo: maybe do not check for status ...-->
-        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
+        <div
+          class="flex flex-col gap-1"
+          v-if="flight?.status !== 'unknown' && arrivalTime"
+        >
           <span class="text-sm text-neutral-500">{{
             t("actualArrivalTime")
           }}</span>
@@ -211,7 +214,7 @@ const distance = computed(() =>
             >
           </span>
         </div>
-        <div class="flex flex-col gap-1" v-if="flight?.status !== 'active'">
+        <div class="flex flex-col gap-1" v-if="flight?.status !== 'unknown'">
           <span class="text-sm text-neutral-500">{{ t("flightStatus") }}</span>
           <span class="font-medium flex items-center text-sm gap-3"
             ><span :class="status.class">{{ status.text }}</span>

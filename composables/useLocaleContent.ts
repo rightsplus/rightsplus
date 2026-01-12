@@ -24,20 +24,29 @@ export default () => {
 		return match as RouteName || ''
 	}
 
-	const localePath = (name: RouteName | string = route.path, code = locale.value) => {
+	type LocalePathOptions = {
+		code?: typeof locale.value,
+		params?: Record<string, string>
+	}
+	const localePath = (name: RouteName | string = route.path, options: LocalePathOptions = {}) => {
+		console.log(name, options)
 		const route = i18nConfig.pages[name as RouteName]
 		type AvailableLocale = keyof typeof route
 		if (!route) return `/${name}`
+		console.log(route)
+		const { params = false } = options
+		let code = options.code || locale.value
 		let path = route[code as AvailableLocale]
+		console.log(path)
 		const fallbacks = [code, fallbackLocale.value, defaultLocale, Object.keys(route)[0]]
 		for (let l in fallbacks) {
 			if (route[l as AvailableLocale]) {
-				code = l
+				code = l as AvailableLocale
 				path = route[l as AvailableLocale]
 				break;
 			}
 		}
-
+		console.log(path)
 		if (!path) return ''
 		let localePrefix = ''
 		switch (i18nConfig.strategy) {
@@ -52,25 +61,27 @@ export default () => {
 			default:
 				break;
 		}
-		return `${localePrefix}${path}`
+		console.log(path, params, localePrefix, i18nConfig.strategy, defaultLocale)
+		const interpolatedPath = params ? path.replace(/\[([^\]]+)\]/g, (_, p) => params[p as keyof typeof params]) : path
+		return `${localePrefix}${interpolatedPath}`
 	}
-	const localeRoute = (name: RouteName, code = locale.value) => {
-		return new URL(localePath(name, code), window.location.origin)
+	const localeRoute = (name: RouteName, options: LocalePathOptions = {}) => {
+		return new URL(localePath(name, options), window.location.origin)
 	}
 
-	const switchLocale = (code: string, replaceState?: boolean) => {
+	const switchLocale = (code: typeof locale.value, replaceState?: boolean) => {
 		const currentPage = localeName(route.fullPath)
-		console.log(route.fullPath, currentPage)
 		// if (!currentPage) return switchLocalePath(code)
 		if (replaceState) {
 			locale.value = code;
-			replaceUrl(localeRoute(currentPage, code).href)
+			replaceUrl(localeRoute(currentPage, { code }).href)
 			return
 		}
-		return localePath(currentPage, code)
+		return localePath(currentPage, { code })
 	}
 	return { localePath, localeName, switchLocale }
 }
-const replaceUrl = (url?: string, title = "") => {
+export const replaceUrl = (url?: string, title = "") => {
+	console.log(url)
 	if (url) window.history.replaceState({}, title, url);
 };
