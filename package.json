@@ -68,7 +68,6 @@
     "pdf-lib": "^1.17.1",
     "pdfmake": "^0.2.15",
     "primevue": "^3.29.1",
-    "puppeteer": "^22.12.1",
     "radix-vue": "^1.9.12",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
@@ -80,6 +79,7 @@
     "tailwindcss-unimportant": "^2.1.1",
     "unified": "^11.0.5",
     "v-calendar": "^3.1.2",
+    "vue": "^3.5.13",
     "vue-email": "^0.8.11",
     "vue-uuid": "^3.0.0"
   },

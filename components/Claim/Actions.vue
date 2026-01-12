@@ -197,7 +197,7 @@ const closePreview = () => {
 };
 </script>
 <template>
-  <div class="grid gap-2 w-full">
+  <div class="grid gap-2 w-full" v-if="actions.length">
     <Button
       v-for="action in actions"
       :key="action"
@@ -215,16 +215,17 @@ const closePreview = () => {
     :open="!!emailPreview.length"
     @closeOutside="closePreview"
     @close="closePreview"
-    class="p-5 sm:p-8 @container w-[1200px]"
+    class="p-5 sm:p-8 @container !w-[960px] flex flex-col gap-10"
     :title="t('Emails überprüfen')"
-    titleClass="!text-xl"
   >
     <StatusEmailPreview
       v-if="!!emailPreview.length"
-      v-for="email in emailPreview"
+      v-for="(email, index) in emailPreview"
       :key="email.id"
       :title="email.status"
       :emailData="email"
+      :index="index"
+      :total="emailPreview.length"
     />
   </Popup>
 </template>

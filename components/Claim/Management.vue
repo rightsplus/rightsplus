@@ -155,8 +155,8 @@ const assignWidth = (event?: number) => {
       </div>
       <DashboardSeparator vertical @drag="assignWidth($event)" />
 
-      <div class="bg-white p-5">
-        <div class="font-bold text-lg mb-5">Die nächsten Schritte</div>
+      <div class="bg-white p-5 flex flex-col gap-5">
+        <div class="font-bold text-lg">Die nächsten Schritte</div>
         <div class="flex gap-2 flex-wrap justify-end">
           <Button
             v-if="history.length"
@@ -182,10 +182,11 @@ const assignWidth = (event?: number) => {
             class="self-start flex h-7 items-center"
           />
         </div>
-        <div class="flex grow basis-0 gap-3 w-full mt-3">
-          <ClaimActions :claim="claim" :machine="machine" />
-        </div>
-        <div class="flex flex-col gap-3 mt-5">
+        <ClaimActions :claim="claim" :machine="machine" />
+        <div
+          class="flex flex-col gap-3 mt-5"
+          v-if="emails[claim.status]?.length"
+        >
           <Button
             tertiary
             round
@@ -196,19 +197,22 @@ const assignWidth = (event?: number) => {
             >{{ item.label }}</Button
           >
         </div>
-        <div class="p-5 grid">
+        <div class="border-t border-neutral-200 pt-5">
+          <div class="font-medium mb-3">Protokoll</div>
           <div
             v-for="entry in props.claim?.protocol"
-            class="gap-2 items-center grid subgrid grid-cols-[auto_auto_1fr]"
+            class="gap-2 items-start grid subgrid grid-cols-[auto_auto_1fr]"
           >
-            <FontAwesomeIcon
-              :icon="entry.type === 'email' ? 'envelope' : 'info-circle'"
-              class="text-gray-400"
-            />
-            <span class="tabular-nums">
-              {{ formatDateRelative(entry.timestamp) }}</span
-            >
-            <span>{{
+            <div class="flex items-center gap-2">
+              <FontAwesomeIcon
+                :icon="entry.type === 'email' ? 'envelope' : 'info-circle'"
+                class="text-gray-400"
+              />
+              <span class="tabular-nums">
+                {{ formatDateRelative(entry.timestamp) }}</span
+              >
+            </div>
+            <span class="line-clamp-2">{{
               entry.type === "email" ? t(`status.${entry.value}`) : entry.value
             }}</span>
           </div>

@@ -11,6 +11,27 @@ const from = process.env.SMTP_USER
 const imapHost = process.env.IMAP_HOST
 const sentFolder = process.env.SENT_FOLDER
 
+// Reuse transporter to avoid creating new connections on every request
+let transporter: any = null
+
+const getTransporter = () => {
+	if (!transporter && smtpHost && from && smtpPass) {
+		transporter = nodemailer.createTransport({
+			host: smtpHost,
+			secure: true,
+			port: 465,
+			auth: {
+				user: from,
+				pass: smtpPass,
+			},
+			pool: true, // Use connection pooling
+			maxConnections: 5, // Limit concurrent connections
+			maxMessages: 100, // Limit messages per connection
+		})
+	}
+	return transporter
+}
+
 
 const saveEmailToSentFolder = async (raw: SentMessageInfo) => {
 	if (!from) {
@@ -32,17 +53,18 @@ const saveEmailToSentFolder = async (raw: SentMessageInfo) => {
 		}
 	})
 
-
-	await client.connect()
-
-	// List all mailboxes
-	// let mailboxes = await client.list();
-	// for (let box of mailboxes) {
-	// 	console.log('Mailbox:', box.path);
-	// }
-	// Append raw email to "Sent" folder
-	await client.append(sentFolder || 'Sent', raw, ['\\Seen'])
-	await client.logout()
+	try {
+		await client.connect()
+		// Append raw email to "Sent" folder
+		await client.append(sentFolder || 'Sent', raw, ['\\Seen'])
+	} finally {
+		// Always close connection, even on error
+		try {
+			await client.logout()
+		} catch (e) {
+			// Ignore logout errors, connection might already be closed
+		}
+	}
 }
 
 type SendMailFormData = Omit<SendMailProps, 'attachments'> & {
@@ -66,15 +88,10 @@ const sendMail = async (props: SendMailFormData) => {
 		throw new Error('SMTP password is not defined')
 	}
 
-	const transporter = nodemailer.createTransport({
-		host: smtpHost,
-		secure: true, // upgrade later with STARTTLS
-		port: 465,
-		auth: {
-			user: from,
-			pass: smtpPass,
-		},
-	})
+	const transporter = getTransporter()
+	if (!transporter) {
+		throw new Error('Failed to create email transporter')
+	}
 
 	try {
 		const mail = {
@@ -173,16 +190,24 @@ export default defineEventHandler(async (event) => {
 			});
 		}
 
+		// Check total size to prevent memory issues (limit to 10MB total)
+		const totalSize = formData.reduce((sum, field) => sum + (field.data?.length || 0), 0)
+		if (totalSize > 10 * 1024 * 1024) {
+			throw createError({
+				statusCode: 413,
+				statusMessage: "Request entity too large. Maximum size is 10MB",
+			});
+		}
+
 		// Process the FormData
 		const body = reconstructNestedObjectFromMultipart(formData)
+
 		const html = body.template ? (await useCompiler(body.template, { props: body.data })).html : undefined
 
 		const response = await sendMail({
 			...body,
 			html
 		})
-
-		console.log('response', response)
 
 		return {
 			statusCode: 200,
